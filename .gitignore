@@ -1,0 +1,33 @@
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.bundle
+*.so
+*.o
+*.a
+mkmf.log
+*.gem
+
+# rbenv and rvm
+.ruby-version
+.ruby-gemset
+
+# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
+.rvmrc
+
+# RubyMine
+.idea
+
+# MacOS
+.DS_Store
+__MACOSX
+
+# emacs
+(.*/)?\#[^/]*\#$
+
