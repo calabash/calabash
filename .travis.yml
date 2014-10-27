@@ -1,0 +1,18 @@
+language: ruby
+
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - 2.1.2
+
+script:
+  - script/ci/travis/install-gem-ci.rb
+  - bundle exec rake spec
+
+notifications:
+  email:
+    recipients:
+      - joshua.moody@xamarin.com
+      - tobias.roikjer@xamarin.com
+    on_success: change
+    on_failure: always
