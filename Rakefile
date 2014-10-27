@@ -5,3 +5,11 @@ begin
   RSpec::Core::RakeTask.new(:spec)
 rescue LoadError => _
 end
+
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new do |_|
+    # See .yardopts for options.
+  end
+rescue LoadError => _
+end
