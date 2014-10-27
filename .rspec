@@ -1,0 +1,9 @@
+--color
+--format documentation
+--require spec_helper
+# If warnings are enabled, rspec will pedantically report _all_ warnings.  It is
+# quite nice for catching problems in your code, but warnings for 3rd-party gems
+# make enabling this by default untenable.
+#--warnings
+# Useful when trying to debug failing tests; otherwise not worth it.
+#--backtrace
