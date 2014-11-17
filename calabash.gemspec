@@ -61,8 +61,8 @@ Public License.}
   spec.add_development_dependency 'yard', '~> 0.8'
   spec.add_development_dependency 'redcarpet', '~> 3.1'
   spec.add_development_dependency 'travis', '~> 1.7'
-  spec.add_development_dependency 'pry', '~> 0.9'
-  spec.add_development_dependency 'pry-nav', '~> 0.2'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'pry-nav'
 
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'guard-rspec', '~> 4.3'
