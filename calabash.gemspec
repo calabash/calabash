@@ -26,7 +26,7 @@ framework for Android and iOS. It supports both native and hybrid app testing.
 It is developed and maintained by Xamarin and is released under the Eclipse
 Public License.}
 
-  spec.homepage      = 'http://calaba.sh'
+  spec.homepage      = 'https://xamarin.com/test-cloud'
   spec.license       = 'EPL-1.0'
 
   spec.required_ruby_version = '>= 1.9'
