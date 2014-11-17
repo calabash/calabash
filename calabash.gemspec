@@ -47,7 +47,7 @@ Public License.}
   spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
   spec.add_dependency 'CFPropertyList','~> 2.2'
   spec.add_dependency 'sim_launcher', '< 0.5', '>= 0.4.13'
-  spec.add_dependency 'run_loop', '~> 1.0', '>= 1.0.9'
+  spec.add_dependency 'run_loop', '~> 1.1'
 
   # These dependencies should match the xamarin-test-cloud dependencies.
   spec.add_dependency 'json', '~> 1.8'
