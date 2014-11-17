@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'calabash/version'
+
+puts Calabash::VERSION
