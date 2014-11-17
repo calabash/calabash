@@ -68,6 +68,5 @@ Public License.}
   spec.add_development_dependency 'guard-rspec', '~> 4.3'
   spec.add_development_dependency 'guard-bundler', '~> 2.0'
   spec.add_development_dependency 'growl', '~> 1.0'
-  spec.add_development_dependency 'rb-readline', '~> 0.5'
 
 end
