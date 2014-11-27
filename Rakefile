@@ -19,10 +19,11 @@ task :build => 'build:full_build' do
 end
 
 namespace :build do
-  task :ensure_calabash_js_exists do
+  task :ensure_files_exist do
+    Calabash::Build::AndroidTestServer.ensure_test_server_exists
     Calabash::Build::AndroidTestServer.ensure_calabash_js_exists
   end
 
-  task :full_build => [:ensure_calabash_js_exists] do
+  task :full_build => [:ensure_files_exist] do
   end
 end
