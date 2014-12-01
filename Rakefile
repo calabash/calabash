@@ -15,10 +15,7 @@ begin
 rescue LoadError => _
 end
 
-task :build => 'build:full_build' do
-end
-
-namespace :build do
+namespace :android do
   task :ensure_files_exist do
     Calabash::Build::AndroidTestServer.ensure_test_server_exists
     Calabash::Build::AndroidTestServer.ensure_calabash_js_exists
@@ -28,6 +25,6 @@ namespace :build do
     Calabash::Build::AndroidTestServer.build_test_server
   end
 
-  task :full_build => [:ensure_files_exist, :build_test_server] do
+  task :build => [:ensure_files_exist, :build_test_server] do
   end
 end
