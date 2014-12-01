@@ -3,6 +3,7 @@ logger level: :info
 
 guard 'bundler' do
   watch('Gemfile')
+  watch(/^.+\.gemspec/)
 end
 
 guard :rspec, cmd: 'bundle exec rspec', failed_mode: :focus, all_after_pass: true, all_on_start: true do
