@@ -24,6 +24,10 @@ namespace :build do
     Calabash::Build::AndroidTestServer.ensure_calabash_js_exists
   end
 
-  task :full_build => [:ensure_files_exist] do
+  task :build_test_server do
+    Calabash::Build::AndroidTestServer.build_test_server
+  end
+
+  task :full_build => [:ensure_files_exist, :build_test_server] do
   end
 end
