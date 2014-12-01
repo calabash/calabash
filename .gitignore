@@ -36,3 +36,6 @@ __MACOSX
 # emacs
 (.*/)?\#[^/]*\#$
 old/*
+
+# Android test server
+lib/calabash/android/lib/TestServer.apk

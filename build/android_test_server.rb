@@ -1,6 +1,9 @@
 module Calabash
   module Build
     module AndroidTestServer
+      require 'calabash/environment'
+      require 'calabash/android/environment'
+
       module Messages
         TEST_SERVER_NOT_FOUND = 'The test-server was not found'
         CALABASH_JS_NOT_FOUND = 'calabash-js not found'
@@ -21,17 +24,15 @@ module Calabash
           test_server_dir = File.join(workspace_dir, 'test-server')
           FileUtils.cp_r(test_server_directory, workspace_dir)
 
-          # TODO: Handle Env
-
           args =
             [
-              Env.ant_path,
+              Calabash::Android::Environment.ant_path,
               "clean",
               "package",
               "-debug",
-              "-Dtools.dir=\"#{Env.tools_dir}\"",
+              "-Dtools.dir=\"#{Calabash::Android::Environment.tools_dir}\"",
               "-Dandroid.api.level=19",
-              "-Dversion=#{Calabash::Android::VERSION}"
+              "-Dversion=#{Calabash::VERSION}"
             ]
 
           Dir.chdir(test_server_dir) do
@@ -61,7 +62,7 @@ module Calabash
       end
 
       def self.test_server_location
-        File.join(ROOT, 'lib', 'calabash', 'lib', 'TestServer.apk')
+        File.join(ROOT, 'lib', 'calabash', 'android', 'lib', 'TestServer.apk')
       end
 
       def self.fail(exit_code, reason = '')
