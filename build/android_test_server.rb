@@ -1,6 +1,8 @@
 module Calabash
   module Build
     module AndroidTestServer
+      # TODO: These requirements should be specified elsewhere
+      require 'calabash/logger'
       require 'calabash/environment'
       require 'calabash/android/environment'
 
