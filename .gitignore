@@ -1,3 +1,8 @@
+# Temporary git ignores. Remove these when changing repos
+android/test-server
+lib/calabash/android/environment.rb
+# End of temporary git ignores
+
 /.bundle/
 /.yardoc
 /Gemfile.lock
@@ -30,4 +35,7 @@ __MACOSX
 
 # emacs
 (.*/)?\#[^/]*\#$
+old/*
 
+# Android test server
+lib/calabash/android/lib/TestServer.apk
