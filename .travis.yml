@@ -1,5 +1,9 @@
 language: ruby
 
+before_script:
+  - ./copy_repos.sh
+  - ./changing_old_files.sh
+
 rvm:
   - 1.9.3
   - 2.0.0
