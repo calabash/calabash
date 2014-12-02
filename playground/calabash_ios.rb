@@ -6,15 +6,15 @@ def require(path)
 end
 
 require 'calabash'
-require 'calabash/android'
+require 'calabash/ios'
 
 
 module Calabash
-  module Android
-    VERSION="0.5.5"
+  module IOS
+    VERSION="0.9.169"
   end
 end
-extend Calabash::Android::Operations
+extend Calabash::IOS::Operations
 
 shutdown_test_server
 start_test_server_in_background
