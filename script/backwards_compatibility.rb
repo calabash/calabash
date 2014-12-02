@@ -23,3 +23,20 @@ Object.const_get(:Calabash).const_set(:IOS, Module.new) unless Object.const_get(
 # All references to Calabash::Cucumber will now refer implicitly to Calabash::IOS
 Object.const_get(:Calabash).const_set(:Cucumber, Object.const_get(:Calabash).const_get(:IOS))
 
+# @!visibility private
+# This whole thing is a hack. It will be removed eventually
+def require_old(path)
+  module_name = self.name.split('::')[1].downcase
+
+  raise "Invalid module name #{module_name}" unless module_name == 'android' || module_name == 'ios'
+
+  if module_name == 'android'
+    $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'old', 'android', 'ruby-gem', 'lib')
+  elsif module_name == 'ios'
+    $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'old', 'ios', 'calabash-cucumber', 'lib')
+  end
+
+  require File.join(File.dirname(__FILE__), '..', 'old', module_name, path)
+
+  $LOAD_PATH.shift
+end
