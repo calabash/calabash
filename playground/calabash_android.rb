@@ -1,3 +1,11 @@
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+Kernel.send(:alias_method, :require_prev, :require)
+
+def require(path)
+  #puts "Requiring #{path}"
+  require_prev(path)
+end
+
 require 'calabash'
-require_relative File.join(File.dirname(__FILE__), 'lib', 'calabash', 'android')
+require 'calabash/android'
+
+p Calabash::Android.constants
