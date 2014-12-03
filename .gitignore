@@ -39,3 +39,6 @@ old/*
 
 # Android test server
 lib/calabash/android/lib/TestServer.apk
+
+# irb
+.irb-history
