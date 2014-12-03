@@ -14,8 +14,10 @@ module Calabash
     VERSION="0.9.169"
   end
 end
+
 extend Calabash::IOS::Operations
 
-shutdown_test_server
-start_test_server_in_background
-touch "* text:'Web View'"
+my_methods = methods - Object.methods
+my_methods.select! {|method| !method.to_s.start_with?('_')}
+my_methods.map!{|method| method(method)}
+puts my_methods.map{|method| "#{method.name} #{method.parameters.map &:last}"}.join("\n")
