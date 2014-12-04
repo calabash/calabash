@@ -1,3 +1,3 @@
 module Calabash
-  VERSION = '1.3.0.pre0'
+  VERSION = '2.0.0.pre1'
 end
