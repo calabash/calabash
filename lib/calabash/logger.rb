@@ -8,7 +8,7 @@ module Calabash
     #
     # @param [String] message to log
     def log(message)
-      @output.write(message)
+      @output.write("#{message}\n")
     end
 
     # Log a message to the default output
