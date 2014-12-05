@@ -5,7 +5,6 @@ def require(path)
   require_prev(path)
 end
 
-require 'calabash'
 require 'calabash/android'
 
 
