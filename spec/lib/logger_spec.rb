@@ -1,9 +1,9 @@
 describe Calabash::Logger do
-  it 'should be able to output a message' do
+  it 'should be able to output a message and add a newline after it' do
     io = STDOUT.dup
     message = 'My Message'
 
-    expect(io).to receive(:write).with(message)
+    expect(io).to receive(:write).with("#{message}\n")
 
     Calabash::Logger.new(io).log(message)
   end
