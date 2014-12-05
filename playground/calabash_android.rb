@@ -18,3 +18,5 @@ extend Calabash::Android::Operations
 shutdown_test_server
 start_test_server_in_background
 touch "* text:'Web View'"
+puts client_version
+puts server_version

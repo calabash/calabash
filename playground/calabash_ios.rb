@@ -16,7 +16,10 @@ end
 
 extend Calabash::IOS::Operations
 
-my_methods = methods - Object.methods
-my_methods.select! {|method| !method.to_s.start_with?('_')}
-my_methods.map!{|method| method(method)}
-puts my_methods.map{|method| "#{method.name} #{method.parameters.map &:last}"}.join("\n")
+shutdown_test_server
+start_test_server_in_background
+query = "* marked:'free'"
+wait_for_element_exists(query)
+touch(query)
+puts "Client version: #{client_version}"
+puts "Server version: #{server_version}"
