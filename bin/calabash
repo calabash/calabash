@@ -1,6 +1,15 @@
 #!/usr/bin/env ruby
 # TODO: Remove this
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
-require File.join(File.dirname(__FILE__), 'calabash_helpers')
 
-print_usage
+module Calabash
+  class CLI
+    require File.join(File.dirname(__FILE__), 'calabash_helpers')
+
+    def initialize(arguments)
+      @arguments = arguments
+    end
+  end
+end
+
+Calabash::CLI.new(ARGV.dup)
