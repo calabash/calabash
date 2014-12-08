@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # TODO: Remove this
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
-require 'calabash/version'
+require File.join(File.dirname(__FILE__), 'calabash_helpers')
 
-puts Calabash::VERSION
+print_usage
