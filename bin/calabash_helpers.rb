@@ -51,6 +51,11 @@ def print_usage(output=STDOUT)
 EOF
 end
 
+def help
+  file_name = File.join(File.dirname(__FILE__), '..', 'doc', 'calabash_help.txt')
+  system("less \"#{file_name}\"")
+end
+
 # Removed commands
 =begin
 iOS:
