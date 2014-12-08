@@ -1,7 +1,7 @@
 module Calabash
   module Utility
     def abstract_method!
-      method_name = if method_defined?(caller_locations)
+      method_name = if Kernel.method_defined?(:caller_locations)
                       caller_locations.first.label
                     else
                       caller.first[/\`(.*)\'/, 1]
