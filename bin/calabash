@@ -3,13 +3,17 @@
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 module Calabash
-  class CLI
+  module CLI
     require File.join(File.dirname(__FILE__), 'calabash_helpers')
 
-    def initialize(arguments)
-      @arguments = arguments
+    class CLI
+      include Calabash::CLI::Helpers
+
+      def initialize(arguments)
+        @arguments = arguments
+      end
     end
   end
 end
 
-Calabash::CLI.new(ARGV.dup)
+Calabash::CLI::CLI.new(ARGV.dup)

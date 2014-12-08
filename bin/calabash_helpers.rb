@@ -1,7 +1,8 @@
 module Calabash
-  class CLI
-    def print_usage(output=STDOUT)
-        output.write <<EOF
+  module CLI
+    module Helpers
+      def print_usage(output=STDOUT)
+          output.write <<EOF
   Usage: calabash [options] <command-name> [command specific options]
   <command-name> can be one of
     help
@@ -51,11 +52,12 @@ module Calabash
     -v, --verbose
       Turns on verbose logging
 EOF
-    end
+      end
 
-    def help
-      file_name = File.join(File.dirname(__FILE__), '..', 'doc', 'calabash_help.txt')
-      system("less \"#{file_name}\"")
+      def help
+        file_name = File.join(File.dirname(__FILE__), '..', 'doc', 'calabash_help.txt')
+        system("less \"#{file_name}\"")
+      end
     end
   end
 end
