@@ -1,6 +1,7 @@
 # Temporary git ignores. Remove these when changing repos
 android/test-server
 lib/calabash/android/environment.rb
+lib/calabash/android/build/java_keystore.rb
 # End of temporary git ignores
 
 /.bundle/

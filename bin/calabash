@@ -2,18 +2,46 @@
 # TODO: Remove this
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
+require 'calabash'
+
 module Calabash
   module CLI
     require File.join(File.dirname(__FILE__), 'calabash_helpers')
+    require File.join(File.dirname(__FILE__), 'calabash_build')
 
     class CLI
       include Calabash::CLI::Helpers
+      include Calabash::CLI::Build
 
       def initialize(arguments)
-        @arguments = arguments
+        @arguments = arguments.dup
+        @original_arguments = @arguments.dup
+        @options = {verbose: false, platform: nil}
+      end
+
+      def evaluate
+        parse_arguments!
+      end
+
+      private
+
+      def parse_arguments!
+        argument = @arguments.shift
+
+        case argument
+          when '-v', '--verbose'
+            @options[:verbose] = true
+            parse_arguments!
+          when 'build'
+            parse_build_arguments!
+          when nil
+            fail("Invalid command #{@original_arguments.join(' ')}", true)
+          else
+            fail("Invalid argument #{argument}")
+        end
       end
     end
   end
 end
 
-Calabash::CLI::CLI.new(ARGV.dup)
+Calabash::CLI::CLI.new(ARGV).evaluate

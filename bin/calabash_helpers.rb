@@ -58,6 +58,12 @@ EOF
         file_name = File.join(File.dirname(__FILE__), '..', 'doc', 'calabash_help.txt')
         system("less \"#{file_name}\"")
       end
+
+      def fail(reason, should_print_usage=false)
+        STDERR.write("#{reason}\n")
+        print_usage if should_print_usage
+        exit(-1)
+      end
     end
   end
 end
