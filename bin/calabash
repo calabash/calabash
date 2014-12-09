@@ -8,8 +8,7 @@ require 'calabash/ios'
 
 module Calabash
   module CLI
-    require File.join(File.dirname(__FILE__), 'calabash_helpers')
-    require File.join(File.dirname(__FILE__), 'calabash_build')
+    require 'calabash/cli'
 
     class CLI
       include Calabash::CLI::Helpers
