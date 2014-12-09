@@ -49,7 +49,7 @@ module Calabash
 
               contents = File.read('AndroidManifest.xml')
               contents.gsub!(/#targetPackage#/, package_name(@application_path))
-              contents.gsub!(/#testPackage#/, package_name(@application_path))
+              contents.gsub!(/#testPackage#/, "#{package_name(@application_path)}.test")
 
               File.open('AndroidManifest.xml_tmp', 'w') {|file| file.write(contents)}
               FileUtils.mv('AndroidManifest.xml_tmp', 'AndroidManifest.xml')
