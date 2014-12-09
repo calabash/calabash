@@ -34,6 +34,14 @@ module Calabash
             @options[:verbose] = true
             Logger.log_levels += [:debug]
             parse_arguments!
+          when '--platform'
+            platform = @arguments.shift.downcase
+
+            fail("Invalid specified platform '#{platform}'") unless platform == 'android' || platform == 'ios'
+
+            @options[:platform] = platform.to_s
+
+            parse_arguments!
           when 'build'
             parse_build_arguments!
           when nil
