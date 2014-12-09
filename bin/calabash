@@ -56,7 +56,7 @@ module Calabash
             fail("Invalid command #{@original_arguments.join(' ')}")
             print_usage
           else
-            fail("Invalid argument #{argument}")
+            fail("Invalid argument #{argument}.\n  For help use calabash help")
         end
       end
     end
