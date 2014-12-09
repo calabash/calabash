@@ -7,9 +7,9 @@ module Calabash
         application = @arguments.shift
 
         if application.nil?
-          fail('Must supply application as first parameter to build')
+          fail('Must supply application as first parameter to build', :build)
         elsif !File.exists?(application)
-          fail("File '#{application}' does not exist")
+          fail("File '#{application}' does not exist", :build)
         else
           extension = File.extname(application)
 
@@ -21,7 +21,7 @@ module Calabash
               @options[:platform] ||= :ios
               fail('Should only build test-server for Android')
             else
-              fail('Application must be an apk')
+              fail('Application must be an apk', :build)
           end
         end
       end

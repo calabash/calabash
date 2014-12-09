@@ -1,35 +1,59 @@
 module Calabash
   module CLI
     module Helpers
+      HELP = {
+          help: 'help',
+          gen: 'gen <platform>',
+          run: 'run <application> [cucumber options]',
+          console: 'console [application]',
+          version: 'version',
+          setup: 'setup',
+          resign: 'resign <apk>',
+          build: 'build <apk>'
+      }
+
+      def print_usage_for(command, output=STDOUT)
+        if HELP[command].nil?
+          output.write <<EOF
+No such command '#{command}'
+EOF
+        else
+          output.write <<EOF
+Usage:
+  calabash [options] #{HELP[command]}
+EOF
+        end
+      end
+
       def print_usage(output=STDOUT)
           output.write <<EOF
   Usage: calabash [options] <command-name> [command specific options]
   <command-name> can be one of
-    help
+    #{HELP[:help]} [command]
       print help information.
 
-    gen <platform>
+    #{HELP[:gen]}
       generate a features folder structure based on the specified platform.
       can be either 'android', 'ios' or 'cross-platform'
 
-    run <application> [cucumber options]
+    #{HELP[:run]}
       runs Cucumber in the current folder with the environment needed.
       the cucumber options will be passed unchanged to cucumber
 
-    console [application]
+    #{HELP[:console]}
       starts an interactive console to interact with your app via Calabash
 
-    version
+    #{HELP[:version]}
       prints the gem version
 
     Android specific commands
-      setup
+      #{HELP[:setup]}
         sets up a non-default keystore to use with this test project.
 
-      resign <apk>
+      #{HELP[:resign]}
         resigns the app with the currently configured keystore.
 
-      build <apk>
+      #{HELP[:build]}
         builds the test server that will be used when testing the app.
 
     iOS specific commands
@@ -71,9 +95,13 @@ EOF
         system("less \"#{file_name}\"")
       end
 
-      def fail(reason, should_print_usage=false)
+      def fail(reason, command=nil)
         STDERR.write("#{reason}\n")
-        print_usage if should_print_usage
+
+        if command != nil
+          print_usage_for(command)
+        end
+
         exit(-1)
       end
     end

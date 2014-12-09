@@ -44,8 +44,17 @@ module Calabash
             parse_arguments!
           when 'build'
             parse_build_arguments!
+          when 'help'
+            argument = @arguments.shift
+
+            if argument.nil?
+              print_usage
+            else
+              print_usage_for(argument.to_sym)
+            end
           when nil
-            fail("Invalid command #{@original_arguments.join(' ')}", true)
+            fail("Invalid command #{@original_arguments.join(' ')}")
+            print_usage
           else
             fail("Invalid argument #{argument}")
         end
