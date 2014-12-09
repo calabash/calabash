@@ -60,5 +60,33 @@ describe Calabash::Logger do
 
       logger.send(:should_log?, log_level)
     end
+
+    describe 'methods to log with a specified log level' do
+      let(:message) {'message'}
+
+      it 'can log with info level' do
+        expect(Calabash::Logger).to receive(:log).with(message, :info)
+
+        Calabash::Logger.info(message)
+      end
+
+      it 'can log with debug level' do
+        expect(Calabash::Logger).to receive(:log).with(message, :debug)
+
+        Calabash::Logger.debug(message)
+      end
+
+      it 'can log with warn level' do
+        expect(Calabash::Logger).to receive(:log).with(message, :warn)
+
+        Calabash::Logger.warn(message)
+      end
+
+      it 'can log with error level' do
+        expect(Calabash::Logger).to receive(:log).with(message, :error)
+
+        Calabash::Logger.error(message)
+      end
+    end
   end
 end
