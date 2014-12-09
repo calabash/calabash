@@ -15,5 +15,12 @@ module Calabash
     def self.set_variable!(name, value)
       ENV[name] = value
     end
+
+    # The path for the default application being tested
+    #
+    # @return Path of default application
+    def self.default_application_path
+      Environment.variable('CALABASH_APP')
+    end
   end
 end
