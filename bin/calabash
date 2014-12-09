@@ -14,6 +14,7 @@ module Calabash
       include Calabash::CLI::Helpers
       include Calabash::CLI::Build
       include Calabash::CLI::Console
+      include Calabash::CLI::Generate
 
       def initialize(arguments)
         @arguments = arguments.dup
@@ -47,6 +48,8 @@ module Calabash
             parse_build_arguments!
           when 'console'
             parse_console_arguments!
+          when 'gen'
+            parse_generate_arguments!
           when 'help'
             argument = @arguments.shift
 

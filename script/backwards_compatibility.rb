@@ -44,15 +44,25 @@ end
 
 # @!visibility private
 def require_old_android_bin
-  require File.join(File.dirname(__FILE__), '..', 'old', 'android', 'ruby-gem', 'bin', 'calabash-android-console')
+  path = File.join(File.dirname(__FILE__), '..', 'old', 'android', 'ruby-gem')
+  require File.join(path, 'bin', 'calabash-android-console')
+  require File.join(path, 'bin', 'calabash-android-generate')
+  require File.join(path, 'bin', 'calabash-android-helpers')
+
+  @features_dir = File.join(FileUtils.pwd, "features")
+  @support_dir = File.join(@features_dir, "support")
+  @source_dir = File.join(path, 'features-skeleton')
+  @script_dir = File.join(path, 'scripts')
 end
 
 # @!visibility private
 def require_old_ios_bin
   path = File.join(File.dirname(__FILE__), '..', 'old', 'ios', 'calabash-cucumber')
   require File.join(path, 'bin', 'calabash-ios-build')
+  require File.join(path, 'bin', 'calabash-ios-generate')
+  require File.join(path, 'bin', 'calabash-ios-helpers')
 
-  @features_dir = File.join(path, "features")
+  @features_dir = File.join(FileUtils.pwd, "features")
   @source_dir = File.join(path, 'features-skeleton')
   @script_dir = File.join(path, 'scripts')
   @framework_dir = File.join(path, 'staticlib')
