@@ -32,6 +32,7 @@ module Calabash
         case argument
           when '-v', '--verbose'
             @options[:verbose] = true
+            Logger.log_levels += [:debug]
             parse_arguments!
           when 'build'
             parse_build_arguments!
