@@ -36,6 +36,34 @@ module Calabash
       Logger.new.log(message, log_level)
     end
 
+    # Log a message to the default output with log level :info
+    #
+    # @param [String] message to log
+    def self.info(message)
+      log(message, :info)
+    end
+
+    # Log a message to the default output with log level :debug
+    #
+    # @param [String] message to log
+    def self.debug(message)
+      log(message, :debug)
+    end
+
+    # Log a message to the default output with log level :warn
+    #
+    # @param [String] message to log
+    def self.warn(message)
+      log(message, :warn)
+    end
+
+    # Log a message to the default output with log level :error
+    #
+    # @param [String] message to log
+    def self.error(message)
+      log(message, :error)
+    end
+
     # The log levels of the logger
     #
     # @return [Array] log levels
