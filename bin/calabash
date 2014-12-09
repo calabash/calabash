@@ -3,6 +3,8 @@
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'calabash'
+require 'calabash/android'
+require 'calabash/ios'
 
 module Calabash
   module CLI

@@ -14,8 +14,7 @@ module Calabash
           case extension
             when '.apk'
               @options[:platform] = :android
-              require(File.join('..', 'bin', 'calabash-android-build'))
-              calabash_build(application)
+              Calabash::Android::Build::Builder.new(application).build
             when '.ipa', '.app'
               @options[:platform] = :ios
               fail('Should only build test-server for Android')
