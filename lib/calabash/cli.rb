@@ -4,5 +4,6 @@ module Calabash
     require 'calabash/cli/console'
     require 'calabash/cli/generate'
     require 'calabash/cli/helpers'
+    require 'calabash/cli/resign'
   end
 end
