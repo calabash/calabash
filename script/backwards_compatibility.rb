@@ -40,3 +40,20 @@ def require_old(path)
 
   $LOAD_PATH.shift
 end
+
+
+# @!visibility private
+def require_old_android_bin
+  require File.join(File.dirname(__FILE__), '..', 'old', 'android', 'ruby-gem', 'bin', 'calabash-android-console')
+end
+
+# @!visibility private
+def require_old_ios_bin
+  path = File.join(File.dirname(__FILE__), '..', 'old', 'ios', 'calabash-cucumber')
+  require File.join(path, 'bin', 'calabash-ios-build')
+
+  @features_dir = File.join(path, "features")
+  @source_dir = File.join(path, 'features-skeleton')
+  @script_dir = File.join(path, 'scripts')
+  @framework_dir = File.join(path, 'staticlib')
+end
