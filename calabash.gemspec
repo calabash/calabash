@@ -29,7 +29,7 @@ Public License.}
   spec.homepage      = 'https://xamarin.com/test-cloud'
   spec.license       = 'EPL-1.0'
 
-  spec.required_ruby_version = '>= 1.9'
+  spec.required_ruby_version = '>= 2.0'
   spec.version       = Calabash::VERSION
   spec.platform      = Gem::Platform::RUBY
 
