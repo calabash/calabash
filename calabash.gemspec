@@ -54,7 +54,6 @@ Public License.}
   spec.add_dependency 'bundler', '>= 1.3.0', '< 2.0'
   spec.add_dependency 'retriable', '~> 1.3', '>= 1.3.3.1'
   spec.add_dependency 'rubyzip', '~> 1.1'
-  spec.add_dependency 'thor', '~> 0.18', '>= 0.18.1'
 
   # Development dependencies.
   spec.add_development_dependency 'rake', '~> 10.3'
