@@ -102,7 +102,7 @@ EOF
           print_usage_for(command)
         end
 
-        exit(-1)
+        exit(1)
       end
     end
   end

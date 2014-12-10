@@ -62,10 +62,9 @@ module Calabash
               print_usage_for(argument.to_sym)
             end
           when nil
-            fail("Invalid command #{@original_arguments.join(' ')}")
             print_usage
           else
-            fail("Invalid argument #{argument}.\n  For help use calabash help")
+            fail("Invalid argument #{argument}.\n  For help use 'calabash help'")
         end
       end
     end
