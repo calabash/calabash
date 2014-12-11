@@ -29,7 +29,7 @@ Public License.}
   spec.homepage      = 'https://xamarin.com/test-cloud'
   spec.license       = 'EPL-1.0'
 
-  spec.required_ruby_version = '>= 1.9'
+  spec.required_ruby_version = '>= 2.0'
   spec.version       = Calabash::VERSION
   spec.platform      = Gem::Platform::RUBY
 
@@ -42,7 +42,7 @@ Public License.}
   spec.add_dependency 'edn', '~> 1.0', '>= 1.0.6'
   spec.add_dependency 'slowhandcuke','~> 0.0', '>= 0.0.3'
   spec.add_dependency 'geocoder', '~> 1.1', '>= 1.1.8'
-  spec.add_dependency 'httpclient', '~> 2.3'
+  spec.add_dependency 'httpclient', '~> 2.5'
   spec.add_dependency 'awesome_print', '~> 1.2'
   spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
   spec.add_dependency 'CFPropertyList','~> 2.2'
@@ -51,10 +51,8 @@ Public License.}
 
   # These dependencies should match the xamarin-test-cloud dependencies.
   spec.add_dependency 'json', '~> 1.8'
-  spec.add_dependency 'bundler', '>= 1.3.0', '< 2.0'
   spec.add_dependency 'retriable', '~> 1.3', '>= 1.3.3.1'
   spec.add_dependency 'rubyzip', '~> 1.1'
-  spec.add_dependency 'thor', '~> 0.18', '>= 0.18.1'
 
   # Development dependencies.
   spec.add_development_dependency 'rake', '~> 10.3'
@@ -68,5 +66,6 @@ Public License.}
   spec.add_development_dependency 'guard-rspec', '~> 4.3'
   spec.add_development_dependency 'guard-bundler', '~> 2.0'
   spec.add_development_dependency 'growl', '~> 1.0'
+  spec.add_development_dependency 'bundler', '>= 1.3.0', '< 2.0'
 
 end
