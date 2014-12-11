@@ -5,6 +5,7 @@ module Calabash
       require 'calabash/android/build/builder'
       require 'calabash/android/build/java_keystore'
       require 'calabash/android/build/resigner'
+      require 'calabash/android/build/test_server'
     end
   end
 end
