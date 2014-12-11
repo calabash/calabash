@@ -13,6 +13,7 @@ module Calabash
     # @param [String] name of the environment variable
     # @param Value of the environment variable
     def self.set_variable!(name, value)
+      Logger.debug("Setting environment variable '#{name}' to '#{value}'")
       ENV[name] = value
     end
 
