@@ -9,9 +9,11 @@ module Calabash
         else
           case platform.downcase.to_sym
             when :android
+              set_platform!(:android)
               require_old_android_bin
               calabash_scaffold
             when :ios
+              set_platform!(:ios)
               require_old_ios_bin
               calabash_scaffold
             else #TODO: Add cross-platform

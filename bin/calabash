@@ -3,8 +3,6 @@
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'calabash'
-require 'calabash/android'
-require 'calabash/ios'
 
 module Calabash
   module CLI
@@ -20,11 +18,29 @@ module Calabash
       def initialize(arguments)
         @arguments = arguments.dup
         @original_arguments = @arguments.dup
-        @options = {verbose: false, platform: nil}
+        @options = {verbose: false}
+        @platform = nil
       end
 
       def evaluate
         parse_arguments!
+      end
+
+      def set_platform!(platform)
+        if @platform.nil?
+          case platform
+            when :android
+              require 'calabash/android'
+            when :ios
+              require 'calabash/ios'
+            else
+              raise "Invalid platform '#{platform}'"
+          end
+
+          @platform = platform
+        elsif @platform != platform
+          raise "Cannot change platform from '#{@platform}' to '#{platform}'"
+        end
       end
 
       private
@@ -42,7 +58,7 @@ module Calabash
 
             fail("Invalid specified platform '#{platform}'") unless platform == 'android' || platform == 'ios'
 
-            @options[:platform] = platform.to_s
+            set_platform!(platform.to_sym)
 
             parse_arguments!
           when 'build'

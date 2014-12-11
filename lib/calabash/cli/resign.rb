@@ -2,7 +2,7 @@ module Calabash
   module CLI
     module Resign
       def parse_resign_arguments!
-        fail('Can only resign Android applications') unless @options[:platform].nil? || @options[:platform] == 'android'
+        fail('Can only resign Android applications') unless @platform.nil? || @platform == :android
 
         application = @arguments.shift
 
@@ -15,11 +15,11 @@ module Calabash
 
           case extension
             when '.apk'
-              @options[:platform] ||= :android
+              set_platform!(:android)
               Calabash::Android::Build::Resigner.new(application).resign!
             when '.ipa', '.app'
-              @options[:platform] ||= :ios
-              fail('Should only build test-server for Android')
+              set_platform!(:ios)
+              fail('Can only resign Android applications (apk)')
             else
               fail('Application must be an apk', :resign)
           end

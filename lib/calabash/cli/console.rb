@@ -19,16 +19,16 @@ module Calabash
 
           case extension
             when '.apk'
-              @options[:platform] ||= :android
+              set_platform!(:android)
               # This is very wrong
               require_old_android_bin
               calabash_console(application)
             when '.ipa'
-              @options[:platform] ||= :ios
+              set_platform!(:ios)
               # TODO: Extract ID from ipa
               raise 'FOR NOW WE CANT DO THIS'
             when '.app'
-              @options[:platform] ||= :ios
+              set_platform!(:ios)
               Environment.set_variable!('APP_BUNDLE_PATH', application)
               # This is very wrong
               require_old_ios_bin
