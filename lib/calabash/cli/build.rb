@@ -12,11 +12,12 @@ module Calabash
           fail("File '#{application}' does not exist", :build)
         else
           extension = File.extname(application)
+          application_path = File.expand_path(application)
 
           case extension
             when '.apk'
               set_platform!(:android)
-              Calabash::Android::Build::Builder.new(application).build
+              Calabash::Android::Build::Builder.new(application_path).build
             when '.ipa', '.app'
               set_platform!(:ios)
               fail('Should only build test-server for Android')

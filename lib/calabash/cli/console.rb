@@ -14,29 +14,28 @@ module Calabash
 
         if File.exists?(application)
           extension = File.extname(application)
-
-          #TODO: Fail when wrong platform and apk etc.
+          application_path = File.expand_path(application)
 
           case extension
             when '.apk'
               set_platform!(:android)
 
               # Create the test server if it does not exist
-              test_server = Android::Build::TestServer.new(application)
+              test_server = Android::Build::TestServer.new(application_path)
 
               unless test_server.exists?
                 Logger.info('Test server does not exist. Creating test server.')
-                Calabash::Android::Build::Builder.new(application).build
+                Calabash::Android::Build::Builder.new(application_path).build
               end
 
-              enter_console(application)
+              enter_console(application_path)
             when '.ipa'
               set_platform!(:ios)
               # TODO: Extract ID from ipa
               raise 'FOR NOW WE CANT DO THIS'
             when '.app'
               set_platform!(:ios)
-              enter_console(application)
+              enter_console(application_path)
             else
               fail('Application must be either an .apk, .ipa or .app', :console)
           end
