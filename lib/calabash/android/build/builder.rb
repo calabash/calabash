@@ -37,7 +37,7 @@ module Calabash
             raise BuildError.new("#{@application_path} is not signed with any of the available keystores")
           end
 
-          test_server_file_name = test_server_path(@application_path)
+          test_server_file_name = TestServer.new(@application_path).path
           FileUtils.mkdir_p File.dirname(test_server_file_name) unless File.exist? File.dirname(test_server_file_name)
 
           android_platform = Environment.android_platform_path
