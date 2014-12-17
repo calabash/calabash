@@ -7,16 +7,4 @@ end
 
 require 'calabash/android'
 
-
-module Calabash
-  module Android
-    VERSION="0.5.5"
-  end
-end
-extend Calabash::Android::Operations
-
-shutdown_test_server
-start_test_server_in_background
-touch "* text:'Web View'"
-puts client_version
-puts server_version
+Calabash::Android::Build::Builder.new("/Users/tobiasroikjer/Desktop/Calabash-tests/general2/xtc_android_sample.apk").build

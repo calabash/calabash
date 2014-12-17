@@ -20,4 +20,12 @@ describe Calabash::Environment do
       expect(ENV[environment_variable_name]).to eq(value_of_environment_variable)
     end
   end
+
+  describe '#default_application_path' do
+    it 'should return the default application path' do
+      expect(Calabash::Environment).to receive(:variable).with('CALABASH_APP')
+
+      Calabash::Environment.default_application_path
+    end
+  end
 end

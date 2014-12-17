@@ -13,7 +13,15 @@ module Calabash
     # @param [String] name of the environment variable
     # @param Value of the environment variable
     def self.set_variable!(name, value)
+      Logger.debug("Setting environment variable '#{name}' to '#{value}'")
       ENV[name] = value
+    end
+
+    # The path for the default application being tested
+    #
+    # @return Path of default application
+    def self.default_application_path
+      Environment.variable('CALABASH_APP')
     end
   end
 end

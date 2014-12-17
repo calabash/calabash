@@ -1,4 +1,93 @@
 #!/usr/bin/env ruby
-require 'calabash/version'
+# TODO: Remove this
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
-puts Calabash::VERSION
+require 'calabash'
+
+module Calabash
+  module CLI
+    require 'calabash/cli'
+
+    class CLI
+      include Calabash::CLI::Helpers
+      include Calabash::CLI::Build
+      include Calabash::CLI::Console
+      include Calabash::CLI::Generate
+      include Calabash::CLI::Resign
+      include Calabash::CLI::Run
+
+      def initialize(arguments)
+        @arguments = arguments.dup
+        @original_arguments = @arguments.dup
+        @options = {verbose: false}
+        @platform = nil
+      end
+
+      def evaluate
+        parse_arguments!
+      end
+
+      def set_platform!(platform)
+        if @platform.nil?
+          case platform
+            when :android
+              require 'calabash/android'
+            when :ios
+              require 'calabash/ios'
+            else
+              raise "Invalid platform '#{platform}'"
+          end
+
+          @platform = platform
+        elsif @platform != platform
+          raise "Cannot change platform from '#{@platform}' to '#{platform}'"
+        end
+      end
+
+      private
+
+      def parse_arguments!
+        argument = @arguments.shift
+
+        case argument
+          when '-v', '--verbose'
+            @options[:verbose] = true
+            Logger.log_levels += [:debug]
+            parse_arguments!
+          when '--platform'
+            platform = @arguments.shift.downcase
+
+            fail("Invalid specified platform '#{platform}'") unless platform == 'android' || platform == 'ios'
+
+            set_platform!(platform.to_sym)
+
+            parse_arguments!
+          when 'build'
+            parse_build_arguments!
+          when 'resign'
+            parse_resign_arguments!
+          when 'console'
+            parse_console_arguments!
+          when 'gen'
+            parse_generate_arguments!
+          when 'run'
+            parse_run_arguments!
+          when 'help'
+            argument = @arguments.shift
+
+            if argument.nil?
+              print_usage
+            else
+              print_usage_for(argument.to_sym)
+            end
+          when nil
+            print_usage
+          else
+            fail("Invalid argument #{argument}.\n  For help use 'calabash help'")
+        end
+      end
+    end
+  end
+end
+
+Calabash::CLI::CLI.new(ARGV).evaluate
