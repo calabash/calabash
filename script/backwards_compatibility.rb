@@ -9,7 +9,7 @@ Kernel.const_set(:CALABASH_BACKWARDS_COMPATIBILITY_SCRIPT_RUN, true)
 # @!visibility private
 # Fail if Calabash::Cucumber is already defined. If that is the case, we do not know what
 # side effects we might cause.
-if Object.const_defined?(:Calabash) && Object.const_get(:Calabash).const_defined?(:Cucumber)
+if Object.const_defined?(:Calabash) && Object.const_get(:Calabash).const_defined?(:Cucumber, false)
   raise 'Calabash::Cucumber is already defined'
 end
 
