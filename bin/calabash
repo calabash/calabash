@@ -14,6 +14,7 @@ module Calabash
       include Calabash::CLI::Console
       include Calabash::CLI::Generate
       include Calabash::CLI::Resign
+      include Calabash::CLI::Run
 
       def initialize(arguments)
         @arguments = arguments.dup
@@ -69,6 +70,8 @@ module Calabash
             parse_console_arguments!
           when 'gen'
             parse_generate_arguments!
+          when 'run'
+            parse_run_arguments!
           when 'help'
             argument = @arguments.shift
 

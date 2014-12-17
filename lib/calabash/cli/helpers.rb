@@ -4,7 +4,7 @@ module Calabash
       HELP = {
           help: 'help',
           gen: 'gen <platform>',
-          run: 'run <application> [cucumber options]',
+          run: 'run [application] [cucumber options]',
           console: 'console [application]',
           version: 'version',
           setup: 'setup',
