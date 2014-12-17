@@ -74,8 +74,6 @@ module Calabash
                   'APP_PATH' => application_path
               }
         elsif @platform == :ios
-          path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'ios', 'lib', '.irbrc'))
-
           Environment.set_variable!('APP_BUNDLE_PATH', application_path)
         else
           raise "Invalid platform '#{@platform}'"
