@@ -4,4 +4,12 @@ module Calabash
   require 'calabash/version'
   require 'calabash/utility'
   require 'calabash/environment'
+  require 'calabash/operations'
+
+  include Utility
+  include Calabash::Operations
+
+  def start_test_server_in_background(opt={})
+    _start_test_server_in_background(opt)
+  end
 end
