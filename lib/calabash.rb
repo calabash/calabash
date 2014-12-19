@@ -9,8 +9,8 @@ module Calabash
   include Utility
   include Calabash::Operations
 
-  def start_test_server_in_background(opt={})
-    _start_test_server_in_background(opt)
+  def start_test_server(opt={})
+    _start_test_server(opt)
   end
 
   def shutdown_test_server(opt={})

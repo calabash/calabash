@@ -1,7 +1,7 @@
 module Calabash
   module Operations
     # @!visibility private
-    def _start_test_server_in_background(opt={})
+    def _start_test_server(opt={})
       abstract_method!
     end
 
