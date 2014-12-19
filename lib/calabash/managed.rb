@@ -13,8 +13,16 @@ module Calabash
       Environment.xamarin_test_cloud?
     end
 
-    def invalid_managed_environment!
+    def self.invalid_managed_environment!
       raise InvalidManagedEnvironment.new('Invalid managed environment. Standard users should never setup their own managed environment')
+    end
+
+    def self.install(params)
+      invalid_managed_environment!
+    end
+
+    def self.uninstall(params)
+      invalid_managed_environment!
     end
   end
 end
