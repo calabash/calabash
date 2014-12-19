@@ -12,4 +12,8 @@ module Calabash
   def start_test_server_in_background(opt={})
     _start_test_server_in_background(opt)
   end
+
+  def shutdown_test_server(opt={})
+    _shutdown_test_server(opt)
+  end
 end
