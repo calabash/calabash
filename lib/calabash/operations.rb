@@ -9,5 +9,10 @@ module Calabash
     def _shutdown_test_server(opt={})
       abstract_method!
     end
+
+    # @!visibility private
+    def _reinstall(opt={})
+      abstract_method!
+    end
   end
 end

@@ -16,4 +16,8 @@ module Calabash
   def shutdown_test_server(opt={})
     _shutdown_test_server(opt)
   end
+
+  def reinstall(opt={})
+    _reinstall(opt)
+  end
 end
