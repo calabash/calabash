@@ -30,12 +30,5 @@ module Calabash
     def self.xamarin_test_cloud?
       variable('XAMARIN_TEST_CLOUD') == '1'
     end
-
-    # Are we running in a managed environment?
-    #
-    # @return [Boolean] Returns true if Calabash is running in a manged environment.
-    def self.managed?
-      xamarin_test_cloud?
-    end
   end
 end

@@ -5,6 +5,7 @@ module Calabash
   require 'calabash/utility'
   require 'calabash/environment'
   require 'calabash/operations'
+  require 'calabash/managed'
 
   include Utility
   include Calabash::Operations
