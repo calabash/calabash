@@ -28,4 +28,34 @@ describe Calabash::Environment do
       Calabash::Environment.default_application_path
     end
   end
+
+  describe '#xamarin_test_cloud?' do
+    it 'should return true if the environment variable XAMARIN_TEST_CLOUD is 1' do
+      allow(Calabash::Environment).to receive(:variable).with('XAMARIN_TEST_CLOUD').and_return('1')
+
+      expect(Calabash::Environment.xamarin_test_cloud?).to be true
+    end
+
+    it 'should return true if the environment variable XAMARIN_TEST_CLOUD is not 1' do
+      allow(Calabash::Environment).to receive(:variable).with('XAMARIN_TEST_CLOUD').and_return('0')
+
+      expect(Calabash::Environment.xamarin_test_cloud?).to be false
+
+      allow(Calabash::Environment).to receive(:variable).with('XAMARIN_TEST_CLOUD').and_return(nil)
+
+      expect(Calabash::Environment.xamarin_test_cloud?).to be false
+    end
+  end
+
+  describe '#managed?' do
+    it 'should return the value of xamarin_test_cloud?' do
+      allow(Calabash::Environment).to receive(:xamarin_test_cloud?).and_return(false)
+
+      expect(Calabash::Environment.managed?).to be false
+
+      allow(Calabash::Environment).to receive(:xamarin_test_cloud?).and_return(true)
+
+      expect(Calabash::Environment.managed?).to be true
+    end
+  end
 end
