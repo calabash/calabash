@@ -6,6 +6,8 @@ module Calabash
       attr_accessor :default
     end
 
+    attr_reader :serial
+
     def install(args)
       abstract_method!
     end
