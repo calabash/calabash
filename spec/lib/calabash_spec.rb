@@ -83,31 +83,31 @@ describe Calabash do
   end
 
   describe '#_start_test_server' do
-    it 'should be have an abstract implementation' do
+    it 'should have an abstract implementation' do
       expect{dummy.new._start_test_server}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
   describe '#_shutdown_test_server' do
-    it 'should be have an abstract implementation' do
+    it 'should have an abstract implementation' do
       expect{dummy.new._shutdown_test_server}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
   describe '#_reinstall' do
-    it 'should be have an abstract implementation' do
+    it 'should have an abstract implementation' do
       expect{dummy.new._reinstall}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
   describe '#_install' do
-    it 'should be have an abstract implementation' do
+    it 'should have an abstract implementation' do
       expect{dummy.new._install({})}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
   describe '#_uninstall' do
-    it 'should be have an abstract implementation' do
+    it 'should have an abstract implementation' do
       expect{dummy.new._uninstall({})}.to raise_error(Calabash::AbstractMethodError)
     end
   end
