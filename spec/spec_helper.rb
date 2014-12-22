@@ -1,5 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'calabash'
+require 'calabash/android'
+require 'calabash/ios'
 require 'awesome_print'
 require 'pry'
 
