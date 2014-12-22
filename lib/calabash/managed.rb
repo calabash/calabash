@@ -41,7 +41,7 @@ module Calabash
     # @!visibility private
     unless respond_to?(:_managed?)
       define_singleton_method(:_managed?) do
-        Environment.xamarin_test_cloud?
+        false
       end
     end
   end
