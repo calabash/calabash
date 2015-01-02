@@ -13,5 +13,6 @@ module Calabash
     include Calabash::Android::Operations
 
     require 'calabash/android/build'
+    require 'calabash/android/device'
   end
 end
