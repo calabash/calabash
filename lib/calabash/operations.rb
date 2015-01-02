@@ -17,12 +17,12 @@ module Calabash
 
     # @!visibility private
     def _install(params)
-      abstract_method!
+      Device.default.install(params)
     end
 
     # @!visibility private
     def _uninstall(params)
-      abstract_method!
+      Device.default.uninstall(params)
     end
   end
 end

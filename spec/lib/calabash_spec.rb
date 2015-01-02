@@ -100,15 +100,28 @@ describe Calabash do
     end
   end
 
+  let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
+  let(:dummy_device) {dummy_device_class.new}
+
   describe '#_install' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._install({})}.to raise_error(Calabash::AbstractMethodError)
+    it 'should delegate to the default device' do
+      params = {my: :param}
+
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(dummy_device).to receive(:install).with(params)
+
+      dummy.new._install(params)
     end
   end
 
   describe '#_uninstall' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._uninstall({})}.to raise_error(Calabash::AbstractMethodError)
+    it 'should delegate to the default device' do
+      params = {my: :param}
+
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:uninstall).with(params)
+
+      dummy.new._uninstall(params)
     end
   end
 end
