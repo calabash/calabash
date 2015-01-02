@@ -7,6 +7,7 @@ module Calabash
   require 'calabash/operations'
   require 'calabash/managed'
   require 'calabash/device'
+  require 'calabash/server'
 
   include Utility
   include Calabash::Operations
