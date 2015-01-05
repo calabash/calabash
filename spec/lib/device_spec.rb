@@ -1,13 +1,20 @@
+require 'uri'
+
 describe Calabash::Device do
+  let(:identifier) {:my_identifier}
+  let(:server) {Calabash::Server.new(URI.parse('http://localhost:100'), 200)}
+
+  let(:device) {Calabash::Device.new(identifier, server)}
+
   describe '#install' do
     it 'should have an abstract implementation' do
-      expect{Calabash::Device.new.install({})}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.install({})}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
   describe '#uninstall' do
     it 'should have an abstract implementation' do
-      expect{Calabash::Device.new.uninstall({})}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.uninstall({})}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
