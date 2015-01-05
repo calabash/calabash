@@ -2,8 +2,14 @@ module Calabash
   class Device
     include Utility
 
-    class << self
-      attr_accessor :default
+    @@default = nil
+
+    def self.default
+      @@default
+    end
+
+    def self.default=(value)
+      @@default = value
     end
 
     attr_reader :identifier, :server
