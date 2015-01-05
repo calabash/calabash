@@ -4,13 +4,7 @@ module Calabash
       class Application
         def initialize(application_path, options = {})
           @application_path = application_path
-
-          if options[:logger]
-            @logger = options[:logger]
-          else
-            @logger = Logger.new
-            @logger.default_log_level = :debug
-          end
+          @logger = options[:logger] || Logger.new
         end
 
         def package_name

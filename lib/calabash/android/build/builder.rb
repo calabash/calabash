@@ -4,7 +4,13 @@ module Calabash
       class Builder
         def initialize(application_path, options={})
           @application_path = application_path
-          @logger = options[:logger] || Logger.new
+
+          if options[:logger]
+            @logger = options[:logger] || Logger.new
+          else
+            @logger = Logger.new
+            @logger.default_log_level = :info
+          end
         end
 
         def build

@@ -4,7 +4,7 @@ module Calabash
 
     def initialize(output=nil)
       @output = output || STDOUT.dup
-      @default_log_level = :info
+      @default_log_level = :debug
     end
 
     # Log a message
