@@ -13,6 +13,14 @@ module Calabash
           end
         end
 
+        def package_name
+          package_line = aapt_dump(@application_path, 'package').first
+          raise "'package' not found in aapt output" unless package_line
+          m = package_line.match(/name='([^']+)'/)
+          raise "Unexpected output from aapt: #{package_line}" unless m
+          m[1]
+        end
+
         def main_activity
           begin
             @logger.log("Trying to find launchable activity")
