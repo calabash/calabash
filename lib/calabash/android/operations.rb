@@ -16,6 +16,9 @@ module Calabash
 
         Calabash::Device.default.start_test_server(application, test_options)
       end
+
+      def _shutdown_test_server(options={})
+        Calabash::Device.default.shutdown_test_server(options)
       end
     end
   end
