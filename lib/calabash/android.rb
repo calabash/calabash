@@ -12,6 +12,7 @@ module Calabash
     require_old File.join('ruby-gem', 'lib', 'calabash-android')
     include Calabash::Android::Operations
 
+    require 'calabash/android/application'
     require 'calabash/android/build'
     require 'calabash/android/operations'
     require 'calabash/android/device'
