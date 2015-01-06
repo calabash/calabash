@@ -12,10 +12,10 @@ module Calabash
         test_options.delete(:application_path)
         test_options.delete(:test_server_path)
 
-        application = Build::Application.new(application_path)
-        test_server = Build::Application.new(test_server_path)
+        application = Application.new(application_path, test_server_path)
 
-        Calabash::Device.default.start_test_server(application, test_server, test_options)
+        Calabash::Device.default.start_test_server(application, test_options)
+      end
       end
     end
   end
