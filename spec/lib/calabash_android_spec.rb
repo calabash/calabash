@@ -27,12 +27,12 @@ describe Calabash::Android do
     it 'should use environment variables if nothing else is given' do
       dummy_device2 = Class.new {}.new
 
-      dummy_device2.define_singleton_method(:calabash_start_app) do |application, test_server, options|
+      dummy_device2.define_singleton_method(:calabash_start_app) do |application, options|
         application.instance_eval do
           raise "invalid application ('#{@application_path}' != 'app_path')" unless @application_path == 'app_path'
         end
 
-        test_server.instance_eval do
+        application.test_server.instance_eval do
           raise "invalid test_server ('#{@application_path}' != 'test_app_path')" unless @application_path == 'test_app_path'
         end
 
@@ -47,12 +47,12 @@ describe Calabash::Android do
     it 'should use app paths and options if given' do
       dummy_device2 = Class.new {}.new
 
-      dummy_device2.define_singleton_method(:calabash_start_app) do |application, test_server, options|
+      dummy_device2.define_singleton_method(:calabash_start_app) do |application, options|
         application.instance_eval do
           raise "invalid application ('#{@application_path}' != 'my_app_path')" unless @application_path == 'my_app_path'
         end
 
-        test_server.instance_eval do
+        application.test_server.instance_eval do
           raise "invalid test_server ('#{@application_path}' != 'my_test_app_path')" unless @application_path == 'my_test_app_path'
         end
 
