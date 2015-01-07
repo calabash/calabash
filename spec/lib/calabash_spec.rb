@@ -1,25 +1,25 @@
 describe Calabash do
   let(:dummy) {Class.new {include Calabash}}
 
-  describe '#start_test_server' do
+  describe '#calabash_start_app' do
     it 'should invoke the implementation method' do
       dummy_instance = dummy.new
       args = {my: :arg}
 
-      expect(dummy_instance).to receive(:_start_test_server).with(args)
+      expect(dummy_instance).to receive(:_calabash_start_app).with(args)
 
-      dummy_instance.start_test_server(args)
+      dummy_instance.calabash_start_app(args)
     end
   end
 
-  describe '#shutdown_test_server' do
+  describe '#calabash_stop_app' do
     it 'should invoke the implementation method' do
       dummy_instance = dummy.new
       args = {my: :arg}
 
-      expect(dummy_instance).to receive(:_shutdown_test_server).with(args)
+      expect(dummy_instance).to receive(:_calabash_stop_app).with(args)
 
-      dummy_instance.shutdown_test_server(args)
+      dummy_instance.calabash_stop_app(args)
     end
   end
 
@@ -82,15 +82,15 @@ describe Calabash do
     end
   end
 
-  describe '#_start_test_server' do
+  describe '#_calabash_start_app' do
     it 'should have an abstract implementation' do
-      expect{dummy.new._start_test_server}.to raise_error(Calabash::AbstractMethodError)
+      expect{dummy.new._calabash_start_app}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
-  describe '#_shutdown_test_server' do
+  describe '#_calabash_stop_app' do
     it 'should have an abstract implementation' do
-      expect{dummy.new._shutdown_test_server}.to raise_error(Calabash::AbstractMethodError)
+      expect{dummy.new._calabash_stop_app}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

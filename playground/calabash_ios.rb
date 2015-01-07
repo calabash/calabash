@@ -16,8 +16,8 @@ end
 
 extend Calabash::IOS::Operations
 
-shutdown_test_server
-start_test_server_in_background
+calabash_stop_app
+calabash_start_app_in_background
 query = "* marked:'free'"
 wait_for_element_exists(query)
 touch(query)

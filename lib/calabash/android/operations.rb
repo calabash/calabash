@@ -1,7 +1,7 @@
 module Calabash
   module Android
     module Operations
-      def _start_test_server(options={})
+      def _calabash_start_app(options={})
         test_options = options.dup
 
         test_options[:main_activity] ||= Environment.variable('MAIN_ACTIVITY')
@@ -14,11 +14,11 @@ module Calabash
 
         application = Application.new(application_path, test_server_path)
 
-        Calabash::Device.default.start_test_server(application, test_options)
+        Calabash::Device.default.calabash_start_app(application, test_options)
       end
 
-      def _shutdown_test_server(options={})
-        Calabash::Device.default.shutdown_test_server(options)
+      def _calabash_stop_app(options={})
+        Calabash::Device.default.calabash_stop_app(options)
       end
     end
   end

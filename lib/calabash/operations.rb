@@ -1,12 +1,12 @@
 module Calabash
   module Operations
     # @!visibility private
-    def _start_test_server(opt={})
+    def _calabash_start_app(opt={})
       abstract_method!
     end
 
     # @!visibility private
-    def _shutdown_test_server(opt={})
+    def _calabash_stop_app(opt={})
       abstract_method!
     end
 

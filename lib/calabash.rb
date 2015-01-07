@@ -13,12 +13,12 @@ module Calabash
   include Utility
   include Calabash::Operations
 
-  def start_test_server(opt={})
-    _start_test_server(opt)
+  def calabash_start_app(opt={})
+    _calabash_start_app(opt)
   end
 
-  def shutdown_test_server(opt={})
-    _shutdown_test_server(opt)
+  def calabash_stop_app(opt={})
+    _calabash_stop_app(opt)
   end
 
   def reinstall(opt={})
