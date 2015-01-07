@@ -29,6 +29,21 @@ module Calabash
       @logger = options[:logger] || Logger.new
     end
 
+    # Start the application and the test server
+    #
+    # @param [Application] application being tested.
+    #   This has to be and instance of Android::Application
+    #   when testing on an Android device.
+    # @param [Hash] options
+    def calabash_start_app(application, options={})
+      abstract_method!
+    end
+
+    # Shutdown the application and the test server
+    def calabash_stop_app
+      abstract_method!
+    end
+
     def install(args)
       abstract_method!
     end
