@@ -25,21 +25,11 @@ module Calabash
     _reinstall(opt)
   end
 
-  # Do not modify
   def install(params)
-    if Managed.managed?
-      Managed.install(params)
-    else
-      _install(params)
-    end
+    _install(params)
   end
 
-  # Do not modify
   def uninstall(params)
-    if Managed.managed?
-      Managed.uninstall(params)
-    else
-      _uninstall(params)
-    end
+    _uninstall(params)
   end
 end

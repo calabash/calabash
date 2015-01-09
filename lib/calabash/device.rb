@@ -44,11 +44,33 @@ module Calabash
       abstract_method!
     end
 
-    def install(args)
+    # Do not modify
+    def install(params)
+      if Managed.managed?
+        Managed.install(params.merge({device: self}))
+      else
+        _install(params)
+      end
+    end
+
+    # Do not modify
+    def uninstall(params)
+      if Managed.managed?
+        Managed.uninstall(params.merge({device: self}))
+      else
+        _uninstall(params)
+      end
+    end
+
+    private
+
+    # @!visibility private
+    def _install(params)
       abstract_method!
     end
 
-    def uninstall(args)
+    # @!visibility private
+    def _uninstall(params)
       abstract_method!
     end
   end

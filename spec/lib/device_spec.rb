@@ -7,14 +7,64 @@ describe Calabash::Device do
   let(:device) {Calabash::Device.new(identifier, server)}
 
   describe '#install' do
-    it 'should have an abstract implementation' do
-      expect{device.install({})}.to raise_error(Calabash::AbstractMethodError)
+    it 'should invoke the managed impl if running in a managed env' do
+      params = {my: :param}
+      expected_params = params.merge({device: device})
+
+      allow(Calabash::Managed).to receive(:managed?).and_return(true)
+      expect(device).not_to receive(:_install)
+      expect(Calabash::Managed).to receive(:install).with(expected_params)
+
+      device.install(params)
+    end
+
+    it 'should invoke its own impl unless running in a managed env' do
+      params = {my: :param}
+
+      allow(Calabash::Managed).to receive(:managed?).and_return(false)
+      expect(device).to receive(:_install).with(params)
+      expect(Calabash::Managed).not_to receive(:install)
+
+      device.install(params)
     end
   end
 
   describe '#uninstall' do
+    it 'should invoke the managed impl if running in a managed env' do
+      params = {my: :param}
+      expected_params = params.merge({device: device})
+
+      allow(Calabash::Managed).to receive(:managed?).and_return(true)
+      expect(device).not_to receive(:_uninstall)
+      expect(Calabash::Managed).to receive(:uninstall).with(expected_params)
+
+      device.uninstall(params)
+    end
+
+    it 'should invoke its own impl unless running in a managed env' do
+      params = {my: :param}
+
+      allow(Calabash::Managed).to receive(:managed?).and_return(false)
+      expect(device).to receive(:_uninstall).with(params)
+      expect(Calabash::Managed).not_to receive(:uninstall)
+
+      device.uninstall(params)
+    end
+  end
+
+  describe '#_install' do
     it 'should have an abstract implementation' do
-      expect{device.uninstall({})}.to raise_error(Calabash::AbstractMethodError)
+      params = {my: :param}
+
+      expect{device.send(:_install, params)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_uninstall' do
+    it 'should have an abstract implementation' do
+      params = {my: :param}
+
+      expect{device.send(:_uninstall, params)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

@@ -35,50 +35,24 @@ describe Calabash do
   end
 
   describe '#install' do
-    it 'should invoke the managed install impl if running in a managed env' do
+    it 'should invoke the implementation method' do
       dummy_instance = dummy.new
-      params = {my: :param}
+      args = {my: :arg}
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(true)
-      expect(dummy_instance).not_to receive(:_install)
-      expect(Calabash::Managed).to receive(:install).with(params)
+      expect(dummy_instance).to receive(:_install).with(args)
 
-      dummy_instance.install(params)
-    end
-
-    it 'should invoke its own managed impl unless running in a managed env' do
-      dummy_instance = dummy.new
-      params = {my: :param}
-
-      allow(Calabash::Managed).to receive(:managed?).and_return(false)
-      expect(dummy_instance).to receive(:_install).with(params)
-      expect(Calabash::Managed).not_to receive(:install)
-
-      dummy_instance.install(params)
+      dummy_instance.install(args)
     end
   end
 
   describe '#uninstall' do
-    it 'should invoke the managed uninstall impl if running in a managed env' do
+    it 'should invoke the implementation method' do
       dummy_instance = dummy.new
-      params = {my: :param}
+      args = {my: :arg}
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(true)
-      expect(dummy_instance).not_to receive(:_uninstall)
-      expect(Calabash::Managed).to receive(:uninstall).with(params)
+      expect(dummy_instance).to receive(:_uninstall).with(args)
 
-      dummy_instance.uninstall(params)
-    end
-
-    it 'should invoke its own managed impl unless running in a managed env' do
-      dummy_instance = dummy.new
-      params = {my: :param}
-
-      allow(Calabash::Managed).to receive(:managed?).and_return(false)
-      expect(dummy_instance).to receive(:_uninstall).with(params)
-      expect(Calabash::Managed).not_to receive(:uninstall)
-
-      dummy_instance.uninstall(params)
+      dummy_instance.uninstall(args)
     end
   end
 
