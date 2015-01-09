@@ -15,7 +15,7 @@ IRB.conf[:HISTORY_FILE] = '.irb-history'
 
 require 'calabash/android'
 
-extend Calabash::Android
+include Calabash::Android
 
 Calabash::Logger.log_levels += [:debug] if Calabash::Environment.variable('CALABASH_DEBUG') == '1'
 
