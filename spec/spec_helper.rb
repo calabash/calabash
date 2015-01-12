@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'calabash'
 require 'awesome_print'
+require 'pry'
 
 # monkey patch for AwesomePrint + objects that implement '=='
 module AwesomePrint
