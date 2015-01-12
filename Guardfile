@@ -1,5 +1,6 @@
 notification :growl, sticky: false, priority: 0
 logger level: :info
+clearing :on
 
 guard 'bundler' do
   watch('Gemfile')

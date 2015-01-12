@@ -21,7 +21,7 @@ $ be rake spec
 Requires MacOS Growl - available in the AppStore.
 
 ```
-$ bundle exec guard  start --no-interactions
+$ bundle exec guard
 ```
 
 ## CI
