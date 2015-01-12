@@ -17,6 +17,15 @@ module AwesomePrint
   end
 end
 
+# Monkey patch; too difficult to explain, but should be removed once device.rb
+# is added.
+# https://github.com/calabash/calabash-android/commit/d3416ea4c3d72696965b777feed0b937728eeb86
+# https://github.com/calabash/calabash-ios/commit/60da5eabf4b199d2a9a297a1ae02545d00c63ad9
+unless Calabash.const_defined?(:Device)
+  class Calabash::Device
+  end
+end
+
 module Kernel
   def capture_stdout
     out = StringIO.new
