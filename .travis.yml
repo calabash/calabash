@@ -7,6 +7,7 @@ before_script:
 rvm:
   - 2.0.0
   - 2.1.2
+  - jruby-1.7.18
 
 script:
   - script/ci/travis/install-gem-ci.rb
