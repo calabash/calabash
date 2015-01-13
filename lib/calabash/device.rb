@@ -62,6 +62,10 @@ module Calabash
       end
     end
 
+    def test_server_responding?
+      abstract_method!
+    end
+
     private
 
     # @!visibility private

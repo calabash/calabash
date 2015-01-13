@@ -68,6 +68,12 @@ describe Calabash::Device do
     end
   end
 
+  describe '#test_server_responding?' do
+    it 'should have an abstract implementation' do
+      expect{device.test_server_responding?}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
   describe '#default' do
     after do
       Calabash::Device.default = nil
