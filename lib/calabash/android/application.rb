@@ -4,9 +4,8 @@ module Calabash
       attr_reader :test_server
 
       def initialize(application_path, test_server_path, options = {})
-        @application_path = application_path
+        super(application_path, options)
         @test_server = Application.new(test_server_path, nil, options) if test_server_path
-        @logger = options[:logger] || Logger.new
       end
 
       def package_name
