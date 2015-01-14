@@ -72,6 +72,20 @@ describe Calabash::Device do
     end
   end
 
+  describe '#ensure_test_server_ready' do
+    it 'should raise a runtime error if the test server does not respond' do
+      allow(Timeout).to receive(:timeout).with(an_instance_of(Fixnum), Calabash::Device::EnsureTestServerReadyTimeoutError).and_raise(Calabash::Device::EnsureTestServerReadyTimeoutError.new)
+
+      expect{device.ensure_test_server_ready}.to raise_error(RuntimeError)
+    end
+
+    it 'should now raise an error if the test server does respond' do
+      expect(device).to receive(:test_server_responding?).exactly(5).times.and_return(false, false, false, false, true)
+
+      device.ensure_test_server_ready
+    end
+  end
+
   describe '#test_server_responding?' do
     it 'should have an abstract implementation' do
       expect{device.test_server_responding?}.to raise_error(Calabash::AbstractMethodError)

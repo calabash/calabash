@@ -63,6 +63,23 @@ module Calabash
       end
     end
 
+    class EnsureTestServerReadyTimeoutError < RuntimeError; end
+
+    # Ensures the test server is ready
+    #
+    # @raises [RuntimeError] when the server does not respond
+    def ensure_test_server_ready(options={})
+      begin
+        Timeout.timeout(options.fetch(:timeout, 30), EnsureTestServerReadyTimeoutError) do
+          loop do
+            break if test_server_responding?
+          end
+        end
+      rescue EnsureTestServerReadyTimeoutError => _
+        raise 'Calabash server did not respond'
+      end
+    end
+
     def test_server_responding?
       abstract_method!
     end
