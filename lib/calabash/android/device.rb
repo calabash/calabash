@@ -16,6 +16,14 @@ module Calabash
           {id: line.sub('package:', '').chomp}
         end
       end
+
+      def test_server_responding?
+        begin
+          @http_client.get(HTTP::Request.new('ping')).body == 'pong'
+        rescue HTTP::Error => _
+          false
+        end
+      end
     end
   end
 end
