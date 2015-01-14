@@ -12,7 +12,7 @@ module Calabash
       @@default = value
     end
 
-    attr_reader :identifier, :server
+    attr_reader :identifier, :server, :http_client
 
     # Create a new device.
     # @param [String] identifier a token that uniquely identifies the device.
@@ -27,6 +27,7 @@ module Calabash
       @identifier = identifier
       @server = server
       @logger = options[:logger] || Logger.new
+      @http_client = HTTP::RetriableClient.new(server, options.fetch(:http_options, {}))
     end
 
     # Start the application and the test server

@@ -6,6 +6,10 @@ describe Calabash::Device do
 
   let(:device) {Calabash::Device.new(identifier, server)}
 
+  it 'should have an instance of RetriableHTTPClient initialized' do
+    expect(device.http_client).to be_a(Calabash::HTTP::RetriableClient)
+  end
+
   describe '#install' do
     it 'should invoke the managed impl if running in a managed env' do
       params = {my: :param}
