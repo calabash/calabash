@@ -1,11 +1,11 @@
 module Calabash
   class Application
-    attr_reader :application_path
+    attr_reader :path
 
     # @raise [RuntimeError] Raises an error if `application_path` does not
     #   exist.
     def initialize(application_path, options = {})
-      @application_path = File.expand_path(application_path)
+      @path = File.expand_path(application_path)
       @logger = options[:logger] || Logger.new
       @identifier = options[:identifier]
       ensure_application_path
@@ -22,8 +22,8 @@ module Calabash
     private
 
     def ensure_application_path
-      unless File.exist?(application_path)
-        raise "'#{application_path}' does not exist."
+      unless File.exist?(path)
+        raise "'#{path}' does not exist."
       end
     end
   end

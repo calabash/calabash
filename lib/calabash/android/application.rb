@@ -9,7 +9,7 @@ module Calabash
       end
 
       def extract_identifier
-        package_line = aapt_dump(@application_path, 'package').first
+        package_line = aapt_dump(@path, 'package').first
         raise "'package' not found in aapt output" unless package_line
         m = package_line.match(/name='([^']+)'/)
         raise "Unexpected output from aapt: #{package_line}" unless m
@@ -19,7 +19,7 @@ module Calabash
       def main_activity
         begin
           @logger.log("Trying to find launchable activity")
-          launchable_activity_line = aapt_dump(@application_path, "launchable-activity").first
+          launchable_activity_line = aapt_dump(@path, "launchable-activity").first
           raise "'launchable-activity' not found in aapt output" unless launchable_activity_line
           m = launchable_activity_line.match(/name='([^']+)'/)
           raise "Unexpected output from aapt: #{launchable_activity_line}" unless m
@@ -28,7 +28,7 @@ module Calabash
         rescue => e
           @logger.log("Could not find launchable activity, trying to parse raw AndroidManifest. #{e.message}")
 
-          manifest_data = `"#{Environment.tools_dir}/aapt" dump xmltree "#{@application_path}" AndroidManifest.xml`
+          manifest_data = `"#{Environment.tools_dir}/aapt" dump xmltree "#{@path}" AndroidManifest.xml`
           regex = /^\s*A:[\s*]android:name\(\w+\)\=\"android.intent.category.LAUNCHER\"/
           lines = manifest_data.lines.collect(&:strip)
           indicator_line = nil
