@@ -8,6 +8,7 @@ module Calabash
   require 'calabash/operations'
   require 'calabash/managed'
   require 'calabash/device'
+  require 'calabash/http'
   require 'calabash/server'
 
   include Utility
