@@ -109,5 +109,16 @@ module Calabash
     def _clear_app(params)
       abstract_method!
     end
+
+    # @!visibility private
+    def parse_app_parameters(path_or_application)
+      if path_or_application.is_a?(String)
+        Calabash::Application.new(path_or_application)
+      elsif path_or_application.is_a?(Calabash::Application)
+        path_or_application
+      else
+        raise ArgumentError, "Expected a String or Calabash::Application, got #{path_or_application.class}"
+      end
+    end
   end
 end
