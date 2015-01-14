@@ -1,9 +1,9 @@
 describe Calabash do
   let(:dummy) {Class.new {include Calabash}}
+  let(:dummy_instance) {dummy.new}
 
   describe '#calabash_start_app' do
     it 'should invoke the implementation method' do
-      dummy_instance = dummy.new
       args = {my: :arg}
 
       expect(dummy_instance).to receive(:_calabash_start_app).with(args)
@@ -14,7 +14,6 @@ describe Calabash do
 
   describe '#calabash_stop_app' do
     it 'should invoke the implementation method' do
-      dummy_instance = dummy.new
       args = {my: :arg}
 
       expect(dummy_instance).to receive(:_calabash_stop_app).with(args)
@@ -25,7 +24,6 @@ describe Calabash do
 
   describe '#reinstall' do
     it 'should invoke the implementation method' do
-      dummy_instance = dummy.new
       args = {my: :arg}
 
       expect(dummy_instance).to receive(:_reinstall).with(args)
@@ -36,7 +34,6 @@ describe Calabash do
 
   describe '#install' do
     it 'should invoke the implementation method' do
-      dummy_instance = dummy.new
       args = {my: :arg}
 
       expect(dummy_instance).to receive(:_install).with(args)
@@ -47,12 +44,21 @@ describe Calabash do
 
   describe '#uninstall' do
     it 'should invoke the implementation method' do
-      dummy_instance = dummy.new
       args = {my: :arg}
 
       expect(dummy_instance).to receive(:_uninstall).with(args)
 
       dummy_instance.uninstall(args)
+    end
+  end
+
+  describe '#clear_app' do
+    it 'should invoke the implementation method' do
+      args = {my: :arg}
+
+      expect(dummy_instance).to receive(:_clear_app).with(args)
+
+      dummy_instance.clear_app(args)
     end
   end
 
@@ -96,6 +102,17 @@ describe Calabash do
       expect(Calabash::Device.default).to receive(:uninstall).with(params)
 
       dummy.new._uninstall(params)
+    end
+  end
+
+  describe '#_clear_app' do
+    it 'should delegate to the default device' do
+      params = {my: :param}
+
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:clear_app).with(params)
+
+      dummy.new._clear_app(params)
     end
   end
 end

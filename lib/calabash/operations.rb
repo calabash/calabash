@@ -24,5 +24,10 @@ module Calabash
     def _uninstall(params)
       Device.default.uninstall(params)
     end
+
+    # @!visibility private
+    def _clear_app(params)
+      Device.default.clear_app(params)
+    end
   end
 end

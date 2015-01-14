@@ -56,6 +56,29 @@ describe Calabash::Device do
     end
   end
 
+  describe '#clear_app' do
+    it 'should invoke the managed impl if running in a managed env' do
+      params = {my: :param}
+      expected_params = params.merge({device: device})
+
+      allow(Calabash::Managed).to receive(:managed?).and_return(true)
+      expect(device).not_to receive(:_clear_app)
+      expect(Calabash::Managed).to receive(:clear_app).with(expected_params)
+
+      device.clear_app(params)
+    end
+
+    it 'should invoke its own impl unless running in a managed env' do
+      params = {my: :param}
+
+      allow(Calabash::Managed).to receive(:managed?).and_return(false)
+      expect(device).to receive(:_clear_app).with(params)
+      expect(Calabash::Managed).not_to receive(:clear_app)
+
+      device.clear_app(params)
+    end
+  end
+
   describe '#_install' do
     it 'should have an abstract implementation' do
       params = {my: :param}

@@ -63,6 +63,15 @@ module Calabash
       end
     end
 
+    # Do not modify
+    def clear_app(params)
+      if Managed.managed?
+        Managed.clear_app(params.merge({device: self}))
+      else
+        _clear_app(params)
+      end
+    end
+
     class EnsureTestServerReadyTimeoutError < RuntimeError; end
 
     # Ensures the test server is ready
@@ -93,6 +102,11 @@ module Calabash
 
     # @!visibility private
     def _uninstall(params)
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _clear_app(params)
       abstract_method!
     end
   end

@@ -39,6 +39,13 @@ module Calabash
     end
 
     # @!visibility private
+    unless respond_to?(:clear_app)
+      define_singleton_method(:clear_app) do |params|
+        invalid_managed_environment!
+      end
+    end
+
+    # @!visibility private
     unless respond_to?(:_managed?)
       define_singleton_method(:_managed?) do
         false

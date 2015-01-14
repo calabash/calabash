@@ -17,6 +17,10 @@ module Calabash
         end
       end
 
+      def clear_app(params)
+
+      end
+
       def test_server_responding?
         begin
           @http_client.get(HTTP::Request.new('ping')).body == 'pong'

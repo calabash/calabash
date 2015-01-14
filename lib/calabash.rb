@@ -33,4 +33,8 @@ module Calabash
   def uninstall(params)
     _uninstall(params)
   end
+
+  def clear_app(params)
+    _clear_app(params)
+  end
 end
