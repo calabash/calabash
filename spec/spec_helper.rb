@@ -3,6 +3,7 @@ require 'calabash/android'
 require 'calabash/ios'
 require 'awesome_print'
 require 'pry'
+require 'tmpdir'
 
 # monkey patch for AwesomePrint + objects that implement '=='
 module AwesomePrint

@@ -8,7 +8,7 @@ module Calabash
         @test_server = Application.new(test_server_path, nil, options) if test_server_path
       end
 
-      def package_name
+      def extract_identifier
         package_line = aapt_dump(@application_path, 'package').first
         raise "'package' not found in aapt output" unless package_line
         m = package_line.match(/name='([^']+)'/)

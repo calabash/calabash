@@ -1,6 +1,11 @@
 require 'uri'
 
 describe Calabash::Device do
+
+  before(:each) do
+    allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
+  end
+
   let(:identifier) {:my_identifier}
   let(:server) {Calabash::Server.new(URI.parse('http://localhost:100'), 200)}
 
@@ -144,7 +149,7 @@ describe Calabash::Device do
     end
 
     it 'returns an Application when passed a String' do
-      expected_path = 'path/to/my/app'
+      expected_path = File.expand_path('./path/to/my/app')
       app = device.send(:parse_app_parameters, expected_path)
       expect(app.application_path).to be == expected_path
     end
