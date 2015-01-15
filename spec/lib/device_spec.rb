@@ -200,19 +200,19 @@ describe Calabash::Device do
     end
   end
 
-  describe '#parse_app_parameters' do
+  describe '#parse_path_or_app_parameters' do
     it 'raises an error on invalid arguments' do
-      expect { device.send(:parse_app_parameters, :foo) }.to raise_error ArgumentError
+      expect { device.send(:parse_path_or_app_parameters, :foo) }.to raise_error ArgumentError
     end
 
     it 'returns an Application when passed an Application' do
       app = Calabash::Application.new('path/to/my/app')
-      expect(device.send(:parse_app_parameters, app)).to be == app
+      expect(device.send(:parse_path_or_app_parameters, app)).to be == app
     end
 
     it 'returns an Application when passed a String' do
       expected_path = File.expand_path('./path/to/my/app')
-      app = device.send(:parse_app_parameters, expected_path)
+      app = device.send(:parse_path_or_app_parameters, expected_path)
       expect(app.path).to be == expected_path
     end
   end

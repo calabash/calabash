@@ -47,7 +47,7 @@ module Calabash
 
     # Do not modify
     def install(path_or_application)
-      application = parse_app_parameters(path_or_application)
+      application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
         Managed.install(application, self)
@@ -58,7 +58,7 @@ module Calabash
 
     # Do not modify
     def uninstall(path_or_application)
-      application = parse_app_parameters(path_or_application)
+      application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
         Managed.uninstall(application, self)
@@ -69,7 +69,7 @@ module Calabash
 
     # Do not modify
     def clear_app(path_or_application)
-      application = parse_app_parameters(path_or_application)
+      application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
         Managed.clear_app(application, self)
@@ -117,7 +117,7 @@ module Calabash
     end
 
     # @!visibility private
-    def parse_app_parameters(path_or_application)
+    def parse_path_or_app_parameters(path_or_application)
       if path_or_application.is_a?(String)
         Calabash::Application.new(path_or_application)
       elsif path_or_application.is_a?(Calabash::Application)
