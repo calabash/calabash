@@ -26,15 +26,15 @@ module Calabash
     _reinstall(opt)
   end
 
-  def install(params)
-    _install(params)
+  def install(path_or_application)
+    _install(path_or_application)
   end
 
-  def uninstall(params)
-    _uninstall(params)
+  def uninstall(path_or_application)
+    _uninstall(path_or_application)
   end
 
-  def clear_app(params)
-    _clear_app(params)
+  def clear_app(path_or_application)
+    _clear_app(path_or_application)
   end
 end

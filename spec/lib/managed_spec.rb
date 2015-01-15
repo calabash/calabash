@@ -19,19 +19,30 @@ describe Calabash::Managed do
     let(:correct_value) {:rspec_correct_value}
 
     it 'should never redefine install' do
+      args = [:application, :device]
       allow(Calabash::Managed).to receive(:install).and_return(correct_value)
 
       force_require 'calabash/managed'
 
-      expect(Calabash::Managed.install({})).to eq(correct_value)
+      expect(Calabash::Managed.install(*args)).to eq(correct_value)
     end
 
     it 'should never redefine uninstall' do
+      args = [:application, :device]
       allow(Calabash::Managed).to receive(:uninstall).and_return(correct_value)
 
       force_require 'calabash/managed'
 
-      expect(Calabash::Managed.uninstall({})).to eq(correct_value)
+      expect(Calabash::Managed.uninstall(*args)).to eq(correct_value)
+    end
+
+    it 'should never redefine clear_app' do
+      args = [:application, :device]
+      allow(Calabash::Managed).to receive(:clear_app).and_return(correct_value)
+
+      force_require 'calabash/managed'
+
+      expect(Calabash::Managed.clear_app(*args)).to eq(correct_value)
     end
 
     it 'should never redefine _managed?' do

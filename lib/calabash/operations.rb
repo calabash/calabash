@@ -16,18 +16,18 @@ module Calabash
     end
 
     # @!visibility private
-    def _install(params)
-      Device.default.install(params)
+    def _install(path_or_application)
+      Device.default.install(path_or_application)
     end
 
     # @!visibility private
-    def _uninstall(params)
-      Device.default.uninstall(params)
+    def _uninstall(path_or_application)
+      Device.default.uninstall(path_or_application)
     end
 
     # @!visibility private
-    def _clear_app(params)
-      Device.default.clear_app(params)
+    def _clear_app(path_or_application)
+      Device.default.clear_app(path_or_application)
     end
   end
 end

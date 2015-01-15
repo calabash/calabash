@@ -16,87 +16,149 @@ describe Calabash::Device do
   end
 
   describe '#install' do
-    it 'should invoke the managed impl if running in a managed env' do
-      params = {my: :param}
-      expected_params = params.merge({device: device})
+    let(:application_path) {File.expand_path('./my-application.app')}
+    let(:application) {Calabash::Application.new(application_path)}
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(true)
-      expect(device).not_to receive(:_install)
-      expect(Calabash::Managed).to receive(:install).with(expected_params)
+    describe 'when running in a managed environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_install)
+        expect(Calabash::Managed).to receive(:install).with(application, device)
+      end
 
-      device.install(params)
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
+
+        device.install(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.install(application)
+      end
     end
 
-    it 'should invoke its own impl unless running in a managed env' do
-      params = {my: :param}
+    describe 'when running in an unmanaged environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_install).with(application)
+        expect(Calabash::Managed).not_to receive(:install)
+      end
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(false)
-      expect(device).to receive(:_install).with(params)
-      expect(Calabash::Managed).not_to receive(:install)
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-      device.install(params)
+        device.install(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.install(application)
+      end
     end
   end
 
   describe '#uninstall' do
-    it 'should invoke the managed impl if running in a managed env' do
-      params = {my: :param}
-      expected_params = params.merge({device: device})
+    let(:application_path) {File.expand_path('./my-application.app')}
+    let(:application) {Calabash::Application.new(application_path)}
+    
+    describe 'when running in a managed environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_uninstall)
+        expect(Calabash::Managed).to receive(:uninstall).with(application, device)
+      end
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(true)
-      expect(device).not_to receive(:_uninstall)
-      expect(Calabash::Managed).to receive(:uninstall).with(expected_params)
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-      device.uninstall(params)
+        device.uninstall(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.uninstall(application)
+      end
     end
 
-    it 'should invoke its own impl unless running in a managed env' do
-      params = {my: :param}
+    describe 'when running in an unmanaged environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_uninstall).with(application)
+        expect(Calabash::Managed).not_to receive(:uninstall)
+      end
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(false)
-      expect(device).to receive(:_uninstall).with(params)
-      expect(Calabash::Managed).not_to receive(:uninstall)
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-      device.uninstall(params)
+        device.uninstall(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.uninstall(application)
+      end
     end
   end
 
   describe '#clear_app' do
-    it 'should invoke the managed impl if running in a managed env' do
-      params = {my: :param}
-      expected_params = params.merge({device: device})
+    let(:application_path) {File.expand_path('./my-application.app')}
+    let(:application) {Calabash::Application.new(application_path)}
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(true)
-      expect(device).not_to receive(:_clear_app)
-      expect(Calabash::Managed).to receive(:clear_app).with(expected_params)
+    describe 'when running in a managed environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_clear_app)
+        expect(Calabash::Managed).to receive(:clear_app).with(application, device)
+      end
 
-      device.clear_app(params)
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
+
+        device.clear_app(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.clear_app(application)
+      end
     end
 
-    it 'should invoke its own impl unless running in a managed env' do
-      params = {my: :param}
+    describe 'when running in an unmanaged environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_clear_app).with(application)
+        expect(Calabash::Managed).not_to receive(:clear_app)
+      end
 
-      allow(Calabash::Managed).to receive(:managed?).and_return(false)
-      expect(device).to receive(:_clear_app).with(params)
-      expect(Calabash::Managed).not_to receive(:clear_app)
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-      device.clear_app(params)
+        device.clear_app(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.clear_app(application)
+      end
     end
   end
 
   describe '#_install' do
     it 'should have an abstract implementation' do
-      params = {my: :param}
+      arg = 'my-arg'
 
-      expect{device.send(:_install, params)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_install, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
   describe '#_uninstall' do
     it 'should have an abstract implementation' do
-      params = {my: :param}
+      arg = 'my-arg'
 
-      expect{device.send(:_uninstall, params)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_uninstall, arg)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_clear_app' do
+    it 'should have an abstract implementation' do
+      arg = 'my-arg'
+
+      expect{device.send(:_clear_app, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

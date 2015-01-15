@@ -46,29 +46,35 @@ module Calabash
     end
 
     # Do not modify
-    def install(params)
+    def install(path_or_application)
+      application = parse_app_parameters(path_or_application)
+
       if Managed.managed?
-        Managed.install(params.merge({device: self}))
+        Managed.install(application, self)
       else
-        _install(params)
+        _install(application)
       end
     end
 
     # Do not modify
-    def uninstall(params)
+    def uninstall(path_or_application)
+      application = parse_app_parameters(path_or_application)
+
       if Managed.managed?
-        Managed.uninstall(params.merge({device: self}))
+        Managed.uninstall(application, self)
       else
-        _uninstall(params)
+        _uninstall(application)
       end
     end
 
     # Do not modify
-    def clear_app(params)
+    def clear_app(path_or_application)
+      application = parse_app_parameters(path_or_application)
+
       if Managed.managed?
-        Managed.clear_app(params.merge({device: self}))
+        Managed.clear_app(application, self)
       else
-        _clear_app(params)
+        _clear_app(application)
       end
     end
 
@@ -96,17 +102,17 @@ module Calabash
     private
 
     # @!visibility private
-    def _install(params)
+    def _install(application)
       abstract_method!
     end
 
     # @!visibility private
-    def _uninstall(params)
+    def _uninstall(application)
       abstract_method!
     end
 
     # @!visibility private
-    def _clear_app(params)
+    def _clear_app(application)
       abstract_method!
     end
 

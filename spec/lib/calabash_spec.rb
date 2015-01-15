@@ -34,31 +34,31 @@ describe Calabash do
 
   describe '#install' do
     it 'should invoke the implementation method' do
-      args = {my: :arg}
+      arg = 'my-arg'
 
-      expect(dummy_instance).to receive(:_install).with(args)
+      expect(dummy_instance).to receive(:_install).with(arg)
 
-      dummy_instance.install(args)
+      dummy_instance.install(arg)
     end
   end
 
   describe '#uninstall' do
     it 'should invoke the implementation method' do
-      args = {my: :arg}
+      arg = 'my-arg'
 
-      expect(dummy_instance).to receive(:_uninstall).with(args)
+      expect(dummy_instance).to receive(:_uninstall).with(arg)
 
-      dummy_instance.uninstall(args)
+      dummy_instance.uninstall(arg)
     end
   end
 
   describe '#clear_app' do
     it 'should invoke the implementation method' do
-      args = {my: :arg}
+      arg = 'my-arg'
 
-      expect(dummy_instance).to receive(:_clear_app).with(args)
+      expect(dummy_instance).to receive(:_clear_app).with(arg)
 
-      dummy_instance.clear_app(args)
+      dummy_instance.clear_app(arg)
     end
   end
 
@@ -85,34 +85,34 @@ describe Calabash do
 
   describe '#_install' do
     it 'should delegate to the default device' do
-      params = {my: :param}
+      arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(dummy_device).to receive(:install).with(params)
+      expect(dummy_device).to receive(:install).with(arg)
 
-      dummy.new._install(params)
+      dummy.new._install(arg)
     end
   end
 
   describe '#_uninstall' do
     it 'should delegate to the default device' do
-      params = {my: :param}
+      arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:uninstall).with(params)
+      expect(Calabash::Device.default).to receive(:uninstall).with(arg)
 
-      dummy.new._uninstall(params)
+      dummy.new._uninstall(arg)
     end
   end
 
   describe '#_clear_app' do
     it 'should delegate to the default device' do
-      params = {my: :param}
+      arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:clear_app).with(params)
+      expect(Calabash::Device.default).to receive(:clear_app).with(arg)
 
-      dummy.new._clear_app(params)
+      dummy.new._clear_app(arg)
     end
   end
 end

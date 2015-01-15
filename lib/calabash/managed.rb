@@ -26,21 +26,21 @@ module Calabash
 
     # @!visibility private
     unless respond_to?(:install)
-      define_singleton_method(:install) do |params|
+      define_singleton_method(:install) do |application, device|
         invalid_managed_environment!
       end
     end
 
     # @!visibility private
     unless respond_to?(:uninstall)
-      define_singleton_method(:uninstall) do |params|
+      define_singleton_method(:uninstall) do |application, device|
         invalid_managed_environment!
       end
     end
 
     # @!visibility private
     unless respond_to?(:clear_app)
-      define_singleton_method(:clear_app) do |params|
+      define_singleton_method(:clear_app) do |application, device|
         invalid_managed_environment!
       end
     end
