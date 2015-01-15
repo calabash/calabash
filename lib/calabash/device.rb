@@ -61,9 +61,9 @@ module Calabash
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.uninstall(application, self)
+        Managed.uninstall(application.identifier, self)
       else
-        _uninstall(application)
+        _uninstall(application.identifier)
       end
     end
 
@@ -72,9 +72,9 @@ module Calabash
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.clear_app(application, self)
+        Managed.clear_app(application.identifier, self)
       else
-        _clear_app(application)
+        _clear_app(application.identifier)
       end
     end
 
@@ -107,12 +107,12 @@ module Calabash
     end
 
     # @!visibility private
-    def _uninstall(application)
+    def _uninstall(identifier)
       abstract_method!
     end
 
     # @!visibility private
-    def _clear_app(application)
+    def _clear_app(identifier)
       abstract_method!
     end
 

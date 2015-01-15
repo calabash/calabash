@@ -59,21 +59,26 @@ describe Calabash::Device do
   describe '#uninstall' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
+    let(:identifier) {'my-identifier'}
+
+    before do
+      allow(application).to receive(:identifier).and_return(identifier)
+    end
     
     describe 'when running in a managed environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
         expect(device).not_to receive(:_uninstall)
-        expect(Calabash::Managed).to receive(:uninstall).with(application, device)
+        expect(Calabash::Managed).to receive(:uninstall).with(identifier, device)
       end
 
-      it 'should invoke the managed impl with an application when given a path' do
+      it 'should invoke the managed impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.uninstall(application_path)
       end
 
-      it 'should invoke the managed impl with the given application when given an application' do
+      it 'should invoke the managed impl with an identifier when given an application' do
         device.uninstall(application)
       end
     end
@@ -81,17 +86,17 @@ describe Calabash::Device do
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_uninstall).with(application)
+        expect(device).to receive(:_uninstall).with(identifier)
         expect(Calabash::Managed).not_to receive(:uninstall)
       end
 
-      it 'should invoke the managed impl with an application when given a path' do
+      it 'should invoke the managed impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.uninstall(application_path)
       end
 
-      it 'should invoke the managed impl with the given application when given an application' do
+      it 'should invoke the managed impl with an identifier application when given an application' do
         device.uninstall(application)
       end
     end
@@ -100,21 +105,26 @@ describe Calabash::Device do
   describe '#clear_app' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
+    let(:identifier) {'my-identifier'}
+
+    before do
+      allow(application).to receive(:identifier).and_return(identifier)
+    end
 
     describe 'when running in a managed environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
         expect(device).not_to receive(:_clear_app)
-        expect(Calabash::Managed).to receive(:clear_app).with(application, device)
+        expect(Calabash::Managed).to receive(:clear_app).with(identifier, device)
       end
 
-      it 'should invoke the managed impl with an application when given a path' do
+      it 'should invoke the managed impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.clear_app(application_path)
       end
 
-      it 'should invoke the managed impl with the given application when given an application' do
+      it 'should invoke the managed impl with an identifier when given an application' do
         device.clear_app(application)
       end
     end
@@ -122,17 +132,17 @@ describe Calabash::Device do
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_clear_app).with(application)
+        expect(device).to receive(:_clear_app).with(identifier)
         expect(Calabash::Managed).not_to receive(:clear_app)
       end
 
-      it 'should invoke the managed impl with an application when given a path' do
+      it 'should invoke the managed impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.clear_app(application_path)
       end
 
-      it 'should invoke the managed impl with the given application when given an application' do
+      it 'should invoke the managed impl with an identifier when given an application' do
         device.clear_app(application)
       end
     end

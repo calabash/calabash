@@ -33,14 +33,14 @@ module Calabash
 
     # @!visibility private
     unless respond_to?(:uninstall)
-      define_singleton_method(:uninstall) do |application, device|
+      define_singleton_method(:uninstall) do |identifier, device|
         invalid_managed_environment!
       end
     end
 
     # @!visibility private
     unless respond_to?(:clear_app)
-      define_singleton_method(:clear_app) do |application, device|
+      define_singleton_method(:clear_app) do |identifier, device|
         invalid_managed_environment!
       end
     end

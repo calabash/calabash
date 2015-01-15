@@ -17,7 +17,7 @@ module Calabash
         end
       end
 
-      def clear_app(path_or_application)
+      def clear_app(identifier)
 
       end
 
