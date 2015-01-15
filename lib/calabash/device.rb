@@ -15,7 +15,7 @@ module Calabash
     attr_reader :identifier, :server, :http_client
 
     # Create a new device.
-    # @param [String] identifier a token that uniquely identifies the device.
+    # @param [String] identifier A token that uniquely identifies the device.
     #   On iOS, this is the device UDID, or a simulator name or UDID returned by
     #   `$ xcrun instruments -s devices`.
     #   On Android, this is the serial of the device, emulator or simulator
@@ -82,7 +82,7 @@ module Calabash
 
     # Ensures the test server is ready
     #
-    # @raises [RuntimeError] when the server does not respond
+    # @raises [RuntimeError] Raises error when the server does not respond
     def ensure_test_server_ready(options={})
       begin
         Timeout.timeout(options.fetch(:timeout, 30), EnsureTestServerReadyTimeoutError) do
