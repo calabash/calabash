@@ -216,4 +216,25 @@ describe Calabash::Device do
       expect(app.path).to be == expected_path
     end
   end
+
+  describe '#parse_identifier_or_app_parameters' do
+    it 'raises an error on invalid arguments' do
+      expect { device.send(:parse_identifier_or_app_parameters, :foo) }.to raise_error ArgumentError
+    end
+
+    it 'returns an identifier when passed an Application' do
+      app = Calabash::Application.new('path/to/my/app')
+      identifier = 'my-identifier'
+
+      allow(app).to receive(:identifier).and_return(identifier)
+
+      expect(device.send(:parse_identifier_or_app_parameters, app)).to be == identifier
+    end
+
+    it 'returns an identifier when passed a String' do
+      identifier = 'my-identifier'
+
+      expect(device.send(:parse_identifier_or_app_parameters, identifier)).to be == identifier
+    end
+  end
 end

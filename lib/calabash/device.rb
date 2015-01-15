@@ -126,5 +126,16 @@ module Calabash
         raise ArgumentError, "Expected a String or Calabash::Application, got #{path_or_application.class}"
       end
     end
+
+    # @!visibility private
+    def parse_identifier_or_app_parameters(identifier_or_application)
+      if identifier_or_application.is_a?(String)
+        identifier_or_application
+      elsif identifier_or_application.is_a?(Calabash::Application)
+        identifier_or_application.identifier
+      else
+        raise ArgumentError, "Expected a String or Calabash::Application, got #{identifier_or_application.class}"
+      end
+    end
   end
 end
