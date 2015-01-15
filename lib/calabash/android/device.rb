@@ -17,16 +17,19 @@ module Calabash
         end
       end
 
-      def clear_app(identifier)
-
-      end
-
       def test_server_responding?
         begin
           @http_client.get(HTTP::Request.new('ping')).body == 'pong'
         rescue HTTP::Error => _
           false
         end
+      end
+
+      private
+
+      # @!visibility private
+      def _clear_app(identifier)
+        adb("shell pm clear #{identifier}")
       end
     end
   end

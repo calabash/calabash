@@ -34,4 +34,14 @@ describe Calabash::Android::Device do
                                                 ])
     end
   end
+
+  describe '#_clear_app' do
+    it 'should clear the app using adb' do
+      package = 'com.myapp.package'
+
+      expect(dummy_device).to receive(:adb).with("shell pm clear #{package}")
+
+      dummy_device.send(:_clear_app, package)
+    end
+  end
 end
