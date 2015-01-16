@@ -2,6 +2,7 @@
 android/test-server
 lib/calabash/android/environment.rb
 lib/calabash/android/build/java_keystore.rb
+playground/
 # End of temporary git ignores
 
 /.bundle/

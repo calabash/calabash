@@ -1,7 +1,9 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'calabash'
+require 'calabash/android'
+require 'calabash/ios'
 require 'awesome_print'
 require 'pry'
+require 'tmpdir'
 
 # monkey patch for AwesomePrint + objects that implement '=='
 module AwesomePrint
@@ -87,7 +89,7 @@ RSpec.configure do |config|
   # Print the 10 slowest examples and example groups at the
   # end of the spec run, to help surface which specs are running
   # particularly slow.
-  config.profile_examples = 10
+  config.profile_examples = 1
 
   # Run specs in random order to surface order dependencies. If you find an
   # order dependency and want to debug it, you can fix the order by providing
