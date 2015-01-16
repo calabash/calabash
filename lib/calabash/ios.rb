@@ -8,5 +8,6 @@ module Calabash
     include Calabash::IOS::Operations
 
     require 'calabash/ios/device'
+    require 'calabash/ios/operations'
   end
 end

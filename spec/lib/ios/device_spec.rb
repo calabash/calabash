@@ -12,8 +12,18 @@ describe Calabash::IOS::Device do
   let(:dummy_http_class) {Class.new(Calabash::HTTP::RetriableClient) {def initialize; end}}
   let(:dummy_http) {dummy_http_class.new}
 
-  before do
+  before(:each) do
     allow(dummy_device).to receive(:http_client).and_return(dummy_http)
+    allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
+  end
+
+  describe '#calabash_start_app' do
+    it 'can launch an app' do
+      pending('not yet implemented')
+      expect(RunLoop).to receive(:run).with({}).and_return({})
+      app = Calabash::Application.new('/path/to/my/app')
+      expect(device.calabash_start_app(app)).to be_truthy
+    end
   end
 
   describe '#test_server_responding?' do
