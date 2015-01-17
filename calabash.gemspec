@@ -54,18 +54,19 @@ Public License.}
   spec.add_dependency 'retriable', '~> 1.3', '>= 1.3.3.1'
   spec.add_dependency 'rubyzip', '~> 1.1'
 
-  # Development dependencies.
-  spec.add_development_dependency 'rake', '~> 10.3'
-  spec.add_development_dependency 'yard', '~> 0.8'
-  spec.add_development_dependency 'redcarpet', '~> 3.1'
-  spec.add_development_dependency 'travis', '~> 1.7'
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'pry-nav'
-
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'guard-rspec', '~> 4.3'
-  spec.add_development_dependency 'guard-bundler', '~> 2.0'
-  spec.add_development_dependency 'growl', '~> 1.0'
-  spec.add_development_dependency 'bundler', '>= 1.3.0', '< 2.0'
+  # Development dependencies.  Developing with JRuby is not supported.
+  unless RUBY_PLATFORM == 'java'
+    spec.add_development_dependency 'rake', '~> 10.3'
+    spec.add_development_dependency 'yard', '~> 0.8'
+    spec.add_development_dependency 'redcarpet', '~> 3.1'
+    spec.add_development_dependency 'travis', '~> 1.7'
+    spec.add_development_dependency 'pry'
+    spec.add_development_dependency 'pry-nav'
+    spec.add_development_dependency 'rspec', '~> 3.0'
+    spec.add_development_dependency 'guard-rspec', '~> 4.3'
+    spec.add_development_dependency 'guard-bundler', '~> 2.0'
+    spec.add_development_dependency 'growl', '~> 1.0'
+    spec.add_development_dependency 'bundler', '>= 1.3.0', '< 2.0'
+  end
 
 end
