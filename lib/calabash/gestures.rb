@@ -21,9 +21,9 @@ module Calabash
     #    |    ║                                     ║
     #    ┴    ╚═════════════════════════════════════╝
     #
-    #  1. tap("view marked:'email'")
-    #  2. tap("view marked:'email'", at:  {x: 0, y: 0})
-    #  3. tap("view marked:'email'", at:  {x: 100, y: 0})
+    #  1. tap("* marked:'email'")
+    #  2. tap("* marked:'email'", at:  {x: 0, y: 0})
+    #  3. tap("* marked:'email'", at:  {x: 100, y: 0})
     #  4. tap("* marked:'email'", offset: {y: -40})
     #  5. tap("* marked:'email'", offset: {x: 20, y: 40})
     #  6. tap("* marked:'email'", at: {x: 100, y: 75}, offset: {x: 80})
