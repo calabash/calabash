@@ -55,6 +55,18 @@ module Calabash
       _double_tap(query, options)
     end
 
+    # Performs a `long_press` on the (first) view that matches query `query`.
+    # On iOS this is often referred to as _touch-and-hold_.  On Android this
+    # is known variously as _press_, _long-push_, _press-and-hold_, or _hold_.
+    #
+    # @see tap
+    # @param [Hash] options Options for modifying the details of the touch.
+    # @option options [Number] :duration (1.0) The amount of time in seconds to
+    #  press.
+    def long_press(query, options={})
+      _long_press(query, options)
+    end
+
     # @!visibility private
     def _tap(query, options={})
       abstract_method!
@@ -62,6 +74,11 @@ module Calabash
 
     # @!visibility private
     def _double_tap(query, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _long_press(query, options={})
       abstract_method!
     end
   end
