@@ -1,13 +1,13 @@
 module Calabash
   module Gestures
-    def touch(query, options={})
-      _touch(query, options)
+    def tap(query, options={})
+      _tap(query, options)
     end
 
     private
 
     # @!visibility private
-    def _touch(query, options={})
+    def _tap(query, options={})
       abstract_method!
     end
   end
