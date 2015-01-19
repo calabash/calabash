@@ -3,10 +3,9 @@ module Calabash
   # and pans.
   module Gestures
 
-    # Performs the `tap` gesture on the (first) view that matches
-    # query `query`.
+    # Performs a `tap` on the (first) view that matches query `query`.
     #
-    # By default, taps the center of the view.
+    # Taps the center of the view by default.
     #
     # @example
     #
