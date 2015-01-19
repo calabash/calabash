@@ -48,10 +48,20 @@ module Calabash
       _tap(query, options)
     end
 
-    private
+    # Performs a `double_tap` on the (first) view that matches query `query`.
+    # @see tap
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    def double_tap(query, options={})
+      _double_tap(query, options)
+    end
 
     # @!visibility private
     def _tap(query, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _double_tap(query, options={})
       abstract_method!
     end
   end
