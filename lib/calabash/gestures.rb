@@ -1,4 +1,6 @@
 module Calabash
+  # Methods for performing gestures.  Gestures are taps, flicks,
+  # and pans.
   module Gestures
 
     # Performs the `tap` gesture on the (first) view that matches
