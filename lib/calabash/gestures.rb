@@ -40,8 +40,6 @@ module Calabash
     #   Offset supports an `:x` and `:y` key and causes the touch to be
     #   offset with `(x,y)`.  This offset is always applied _after_ any
     #   translation performed by `:at`.
-    # @option options [Number] wait_before (0) How many seconds to wait before
-    #   issuing the touch after the view is found.
     # @option options [Number] wait_after (0) How many seconds to wait after
     #   issuing the touch.
     # @raise [ViewNotFoundError] If the `query` returns no results.
