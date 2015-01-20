@@ -92,6 +92,54 @@ describe Calabash::Gestures do
     end
   end
 
+  describe '#pan_left' do
+    it 'should invoke #pan with the right coordinates' do
+      query = "my query"
+      from = {x: 100, y: 50}
+      to = {x: 0, y: 50}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:pan).with(query, from, to, options)
+      dummy_instance.pan_left(query, options)
+    end
+  end
+
+  describe '#pan_right' do
+    it 'should invoke #pan with the right coordinates' do
+      query = "my query"
+      from = {x: 0, y: 50}
+      to = {x: 100, y: 50}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:pan).with(query, from, to, options)
+      dummy_instance.pan_right(query, options)
+    end
+  end
+
+  describe '#pan_up' do
+    it 'should invoke #pan with the right coordinates' do
+      query = "my query"
+      from = {x: 50, y: 100}
+      to = {x: 50, y: 0}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:pan).with(query, from, to, options)
+      dummy_instance.pan_up(query, options)
+    end
+  end
+
+  describe '#pan_down' do
+    it 'should invoke #pan with the right coordinates' do
+      query = "my query"
+      from = {x: 50, y: 0}
+      to = {x: 50, y: 100}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:pan).with(query, from, to, options)
+      dummy_instance.pan_down(query, options)
+    end
+  end
+
   describe '#flick' do
     it 'should invoke the implementation method' do
       query = "my query"

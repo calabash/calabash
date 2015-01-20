@@ -113,6 +113,31 @@ module Calabash
       _pan(query, from, to, options)
     end
 
+    # Performs a `pan` heading `left` on the (first) view that matches `query`.
+    # @see pan
+    def pan_left(query, options={})
+      pan(query, {x: 100, y: 50}, {x: 0, y: 50}, options)
+    end
+
+    # Performs a `pan` heading `right` on the (first) view that matches
+    # `query`.
+    # @see pan
+    def pan_right(query, options={})
+      pan(query, {x: 0, y: 50}, {x: 100, y: 50}, options)
+    end
+
+    # Performs a `pan` heading `up` on the (first) view that matches `query`.
+    # @see pan
+    def pan_up(query, options={})
+      pan(query, {x: 50, y: 100}, {x: 50, y: 0}, options)
+    end
+
+    # Performs a `pan` heading `down` on the (first) view that matches `query`.
+    # @see pan
+    def pan_down(query, options={})
+      pan(query, {x: 50, y: 0}, {x: 50, y: 100}, options)
+    end
+
     # Performs a `flick` on the (first) view that matches `query`.
     # A flick is a straight line swipe that **lifts the finger while
     # the gesture is still in motion**. This will often cause scrollable
