@@ -138,6 +138,30 @@ module Calabash
       pan(query, {x: 50, y: 0}, {x: 50, y: 100}, options)
     end
 
+    # Performs a `pan` heading `left` on the screen.
+    # @see pan_left
+    def pan_screen_left(options={})
+      pan_left("*", options)
+    end
+
+    # Performs a `pan` heading `right` on the screen.
+    # @see pan_right
+    def pan_screen_right(options={})
+      pan_right("*", options)
+    end
+
+    # Performs a `pan` heading `up` on the screen.
+    # @see pan_up
+    def pan_screen_up(options={})
+      pan_up("* id:'content'", options)
+    end
+
+    # Performs a `pan` heading `down` on the screen.
+    # @see pan_down
+    def pan_screen_down(options={})
+      pan_down("* id:'content'", options)
+    end
+
     # Performs a `flick` on the (first) view that matches `query`.
     # A flick is a straight line swipe that **lifts the finger while
     # the gesture is still in motion**. This will often cause scrollable
