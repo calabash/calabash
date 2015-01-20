@@ -13,6 +13,7 @@ module Calabash
         gesture_to[:x] = to[:x]
         gesture_to[:y] = to[:y]
         gesture_to[:offset] = {}
+        gesture_options[:flick] = options[:flick]
 
         if gesture_from[:x] == 100
           gesture_from[:offset][:x] = -1
@@ -39,6 +40,10 @@ module Calabash
         end
 
         execute_gesture(Gesture.with_parameters(Gesture.generate_swipe(gesture_from, gesture_to, gesture_options), {query_string: query}.merge(gesture_options)))
+      end
+
+      def _flick(query, from, to, options={})
+        _pan(query, from, to, options.merge({flick: true}))
       end
     end
   end
