@@ -92,6 +92,34 @@ describe Calabash::Gestures do
     end
   end
 
+  describe '#flick' do
+    it 'should invoke the implementation method' do
+      query = "my query"
+      from = {x: 0, y: 0}
+      to = {x: 0, y: 0}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:_flick).with(query, from, to, options)
+
+      dummy_instance.flick(query, from, to, options)
+    end
+
+    it 'raises an error if query is not passed' do
+      from = {x: 0, y: 0}
+      to = {x: 0, y: 0}
+      options = {my: :arg}
+
+      expect do
+        dummy_instance.flick(nil, from, to, options)
+      end.to raise_error ArgumentError
+
+      expect do
+        dummy_instance.flick(:not_a_query, from, to, options)
+      end.to raise_error ArgumentError
+    end
+  end
+
+
   describe '#_tap' do
     it 'should have an abstract implementation' do
       expect{dummy_instance._tap('my query')}.to raise_error(Calabash::AbstractMethodError)
@@ -113,6 +141,12 @@ describe Calabash::Gestures do
   describe '#_pan' do
     it 'should have an abstract implementation' do
       expect{dummy_instance._pan('my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_flick' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance._flick('my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 end

@@ -111,6 +111,30 @@ module Calabash
       _pan(query, from, to, options)
     end
 
+    # Performs a `flick` on the (first) view that matches `query`.
+    # A flick is a straight line swipe that **lifts the finger while
+    # the gesture is still in motion**. This will often cause scrollable
+    # views to continue moving for some time after the gesture is released.
+    # @see pan
+    #
+    # @example
+    #  A scrollable view displays the alphabet. Flicking left will cause the
+    #  view to scroll right.
+    #
+    #       Before             After
+    #    ╔═══════════╗  |  ╔═══════════╗
+    #    ║ A B C D E ║  |  ║F G H I J K║
+    #    ║           ║  |  ║           ║
+    #  <·····──────┤ ║  |  ║           ║
+    #    ╚═══════════╝  |  ╚═══════════╝
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    def flick(query, from, to, options={})
+      ensure_valid_query(query)
+
+      _flick(query, from, to, options)
+    end
 
     # @!visibility private
     def valid_query?(query)
@@ -141,6 +165,11 @@ module Calabash
 
     # @!visibility private
     def _pan(query, from, to, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _flick(query, from, to, options={})
       abstract_method!
     end
   end
