@@ -187,6 +187,55 @@ module Calabash
       _flick(query, from, to, {duration: 0.5}.merge(options))
     end
 
+    # Performs a `flick` heading `left` on the (first) view that matches `query`.
+    # @see flick
+    def flick_left(query, options={})
+      flick(query, {x: 100, y: 50}, {x: 0, y: 50}, options)
+    end
+
+    # Performs a `flick` heading `right` on the (first) view that matches
+    # `query`.
+    # @see flick
+    def flick_right(query, options={})
+      flick(query, {x: 0, y: 50}, {x: 100, y: 50}, options)
+    end
+
+    # Performs a `flick` heading `up` on the (first) view that matches `query`.
+    # @see flick
+    def flick_up(query, options={})
+      flick(query, {x: 50, y: 100}, {x: 50, y: 0}, options)
+    end
+
+    # Performs a `flick` heading `down` on the (first) view that matches `query`.
+    # @see flick
+    def flick_down(query, options={})
+      flick(query, {x: 50, y: 0}, {x: 50, y: 100}, options)
+    end
+
+    # Performs a `flick` heading `left` on the screen.
+    # @see flick_left
+    def flick_screen_left(options={})
+      flick_left("*", options)
+    end
+
+    # Performs a `flick` heading `right` on the screen.
+    # @see flick_right
+    def flick_screen_right(options={})
+      flick_right("*", options)
+    end
+
+    # Performs a `flick` heading `up` on the screen.
+    # @see flick_up
+    def flick_screen_up(options={})
+      flick_up("* id:'content'", options)
+    end
+
+    # Performs a `flick` heading `down` on the screen.
+    # @see flick_down
+    def flick_screen_down(options={})
+      flick_down("* id:'content'", options)
+    end
+
     # @!visibility private
     def valid_query?(query)
       query.is_a?(String)

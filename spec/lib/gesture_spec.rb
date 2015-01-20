@@ -203,6 +203,89 @@ describe Calabash::Gestures do
     end
   end
 
+  describe '#flick_left' do
+    it 'should invoke #flick with the right coordinates' do
+      query = "my query"
+      from = {x: 100, y: 50}
+      to = {x: 0, y: 50}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick).with(query, from, to, options)
+      dummy_instance.flick_left(query, options)
+    end
+  end
+
+  describe '#flick_right' do
+    it 'should invoke #flick with the right coordinates' do
+      query = "my query"
+      from = {x: 0, y: 50}
+      to = {x: 100, y: 50}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick).with(query, from, to, options)
+      dummy_instance.flick_right(query, options)
+    end
+  end
+
+  describe '#flick_up' do
+    it 'should invoke #flick with the right coordinates' do
+      query = "my query"
+      from = {x: 50, y: 100}
+      to = {x: 50, y: 0}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick).with(query, from, to, options)
+      dummy_instance.flick_up(query, options)
+    end
+  end
+
+  describe '#flick_down' do
+    it 'should invoke #flick with the right coordinates' do
+      query = "my query"
+      from = {x: 50, y: 0}
+      to = {x: 50, y: 100}
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick).with(query, from, to, options)
+      dummy_instance.flick_down(query, options)
+    end
+  end
+
+  describe '#flick_screen_left' do
+    it 'should invoke #flick_left' do
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick_left).with("*", options)
+      dummy_instance.flick_screen_left(options)
+    end
+  end
+
+  describe '#flick_screen_right' do
+    it 'should invoke #flick_right' do
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick_right).with("*", options)
+      dummy_instance.flick_screen_right(options)
+    end
+  end
+
+  describe '#flick_screen_up' do
+    it 'should invoke #flick_up' do
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick_up).with("* id:'content'", options)
+      dummy_instance.flick_screen_up(options)
+    end
+  end
+
+  describe '#flick_screen_down' do
+    it 'should invoke #flick_down' do
+      options = {my: :arg}
+
+      expect(dummy_instance).to receive(:flick_down).with("* id:'content'", options)
+      dummy_instance.flick_screen_down(options)
+    end
+  end
 
   describe '#_tap' do
     it 'should have an abstract implementation' do
