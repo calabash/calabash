@@ -11,6 +11,16 @@ describe Calabash::Gestures do
 
       dummy_instance.tap(query, options)
     end
+
+    it 'raises an error if query is not passed' do
+      expect do
+        dummy_instance.tap(nil, {option: 'my opt'})
+      end.to raise_error ArgumentError
+
+      expect do
+        dummy_instance.tap(:not_a_query, {option: 'my opt'})
+      end.to raise_error ArgumentError
+    end
   end
 
   describe '#double_tap' do
@@ -22,6 +32,16 @@ describe Calabash::Gestures do
 
       dummy_instance.double_tap(query, options)
     end
+
+    it 'raises an error if query is not passed' do
+      expect do
+        dummy_instance.double_tap(nil, {option: 'my opt'})
+      end.to raise_error ArgumentError
+
+      expect do
+        dummy_instance.double_tap(:not_a_query, {option: 'my opt'})
+      end.to raise_error ArgumentError
+    end
   end
 
   describe '#long_press' do
@@ -32,6 +52,16 @@ describe Calabash::Gestures do
       expect(dummy_instance).to receive(:_long_press).with(query, options)
 
       dummy_instance.long_press(query, options)
+    end
+
+    it 'raises an error if query is not passed' do
+      expect do
+        dummy_instance.long_press(nil, {option: 'my opt'})
+      end.to raise_error ArgumentError
+
+      expect do
+        dummy_instance.long_press(:not_a_query, {option: 'my opt'})
+      end.to raise_error ArgumentError
     end
   end
 

@@ -44,14 +44,20 @@ module Calabash
     # @option options [Number] wait_after (0) How many seconds to wait after
     #   issuing the touch.
     # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
     def tap(query, options={})
+      ensure_valid_query(query)
+
       _tap(query, options)
     end
 
     # Performs a `double_tap` on the (first) view that matches query `query`.
     # @see tap
     # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
     def double_tap(query, options={})
+      ensure_valid_query(query)
+
       _double_tap(query, options)
     end
 
@@ -63,8 +69,24 @@ module Calabash
     # @param [Hash] options Options for modifying the details of the touch.
     # @option options [Number] :duration (1.0) The amount of time in seconds to
     #  press.
+    # @raise [ArgumentError] If `query` is invalid.
     def long_press(query, options={})
+      ensure_valid_query(query)
+
       _long_press(query, options)
+    end
+
+
+    # @!visibility private
+    def valid_query?(query)
+      query.is_a?(String)
+    end
+
+    # @!visibility private
+    def ensure_valid_query(query)
+      unless valid_query?(query)
+        raise ArgumentError, "invalid query '#{query}' (#{query.class})"
+      end
     end
 
     # @!visibility private
