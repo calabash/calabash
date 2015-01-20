@@ -103,6 +103,8 @@ module Calabash
     #   `(0,0)` as the reference point.
     # @option options [Number] wait_after (0) How many seconds to wait after
     #   issuing the pan.
+    # @option options [Number] duration (0.5) How many seconds the swipe takes
+    #   to complete.
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def pan(query, from, to, options={})
