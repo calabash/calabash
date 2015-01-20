@@ -76,6 +76,41 @@ module Calabash
       _long_press(query, options)
     end
 
+    # Performs a `pan` on the (first) view that matches `query`.
+    # A pan is a straight line swipe that pauses at the final point
+    # before releasing the gesture.
+    #
+    # @example
+    #  Consider a pan on a scrollable view.  When the finger is is released,
+    #  the velocity of the view is zero.
+    #
+    # @example
+    #  A scrollable view displays the alphabet. Panning left will cause the
+    #  view to scroll right.
+    #
+    #      Before             After
+    #   ╔═══════════╗  |  ╔═══════════╗
+    #   ║ A B C D E ║  |  ║ E F G H I ║
+    #   ║           ║  |  ║           ║
+    #   ║ <───────┤ ║  |  ║           ║
+    #   ╚═══════════╝  |  ╚═══════════╝
+    #
+    # @param [String] query A query describing the view to pan inside.
+    # @param [Hash] options Options for modifying the details of the pan.
+    #
+    # @option options [Hash] at (`{x: 50, y: 50}`) The point at which the gesture
+    #   originates from.  It is a percentage-based translation using top-left
+    #   `(0,0)` as the reference point.
+    # @option options [Number] wait_after (0) How many seconds to wait after
+    #   issuing the pan.
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    def pan(query, from, to, options={})
+      ensure_valid_query(query)
+
+      _pan(query, from, to, options)
+    end
+
 
     # @!visibility private
     def valid_query?(query)
@@ -101,6 +136,11 @@ module Calabash
 
     # @!visibility private
     def _long_press(query, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _pan(query, from, to, options={})
       abstract_method!
     end
   end
