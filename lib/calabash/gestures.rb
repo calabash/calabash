@@ -110,7 +110,7 @@ module Calabash
     def pan(query, from, to, options={})
       ensure_valid_query(query)
 
-      _pan(query, from, to, options.merge({duration: 0.5}))
+      _pan(query, from, to, {duration: 0.5}.merge(options))
     end
 
     # Performs a `pan` heading `left` on the (first) view that matches `query`.
@@ -184,7 +184,7 @@ module Calabash
     def flick(query, from, to, options={})
       ensure_valid_query(query)
 
-      _flick(query, from, to, options)
+      _flick(query, from, to, {duration: 0.5}.merge(options))
     end
 
     # @!visibility private
