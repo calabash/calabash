@@ -3,7 +3,7 @@ module Calabash
   # and pans.
   module Gestures
 
-    # Performs a `tap` on the (first) view that matches query `query`.
+    # Performs a `tap` on the (first) view that matches `query`.
     #
     # Taps the center of the view by default.
     #
@@ -27,12 +27,13 @@ module Calabash
     #   4. tap("* marked:'email'", offset: {y: -40})
     #   5. tap("* marked:'email'", offset: {x: 20, y: 40})
     #   6. tap("* marked:'email'", at: {x: 100, y: 75}, offset: {x: 80})
-    #   7. tap("* marked:'email'", at: {x: 50, y: 100}, offset: {x: -80, y: -40})
+    #   7. tap("* marked:'email'", at: {x: 50, y: 100},
+    #                              offset: {x: -80, y: -40})
     #
     # @param [String] query A query describing the view to tap.
     # @param [Hash] options Options for modifying the details of the touch.
-    # @option options [Hash] at (`{x: 50, y: 50}`) The point at which the gesture
-    #   originates from.  It is a percentage-based translation using `(0,0)`
+    # @option options [Hash] at (`{x: 50, y: 50}`) The point at which the
+    #   gesture originates from.  It is a percentage-based translation using `(0,0)`
     #   as the reference point.  This translation is always applied before
     #   any `:offset`.
     # @option options [Hash] :offset (`{x: 0, y: 0}`) Offset to touch point.
@@ -51,7 +52,7 @@ module Calabash
       _tap(query, options)
     end
 
-    # Performs a `double_tap` on the (first) view that matches query `query`.
+    # Performs a `double_tap` on the (first) view that matches `query`.
     # @see tap
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
@@ -61,7 +62,7 @@ module Calabash
       _double_tap(query, options)
     end
 
-    # Performs a `long_press` on the (first) view that matches query `query`.
+    # Performs a `long_press` on the (first) view that matches `query`.
     # On iOS this is often referred to as _touch-and-hold_.  On Android this
     # is known variously as _press_, _long-push_, _press-and-hold_, or _hold_.
     #
@@ -69,6 +70,7 @@ module Calabash
     # @param [Hash] options Options for modifying the details of the touch.
     # @option options [Number] :duration (1.0) The amount of time in seconds to
     #  press.
+    # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def long_press(query, options={})
       ensure_valid_query(query)
