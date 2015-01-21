@@ -15,5 +15,22 @@ module Calabash
     end
 
     class RetryError < RuntimeError; end
+
+    # A convenience method for creating a percentage hash that that can be
+    # passed to gestures.
+    #
+    # @example
+    #  # These are equivalent.
+    #  pan(percent(20, 50), percent(20, 100))
+    #  pan({x: 20, y: 50}, {x: 20, y: 100})
+    #
+    # @param [Number] x The value of the x percent.
+    # @param [Number] y The value of the y percent.
+    # @return [Hash] Representing the given values.
+    def percent(x, y)
+      {x: x, y: y}
+    end
+
+    alias_method :pct, :percent
   end
 end
