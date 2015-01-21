@@ -183,7 +183,7 @@ describe Calabash::Gestures do
       to = {x: 0, y: 0}
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:_flick).with(query, from, to, options)
+      expect(dummy_instance).to receive(:_flick).with(query, from, to, hash_including(options))
 
       dummy_instance.flick(query, from, to, options)
     end
