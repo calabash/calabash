@@ -28,4 +28,22 @@ describe Calabash::Utility do
       expect(dummy.new.percent(a, b)).to eq({x: a, y: b})
     end
   end
+
+  describe '#coord' do
+    it 'is an alias for #coordinate' do
+      dummy_instance = dummy.new
+
+      # Strict alias matching is not available in rspec.
+      expect(dummy_instance.method(:coord)).to be == dummy_instance.method(:coordinate)
+    end
+  end
+
+  describe '#coordinate' do
+    it 'gives a representation of a coordinates' do
+      a = 20
+      b = 50
+
+      expect(dummy.new.coordinate(a, b)).to eq({x: a, y: b})
+    end
+  end
 end
