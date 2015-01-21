@@ -44,9 +44,9 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def tap(query, options={})
-      ensure_valid_query(query)
+      Query.ensure_valid_query(query)
 
-      _tap(query, options)
+      Device.default.tap(query, options)
     end
 
     # Performs a `double_tap` on the (first) view that matches `query`.
@@ -54,9 +54,9 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def double_tap(query, options={})
-      ensure_valid_query(query)
+      Query.ensure_valid_query(query)
 
-      _double_tap(query, options)
+      Device.default.double_tap(query, options)
     end
 
     # Performs a `long_press` on the (first) view that matches `query`.
@@ -70,9 +70,9 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def long_press(query, options={})
-      ensure_valid_query(query)
+      Query.ensure_valid_query(query)
 
-      _long_press(query, options)
+      Device.default.long_press(query, options)
     end
 
     # Performs a `pan` on the (first) view that matches `query`.
@@ -107,9 +107,9 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def pan(query, from, to, options={})
-      ensure_valid_query(query)
+      Query.ensure_valid_query(query)
 
-      _pan(query, from, to, {duration: 0.5}.merge(options))
+      Device.default.pan(query, from, to, options)
     end
 
     # Performs a `pan` heading `left` on the (first) view that matches `query`.
@@ -181,9 +181,9 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def flick(query, from, to, options={})
-      ensure_valid_query(query)
+      Query.ensure_valid_query(query)
 
-      _flick(query, from, to, {duration: 0.5}.merge(options))
+      Device.default.flick(query, from, to, options)
     end
 
     # Performs a `flick` heading `left` on the (first) view that matches `query`.
@@ -233,43 +233,6 @@ module Calabash
     # @see flick_down
     def flick_screen_down(options={})
       flick_down("* id:'content'", options)
-    end
-
-    # @!visibility private
-    def valid_query?(query)
-      query.is_a?(String)
-    end
-
-    # @!visibility private
-    def ensure_valid_query(query)
-      unless valid_query?(query)
-        raise ArgumentError, "invalid query '#{query}' (#{query.class})"
-      end
-    end
-
-    # @!visibility private
-    def _tap(query, options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _double_tap(query, options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _long_press(query, options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _pan(query, from, to, options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _flick(query, from, to, options={})
-      abstract_method!
     end
   end
 end

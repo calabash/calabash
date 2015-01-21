@@ -15,9 +15,11 @@ module Calabash
   require 'calabash/query_result'
   require 'calabash/screenshot'
   require 'calabash/gestures'
-  require 'calabash/patch'
+  require 'calabash/query'
 
+  require 'calabash/patch'
   Calabash::Patch.apply_patches!
+
 
   include Utility
   include Calabash::Operations

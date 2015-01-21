@@ -1,15 +1,17 @@
 describe Calabash::Gestures do
   let(:dummy) {Class.new {include Calabash}}
   let(:dummy_instance) {dummy.new}
+  let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
+  let(:dummy_device) {dummy_device_class.new}
 
   describe '#tap' do
-    it 'should invoke the implementation method' do
-      query = "my query"
-      options = {my: :arg}
+    it 'should delegate to the default device' do
+      args = ["my query", {my: :option}]
 
-      expect(dummy_instance).to receive(:_tap).with(query, options)
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:tap).with(*args)
 
-      dummy_instance.tap(query, options)
+      dummy_instance.tap(*args)
     end
 
     it 'raises an error if query is not passed' do
@@ -24,13 +26,13 @@ describe Calabash::Gestures do
   end
 
   describe '#double_tap' do
-    it 'should invoke the implementation method' do
-      query = "my query"
-      options = {my: :arg}
+    it 'should delegate to the default device' do
+      args = ["my query", {my: :option}]
 
-      expect(dummy_instance).to receive(:_double_tap).with(query, options)
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:double_tap).with(*args)
 
-      dummy_instance.double_tap(query, options)
+      dummy_instance.double_tap(*args)
     end
 
     it 'raises an error if query is not passed' do
@@ -45,13 +47,13 @@ describe Calabash::Gestures do
   end
 
   describe '#long_press' do
-    it 'should invoke the implementation method' do
-      query = "my query"
-      options = {my: :arg}
+    it 'should delegate to the default device' do
+      args = ["my query", {my: :option}]
 
-      expect(dummy_instance).to receive(:_long_press).with(query, options)
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:long_press).with(*args)
 
-      dummy_instance.long_press(query, options)
+      dummy_instance.long_press(*args)
     end
 
     it 'raises an error if query is not passed' do
@@ -66,15 +68,17 @@ describe Calabash::Gestures do
   end
 
   describe '#pan' do
-    it 'should invoke the implementation method' do
+    it 'should delegate to the default device' do
       query = "my query"
       from = {x: 0, y: 0}
       to = {x: 0, y: 0}
       options = {my: :arg}
+      args = [query, from, to, options]
 
-      expect(dummy_instance).to receive(:_pan).with(query, from, to, hash_including(options))
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:pan).with(*args)
 
-      dummy_instance.pan(query, from, to, options)
+      dummy_instance.pan(*args)
     end
 
     it 'raises an error if query is not passed' do
@@ -177,15 +181,17 @@ describe Calabash::Gestures do
   end
 
   describe '#flick' do
-    it 'should invoke the implementation method' do
+    it 'should delegate to the default device' do
       query = "my query"
       from = {x: 0, y: 0}
       to = {x: 0, y: 0}
       options = {my: :arg}
+      args = [query, from, to, options]
 
-      expect(dummy_instance).to receive(:_flick).with(query, from, to, hash_including(options))
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:flick).with(*args)
 
-      dummy_instance.flick(query, from, to, options)
+      dummy_instance.flick(*args)
     end
 
     it 'raises an error if query is not passed' do
@@ -284,36 +290,6 @@ describe Calabash::Gestures do
 
       expect(dummy_instance).to receive(:flick_down).with("* id:'content'", options)
       dummy_instance.flick_screen_down(options)
-    end
-  end
-
-  describe '#_tap' do
-    it 'should have an abstract implementation' do
-      expect{dummy_instance._tap('my query')}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_double_tap' do
-    it 'should have an abstract implementation' do
-      expect{dummy_instance._double_tap('my query')}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_long_press' do
-    it 'should have an abstract implementation' do
-      expect{dummy_instance._long_press('my query')}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_pan' do
-    it 'should have an abstract implementation' do
-      expect{dummy_instance._pan('my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_flick' do
-    it 'should have an abstract implementation' do
-      expect{dummy_instance._flick('my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 end

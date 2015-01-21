@@ -138,6 +138,46 @@ module Calabash
       abstract_method!
     end
 
+    # Performs a `tap` on the (first) view that matches `query`.
+    # @see Calabash::Gestures#tap
+    def tap(query, options={})
+      Query.ensure_valid_query(query)
+
+      _tap(query, {duration: 0.5}.merge(options))
+    end
+
+    # Performs a `double_tap` on the (first) view that matches `query`.
+    # @see Calabash::Gestures#double_tap
+    def double_tap(query, options={})
+      Query.ensure_valid_query(query)
+
+      _double_tap(query, options)
+    end
+
+    # Performs a `long_press` on the (first) view that matches `query`.
+    # @see Calabash::Gestures#long_press
+    def long_press(query, options={})
+      Query.ensure_valid_query(query)
+
+      _long_press(query, options)
+    end
+
+    # Performs a `pan` on the (first) view that matches `query`.
+    # @see Calabash::Gestures#pan
+    def pan(query, from, to, options={})
+      Query.ensure_valid_query(query)
+
+      _pan(query, from, to, {duration: 0.5}.merge(options))
+    end
+
+    # Performs a `flick` on the (first) view that matches `query`.
+    # @see Calabash::Gestures#flick
+    def flick(query, from, to, options={})
+      Query.ensure_valid_query(query)
+
+      _flick(query, from, to, {duration: 0.5}.merge(options))
+    end
+
     private
 
     # @!visibility private
@@ -200,6 +240,31 @@ module Calabash
       else
         raise ArgumentError, "Expected a String or Calabash::Application, got #{identifier_or_application.class}"
       end
+    end
+
+    # @!visibility private
+    def _tap(query, options={})
+        abstract_method!
+    end
+
+    # @!visibility private
+    def _double_tap(query, options={})
+        abstract_method!
+    end
+
+    # @!visibility private
+    def _long_press(query, options={})
+        abstract_method!
+    end
+
+    # @!visibility private
+    def _pan(query, from, to, options={})
+        abstract_method!
+    end
+
+    # @!visibility private
+    def _flick(query, from, to, options={})
+        abstract_method!
     end
   end
 end
