@@ -10,9 +10,11 @@ module Calabash
   require 'calabash/device'
   require 'calabash/http'
   require 'calabash/server'
+  require 'calabash/wait'
 
   include Utility
   include Calabash::Operations
+  include Calabash::Wait
 
   def calabash_start_app(opt={})
     _calabash_start_app(opt)
