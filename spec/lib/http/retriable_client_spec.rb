@@ -5,7 +5,7 @@ describe Calabash::HTTP::RetriableClient do
 
   describe '#get' do
     before do
-      allow(retriable_http_client).to receive(:retriable).and_yield
+      allow(Retriable).to receive(:retriable).and_yield
     end
 
     it 'should be able to make an http call using the client' do
@@ -48,7 +48,7 @@ describe Calabash::HTTP::RetriableClient do
       arguments = {timeout: :my_timeout, interval: :my_interval, retries: :my_retries}
       expected_arguments = {timeout: :my_timeout, interval: :my_interval, tries: :my_retries}
 
-      expect(retriable_http_client).to receive(:retriable).with(hash_including(expected_arguments)).and_return(true)
+      expect(Retriable).to receive(:retriable).with(hash_including(expected_arguments)).and_return(true)
 
       retriable_http_client.get(request, arguments)
     end
