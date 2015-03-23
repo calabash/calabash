@@ -71,5 +71,7 @@ Public License.}
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'guard-bundler'
   spec.add_development_dependency 'growl'
+  spec.add_development_dependency 'luffa'
 
 end
+
