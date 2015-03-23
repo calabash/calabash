@@ -34,7 +34,7 @@ Public License.}
   spec.platform      = Gem::Platform::RUBY
 
   spec.files         = gem_files
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.executables   = 'calabash'
   spec.require_paths = ['lib']
 
   spec.add_dependency 'cucumber', '~> 1.3'
