@@ -10,7 +10,7 @@ module Calabash
     # Log a message
     #
     # @param [String] message to log
-    # @param [Symbol] log level
+    # @param [Symbol] log_level
     #  Can be one of `{:info | :debug | :warn | :error }`
     def log(message, log_level = default_log_level)
       @output.write("#{message}\n") if should_log?(log_level)
