@@ -262,7 +262,6 @@ module Calabash
     # @return Returns truthy if the `queries` all match at least one view
     # @raise [ArgumentError] If given an invalid list of queries
     def views_exist?(queries)
-      p "GOT #{queries}"
       unless queries.is_a?(Array)
         queries = [queries]
       end
