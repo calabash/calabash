@@ -43,29 +43,33 @@ Public License.}
   spec.add_dependency 'slowhandcuke','~> 0.0', '>= 0.0.3'
   spec.add_dependency 'geocoder', '~> 1.1', '>= 1.1.8'
   spec.add_dependency 'httpclient', '~> 2.6'
-  spec.add_dependency 'awesome_print', '~> 1.6'
   spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
-  spec.add_dependency 'CFPropertyList','~> 2.2'
   spec.add_dependency 'sim_launcher', '< 0.5', '>= 0.4.13'
   spec.add_dependency 'run_loop', '>= 1.2.2', '< 2.0'
 
   # These dependencies should match the xamarin-test-cloud dependencies.
-  spec.add_dependency 'json', '~> 1.8'
-  spec.add_dependency 'retriable', '~> 1.3', '>= 1.3.3.1'
   spec.add_dependency 'rubyzip', '~> 1.1'
+  spec.add_dependency 'bundler', '>= 1.3.0', '< 2.0'
+
+  # Run-loop should control the version.
+  spec.add_dependency 'awesome_print'
+  spec.add_dependency 'CFPropertyList'
+  spec.add_dependency 'json'
+  spec.add_dependency 'retriable'
 
   # Development dependencies.
-  spec.add_development_dependency 'rake', '~> 10.3'
   spec.add_development_dependency 'yard', '~> 0.8'
   spec.add_development_dependency 'redcarpet', '~> 3.1'
-  spec.add_development_dependency 'travis', '~> 1.7'
+
+  # Run-loop should control the version.
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'travis'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-nav'
 
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'guard-rspec', '~> 4.3'
-  spec.add_development_dependency 'guard-bundler', '~> 2.0'
-  spec.add_development_dependency 'growl', '~> 1.0'
-  spec.add_development_dependency 'bundler', '>= 1.3.0', '< 2.0'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'guard-rspec'
+  spec.add_development_dependency 'guard-bundler'
+  spec.add_development_dependency 'growl'
 
 end
