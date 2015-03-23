@@ -30,5 +30,8 @@ module Calabash
     def self.xamarin_test_cloud?
       variable('XAMARIN_TEST_CLOUD') == '1'
     end
+
+    WAIT_TIMEOUT = variable('CAL_WAIT_TIMEOUT') &&
+        variable('CAL_WAIT_TIMEOUT').to_i
   end
 end

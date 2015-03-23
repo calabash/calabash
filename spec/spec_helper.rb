@@ -126,3 +126,15 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 end
+
+module AlwaysRaiseTimeout
+  def self.timeout(timeout, error_type, &block)
+    raise error_type, 'execution expired'
+  end
+end
+
+module NeverRaiseTimeout
+  def self.timeout(timeout, error_type, &block)
+    block.call
+  end
+end
