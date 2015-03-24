@@ -8,17 +8,18 @@ module Calabash
 
       # @todo this is a partial solution
       def calabash_start_app(application, options={})
-        launch_opts =
+        default_opts =
             {
                 :app => application.path,
                 :device_target => self.identifier,
                 :uia_strategy => :preferences,
             }
 
-
+        launch_opts = default_opts.merge(options)
         RunLoop.run(launch_opts)
         ensure_test_server_ready
-        extract_device_info!(fetch_device_info)
+        device_info = fetch_device_info
+        extract_device_info!(device_info)
       end
 
       def test_server_responding?

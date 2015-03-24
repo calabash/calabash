@@ -19,9 +19,11 @@ describe Calabash::IOS::Device do
 
   describe '#calabash_start_app' do
     it 'can launch an app' do
-      pending('not yet implemented')
-      expect(RunLoop).to receive(:run).with({}).and_return({})
+      expect(RunLoop).to receive(:run).and_return({})
       app = Calabash::Application.new('/path/to/my/app')
+      expect(device).to receive(:ensure_test_server_ready).and_return true
+      expect(device).to receive(:fetch_device_info).and_return({})
+      expect(device).to receive(:extract_device_info!).and_return true
       expect(device.calabash_start_app(app)).to be_truthy
     end
   end
