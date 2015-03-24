@@ -11,6 +11,8 @@ module Calabash
   require 'calabash/http'
   require 'calabash/server'
   require 'calabash/wait'
+  require 'calabash/query'
+  require 'calabash/query_result'
 
   include Utility
   include Calabash::Operations
