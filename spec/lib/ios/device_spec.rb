@@ -25,6 +25,8 @@ describe Calabash::IOS::Device do
       expect(device).to receive(:fetch_device_info).and_return({})
       expect(device).to receive(:extract_device_info!).and_return true
       expect(device.calabash_start_app(app)).to be_truthy
+      expect(device.run_loop).to be_a_kind_of(Hash)
+      expect(device.run_loop).to be == {}
     end
   end
 

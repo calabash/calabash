@@ -1,12 +1,14 @@
 module Calabash
   module IOS
     class Device < ::Calabash::Device
+
+      attr_reader :run_loop
+
       # TODO: Implement this method, remember to add unit tests
       def self.list_devices
         raise 'ni'
       end
 
-      # @todo this is a partial solution
       def calabash_start_app(application, options={})
         default_opts =
             {
@@ -16,7 +18,7 @@ module Calabash
             }
 
         launch_opts = default_opts.merge(options)
-        RunLoop.run(launch_opts)
+        @run_loop = RunLoop.run(launch_opts)
         ensure_test_server_ready
         device_info = fetch_device_info
         extract_device_info!(device_info)
