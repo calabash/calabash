@@ -4,6 +4,8 @@ require 'calabash/ios'
 require 'awesome_print'
 require 'pry'
 require 'tmpdir'
+require 'luffa'
+require 'resources/ios/ios_resources'
 
 # monkey patch for AwesomePrint + objects that implement '=='
 module AwesomePrint
