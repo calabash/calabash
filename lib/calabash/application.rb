@@ -12,7 +12,7 @@ module Calabash
     end
 
     def extract_identifier
-      raise 'cannot extract identifier'
+      abstract_method!
     end
 
     def identifier
