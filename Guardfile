@@ -14,4 +14,5 @@ guard :rspec, cmd: 'bundle exec rspec', spec_paths: ['spec/lib'] do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/calabash/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { 'spec/lib' }
+  watch('spec/resources/ios/ios_resources.rb') { 'spec/lib' }
 end
