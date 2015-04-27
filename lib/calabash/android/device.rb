@@ -28,6 +28,17 @@ module Calabash
       private
 
       # @!visibility private
+      def _screenshot(path)
+        cmd = "java -jar \"#{Screenshot::SCREENSHOT_JAR_PATH}\" #{identifier} \"#{File.expand_path(path)}\""
+
+        @logger.log "Taking screenshot using '#{cmd}'"
+        raise 'Could not take screenshot' unless system(cmd)
+
+        @logger.log("Saved screenshot as #{File.expand_path(path)}", :info)
+        path
+      end
+
+      # @!visibility private
       def _clear_app(identifier)
         adb("shell pm clear #{identifier}")
       end
