@@ -36,7 +36,7 @@ describe Calabash::Environment do
       expect(Calabash::Environment.xamarin_test_cloud?).to be true
     end
 
-    it 'should return true if the environment variable XAMARIN_TEST_CLOUD is not 1' do
+    it 'should return false if the environment variable XAMARIN_TEST_CLOUD is not 1' do
       allow(Calabash::Environment).to receive(:variable).with('XAMARIN_TEST_CLOUD').and_return('0')
 
       expect(Calabash::Environment.xamarin_test_cloud?).to be false

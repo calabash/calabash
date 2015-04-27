@@ -46,6 +46,17 @@ module Calabash
     end
 
     # Do not modify
+    # @see Screenshot#screenshot
+    def screenshot(name=nil)
+      if Managed.managed?
+        Managed.screenshot(name, self)
+      else
+        path = Screenshot.obtain_screenshot_path!(name)
+        _screenshot(path)
+      end
+    end
+
+    # Do not modify
     def install(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
@@ -100,6 +111,11 @@ module Calabash
     end
 
     private
+
+    # @!visibility private
+    def _screenshot(path)
+      abstract_method!
+    end
 
     # @!visibility private
     def _install(application)

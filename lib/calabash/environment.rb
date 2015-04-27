@@ -33,5 +33,8 @@ module Calabash
 
     WAIT_TIMEOUT = variable('CAL_WAIT_TIMEOUT') &&
         variable('CAL_WAIT_TIMEOUT').to_i
+
+    # @!visibility private
+    SCREENSHOT_DIRECTORY = variable('CAL_SCREENSHOT_DIR') || 'screenshots'
   end
 end
