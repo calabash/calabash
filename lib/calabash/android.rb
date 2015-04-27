@@ -6,6 +6,16 @@ module Calabash
     require 'calabash'
     include Calabash
 
+    # @!visibility private
+    def self.extended(base)
+      Calabash.send(:extended, base)
+    end
+
+    # @!visibility private
+    def self.included(base)
+      Calabash.send(:included, base)
+    end
+
     require 'calabash/android/environment'
 
     # Include old methods

@@ -3,6 +3,16 @@ module Calabash
     require 'calabash'
     include Calabash
 
+    # @!visibility private
+    def self.extended(base)
+      Calabash.send(:extended, base)
+    end
+
+    # @!visibility private
+    def self.included(base)
+      Calabash.send(:included, base)
+    end
+
     # Include old methods
     require_old File.join('calabash-cucumber', 'lib', 'calabash-cucumber')
     include Calabash::IOS::Operations
