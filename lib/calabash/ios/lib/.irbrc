@@ -17,7 +17,7 @@ require 'calabash/ios'
 
 SIM=Calabash::IOS::SimulatorLauncher.new()
 
-include Calabash::IOS
+extend Calabash::IOS
 
 Calabash::Logger.log_levels += [:debug] if Calabash::Environment::DEBUG
 
