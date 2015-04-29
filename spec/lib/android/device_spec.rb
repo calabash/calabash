@@ -16,14 +16,12 @@ describe Calabash::Android::Device do
     it 'should execute an adb command for the specified device' do
       serial = 'my-serial'
       command = 'my command'
-      adb_path = 'my-path/adb'
       device = dummy_device_class.new
       device.instance_eval do
         @identifier = serial
       end
 
-      allow(Calabash::Android::Environment).to receive(:adb_path).and_return(adb_path)
-      expect(device).to receive(:'`').with("#{adb_path} -s #{serial} #{command}")
+      expect(Calabash::Android::ADB).to receive(:command).with(command, serial)
 
       device.adb(command)
     end

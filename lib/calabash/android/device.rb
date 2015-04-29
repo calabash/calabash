@@ -6,9 +6,7 @@ module Calabash
       end
 
       def adb(command)
-        full_command = "#{Environment.adb_path} -s #{identifier} #{command}"
-        @logger.log("Executing: #{full_command}")
-        `#{full_command}`
+        ADB.command(command, identifier)
       end
 
       def installed_apps
