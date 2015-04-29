@@ -66,6 +66,27 @@ module Calabash
       def _clear_app(identifier)
         adb("shell pm clear #{identifier}")
       end
+
+      # @!visibility private
+      def _install(application)
+        @logger.log "Installing #{application.path}"
+        result = adb("install -r #{application.path}").lines.last
+
+        if result.downcase.chomp != 'success'
+          raise "Could not install app: #{result}"
+        end
+
+        unless installed_packages.include?(application.identifier)
+          raise 'App was not installed'
+        end
+
+        if application.is_a?(Android::Application)
+          if application.test_server
+            @logger.log "Installing the test-server as well"
+            install(application.test_server)
+          end
+        end
+      end
     end
   end
 end
