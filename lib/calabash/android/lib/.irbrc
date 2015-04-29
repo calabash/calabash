@@ -17,7 +17,7 @@ require 'calabash/android'
 
 include Calabash::Android
 
-Calabash::Logger.log_levels += [:debug] if Calabash::Environment.variable('CALABASH_DEBUG') == '1'
+Calabash::Logger.log_levels += [:debug] if Calabash::Environment::DEBUG
 
 def embed(x,y=nil,z=nil)
   puts "Screenshot at #{x}"
