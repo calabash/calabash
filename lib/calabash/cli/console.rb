@@ -66,7 +66,7 @@ module Calabash
         elsif @platform == :ios
           irbrc_path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'ios', 'lib', '.irbrc'))
 
-          Environment.set_variable!('APP_BUNDLE_PATH', application_path)
+          console_environment['CAL_APP'] = Environment::APP_PATH || application_path
         else
           raise "Invalid platform '#{@platform}'"
         end
