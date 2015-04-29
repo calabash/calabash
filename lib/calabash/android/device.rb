@@ -1,6 +1,20 @@
 module Calabash
   module Android
     class Device < Calabash::Android::Operations::Device
+      def self.default_serial
+        serials = list_serials
+
+        if serials.length == 0
+          raise 'No devices visible on adb. Ensure a device is visible in `adb devices`'
+        end
+
+        if serials.length > 1
+          raise 'More than one device connected. Use $CAL_IDENTIFIER to select serial'
+        end
+
+        serials.first
+      end
+
       def self.list_serials
         output = ADB.command('devices')
         lines = output.lines

@@ -12,6 +12,26 @@ describe Calabash::Android::Device do
     expect(Calabash::Android::Device.ancestors).to include(Calabash::Device)
   end
 
+  describe '#default_serial' do
+    it 'should fail if no devices are connected' do
+      expect(dummy_device_class).to receive(:list_serials).and_return([])
+
+      expect{dummy_device_class.default_serial}.to raise_error('No devices visible on adb. Ensure a device is visible in `adb devices`')
+    end
+
+    it 'should fail if more than one device are connected' do
+      expect(dummy_device_class).to receive(:list_serials).and_return(['a', 'b'])
+
+      expect{dummy_device_class.default_serial}.to raise_error('More than one device connected. Use $CAL_IDENTIFIER to select serial')
+    end
+
+    it 'should return the serial if only one device is connected' do
+      expect(dummy_device_class).to receive(:list_serials).and_return(['my-serial'])
+
+      expect(dummy_device_class.default_serial).to eq('my-serial')
+    end
+  end
+
   describe '#list_serials' do
     it 'should be able to list all connected serials' do
       devices = ['abcdefg123465abc', 'abcdefg123-ad---465abc', '2.2:abda', 'a', '55:555:55.555.555:55']
