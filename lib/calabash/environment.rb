@@ -17,13 +17,6 @@ module Calabash
       ENV[name] = value
     end
 
-    # The path for the default application being tested
-    #
-    # @return Path of default application
-    def self.default_application_path
-      Environment.variable('CALABASH_APP')
-    end
-
     # Are we running in the Xamarin Test Cloud?
     #
     # @return [Boolean] Returns true if cucumber is running in the test cloud.
@@ -31,10 +24,19 @@ module Calabash
       variable('XAMARIN_TEST_CLOUD') == '1'
     end
 
-    WAIT_TIMEOUT = variable('CAL_WAIT_TIMEOUT') &&
-        variable('CAL_WAIT_TIMEOUT').to_i
+    # The path of the default app under test. This value is used if no app is
+    # given from the command line. e.g. $ calabash run.
+    APP_PATH = variable('CAL_APP')
 
-    # @!visibility private
+    # The time in seconds to wait by default before failing in the methods of
+    # {Calabash::Wait}. Defaults to 30. Notice that this value is only the
+    # **default** for {Calabash::Wait} and that the actual default wait timeout
+    # can be changed at any time during the test.
+    WAIT_TIMEOUT = (variable('CAL_WAIT_TIMEOUT') &&
+        variable('CAL_WAIT_TIMEOUT').to_i) || 30
+
+    # The directory to save screenshots in. The directory can be absolute or
+    # relative. Defaults to 'screenshots'.
     SCREENSHOT_DIRECTORY = variable('CAL_SCREENSHOT_DIR') || 'screenshots'
   end
 end
