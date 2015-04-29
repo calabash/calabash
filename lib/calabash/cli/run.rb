@@ -54,9 +54,6 @@ module Calabash
         environment = {}
 
         if @platform == :android
-            main_activity = Environment.variable('MAIN_ACTIVITY') ||
-                Android::Build::Application.new(application_path).main_activity
-
           if Environment.variable('TEST_APP_PATH')
             test_server_path = Environment.variable('TEST_APP_PATH')
           else
@@ -69,7 +66,6 @@ module Calabash
 
           environment =
               {
-                  'MAIN_ACTIVITY' => main_activity,
                   'TEST_APP_PATH' => test_server_path,
                   'APP_PATH' => application_path
               }

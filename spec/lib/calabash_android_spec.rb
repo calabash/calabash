@@ -17,11 +17,9 @@ describe Calabash::Android do
   describe '#_calabash_start_app' do
     let(:app_path) {File.expand_path('./app_path')}
     let(:test_app_path) {File.expand_path('./test_app_path')}
-    let(:main_activity) {'main-activity'}
 
     before do
       allow(Calabash::Environment).to receive(:variable).with('APP_PATH').and_return(app_path)
-      allow(Calabash::Environment).to receive(:variable).with('MAIN_ACTIVITY').and_return(main_activity)
       allow(Calabash::Environment).to receive(:variable).with('TEST_APP_PATH').and_return(test_app_path)
     end
 
@@ -37,7 +35,7 @@ describe Calabash::Android do
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
       allow(Calabash::Android::Application).to receive(:new).with(app_path, test_app_path).and_return(application)
-      expect(dummy_device).to receive(:calabash_start_app).with(application, hash_including(main_activity: main_activity))
+      expect(dummy_device).to receive(:calabash_start_app).with(application, {})
 
       dummy.calabash_start_app
     end

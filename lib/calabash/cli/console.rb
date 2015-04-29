@@ -63,14 +63,6 @@ module Calabash
 
             console_environment['CAL_TEST_SERVER'] = test_server.path
           end
-
-          if Environment.variable('CAL_MAIN_ACTIVITY')
-            console_environment['CAL_MAIN_ACTIVITY'] = Environment.variable('CAL_MAIN_ACTIVITY')
-          else
-            main_activity = Android::Build::Application.new(application_path).main_activity
-
-            console_environment['CAL_MAIN_ACTIVITY'] = main_activity
-          end
         elsif @platform == :ios
           irbrc_path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'ios', 'lib', '.irbrc'))
 
