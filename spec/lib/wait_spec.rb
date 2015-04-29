@@ -1,6 +1,10 @@
 describe Calabash::Wait do
   let(:dummy) {Class.new {include Calabash::Wait; def screenshot_embed; end; def query(_); end}.new}
 
+  after do
+    hide_const('Calabash::Wait::Timeout')
+  end
+
   describe 'default_options' do
     it 'should have the correct default values' do
       wait_file = File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'wait.rb')

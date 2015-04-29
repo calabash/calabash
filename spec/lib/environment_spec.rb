@@ -46,6 +46,12 @@ describe Calabash::Environment do
       Calabash::Environment.constants.each {|constant| Calabash::Environment.send(:remove_const, constant)}
     end
 
+    after do
+      stub_const('ENV', {'CAL_APP' => nil, 'CAL_WAIT_TIMEOUT' => nil, 'CAL_SCREENSHOT_DIR' => nil})
+
+      load environment_file
+    end
+
     it 'should have the right default values' do
       stub_const('ENV', {'CAL_APP' => nil, 'CAL_WAIT_TIMEOUT' => nil, 'CAL_SCREENSHOT_DIR' => nil})
 
