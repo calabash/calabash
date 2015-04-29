@@ -4,8 +4,8 @@ module Calabash
       def _calabash_start_app(options={})
         test_options = options.dup
 
-        application_path = test_options[:application_path] || Environment.variable('APP_PATH')
-        test_server_path = test_options[:test_server_path] || Environment.variable('TEST_APP_PATH')
+        application_path = test_options[:application_path] || Environment::APP_PATH
+        test_server_path = test_options[:test_server_path] || Environment::TEST_SERVER_PATH
 
         test_options.delete(:application_path)
         test_options.delete(:test_server_path)

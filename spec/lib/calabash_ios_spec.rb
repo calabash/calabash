@@ -18,7 +18,7 @@ describe Calabash::IOS do
     let(:app_identifier) {'identifier'}
 
     before do
-      allow(Calabash::Environment).to receive(:variable).with('APP').and_return(app_path)
+      stub_const('Calabash::Environment::APP_PATH', app_path)
       allow(Calabash::Environment).to receive(:variable).with('BUNDLE_ID').and_return(app_identifier)
     end
 

@@ -45,7 +45,7 @@ module Calabash
       end
 
       def enter_console(application_path)
-        irbrc_path = Environment.variable('CAL_IRBRC')
+        irbrc_path = Environment::IRBRC
 
         console_environment = {'CAL_DEBUG' => @options[:verbose] ? '1' : '0'}
 

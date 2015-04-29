@@ -54,8 +54,8 @@ module Calabash
         environment = {}
 
         if @platform == :android
-          if Environment.variable('TEST_APP_PATH')
-            test_server_path = Environment.variable('TEST_APP_PATH')
+          if Environment::TEST_SERVER_PATH
+            test_server_path = Environment::TEST_SERVER_PATH
           else
             test_server = Android::Build::TestServer.new(application_path)
 
