@@ -2,6 +2,24 @@ describe Calabash::Application do
 
   let(:app_path) { File.join(Dir.tmpdir, 'my.app') }
 
+  describe '#default' do
+    after do
+      Calabash::Application.default = nil
+    end
+
+    it 'should be able to set its default application' do
+      Calabash::Application.default = :my_app
+    end
+
+    it 'should be able to get its default application' do
+      app = :my_app
+
+      Calabash::Application.default = app
+
+      expect(Calabash::Application.default).to eq(app)
+    end
+  end
+
   describe '.new' do
     it 'raises an error if app path does not exist' do
       expect(File).to receive(:exist?).with(app_path).and_return(false)

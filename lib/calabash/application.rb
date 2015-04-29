@@ -1,5 +1,15 @@
 module Calabash
   class Application
+    @@default = nil
+
+    def self.default
+      @@default
+    end
+
+    def self.default=(value)
+      @@default = value
+    end
+
     attr_reader :path
 
     # @raise [RuntimeError] Raises an error if `application_path` does not
