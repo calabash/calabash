@@ -21,6 +21,4 @@ include Calabash::IOS
 
 Calabash::Logger.log_levels += [:debug] if Calabash::Environment::DEBUG
 
-def embed(x,y=nil,z=nil)
-  puts "Screenshot at #{x}"
-end
+Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
