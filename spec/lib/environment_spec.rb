@@ -42,36 +42,50 @@ describe Calabash::Environment do
   describe 'constants' do
     let(:environment_file) {File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'environment.rb')}
 
-    before do
+    def _reset_env
       Calabash::Environment.constants.each {|constant| Calabash::Environment.send(:remove_const, constant)}
+    end
+
+    def _set_env(env)
+      _reset_env
+      stub_const('ENV', env)
+      load environment_file
+    end
+
+    def _nil_env
+      _set_env({})
+    end
+
+    before do
+      _reset_env
     end
 
     after do
-      Calabash::Environment.constants.each {|constant| Calabash::Environment.send(:remove_const, constant)}
-
-      stub_const('ENV', {'CAL_APP' => nil, 'CAL_WAIT_TIMEOUT' => nil, 'CAL_SCREENSHOT_DIR' => nil})
-
-      load environment_file
+      _nil_env
     end
 
     it 'should have the right default values' do
-      stub_const('ENV', {'CAL_APP' => nil, 'CAL_WAIT_TIMEOUT' => nil, 'CAL_SCREENSHOT_DIR' => nil})
+      _nil_env
 
-      load environment_file
-
+      expect(Calabash::Environment::DEBUG).to eq(false)
       expect(Calabash::Environment::APP_PATH).to eq(nil)
       expect(Calabash::Environment::WAIT_TIMEOUT).to eq(30)
       expect(Calabash::Environment::SCREENSHOT_DIRECTORY).to eq('screenshots')
     end
 
     it 'should return the correct values if the env is set' do
-      stub_const('ENV', {'CAL_APP' => 'my-app', 'CAL_WAIT_TIMEOUT' => '999', 'CAL_SCREENSHOT_DIR' => 'my-directory'})
+      _set_env('CAL_DEBUG' => '1', 'CAL_APP' => 'my-app', 'CAL_WAIT_TIMEOUT' => '999', 'CAL_SCREENSHOT_DIR' => 'my-directory')
 
-      load environment_file
-
+      expect(Calabash::Environment::DEBUG).to eq(true)
       expect(Calabash::Environment::APP_PATH).to eq('my-app')
       expect(Calabash::Environment::WAIT_TIMEOUT).to eq(999)
       expect(Calabash::Environment::SCREENSHOT_DIRECTORY).to eq('my-directory')
+
+      _set_env('CAL_DEBUG' => '0')
+      expect(Calabash::Environment::DEBUG).to eq(false)
+
+      _set_env('CAL_DEBUG' => 'true')
+      expect(Calabash::Environment::DEBUG).to eq(false)
     end
   end
 end

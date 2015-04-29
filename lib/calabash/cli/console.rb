@@ -77,7 +77,7 @@ module Calabash
 
         Environment.set_variable!('IRBRC', path)
 
-        environment = {'CALABASH_DEBUG' => @options[:verbose] ? '1' : '0'}
+        environment = {'CAL_DEBUG' => @options[:verbose] ? '1' : '0'}
 
         Logger.info 'Running irb...'
 
