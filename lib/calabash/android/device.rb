@@ -87,6 +87,20 @@ module Calabash
           end
         end
       end
+
+      # @!visibility private
+      def _uninstall(package)
+        @logger.log "Uninstalling #{package}"
+        result = adb("uninstall #{package}").lines.last
+
+        if result.downcase.chomp != 'success'
+          raise "Could not uninstall app: #{result}"
+        end
+
+        if installed_packages.include?(package)
+          raise 'App was not uninstalled'
+        end
+      end
     end
   end
 end
