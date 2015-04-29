@@ -1,24 +1,53 @@
-require 'irb/completion'
-require 'irb/ext/save-history'
-require 'awesome_print'
-AwesomePrint.irb!
+begin
+    require 'irb/completion'
+    require 'irb/ext/save-history'
 
-ARGV.concat [ '--readline',
-              '--prompt-mode',
-              'simple']
+    begin
+        require 'awesome_print'
+    rescue LoadError => e
+        msg = ["Caught a LoadError: could not load 'awesome_print'",
+             "#{e}",
+             '',
+             'Use bundler (recommended) or uninstall awesome_print.',
+             '',
+             '# Use bundler (recommended)',
+             '$ bundle update',
+             '$ bundle exec calabash console [path to apk]',
+             '',
+             '# Uninstall',
+             '$ gem update --system',
+             '$ gem uninstall -Vax --force --no-abort-on-dependent awesome_print']
+        puts msg
+        exit(1)
+    end
 
-# 50 entries in the list
-IRB.conf[:SAVE_HISTORY] = 50
+    AwesomePrint.irb!
 
-# Store results in home directory with specified file name
-IRB.conf[:HISTORY_FILE] = '.irb-history'
+    ARGV.concat [ '--readline',
+                  '--prompt-mode',
+                  'simple']
 
-require 'calabash/android'
+    # 50 entries in the list
+    IRB.conf[:SAVE_HISTORY] = 50
 
-include Calabash::Android
+    # Store results in home directory with specified file name
+    IRB.conf[:HISTORY_FILE] = '.irb-history'
 
-Calabash::Logger.log_levels += [:debug] if Calabash::Environment.variable('CALABASH_DEBUG') == '1'
+    require 'calabash/android'
 
-def embed(x,y=nil,z=nil)
-  puts "Screenshot at #{x}"
+    extend Calabash::Android
+
+    identifier = Calabash::Android::Device.default_serial
+    server = Calabash::Android::Server.default
+
+    Calabash::Android::Device.default = Calabash::Android::Device.new(identifier, server)
+
+    Calabash::Logger.log_levels += [:debug] if Calabash::Environment::DEBUG
+
+    Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
+rescue Exception => e
+    puts 'Unable to start console:'
+    puts "#{e.class}: #{e.message}"
+    puts "#{e.backtrace.join("\n")}"
+    exit(1)
 end

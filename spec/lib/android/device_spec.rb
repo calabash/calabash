@@ -12,18 +12,56 @@ describe Calabash::Android::Device do
     expect(Calabash::Android::Device.ancestors).to include(Calabash::Device)
   end
 
+  describe '#default_serial' do
+    it 'should fail if no devices are connected' do
+      expect(dummy_device_class).to receive(:list_serials).and_return([])
+
+      expect{dummy_device_class.default_serial}.to raise_error('No devices visible on adb. Ensure a device is visible in `adb devices`')
+    end
+
+    it 'should fail if more than one device are connected' do
+      expect(dummy_device_class).to receive(:list_serials).and_return(['a', 'b'])
+
+      expect{dummy_device_class.default_serial}.to raise_error('More than one device connected. Use $CAL_IDENTIFIER to select serial')
+    end
+
+    it 'should return the serial if only one device is connected' do
+      expect(dummy_device_class).to receive(:list_serials).and_return(['my-serial'])
+
+      expect(dummy_device_class.default_serial).to eq('my-serial')
+    end
+  end
+
+  describe '#list_serials' do
+    it 'should be able to list all connected serials' do
+      devices = ['abcdefg123465abc', 'abcdefg123-ad---465abc', '2.2:abda', 'a', '55:555:55.555.555:55']
+
+      expect(Calabash::Android::ADB).to receive(:command).with('devices').and_return(<<eos
+**Daemon not running**
+**Starting adb
+List of devices attached
+#{devices[0]}	device
+#{devices[1]}	device
+#{devices[2]}	device
+#{devices[3]}	device
+#{devices[4]}	device
+eos
+)
+
+      expect(dummy_device_class.list_serials).to eq(devices)
+    end
+  end
+
   describe '#adb' do
     it 'should execute an adb command for the specified device' do
       serial = 'my-serial'
       command = 'my command'
-      adb_path = 'my-path/adb'
       device = dummy_device_class.new
       device.instance_eval do
         @identifier = serial
       end
 
-      allow(Calabash::Android::Environment).to receive(:adb_path).and_return(adb_path)
-      expect(device).to receive(:'`').with("#{adb_path} -s #{serial} #{command}")
+      expect(Calabash::Android::ADB).to receive(:command).with(command, serial)
 
       device.adb(command)
     end

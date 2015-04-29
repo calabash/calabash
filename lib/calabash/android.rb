@@ -27,5 +27,7 @@ module Calabash
     require 'calabash/android/operations'
     require 'calabash/android/device'
     require 'calabash/android/screenshot'
+    require 'calabash/android/server'
+    require 'calabash/android/adb'
   end
 end

@@ -4,7 +4,8 @@ module Calabash
       def _calabash_start_app(options={})
         test_options = options.dup
 
-        app_path = Environment.variable('APP')
+        app_path = Environment::APP_PATH
+        # @todo: fix
         application_identifier = Environment.variable('BUNDLE_ID')
 
         application_path = test_options.fetch(:application_path, app_path)

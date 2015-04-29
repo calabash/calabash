@@ -1,14 +1,38 @@
 module Calabash
   module Android
     class Device < Calabash::Android::Operations::Device
-      def self.list_devices
-        connected_devices
+      def self.default_serial
+        serials = list_serials
+
+        if serials.length == 0
+          raise 'No devices visible on adb. Ensure a device is visible in `adb devices`'
+        end
+
+        if serials.length > 1
+          raise 'More than one device connected. Use $CAL_IDENTIFIER to select serial'
+        end
+
+        serials.first
+      end
+
+      def self.list_serials
+        output = ADB.command('devices')
+        lines = output.lines
+        index = lines.index{|line| line.start_with?('List of devices attached')}
+
+        if index.nil?
+          raise "Could not parse adb output: '#{lines}'"
+        end
+
+        device_lines = lines[(index+1)..-1].select{|line| line.strip != ''}
+
+        device_lines.collect do |line|
+          line.match(/([^\s]+)/).captures.first
+        end
       end
 
       def adb(command)
-        full_command = "#{Environment.adb_path} -s #{identifier} #{command}"
-        @logger.log("Executing: #{full_command}")
-        `#{full_command}`
+        ADB.command(command, identifier)
       end
 
       def installed_apps
