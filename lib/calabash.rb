@@ -50,23 +50,28 @@ module Calabash
   end
 
   # @!visibility private
-  def self.included(base)
-    if base.to_s == 'Calabash::Android' || base.to_s == 'Calabash::IOS'
-      return
-    end
-
+  def self.add_embed_method(base, method)
     # These methods will be invoked **before** the base module is mutated.
     # This means that no methods defined in the base module stem from Calabash
     # yet.
     unless base.respond_to?(:embed)
       # The 'embed' method was not defined in the including base module. We
       # don't want to define embed as Calabash's own method, as Calabash should
-      # not be globally mutated because of this include. Notice that the
+      # not be globally mutated because of this include/extend. Notice that the
       # embedding context might be mutated. e.g. when Calabash detects it is
       # running in the context of Cucumber. Ruby acknowledges this change in
-      # all modules that include the EmbeddingContext module.
-      base.send(:include, EmbeddingContext)
+      # all modules that include/extend the EmbeddingContext module.
+      base.send(method, EmbeddingContext)
     end
+  end
+
+  # @!visibility private
+  def self.included(base)
+    if base.to_s == 'Calabash::Android' || base.to_s == 'Calabash::IOS'
+      return
+    end
+
+    add_embed_method(base, :include)
   end
 
   # @!visibility private
@@ -75,6 +80,8 @@ module Calabash
     # This is a hook to obtain this method
     if base.singleton_class.included_modules.map(&:to_s).include?('Cucumber::RbSupport::RbWorld')
       on_cucumber_context(base)
+    else
+      add_embed_method(base, :extend)
     end
   end
 
