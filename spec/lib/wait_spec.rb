@@ -8,26 +8,13 @@ describe Calabash::Wait do
 
       default_options = Calabash::Wait.default_options
 
-      expect(default_options[:timeout]).to eq(30)
+      expect(default_options[:timeout]).to eq(Calabash::Environment::WAIT_TIMEOUT)
       expect(default_options[:message].call({timeout: 10})).to eq("Timed out after waiting for 10 seconds...")
       expect(default_options[:retry_frequency]).to eq(0.3)
       expect(default_options[:post_timeout]).to eq(0)
       expect(default_options[:exception_class]).to eq(Calabash::Wait::TimeoutError)
       expect(default_options[:screenshot_on_error]).to eq(true)
 
-      load wait_file
-    end
-
-    it 'should use environment variables for defaults' do
-      wait_file = File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'wait.rb')
-      stub_const('Calabash::Environment::WAIT_TIMEOUT', 5)
-      load wait_file
-
-      default_options = Calabash::Wait.default_options
-
-      expect(default_options[:timeout]).to eq(5)
-
-      stub_const('Calabash::Environment::WAIT_TIMEOUT', nil)
       load wait_file
     end
 

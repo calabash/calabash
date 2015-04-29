@@ -8,7 +8,7 @@ module Calabash
     @@default_options =
         {
             # default upper limit on how long to wait
-            timeout: Environment::WAIT_TIMEOUT || 30,
+            timeout: Environment::WAIT_TIMEOUT,
             # default message (String or Proc) if timeout occurs
             message: lambda do |options|
               "Timed out after waiting for #{options[:timeout]} seconds..."

@@ -7,11 +7,11 @@ module Calabash
         if first_argument.nil? || first_argument.start_with?('-')
           # If the argument begins with a dash, we assume the user meant
           # to specify a cucumber argument, not an application
-          Logger.info("No application specified. Using default application specified by env variable CALABASH_APP")
-          application = Environment.default_application_path
+          Logger.info("No application specified. Using default application specified by env variable CAL_APP")
+          application = Environment::APP_PATH
           Logger.debug("New application: '#{application}'")
 
-          fail("No application given and env variable CALABASH_APP is not set.", :run) if application.nil?
+          fail("No application given and env variable CAL_APP is not set.", :run) if application.nil?
         else
           # If the argument does not begin with a dash, we assume the user meant
           # to specify an application, not a cucumber argument
