@@ -45,43 +45,47 @@ module Calabash
       end
 
       def enter_console(application_path)
-        path = Environment.variable('CALABASH_IRBRC')
-        path ||= File.expand_path('.irbrc') if File.exist?('.irbrc')
+        irbrc_path = Environment.variable('CAL_IRBRC')
+
+        console_environment = {'CAL_DEBUG' => @options[:verbose] ? '1' : '0'}
 
         if @platform == :android
-          path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'android', 'lib', '.irbrc'))
+          irbrc_path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'android', 'lib', '.irbrc'))
 
-          unless Environment.variable('APP_PATH')
-            Environment.set_variable!('APP_PATH', application_path)
-          end
+          console_environment['CAL_APP'] = Environment::APP_PATH || application_path
 
-          unless Environment.variable('TEST_APP_PATH')
+          if Environment::TEST_SERVER_PATH
+            console_environment['CAL_TEST_SERVER'] = Environment::TEST_SERVER_PATH
+          else
             test_server = Android::Build::TestServer.new(application_path)
 
             raise 'Cannot locate test-server' unless test_server.exists?
 
-            Environment.set_variable!('TEST_APP_PATH', test_server.path)
+            console_environment['CAL_TEST_SERVER'] = test_server.path
           end
 
-          unless Environment.variable('MAIN_ACTIVITY')
+          if Environment.variable('CAL_MAIN_ACTIVITY')
+            console_environment['CAL_MAIN_ACTIVITY'] = Environment.variable('CAL_MAIN_ACTIVITY')
+          else
             main_activity = Android::Build::Application.new(application_path).main_activity
-            Environment.set_variable!('MAIN_ACTIVITY', main_activity)
+
+            console_environment['CAL_MAIN_ACTIVITY'] = main_activity
           end
         elsif @platform == :ios
-          path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'ios', 'lib', '.irbrc'))
+          irbrc_path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'ios', 'lib', '.irbrc'))
 
           Environment.set_variable!('APP_BUNDLE_PATH', application_path)
         else
           raise "Invalid platform '#{@platform}'"
         end
 
-        Environment.set_variable!('IRBRC', path)
-
-        environment = {'CAL_DEBUG' => @options[:verbose] ? '1' : '0'}
+        console_environment['IRBRC'] = irbrc_path
 
         Logger.info 'Running irb...'
+        Logger.debug "From file: '#{irbrc_path}'"
+        Logger.debug "With ENV: '#{console_environment}'"
 
-        exec(environment, 'irb')
+        exec(console_environment, 'irb')
       end
     end
   end
