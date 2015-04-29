@@ -5,11 +5,11 @@ module Calabash
         application = @arguments.shift
 
         if application.nil?
-          Logger.info("No application specified. Using default application specified by env variable CALABASH_APP")
-          application = Environment.default_application_path
+          Logger.info("No application specified. Using default application specified by env variable CAL_APP")
+          application = Environment::APP_PATH
           Logger.debug("New application: '#{application}'")
 
-          fail("No application given and env variable CALABASH_APP is not set.", :console) if application.nil?
+          fail("No application given and env variable CAL_APP is not set.", :console) if application.nil?
         end
 
         if File.exists?(application)
