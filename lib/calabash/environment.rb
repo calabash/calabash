@@ -24,6 +24,9 @@ module Calabash
       variable('XAMARIN_TEST_CLOUD') == '1'
     end
 
+    # Is Calabash running in debug mode. True if $CAL_DEBUG is '1'
+    DEBUG = variable('CAL_DEBUG') == '1'
+
     # The path of the default app under test. This value is used if no app is
     # given from the command line. e.g. $ calabash run.
     APP_PATH = variable('CAL_APP')
