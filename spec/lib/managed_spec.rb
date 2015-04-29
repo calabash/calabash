@@ -45,6 +45,14 @@ describe Calabash::Managed do
       expect(Calabash::Managed.clear_app(*args)).to eq(correct_value)
     end
 
+    it 'should never redefine screenshot' do
+      allow(Calabash::Managed).to receive(:screenshot).and_return(correct_value)
+
+      force_require 'calabash/managed'
+
+      expect(Calabash::Managed.screenshot('my name', nil)).to eq(correct_value)
+    end
+
     it 'should never redefine _managed?' do
       allow(Calabash::Managed).to receive(:_managed?).and_return(correct_value)
 

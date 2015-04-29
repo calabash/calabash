@@ -14,10 +14,12 @@ module Calabash
   require 'calabash/wait'
   require 'calabash/query'
   require 'calabash/query_result'
+  require 'calabash/screenshot'
 
   include Utility
   include Calabash::Operations
   include Calabash::Wait
+  include Calabash::Screenshot
 
   def calabash_start_app(opt={})
     _calabash_start_app(opt)

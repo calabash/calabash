@@ -172,6 +172,14 @@ describe Calabash::Device do
     end
   end
 
+  describe '#_screenshot' do
+    it 'should have an abstract implementation' do
+      arg = 'my-arg'
+
+      expect{device.send(:_screenshot, arg)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
   describe '#ensure_test_server_ready' do
     it 'should raise a runtime error if the test server does not respond' do
       allow(Timeout).to receive(:timeout).with(an_instance_of(Fixnum), Calabash::Device::EnsureTestServerReadyTimeoutError).and_raise(Calabash::Device::EnsureTestServerReadyTimeoutError.new)
@@ -245,6 +253,33 @@ describe Calabash::Device do
       identifier = 'my-identifier'
 
       expect(device.send(:parse_identifier_or_app_parameters, identifier)).to be == identifier
+    end
+  end
+
+  describe '#screenshot' do
+    let(:screenshot_name) {'my-screenshot'}
+
+    describe 'when running in a managed environment' do
+      it 'should invoke the managed impl' do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_screenshot)
+        expect(Calabash::Managed).to receive(:screenshot).with(screenshot_name, device)
+
+        device.screenshot(screenshot_name)
+      end
+    end
+
+    describe 'when running in an unmanaged environment' do
+      it 'should invoke the managed impl' do
+        screenshot_path = :my_screenshot_path
+
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_screenshot).with(screenshot_path)
+        expect(Calabash::Screenshot).to receive(:obtain_screenshot_path!).with(screenshot_name).and_return(screenshot_path)
+        expect(Calabash::Managed).not_to receive(:screenshot)
+
+        device.screenshot(screenshot_name)
+      end
     end
   end
 end

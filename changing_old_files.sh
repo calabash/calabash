@@ -6,3 +6,8 @@
 
 ./calabash_git_mv.sh old/android/ruby-gem/lib/calabash-android/java_keystore.rb lib/calabash/android/build/java_keystore.rb
 ./calabash_git_commit.sh -m \"Move java keystore file\"
+
+./calabash_git_mv.sh old/android/ruby-gem/lib/calabash-android/lib/screenshotTaker.jar lib/calabash/android/lib/screenshot_taker.jar
+./calabash_git_commit.sh -m \"Move screenshot taker jar\"
+
+

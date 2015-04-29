@@ -46,6 +46,13 @@ module Calabash
     end
 
     # @!visibility private
+    unless respond_to?(:screenshot)
+      define_singleton_method(:screenshot) do |name, device|
+        invalid_managed_environment!
+      end
+    end
+
+    # @!visibility private
     unless respond_to?(:_managed?)
       define_singleton_method(:_managed?) do
         false
