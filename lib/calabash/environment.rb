@@ -41,5 +41,14 @@ module Calabash
     # The directory to save screenshots in. The directory can be absolute or
     # relative. Defaults to 'screenshots'.
     SCREENSHOT_DIRECTORY = variable('CAL_SCREENSHOT_DIR') || 'screenshots'
+
+    # The irbrc file to load when starting a console
+    IRBRC = (variable('CAL_IRBRC') || (File.exist?('.irbrc') && File.expand_path('.irbrc')) || nil)
+
+    # The activity to start in Android.
+    MAIN_ACTIVITY = variable('CAL_MAIN_ACTIVITY')
+
+    # The Android test server path
+    TEST_SERVER_PATH = variable('CAL_TEST_SERVER')
   end
 end
