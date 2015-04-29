@@ -1,7 +1,7 @@
 module Calabash
   module Android
     class Device < Calabash::Android::Operations::Device
-      def self.list_devices
+      def self.list_serials
         output = ADB.command('devices')
         lines = output.lines
         index = lines.index{|line| line.start_with?('List of devices attached')}

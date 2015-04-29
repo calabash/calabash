@@ -12,8 +12,8 @@ describe Calabash::Android::Device do
     expect(Calabash::Android::Device.ancestors).to include(Calabash::Device)
   end
 
-  describe '#list_devices' do
-    it 'should be able to list all connected devices' do
+  describe '#list_serials' do
+    it 'should be able to list all connected serials' do
       devices = ['abcdefg123465abc', 'abcdefg123-ad---465abc', '2.2:abda', 'a', '55:555:55.555.555:55']
 
       expect(Calabash::Android::ADB).to receive(:command).with('devices').and_return(<<eos
@@ -28,7 +28,7 @@ List of devices attached
 eos
 )
 
-      expect(dummy_device_class.list_devices).to eq(devices)
+      expect(dummy_device_class.list_serials).to eq(devices)
     end
   end
 
