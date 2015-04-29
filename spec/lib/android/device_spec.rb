@@ -67,11 +67,11 @@ eos
     end
   end
 
-  describe '#installed_apps' do
-    it 'should be able to list installed applications' do
+  describe '#installed_packages' do
+    it 'should be able to list installed packages' do
       allow(dummy_device).to receive(:adb).with('shell pm list packages').and_return("package:com.myapp2.app\npackage:com.android.androidapp\npackage:com.app\n")
 
-      expect(dummy_device.installed_apps).to eq([
+      expect(dummy_device.installed_packages).to eq([
                                                     {id: 'com.myapp2.app'},
                                                     {id: 'com.android.androidapp'},
                                                     {id: 'com.app'}

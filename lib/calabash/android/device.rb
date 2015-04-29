@@ -35,9 +35,9 @@ module Calabash
         ADB.command(command, identifier)
       end
 
-      def installed_apps
+      def installed_packages
         adb('shell pm list packages').lines.map do |line|
-          {id: line.sub('package:', '').chomp}
+          line.sub('package:', '').chomp
         end
       end
 
