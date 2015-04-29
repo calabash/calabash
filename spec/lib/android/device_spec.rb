@@ -12,6 +12,26 @@ describe Calabash::Android::Device do
     expect(Calabash::Android::Device.ancestors).to include(Calabash::Device)
   end
 
+  describe '#list_devices' do
+    it 'should be able to list all connected devices' do
+      devices = ['abcdefg123465abc', 'abcdefg123-ad---465abc', '2.2:abda', 'a', '55:555:55.555.555:55']
+
+      expect(Calabash::Android::ADB).to receive(:command).with('devices').and_return(<<eos
+**Daemon not running**
+**Starting adb
+List of devices attached
+#{devices[0]}	device
+#{devices[1]}	device
+#{devices[2]}	device
+#{devices[3]}	device
+#{devices[4]}	device
+eos
+)
+
+      expect(dummy_device_class.list_devices).to eq(devices)
+    end
+  end
+
   describe '#adb' do
     it 'should execute an adb command for the specified device' do
       serial = 'my-serial'

@@ -2,7 +2,19 @@ module Calabash
   module Android
     class Device < Calabash::Android::Operations::Device
       def self.list_devices
-        connected_devices
+        output = ADB.command('devices')
+        lines = output.lines
+        index = lines.index{|line| line.start_with?('List of devices attached')}
+
+        if index.nil?
+          raise "Could not parse adb output: '#{lines}'"
+        end
+
+        device_lines = lines[(index+1)..-1].select{|line| line.strip != ''}
+
+        device_lines.collect do |line|
+          line.match(/([^\s]+)/).captures.first
+        end
       end
 
       def adb(command)
