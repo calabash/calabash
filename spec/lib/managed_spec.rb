@@ -71,6 +71,14 @@ describe Calabash::Managed do
       expect(Calabash::Managed.screenshot('my name', nil)).to eq(correct_value)
     end
 
+    it 'should never redefine port_forward' do
+      allow(Calabash::Managed).to receive(:port_forward).and_return(correct_value)
+
+      force_require 'calabash/managed'
+
+      expect(Calabash::Managed.port_forward(12345, nil)).to eq(correct_value)
+    end
+
     it 'should never redefine _managed?' do
       allow(Calabash::Managed).to receive(:_managed?).and_return(correct_value)
 

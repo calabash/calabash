@@ -101,6 +101,12 @@ module Calabash
           raise 'App was not uninstalled'
         end
       end
+
+      # @!visibility private
+      def _port_forward(host_port)
+        adb_forward_cmd = "forward tcp:#{host_port} tcp:#{server.test_server_port}"
+        ADB.command(adb_forward_cmd)
+      end
     end
   end
 end

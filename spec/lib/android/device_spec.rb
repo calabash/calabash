@@ -113,4 +113,18 @@ eos
       expect(dummy_device.test_server_responding?).to be == true
     end
   end
+
+  describe '#_port_forward' do
+    it 'should use adb to forward the host port to the server port' do
+      host_port = 12345
+
+      dummy_server = Class.new {def test_server_port; 67890; end}.new
+
+      allow(dummy_device).to receive(:server).and_return(dummy_server)
+
+      expect(Calabash::Android::ADB).to receive(:command).with("forward tcp:#{host_port} tcp:67890")
+
+      dummy_device.send(:_port_forward, host_port)
+    end
+  end
 end
