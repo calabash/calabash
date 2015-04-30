@@ -22,11 +22,19 @@ module Calabash
   include Calabash::Screenshot
 
   def calabash_start_app(opt={})
-    _calabash_start_app(opt)
+    test_options = opt.dup
+    application = test_options.fetch(:application, Application.default)
+    test_options.delete(:application)
+
+    if application.nil?
+      raise 'No application given, and no default application set'
+    end
+
+    _calabash_start_app(application, test_options)
   end
 
-  def calabash_stop_app(opt={})
-    _calabash_stop_app(opt)
+  def calabash_stop_app
+    _calabash_stop_app
   end
 
   def reinstall(opt={})

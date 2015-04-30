@@ -49,21 +49,38 @@ describe Calabash do
 
   describe '#calabash_start_app' do
     it 'should invoke the implementation method' do
-      args = {my: :arg}
+      args = {application: :my_app, my: :arg}
 
-      expect(dummy_instance).to receive(:_calabash_start_app).with(args)
+      expect(dummy_instance).to receive(:_calabash_start_app).with(:my_app, {my: :arg})
 
       dummy_instance.calabash_start_app(args)
+    end
+
+    it 'should use Application.default if no app is given' do
+      app = :my_app_2
+      args = {my: :arg}
+
+      allow(Calabash::Application).to receive(:default).and_return(app)
+
+      expect(dummy_instance).to receive(:_calabash_start_app).with(app, args)
+
+      dummy_instance.calabash_start_app(args)
+    end
+
+    it 'should fail if no application is given, and Application.default is not set' do
+      args = {my: :arg}
+
+      allow(Calabash::Application).to receive(:default).and_return(nil)
+
+      expect{dummy_instance.calabash_start_app(args)}.to raise_error('No application given, and no default application set')
     end
   end
 
   describe '#calabash_stop_app' do
     it 'should invoke the implementation method' do
-      args = {my: :arg}
+      expect(dummy_instance).to receive(:_calabash_stop_app)
 
-      expect(dummy_instance).to receive(:_calabash_stop_app).with(args)
-
-      dummy_instance.calabash_stop_app(args)
+      dummy_instance.calabash_stop_app
     end
   end
 
@@ -104,18 +121,6 @@ describe Calabash do
       expect(dummy_instance).to receive(:_clear_app).with(arg)
 
       dummy_instance.clear_app(arg)
-    end
-  end
-
-  describe '#_calabash_start_app' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._calabash_start_app}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_calabash_stop_app' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._calabash_stop_app}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

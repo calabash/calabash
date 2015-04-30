@@ -3,6 +3,20 @@ module Calabash
     class Application < Calabash::Application
       attr_reader :test_server
 
+      def self.default_from_environment
+        application_path = Environment::APP_PATH
+
+        if application_path.nil?
+          raise 'No application path is set'
+        end
+
+        build_test_server = Build::TestServer.new(application_path)
+        test_server_path = Environment::TEST_SERVER_PATH ||
+            build_test_server.path
+
+        Application.new(application_path, test_server_path)
+      end
+
       def initialize(application_path, test_server_path, options = {})
         super(application_path, options)
         @test_server = Application.new(test_server_path, nil, options) if test_server_path

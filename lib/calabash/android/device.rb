@@ -35,9 +35,9 @@ module Calabash
         ADB.command(command, identifier)
       end
 
-      def installed_apps
+      def installed_packages
         adb('shell pm list packages').lines.map do |line|
-          {id: line.sub('package:', '').chomp}
+          line.sub('package:', '').chomp
         end
       end
 
@@ -65,6 +65,41 @@ module Calabash
       # @!visibility private
       def _clear_app(identifier)
         adb("shell pm clear #{identifier}")
+      end
+
+      # @!visibility private
+      def _install(application)
+        @logger.log "Installing #{application.path}"
+        result = adb("install -r #{application.path}").lines.last
+
+        if result.downcase.chomp != 'success'
+          raise "Could not install app: #{result}"
+        end
+
+        unless installed_packages.include?(application.identifier)
+          raise 'App was not installed'
+        end
+
+        if application.is_a?(Android::Application)
+          if application.test_server
+            @logger.log "Installing the test-server as well"
+            install(application.test_server)
+          end
+        end
+      end
+
+      # @!visibility private
+      def _uninstall(package)
+        @logger.log "Uninstalling #{package}"
+        result = adb("uninstall #{package}").lines.last
+
+        if result.downcase.chomp != 'success'
+          raise "Could not uninstall app: #{result}"
+        end
+
+        if installed_packages.include?(package)
+          raise 'App was not uninstalled'
+        end
       end
     end
   end

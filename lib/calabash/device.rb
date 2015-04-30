@@ -37,12 +37,20 @@ module Calabash
     #   when testing on an Android device.
     # @param [Hash] options
     def calabash_start_app(application, options={})
-      abstract_method!
+      if Managed.managed?
+        Managed.calabash_start_app(application, options, self)
+      else
+        _calabash_start_app(application, options)
+      end
     end
 
     # Shutdown the application and the test server
     def calabash_stop_app
-      abstract_method!
+      if Managed.managed?
+        Managed.calabash_stop_app(self)
+      else
+        _calabash_stop_app
+      end
     end
 
     # Do not modify
@@ -111,6 +119,16 @@ module Calabash
     end
 
     private
+
+    # @!visibility private
+    def _calabash_start_app(application, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _calabash_stop_app
+      abstract_method!
+    end
 
     # @!visibility private
     def _screenshot(path)
