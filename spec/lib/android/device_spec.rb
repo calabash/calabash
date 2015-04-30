@@ -72,9 +72,9 @@ eos
       allow(dummy_device).to receive(:adb).with('shell pm list packages').and_return("package:com.myapp2.app\npackage:com.android.androidapp\npackage:com.app\n")
 
       expect(dummy_device.installed_packages).to eq([
-                                                    {id: 'com.myapp2.app'},
-                                                    {id: 'com.android.androidapp'},
-                                                    {id: 'com.app'}
+                                                    'com.myapp2.app',
+                                                    'com.android.androidapp',
+                                                    'com.app'
                                                 ])
     end
   end
