@@ -1,7 +1,7 @@
 module Calabash
   module Operations
     # @!visibility private
-    def _calabash_start_app(opt={})
+    def _calabash_start_app(application, opt={})
       abstract_method!
     end
 
