@@ -15,6 +15,10 @@ module Calabash
     # @raise [RuntimeError] Raises an error if `application_path` does not
     #   exist.
     def initialize(application_path, options = {})
+      if application_path.nil?
+        raise ArgumentError, "Invalid application path '#{application_path}'."
+      end
+
       @path = File.expand_path(application_path)
       @logger = options[:logger] || Logger.new
       @identifier = options[:identifier]

@@ -26,6 +26,10 @@ describe Calabash::Application do
       expect { Calabash::Application.new(app_path) }.to raise_error RuntimeError
     end
 
+    it 'raises an argument error if the app path is nil' do
+      expect{Calabash::Application.new(nil)}.to raise_error(ArgumentError)
+    end
+
     describe 'option handling' do
       before(:each) do
         expect(File).to receive(:exist?).with(app_path).and_return(true)
