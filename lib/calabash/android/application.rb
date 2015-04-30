@@ -5,6 +5,11 @@ module Calabash
 
       def self.default_from_environment
         application_path = Environment::APP_PATH
+
+        if application_path.nil?
+          raise 'No application path is set'
+        end
+
         build_test_server = Build::TestServer.new(application_path)
         test_server_path = Environment::TEST_SERVER_PATH ||
             build_test_server.path

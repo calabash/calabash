@@ -9,5 +9,11 @@ describe Calabash::IOS::Application do
       allow(Calabash::IOS::Application).to receive(:new).with(app_path).and_return(returned_app)
       expect(Calabash::IOS::Application.default_from_environment).to eq(returned_app)
     end
+
+    it 'should raise an error if the ENV is not sufficient' do
+      stub_const('Calabash::Environment::APP_PATH', nil)
+
+      expect{Calabash::IOS::Application.default_from_environment}.to raise_error('No application path is set')
+    end
   end
 end

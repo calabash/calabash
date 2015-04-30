@@ -11,5 +11,14 @@ describe Calabash::Android::Application do
       allow(Calabash::Android::Application).to receive(:new).with(app_path, test_server_path).and_return(returned_app)
       expect(Calabash::Android::Application.default_from_environment).to eq(returned_app)
     end
+
+    it 'should raise an error if the ENV is not sufficient' do
+      test_server_path = 'my-test-server-path'
+
+      stub_const('Calabash::Environment::APP_PATH', nil)
+      stub_const('Calabash::Environment::TEST_SERVER_PATH', test_server_path)
+
+      expect{Calabash::Android::Application.default_from_environment}.to raise_error('No application path is set')
+    end
   end
 end
