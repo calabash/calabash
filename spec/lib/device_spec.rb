@@ -15,6 +15,56 @@ describe Calabash::Device do
     expect(device.http_client).to be_a(Calabash::HTTP::RetriableClient)
   end
 
+  describe '#calabash_start_app' do
+    let(:application) {:my_application}
+    let(:options) {{my: :opts}}
+
+    describe 'when running in a managed environment' do
+      it 'should invoke the managed impl' do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_calabash_start_app)
+        expect(Calabash::Managed).to receive(:calabash_start_app).with(application, options, device)
+
+        device.calabash_start_app(application, options)
+      end
+    end
+
+    describe 'when running in an unmanaged environment' do
+      it 'should invoke the impl' do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_calabash_start_app).with(application, options)
+        expect(Calabash::Managed).not_to receive(:calabash_start_app)
+
+        device.calabash_start_app(application, options)
+      end
+    end
+  end
+
+  describe '#calabash_stop_app' do
+    let(:application) {:my_application}
+    let(:options) {{my: :opts}}
+
+    describe 'when running in a managed environment' do
+      it 'should invoke the managed impl' do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_calabash_stop_app)
+        expect(Calabash::Managed).to receive(:calabash_stop_app).with(device)
+
+        device.calabash_stop_app
+      end
+    end
+
+    describe 'when running in an unmanaged environment' do
+      it 'should invoke the impl' do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_calabash_stop_app).with(no_args)
+        expect(Calabash::Managed).not_to receive(:calabash_stop_app)
+
+        device.calabash_stop_app
+      end
+    end
+  end
+
   describe '#install' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
@@ -44,13 +94,13 @@ describe Calabash::Device do
         expect(Calabash::Managed).not_to receive(:install)
       end
 
-      it 'should invoke the managed impl with an application when given a path' do
+      it 'should invoke the impl with an application when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.install(application_path)
       end
 
-      it 'should invoke the managed impl with the given application when given an application' do
+      it 'should invoke the impl with the given application when given an application' do
         device.install(application)
       end
     end
@@ -90,13 +140,13 @@ describe Calabash::Device do
         expect(Calabash::Managed).not_to receive(:uninstall)
       end
 
-      it 'should invoke the managed impl with an identifier when given a path' do
+      it 'should invoke the impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.uninstall(application_path)
       end
 
-      it 'should invoke the managed impl with an identifier application when given an application' do
+      it 'should invoke the impl with an identifier application when given an application' do
         device.uninstall(application)
       end
     end
@@ -136,15 +186,29 @@ describe Calabash::Device do
         expect(Calabash::Managed).not_to receive(:clear_app)
       end
 
-      it 'should invoke the managed impl with an identifier when given a path' do
+      it 'should invoke the impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.clear_app(application_path)
       end
 
-      it 'should invoke the managed impl with an identifier when given an application' do
+      it 'should invoke the impl with an identifier when given an application' do
         device.clear_app(application)
       end
+    end
+  end
+
+  describe '#_calabash_start_app' do
+    it 'should have an abstract implementation' do
+      app = :my_app
+
+      expect{device.send(:_calabash_start_app, app)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_calabash_stop_app' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_calabash_stop_app)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
