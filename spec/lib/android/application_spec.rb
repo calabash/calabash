@@ -12,6 +12,20 @@ describe Calabash::Android::Application do
       expect(Calabash::Android::Application.default_from_environment).to eq(returned_app)
     end
 
+    it 'should be able to instantiate a new instance of Application with the right information if no test_server is set' do
+      app_path = 'my-app-path2'
+      test_server_path = 'my-test-server-path2'
+      returned_app = :app
+      dummy = Class.new {def path; test_server_path; end}.new
+
+      stub_const('Calabash::Environment::APP_PATH', app_path)
+      allow(Calabash::Android::Build::TestServer).to receive(:new).with(app_path).and_return(dummy)
+      allow(dummy).to receive(:path).and_return(test_server_path)
+      allow(Calabash::Android::Application).to receive(:new).with(app_path, test_server_path).and_return(returned_app)
+
+      expect(Calabash::Android::Application.default_from_environment).to eq(returned_app)
+    end
+
     it 'should raise an error if the ENV is not sufficient' do
       test_server_path = 'my-test-server-path'
 
