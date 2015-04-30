@@ -33,8 +33,8 @@ module Calabash
     _calabash_start_app(application, test_options)
   end
 
-  def calabash_stop_app(opt={})
-    _calabash_stop_app(opt)
+  def calabash_stop_app
+    _calabash_stop_app
   end
 
   def reinstall(opt={})

@@ -78,11 +78,9 @@ describe Calabash do
 
   describe '#calabash_stop_app' do
     it 'should invoke the implementation method' do
-      args = {my: :arg}
+      expect(dummy_instance).to receive(:_calabash_stop_app)
 
-      expect(dummy_instance).to receive(:_calabash_stop_app).with(args)
-
-      dummy_instance.calabash_stop_app(args)
+      dummy_instance.calabash_stop_app
     end
   end
 
@@ -123,18 +121,6 @@ describe Calabash do
       expect(dummy_instance).to receive(:_clear_app).with(arg)
 
       dummy_instance.clear_app(arg)
-    end
-  end
-
-  describe '#_calabash_start_app' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._calabash_start_app(:app)}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_calabash_stop_app' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._calabash_stop_app}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
