@@ -12,8 +12,7 @@ module Calabash
 
     # @!visibility private
     def _reinstall(opt={})
-      uninstall(Application.default)
-      install(Application.default)
+      abstract_method!
     end
 
     # @!visibility private

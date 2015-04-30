@@ -1,6 +1,11 @@
 module Calabash
   module Android
     module Operations
+      def _reinstall(opt={})
+        uninstall(Application.default)
+        install(Application.default)
+      end
+
       def _calabash_start_app(options={})
         test_options = options.dup
 
