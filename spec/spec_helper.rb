@@ -7,21 +7,6 @@ require 'tmpdir'
 require 'luffa'
 require 'resources/ios/ios_resources'
 
-# monkey patch for AwesomePrint + objects that implement '=='
-module AwesomePrint
-  class Formatter
-    def awesome_self(object, type)
-      if @options[:raw] && object.instance_variables.any?
-        awesome_object(object)
-      elsif object.respond_to?(:to_hash)
-        awesome_hash(object.to_hash)
-      else
-        colorize(object.inspect.to_s, type)
-      end
-    end
-  end
-end
-
 module Kernel
   def capture_stdout
     out = StringIO.new
