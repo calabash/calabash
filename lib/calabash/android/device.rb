@@ -69,27 +69,55 @@ module Calabash
 
       # @!visibility private
       def _install_app(application)
-        @logger.log "Installing #{application.path}"
-        result = adb("install -r #{application.path}").lines.last
+        @logger.log "About to install #{application.path}"
 
-        if result.downcase.chomp != 'success'
-          raise "Could not install app: #{result}"
+        if installed_packages.include?(application.identifier)
+          @logger.log 'Application is already installed. Uninstalling application.'
+          _uninstall_app(application.identifier)
         end
 
-        unless installed_packages.include?(application.identifier)
-          raise 'App was not installed'
+        adb_install_app(application)
+
+        if application.is_a?(Android::Application)
+          if application.test_server
+            @logger.log 'Installing the test-server as well'
+            install_app(application.test_server)
+          end
+        end
+      end
+
+      # @!visibility private
+      def _ensure_app_installed(application)
+        @logger.log "Ensuring #{application.path} is installed"
+
+        # @todo: Ensure it is the same app (checksum).
+        if installed_packages.include?(application.identifier)
+          @logger.log 'Application is already installed. Will not install.'
+        else
+          adb_install_app(application)
         end
 
         if application.is_a?(Android::Application)
           if application.test_server
-            @logger.log "Installing the test-server as well"
-            install(application.test_server)
+            @logger.log 'Ensuring the test-server is installed as well'
+            ensure_app_installed(application.test_server)
           end
         end
       end
 
       # @!visibility private
       def _uninstall_app(package)
+        adb_uninstall_app(package)
+      end
+
+      # @!visibility private
+      def _port_forward(host_port)
+        adb_forward_cmd = "forward tcp:#{host_port} tcp:#{server.test_server_port}"
+        ADB.command(adb_forward_cmd)
+      end
+
+      # @!visibility private
+      def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
         result = adb("uninstall #{package}").lines.last
 
@@ -103,9 +131,17 @@ module Calabash
       end
 
       # @!visibility private
-      def _port_forward(host_port)
-        adb_forward_cmd = "forward tcp:#{host_port} tcp:#{server.test_server_port}"
-        ADB.command(adb_forward_cmd)
+      def adb_install_app(application)
+        @logger.log "Installing #{application.path}"
+        result = adb("install -r \"#{application.path}\"").lines.last
+
+        if result.downcase.chomp != 'success'
+          raise "Could not install app: #{result}"
+        end
+
+        unless installed_packages.include?(application.identifier)
+          raise 'App was not installed'
+        end
       end
     end
   end
