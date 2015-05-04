@@ -14,6 +14,19 @@ module Calabash
 
     attr_reader :path
 
+    def self.from_path(path)
+      extension = File.extname(path)
+
+      case extension
+        when '.apk'
+          Android::Application.new(path, nil)
+        when '.ipa', '.app'
+          IOS::Application.new(path)
+        else
+          Application.new(path)
+      end
+    end
+
     # @raise [RuntimeError] Raises an error if `application_path` does not
     #   exist.
     def initialize(application_path, options = {})

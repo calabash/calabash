@@ -65,4 +65,41 @@ describe Calabash::Application do
       end
     end
   end
+
+  describe '.from_path' do
+    let(:path) {:my_path}
+    let(:app) {:my_app}
+
+    it 'should return an Android::Application if the path is an .apk' do
+      allow(File).to receive(:extname).with(path).and_return('.apk')
+
+      expect(Calabash::Android::Application).to receive(:new).with(path, nil).and_return(app)
+
+      expect(Calabash::Application.from_path(path)).to eq(app)
+    end
+
+    it 'should return an IOS::Application if the path is an .app' do
+      allow(File).to receive(:extname).with(path).and_return('.app')
+
+      expect(Calabash::IOS::Application).to receive(:new).with(path).and_return(app)
+
+      expect(Calabash::Application.from_path(path)).to eq(app)
+    end
+
+    it 'should return an IOS::Application if the path is an .ipa' do
+      allow(File).to receive(:extname).with(path).and_return('.ipa')
+
+      expect(Calabash::IOS::Application).to receive(:new).with(path).and_return(app)
+
+      expect(Calabash::Application.from_path(path)).to eq(app)
+    end
+
+    it 'should return an Application if the path is something else' do
+      allow(File).to receive(:extname).with(path).and_return('.something')
+
+      expect(Calabash::Application).to receive(:new).with(path).and_return(app)
+
+      expect(Calabash::Application.from_path(path)).to eq(app)
+    end
+  end
 end
