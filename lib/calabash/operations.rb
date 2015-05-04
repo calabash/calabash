@@ -13,11 +13,6 @@ module Calabash
     end
 
     # @!visibility private
-    def _reinstall(opt={})
-      abstract_method!
-    end
-
-    # @!visibility private
     def _install(path_or_application)
       Device.default.install(path_or_application)
     end

@@ -84,16 +84,6 @@ describe Calabash do
     end
   end
 
-  describe '#reinstall' do
-    it 'should invoke the implementation method' do
-      args = {my: :arg}
-
-      expect(dummy_instance).to receive(:_reinstall).with(args)
-
-      dummy_instance.reinstall(args)
-    end
-  end
-
   describe '#install' do
     it 'should invoke the implementation method' do
       arg = 'my-arg'
@@ -121,12 +111,6 @@ describe Calabash do
       expect(dummy_instance).to receive(:_clear_app).with(arg)
 
       dummy_instance.clear_app(arg)
-    end
-  end
-
-  describe '#_reinstall' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._reinstall}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

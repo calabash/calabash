@@ -37,10 +37,6 @@ module Calabash
     _calabash_stop_app
   end
 
-  def reinstall(opt={})
-    _reinstall(opt)
-  end
-
   def install(path_or_application)
     _install(path_or_application)
   end
