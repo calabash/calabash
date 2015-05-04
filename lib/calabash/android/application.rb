@@ -10,9 +10,24 @@ module Calabash
           raise 'No application path is set'
         end
 
+        unless File.exist?(application_path)
+          raise "Application '#{application_path}' does not exist"
+        end
+
+        if File.directory?(application_path)
+          raise "Application '#{application_path}' is not a file"
+        end
+
         build_test_server = Build::TestServer.new(application_path)
         test_server_path = Environment::TEST_SERVER_PATH ||
             build_test_server.path
+
+        unless File.exist?(test_server_path)
+          Logger.error "Test-server '#{test_server_path}' does not exist."
+          Logger.error "Build it using: 'calabash build \"#{application_path}\"'"
+          Logger.error ''
+          raise "Test-server '#{test_server_path}' does not exist."
+        end
 
         Application.new(application_path, test_server_path)
       end
