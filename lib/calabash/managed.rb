@@ -67,6 +67,13 @@ module Calabash
     end
 
     # @!visibility private
+    unless respond_to?(:port_forward)
+      define_singleton_method(:port_forward) do |host_port, device|
+        invalid_managed_environment!
+      end
+    end
+
+    # @!visibility private
     unless respond_to?(:_managed?)
       define_singleton_method(:_managed?) do
         false
