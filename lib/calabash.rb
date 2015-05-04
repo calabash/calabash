@@ -50,6 +50,11 @@ module Calabash
     _install_app(path_or_application)
   end
 
+  # Uninstalls the given application. Does nothing if the application is
+  # already uninstalled.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`.
   def uninstall_app(path_or_application)
     _uninstall_app(path_or_application)
   end
