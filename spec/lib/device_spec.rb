@@ -375,9 +375,12 @@ describe Calabash::Device do
     end
 
     it 'returns an Application when passed a String' do
-      expected_path = File.expand_path('./path/to/my/app')
-      app = device.send(:parse_path_or_app_parameters, expected_path)
-      expect(app.path).to be == expected_path
+      path = "./my-path"
+      expected_app = :my_app
+
+      expect(Calabash::Application).to receive(:from_path).with(path).and_return(expected_app)
+
+      expect(device.send(:parse_path_or_app_parameters, path)).to eq(expected_app)
     end
   end
 
