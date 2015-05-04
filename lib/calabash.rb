@@ -59,6 +59,11 @@ module Calabash
     _uninstall_app(path_or_application)
   end
 
+  # Clears the contents of the given application. This is roughly equivalent to
+  # reinstalling the application.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`.
   def clear_app(path_or_application)
     _clear_app(path_or_application)
   end
