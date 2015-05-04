@@ -39,7 +39,7 @@ begin
 
     extend Calabash::IOS
 
-    Calabash::Android::Application.default = Calabash::Android::Application.default_from_environment
+    Calabash::Application.default = Calabash::Android::Application.default_from_environment
 
     Calabash::Logger.log_levels += [:debug] if Calabash::Environment::DEBUG
 
