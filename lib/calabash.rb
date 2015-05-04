@@ -50,6 +50,18 @@ module Calabash
     _install_app(path_or_application)
   end
 
+  # Installs the given application *if it is not already installed*.
+  #
+  # If the given application is an instance of
+  # `Calabash::Android::Application`, the same procedure is executed for the
+  # test-server of the application, if it is set.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`.
+  def ensure_app_installed(path_or_application)
+    _ensure_app_installed(path_or_application)
+  end
+
   # Uninstalls the given application. Does nothing if the application is
   # already uninstalled.
   #

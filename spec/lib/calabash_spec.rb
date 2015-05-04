@@ -94,6 +94,16 @@ describe Calabash do
     end
   end
 
+  describe '#ensure_app_installed' do
+    it 'should invoke the implementation method' do
+      arg = 'my-arg'
+
+      expect(dummy_instance).to receive(:_ensure_app_installed).with(arg)
+
+      dummy_instance.ensure_app_installed(arg)
+    end
+  end
+
   describe '#uninstall_app' do
     it 'should invoke the implementation method' do
       arg = 'my-arg'
@@ -125,6 +135,17 @@ describe Calabash do
       expect(dummy_device).to receive(:install_app).with(arg)
 
       dummy.new._install_app(arg)
+    end
+  end
+
+  describe '#_ensure_app_installed' do
+    it 'should delegate to the default device' do
+      arg = 'my-arg'
+
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(dummy_device).to receive(:ensure_app_installed).with(arg)
+
+      dummy.new._ensure_app_installed(arg)
     end
   end
 

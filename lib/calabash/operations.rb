@@ -18,6 +18,11 @@ module Calabash
     end
 
     # @!visibility private
+    def _ensure_app_installed(path_or_application)
+      Device.default.ensure_app_installed(path_or_application)
+    end
+
+    # @!visibility private
     def _uninstall_app(path_or_application)
       Device.default.uninstall_app(path_or_application)
     end

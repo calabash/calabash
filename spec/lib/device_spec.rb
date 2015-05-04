@@ -106,6 +106,47 @@ describe Calabash::Device do
     end
   end
 
+  describe '#ensure_app_installed' do
+    let(:application_path) {File.expand_path('./my-application.app')}
+    let(:application) {Calabash::Application.new(application_path)}
+
+    describe 'when running in a managed environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_ensure_app_installed)
+        expect(Calabash::Managed).to receive(:ensure_app_installed).with(application, device)
+      end
+
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
+
+        device.ensure_app_installed(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.ensure_app_installed(application)
+      end
+    end
+
+    describe 'when running in an unmanaged environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_ensure_app_installed).with(application)
+        expect(Calabash::Managed).not_to receive(:ensure_app_installed)
+      end
+
+      it 'should invoke the impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
+
+        device.ensure_app_installed(application_path)
+      end
+
+      it 'should invoke the impl with the given application when given an application' do
+        device.ensure_app_installed(application)
+      end
+    end
+  end
+
   describe '#uninstall_app' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
@@ -242,6 +283,14 @@ describe Calabash::Device do
       arg = 'my-arg'
 
       expect{device.send(:_install_app, arg)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_ensure_app_installed' do
+    it 'should have an abstract implementation' do
+      arg = 'my-arg'
+
+      expect{device.send(:_ensure_app_installed, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

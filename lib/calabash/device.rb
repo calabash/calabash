@@ -76,6 +76,17 @@ module Calabash
     end
 
     # Do not modify
+    def ensure_app_installed(path_or_application)
+      application = parse_path_or_app_parameters(path_or_application)
+
+      if Managed.managed?
+        Managed.ensure_app_installed(application, self)
+      else
+        _ensure_app_installed(application)
+      end
+    end
+
+    # Do not modify
     def uninstall_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
@@ -146,6 +157,11 @@ module Calabash
 
     # @!visibility private
     def _install_app(application)
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _ensure_app_installed(application)
       abstract_method!
     end
 

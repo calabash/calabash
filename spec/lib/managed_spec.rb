@@ -45,6 +45,15 @@ describe Calabash::Managed do
       expect(Calabash::Managed.install_app(*args)).to eq(correct_value)
     end
 
+    it 'should never redefine ensure_app_installed' do
+      args = [:application, :device]
+      allow(Calabash::Managed).to receive(:ensure_app_installed).and_return(correct_value)
+
+      force_require 'calabash/managed'
+
+      expect(Calabash::Managed.ensure_app_installed(*args)).to eq(correct_value)
+    end
+
     it 'should never redefine uninstall_app' do
       args = [:application, :device]
       allow(Calabash::Managed).to receive(:uninstall_app).and_return(correct_value)

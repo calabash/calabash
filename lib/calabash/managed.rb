@@ -46,6 +46,13 @@ module Calabash
     end
 
     # @!visibility private
+    unless respond_to?(:ensure_app_installed)
+      define_singleton_method(:ensure_app_installed) do |application, device|
+        invalid_managed_environment!
+      end
+    end
+
+    # @!visibility private
     unless respond_to?(:uninstall_app)
       define_singleton_method(:uninstall_app) do |identifier, device|
         invalid_managed_environment!
