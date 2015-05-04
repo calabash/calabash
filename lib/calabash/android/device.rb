@@ -63,8 +63,8 @@ module Calabash
       end
 
       # @!visibility private
-      def _clear_app(identifier)
-        adb_clear_app(identifier)
+      def _clear_app_data(identifier)
+        adb_clear_app_data(identifier)
       end
 
       # @!visibility private
@@ -145,7 +145,7 @@ module Calabash
       end
 
       # @!visibility private
-      def adb_clear_app(package)
+      def adb_clear_app_data(package)
         @logger.log "Clearing #{package}"
 
         unless installed_packages.include?(package)

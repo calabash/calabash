@@ -98,13 +98,13 @@ module Calabash
     end
 
     # Do not modify
-    def clear_app(path_or_application)
+    def clear_app_data(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.clear_app(application.identifier, self)
+        Managed.clear_app_data(application.identifier, self)
       else
-        _clear_app(application.identifier)
+        _clear_app_data(application.identifier)
       end
     end
 
@@ -171,7 +171,7 @@ module Calabash
     end
 
     # @!visibility private
-    def _clear_app(identifier)
+    def _clear_app_data(identifier)
       abstract_method!
     end
 

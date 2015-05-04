@@ -79,7 +79,7 @@ eos
     end
   end
 
-  describe '#_clear_app' do
+  describe '#_clear_app_data' do
     it 'should clear the app using adb' do
       package = 'com.myapp.package'
 
@@ -87,7 +87,7 @@ eos
       expect(dummy_device).to receive(:adb).with("shell pm clear #{package}").
          and_return("Success\n")
 
-      dummy_device.send(:_clear_app, package)
+      dummy_device.send(:_clear_app_data, package)
     end
   end
 

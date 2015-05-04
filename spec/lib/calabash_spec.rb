@@ -85,7 +85,7 @@ describe Calabash do
   end
 
   describe 'app life cycle' do
-    let(:methods) {[:install_app, :ensure_app_installed, :uninstall_app, :clear_app]}
+    let(:methods) {[:install_app, :ensure_app_installed, :uninstall_app, :clear_app_data]}
 
     it 'should invoke the implementation method' do
       app = :my_app
@@ -156,14 +156,14 @@ describe Calabash do
     end
   end
 
-  describe '#_clear_app' do
+  describe '#_clear_app_data' do
     it 'should delegate to the default device' do
       arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:clear_app).with(arg)
+      expect(Calabash::Device.default).to receive(:clear_app_data).with(arg)
 
-      dummy.new._clear_app(arg)
+      dummy.new._clear_app_data(arg)
     end
   end
 end

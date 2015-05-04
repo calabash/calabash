@@ -28,8 +28,8 @@ module Calabash
     end
 
     # @!visibility private
-    def _clear_app(path_or_application)
-      Device.default.clear_app(path_or_application)
+    def _clear_app_data(path_or_application)
+      Device.default.clear_app_data(path_or_application)
     end
   end
 end

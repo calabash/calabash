@@ -63,13 +63,13 @@ describe Calabash::Managed do
       expect(Calabash::Managed.uninstall_app(*args)).to eq(correct_value)
     end
 
-    it 'should never redefine clear_app' do
+    it 'should never redefine clear_app_data' do
       args = [:application, :device]
-      allow(Calabash::Managed).to receive(:clear_app).and_return(correct_value)
+      allow(Calabash::Managed).to receive(:clear_app_data).and_return(correct_value)
 
       force_require 'calabash/managed'
 
-      expect(Calabash::Managed.clear_app(*args)).to eq(correct_value)
+      expect(Calabash::Managed.clear_app_data(*args)).to eq(correct_value)
     end
 
     it 'should never redefine screenshot' do

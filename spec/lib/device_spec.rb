@@ -193,7 +193,7 @@ describe Calabash::Device do
     end
   end
 
-  describe '#clear_app' do
+  describe '#clear_app_data' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
     let(:identifier) {'my-identifier'}
@@ -205,36 +205,36 @@ describe Calabash::Device do
     describe 'when running in a managed environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
-        expect(device).not_to receive(:_clear_app)
-        expect(Calabash::Managed).to receive(:clear_app).with(identifier, device)
+        expect(device).not_to receive(:_clear_app_data)
+        expect(Calabash::Managed).to receive(:clear_app_data).with(identifier, device)
       end
 
       it 'should invoke the managed impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.clear_app(application_path)
+        device.clear_app_data(application_path)
       end
 
       it 'should invoke the managed impl with an identifier when given an application' do
-        device.clear_app(application)
+        device.clear_app_data(application)
       end
     end
 
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_clear_app).with(identifier)
-        expect(Calabash::Managed).not_to receive(:clear_app)
+        expect(device).to receive(:_clear_app_data).with(identifier)
+        expect(Calabash::Managed).not_to receive(:clear_app_data)
       end
 
       it 'should invoke the impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.clear_app(application_path)
+        device.clear_app_data(application_path)
       end
 
       it 'should invoke the impl with an identifier when given an application' do
-        device.clear_app(application)
+        device.clear_app_data(application)
       end
     end
   end
@@ -302,11 +302,11 @@ describe Calabash::Device do
     end
   end
 
-  describe '#_clear_app' do
+  describe '#_clear_app_data' do
     it 'should have an abstract implementation' do
       arg = 'my-arg'
 
-      expect{device.send(:_clear_app, arg)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_clear_app_data, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

@@ -102,14 +102,14 @@ module Calabash
   # @param [String, Calabash::Application] path_or_application A path to the
   #  application, or an instance of `Calabash::Application`. Defaults to
   #  `Application.default`
-  def clear_app(path_or_application = nil)
+  def clear_app_data(path_or_application = nil)
     path_or_application ||= Application.default
 
     unless path_or_application
       raise 'No application given, and Application.default is not set'
     end
 
-    _clear_app(path_or_application)
+    _clear_app_data(path_or_application)
   end
 
   def self.new_embed_method!(method)

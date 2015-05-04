@@ -60,8 +60,8 @@ module Calabash
     end
 
     # @!visibility private
-    unless respond_to?(:clear_app)
-      define_singleton_method(:clear_app) do |identifier, device|
+    unless respond_to?(:clear_app_data)
+      define_singleton_method(:clear_app_data) do |identifier, device|
         invalid_managed_environment!
       end
     end
