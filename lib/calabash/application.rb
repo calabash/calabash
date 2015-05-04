@@ -1,5 +1,7 @@
 module Calabash
   class Application
+    include Calabash::Utility
+
     @@default = nil
 
     def self.default
