@@ -41,8 +41,6 @@ begin
 
     Calabash::Application.default = Calabash::Android::Application.default_from_environment
 
-    Calabash::Logger.log_levels += [:debug] if Calabash::Environment::DEBUG
-
     Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
 rescue Exception => e
     puts 'Unable to start console:'

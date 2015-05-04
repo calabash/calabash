@@ -32,7 +32,6 @@ describe Calabash::Logger do
     let(:output) {File.new('/dev/null')}
     let(:logger) {Calabash::Logger.new(output)}
 
-
     it 'should be able to log with a specified level' do
       log_level = :log_level
 
@@ -59,6 +58,32 @@ describe Calabash::Logger do
       expect(log_levels).to receive(:include?).with(log_level)
 
       logger.send(:should_log?, log_level)
+    end
+
+    describe 'default log levels' do
+      let(:logger_file) {File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'logger.rb')}
+
+      describe 'when not in debug mode' do
+        it 'should default to info, warn, and error' do
+          stub_const('Calabash::Environment::DEBUG', false)
+          load logger_file
+
+          expect(Calabash::Logger.log_levels).to eq([:info, :warn, :error])
+        end
+      end
+
+      describe 'when in debug mode' do
+        it 'should default to info, warn, error, and debug' do
+          stub_const('Calabash::Environment::DEBUG', true)
+          load logger_file
+
+          expect(Calabash::Logger.log_levels).to eq([:info, :warn, :error, :debug])
+        end
+      end
+
+      after do
+        load logger_file
+      end
     end
 
     describe 'methods to log with a specified log level' do

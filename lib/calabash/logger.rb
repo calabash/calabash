@@ -25,7 +25,11 @@ module Calabash
 
     public
 
-    @@log_levels = [:info, :warn, :error]
+    if Environment::DEBUG
+      @@log_levels = [:info, :warn, :error, :debug]
+    else
+      @@log_levels = [:info, :warn, :error]
+    end
 
     # Log a message to the default output
     #
