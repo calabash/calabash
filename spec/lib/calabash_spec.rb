@@ -84,43 +84,39 @@ describe Calabash do
     end
   end
 
-  describe '#install_app' do
+  describe 'app life cycle' do
+    let(:methods) {[:install_app, :ensure_app_installed, :uninstall_app, :clear_app]}
+
     it 'should invoke the implementation method' do
-      arg = 'my-arg'
+      app = :my_app
 
-      expect(dummy_instance).to receive(:_install_app).with(arg)
+      methods.each do |method_name|
+        expect(dummy_instance).to receive(:"_#{method_name}").with(app)
 
-      dummy_instance.install_app(arg)
+        dummy_instance.send(method_name, app)
+      end
     end
-  end
 
-  describe '#ensure_app_installed' do
-    it 'should invoke the implementation method' do
-      arg = 'my-arg'
+    it 'should use the default application if no app is given' do
+      app = :my_default_app
 
-      expect(dummy_instance).to receive(:_ensure_app_installed).with(arg)
+      allow(Calabash::Application).to receive(:default).and_return(app)
 
-      dummy_instance.ensure_app_installed(arg)
+      methods.each do |method_name|
+        expect(dummy_instance).to receive(:"_#{method_name}").with(app)
+
+        dummy_instance.send(method_name)
+      end
     end
-  end
 
-  describe '#uninstall_app' do
-    it 'should invoke the implementation method' do
-      arg = 'my-arg'
+    it 'should fail if no app is given, and default is not set' do
+      allow(Calabash::Application).to receive(:default).and_return(nil)
 
-      expect(dummy_instance).to receive(:_uninstall_app).with(arg)
+      methods.each do |method_name|
+        expect(dummy_instance).not_to receive(:"_#{method_name}")
 
-      dummy_instance.uninstall_app(arg)
-    end
-  end
-
-  describe '#clear_app' do
-    it 'should invoke the implementation method' do
-      arg = 'my-arg'
-
-      expect(dummy_instance).to receive(:_clear_app).with(arg)
-
-      dummy_instance.clear_app(arg)
+        expect{dummy_instance.send(method_name)}.to raise_error('No application given, and Application.default is not set')
+      end
     end
   end
 
