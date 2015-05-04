@@ -77,7 +77,7 @@ module Calabash
         Logger.debug "From file: '#{irbrc_path}'"
         Logger.debug "With ENV: '#{console_environment}'"
 
-        exec(console_environment, 'irb')
+        exec(console_environment, RbConfig.ruby, '-S', 'irb')
       end
     end
   end
