@@ -64,7 +64,7 @@ module Calabash
 
       # @!visibility private
       def _clear_app(identifier)
-        adb("shell pm clear #{identifier}")
+        adb_clear_app(identifier)
       end
 
       # @!visibility private
@@ -141,6 +141,21 @@ module Calabash
 
         unless installed_packages.include?(application.identifier)
           raise 'App was not installed'
+        end
+      end
+
+      # @!visibility private
+      def adb_clear_app(package)
+        @logger.log "Clearing #{package}"
+
+        unless installed_packages.include?(package)
+          raise "Cannot clear app. '#{package}' is not installed"
+        end
+
+        result = adb("shell pm clear #{package}").lines.last
+
+        if result.downcase.chomp != 'success'
+          raise "Could not clear app: #{result}"
         end
       end
     end

@@ -83,7 +83,9 @@ eos
     it 'should clear the app using adb' do
       package = 'com.myapp.package'
 
-      expect(dummy_device).to receive(:adb).with("shell pm clear #{package}")
+      expect(dummy_device).to receive(:installed_packages).and_return([package])
+      expect(dummy_device).to receive(:adb).with("shell pm clear #{package}").
+         and_return("Success\n")
 
       dummy_device.send(:_clear_app, package)
     end
