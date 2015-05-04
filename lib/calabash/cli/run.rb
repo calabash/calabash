@@ -51,7 +51,12 @@ module Calabash
       end
 
       def run(application_path, cucumber_arguments)
-        cucumber_environment = {'CAL_DEBUG' => @options[:verbose] ? '1' : '0'}
+        cucumber_environment = {}
+        cucumber_environment['CAL_DEBUG'] = Environment::DEBUG ? '1' : '0'
+
+        if @options[:verbose]
+          cucumber_environment['CAL_DEBUG'] = '1'
+        end
 
         if @platform == :android
           cucumber_environment['CAL_APP'] = Environment::APP_PATH || application_path
