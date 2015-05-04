@@ -46,12 +46,12 @@ module Calabash
   #
   # @param [String, Calabash::Application] path_or_application A path to the
   #  application, or an instance of `Calabash::Application`.
-  def install(path_or_application)
-    _install(path_or_application)
+  def install_app(path_or_application)
+    _install_app(path_or_application)
   end
 
-  def uninstall(path_or_application)
-    _uninstall(path_or_application)
+  def uninstall_app(path_or_application)
+    _uninstall_app(path_or_application)
   end
 
   def clear_app(path_or_application)

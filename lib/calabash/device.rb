@@ -65,24 +65,24 @@ module Calabash
     end
 
     # Do not modify
-    def install(path_or_application)
+    def install_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.install(application, self)
+        Managed.install_app(application, self)
       else
-        _install(application)
+        _install_app(application)
       end
     end
 
     # Do not modify
-    def uninstall(path_or_application)
+    def uninstall_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.uninstall(application.identifier, self)
+        Managed.uninstall_app(application.identifier, self)
       else
-        _uninstall(application.identifier)
+        _uninstall_app(application.identifier)
       end
     end
 
@@ -145,12 +145,12 @@ module Calabash
     end
 
     # @!visibility private
-    def _install(application)
+    def _install_app(application)
       abstract_method!
     end
 
     # @!visibility private
-    def _uninstall(identifier)
+    def _uninstall_app(identifier)
       abstract_method!
     end
 

@@ -13,13 +13,13 @@ module Calabash
     end
 
     # @!visibility private
-    def _install(path_or_application)
-      Device.default.install(path_or_application)
+    def _install_app(path_or_application)
+      Device.default.install_app(path_or_application)
     end
 
     # @!visibility private
-    def _uninstall(path_or_application)
-      Device.default.uninstall(path_or_application)
+    def _uninstall_app(path_or_application)
+      Device.default.uninstall_app(path_or_application)
     end
 
     # @!visibility private

@@ -84,23 +84,23 @@ describe Calabash do
     end
   end
 
-  describe '#install' do
+  describe '#install_app' do
     it 'should invoke the implementation method' do
       arg = 'my-arg'
 
-      expect(dummy_instance).to receive(:_install).with(arg)
+      expect(dummy_instance).to receive(:_install_app).with(arg)
 
-      dummy_instance.install(arg)
+      dummy_instance.install_app(arg)
     end
   end
 
-  describe '#uninstall' do
+  describe '#uninstall_app' do
     it 'should invoke the implementation method' do
       arg = 'my-arg'
 
-      expect(dummy_instance).to receive(:_uninstall).with(arg)
+      expect(dummy_instance).to receive(:_uninstall_app).with(arg)
 
-      dummy_instance.uninstall(arg)
+      dummy_instance.uninstall_app(arg)
     end
   end
 
@@ -117,25 +117,25 @@ describe Calabash do
   let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
   let(:dummy_device) {dummy_device_class.new}
 
-  describe '#_install' do
+  describe '#_install_app' do
     it 'should delegate to the default device' do
       arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(dummy_device).to receive(:install).with(arg)
+      expect(dummy_device).to receive(:install_app).with(arg)
 
-      dummy.new._install(arg)
+      dummy.new._install_app(arg)
     end
   end
 
-  describe '#_uninstall' do
+  describe '#_uninstall_app' do
     it 'should delegate to the default device' do
       arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:uninstall).with(arg)
+      expect(Calabash::Device.default).to receive(:uninstall_app).with(arg)
 
-      dummy.new._uninstall(arg)
+      dummy.new._uninstall_app(arg)
     end
   end
 

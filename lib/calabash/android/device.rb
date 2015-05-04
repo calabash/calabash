@@ -68,7 +68,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _install(application)
+      def _install_app(application)
         @logger.log "Installing #{application.path}"
         result = adb("install -r #{application.path}").lines.last
 
@@ -89,7 +89,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _uninstall(package)
+      def _uninstall_app(package)
         @logger.log "Uninstalling #{package}"
         result = adb("uninstall #{package}").lines.last
 
