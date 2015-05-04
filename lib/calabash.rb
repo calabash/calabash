@@ -37,6 +37,15 @@ module Calabash
     _calabash_stop_app
   end
 
+  # Installs the given application. If the application is already installed,
+  # the application will be uninstalled, and installed afterwards.
+  #
+  # If the given application is an instance of
+  # `Calabash::Android::Application`, the same procedure is executed for the
+  # test-server of the application, if it is set.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`.
   def install(path_or_application)
     _install(path_or_application)
   end
