@@ -76,4 +76,22 @@ describe Calabash::IOS::Device do
       expect { device.calabash_stop_app }.to raise_error
     end
   end
+
+  describe '#screenshot' do
+    it 'raise an exception if the server cannot be reached' do
+      expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
+      expect { device.screenshot('path') }.to raise_error
+    end
+
+    it 'writes screenshot to a file' do
+      path = File.join(Dir.mktmpdir, 'screenshot.png')
+      expect(Calabash::Screenshot).to receive(:obtain_screenshot_path!).and_return(path)
+      request = Calabash::HTTP::Request.new('exit', {path: path})
+      expect(device).to receive(:request_factory).and_return(request)
+      data = 'I am the screenshot!'
+      expect(device.http_client).to receive(:get).with(request).and_return(data)
+      expect(device.screenshot(path)).to be == path
+      expect(File.read(path)).to be == data
+    end
+  end
 end
