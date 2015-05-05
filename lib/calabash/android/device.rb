@@ -71,6 +71,14 @@ module Calabash
           raise 'Invalid application. No test-server set.'
         end
 
+        unless app_installed?(env_options[:target_package])
+          raise "The application '#{env_options[:target_package]}' is not installed"
+        end
+
+        unless app_installed?(application.test_server.identifier)
+          raise "The test-server '#{application.test_server.identifier}' is not installed"
+        end
+
         cmd_arguments = ["shell am instrument"]
 
         env_options.each_pair do |key, val|
