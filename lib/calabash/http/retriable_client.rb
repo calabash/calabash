@@ -10,14 +10,14 @@ module Calabash
         @client = options[:client] || ::HTTPClient.new
         @server = server
         @retries = options.fetch(:retries, 5)
-        @timeout = options.fetch(:timeout, 30)
+        @timeout = options.fetch(:timeout, 5)
         @interval = options.fetch(:interval, 0.5)
       end
 
       def get(request, options={})
-        retries = options.fetch(:retries, 5)
-        timeout = options.fetch(:timeout, 30)
-        interval = options.fetch(:interval, 0.5)
+        retries = options.fetch(:retries, @retries)
+        timeout = options.fetch(:timeout, @timeout)
+        interval = options.fetch(:interval, @interval)
 
         intervals = Array.new(retries, interval)
         begin
