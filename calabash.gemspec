@@ -46,6 +46,7 @@ Public License.}
   spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
   spec.add_dependency 'sim_launcher', '< 0.5', '>= 0.4.13'
   spec.add_dependency 'run_loop', '>= 1.3.2', '< 2.0'
+  spec.add_dependency 'retriable', '~> 2.0'
 
   # These dependencies should match the xamarin-test-cloud dependencies.
   spec.add_dependency 'rubyzip', '~> 1.1'
@@ -55,7 +56,6 @@ Public License.}
   spec.add_dependency 'awesome_print'
   spec.add_dependency 'CFPropertyList'
   spec.add_dependency 'json'
-  spec.add_dependency 'retriable'
 
   # Development dependencies.
   spec.add_development_dependency 'yard', '~> 0.8'
