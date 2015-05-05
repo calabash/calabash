@@ -19,8 +19,9 @@ module Calabash
         timeout = options.fetch(:timeout, 30)
         interval = options.fetch(:interval, 0.5)
 
+        intervals = Array.new(retries, interval)
         begin
-          Retriable.retriable(tries: retries, timeout: timeout, interval: interval) do
+          Retriable.retriable(intervals: intervals, timeout: timeout) do
             @client.get(@server.endpoint + request.route, request.params)
           end
         rescue => e
