@@ -1,8 +1,6 @@
 # coding: utf-8
 
-module Calabash
-  VERSION = '2.0.0.pre1'
-end
+require File.join(__dir__, 'lib', 'calabash', 'version')
 
 ruby_files = Dir.glob('{lib,bin}/**/*.rb')
 doc_files =  ['README.md', 'LICENSE', 'CONTRIBUTING.md', 'VERSIONING.md']
