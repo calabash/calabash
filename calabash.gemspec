@@ -1,5 +1,9 @@
 # coding: utf-8
 
+module Calabash
+  VERSION = '2.0.0.pre1'
+end
+
 ruby_files = Dir.glob('{lib,bin}/**/*.rb')
 doc_files =  ['README.md', 'LICENSE', 'CONTRIBUTING.md', 'VERSIONING.md']
 gem_files = ruby_files + doc_files
@@ -28,21 +32,7 @@ Public License.}
 
   spec.required_ruby_version = '>= 2.0'
 
-  spec.version       = lambda do
-    gem_version = nil
-    version_file = File.join(File.dirname(__FILE__), 'lib', 'calabash', 'version.rb')
-    lines = File.readlines(version_file)
-    lines.each do |line|
-      regex = /(\d+)\.(\d+)\.(\d+)\.?(pre\d*)?/
-      match = line.match(regex)
-      unless match.nil?
-        gem_version = match[0]
-        break
-      end
-    end
-    gem_version
-  end.call
-
+  spec.version       = Calabash::VERSION
   spec.platform      = Gem::Platform::RUBY
 
   spec.files         = gem_files
