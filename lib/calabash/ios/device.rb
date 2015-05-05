@@ -31,6 +31,31 @@ module Calabash
           false
         end
       end
+
+      def _calabash_stop_app
+        return true unless test_server_responding?
+
+        begin
+          http_client.get(exit_request)
+        rescue HTTP::Error => e
+          raise "Could send 'exit' to the app: #{e}"
+        end
+      end
+
+      private
+
+      def default_stop_app_parameters
+        {
+              :post_resign_active_delay => 0.4,
+              :post_will_terminate_delay => 0.4,
+              :exit_code => 0
+        }
+      end
+
+      def exit_request
+        parameters = default_stop_app_parameters
+        Calabash::HTTP::Request.new('exit', parameters)
+      end
     end
   end
 end

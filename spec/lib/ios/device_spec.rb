@@ -54,4 +54,26 @@ describe Calabash::IOS::Device do
       expect(dummy_device.test_server_responding?).to be == true
     end
   end
+
+  describe '#calabash_stop_app' do
+    it 'does nothing if server is not responding' do
+      expect(device).to receive(:test_server_responding?).and_return(false)
+      expect(device.calabash_stop_app).to be_truthy
+    end
+
+    it "calls the server 'exit' route" do
+      expect(device).to receive(:test_server_responding?).and_return(true)
+      params = device.send(:default_stop_app_parameters)
+      request = Calabash::HTTP::Request.new('exit', params)
+      expect(device).to receive(:exit_request).and_return(request)
+      expect(device.http_client).to receive(:get).with(request).and_return([])
+      expect(device.calabash_stop_app).to be_truthy
+    end
+
+    it 'raises an exception if server cannot be reached' do
+      expect(device).to receive(:test_server_responding?).and_return(true)
+      expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
+      expect { device.calabash_stop_app }.to raise_error
+    end
+  end
 end
