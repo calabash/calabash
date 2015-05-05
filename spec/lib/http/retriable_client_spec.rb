@@ -45,8 +45,8 @@ describe Calabash::HTTP::RetriableClient do
     it 'should retry all if its requests with the given parameters' do
       route = 'my-route/to-my-server'
       request = Calabash::HTTP::Request.new(route)
-      arguments = {timeout: :my_timeout, interval: :my_interval, retries: :my_retries}
-      expected_arguments = {timeout: :my_timeout, interval: :my_interval, tries: :my_retries}
+      arguments = {timeout: 3600, interval: 42, retries: 13}
+      expected_arguments = {timeout: 3600, intervals: Array.new(13, 42)}
 
       expect(Retriable).to receive(:retriable).with(hash_including(expected_arguments)).and_return(true)
 
