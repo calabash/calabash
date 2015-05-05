@@ -45,3 +45,7 @@ lib/calabash/android/lib/TestServer.apk
 
 # irb
 .irb-history
+
+# screenshots that might be produced during testing
+*screenshots*
+
