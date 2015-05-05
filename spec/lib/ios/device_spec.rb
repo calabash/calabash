@@ -65,7 +65,7 @@ describe Calabash::IOS::Device do
       expect(device).to receive(:test_server_responding?).and_return(true)
       params = device.send(:default_stop_app_parameters)
       request = Calabash::HTTP::Request.new('exit', params)
-      expect(device).to receive(:exit_request).and_return(request)
+      expect(device).to receive(:request_factory).and_return(request)
       expect(device.http_client).to receive(:get).with(request).and_return([])
       expect(device.calabash_stop_app).to be_truthy
     end

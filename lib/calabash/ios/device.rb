@@ -35,8 +35,10 @@ module Calabash
       def _calabash_stop_app
         return true unless test_server_responding?
 
+        parameters = default_stop_app_parameters
+
         begin
-          http_client.get(exit_request)
+          http_client.get(request_factory('exit', parameters))
         rescue Calabash::HTTP::Error => e
           raise "Could send 'exit' to the app: #{e}"
         end
@@ -52,9 +54,8 @@ module Calabash
         }
       end
 
-      def exit_request
-        parameters = default_stop_app_parameters
-        Calabash::HTTP::Request.new('exit', parameters)
+      def request_factory(route, parameters={})
+        Calabash::HTTP::Request.new(route, parameters)
       end
     end
   end
