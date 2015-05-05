@@ -71,7 +71,7 @@ module Calabash
             cucumber_environment['CAL_TEST_SERVER'] = test_server.path
           end
         elsif @platform == :ios
-          Environment.set_variable!('APP_BUNDLE_PATH', application_path)
+          cucumber_environment['CAL_APP'] = Environment::APP_PATH || application_path
         else
           raise "Invalid platform '#{@platform}'"
         end
