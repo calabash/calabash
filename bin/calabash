@@ -59,6 +59,8 @@ module Calabash
             set_platform!(platform.to_sym)
 
             parse_arguments!
+          when 'version'
+            puts Calabash::VERSION
           when 'build'
             parse_build_arguments!
           when 'resign'
