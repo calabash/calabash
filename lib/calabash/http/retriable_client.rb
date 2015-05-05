@@ -25,7 +25,7 @@ module Calabash
             @client.get(@server.endpoint + request.route, request.params)
           end
         rescue => e
-          raise HTTP::Error.new(e.message)
+          raise Calabash::HTTP::Error.new(e.message)
         end
       end
     end
