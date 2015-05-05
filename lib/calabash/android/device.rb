@@ -60,6 +60,11 @@ module Calabash
       private
 
       # @!visibility private
+      def app_installed?(identifier)
+        installed_packages.include?(identifier)
+      end
+
+      # @!visibility private
       def _screenshot(path)
         cmd = "java -jar \"#{Screenshot::SCREENSHOT_JAR_PATH}\" #{identifier} \"#{File.expand_path(path)}\""
 
