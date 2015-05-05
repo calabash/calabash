@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
-# TODO: Remove this
-$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
-
 require 'calabash'
 
 module Calabash
@@ -62,6 +59,8 @@ module Calabash
             set_platform!(platform.to_sym)
 
             parse_arguments!
+          when 'version'
+            puts Calabash::VERSION
           when 'build'
             parse_build_arguments!
           when 'resign'

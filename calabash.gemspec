@@ -1,7 +1,6 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'calabash/version'
+
+require File.join(__dir__, 'lib', 'calabash', 'version')
 
 ruby_files = Dir.glob('{lib,bin}/**/*.rb')
 doc_files =  ['README.md', 'LICENSE', 'CONTRIBUTING.md', 'VERSIONING.md']
@@ -30,6 +29,7 @@ Public License.}
   spec.license       = 'EPL-1.0'
 
   spec.required_ruby_version = '>= 2.0'
+
   spec.version       = Calabash::VERSION
   spec.platform      = Gem::Platform::RUBY
 
