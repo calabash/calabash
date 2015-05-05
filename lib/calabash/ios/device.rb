@@ -27,7 +27,7 @@ module Calabash
       def test_server_responding?
         begin
           http_client.get(Calabash::HTTP::Request.new('version')).status.to_i == 200
-        rescue HTTP::Error => _
+        rescue Calabash::HTTP::Error => _
           false
         end
       end
@@ -37,7 +37,7 @@ module Calabash
 
         begin
           http_client.get(exit_request)
-        rescue HTTP::Error => e
+        rescue Calabash::HTTP::Error => e
           raise "Could send 'exit' to the app: #{e}"
         end
       end
