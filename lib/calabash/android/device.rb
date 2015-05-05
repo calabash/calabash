@@ -79,8 +79,12 @@ module Calabash
 
         @logger.log "Starting test server using: '#{cmd}'"
 
-        unless adb(cmd)
-          raise "Could not execute command to start test server"
+        result = adb(cmd)
+
+        unless result.empty?
+          @logger.log "Unable to start instrumentation", :error
+          @logger.log result, :error
+          raise "Unable to start instrumentation"
         end
 
         begin
