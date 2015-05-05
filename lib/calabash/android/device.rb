@@ -59,7 +59,7 @@ module Calabash
 
       private
 
-      def _calabash_start_app(application, options={})
+      def _start_app(application, options={})
         env_options = options.dup
 
         env_options[:test_server_port] ||= server.test_server_port
@@ -112,7 +112,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _calabash_stop_app
+      def _stop_app
         Retriable.retriable(tries: 5, interval: 1) do
           begin
             http_client.get(HTTP::Request.new('kill'), retries: 1, interval: 0)

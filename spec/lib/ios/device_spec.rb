@@ -17,14 +17,14 @@ describe Calabash::IOS::Device do
     allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
   end
 
-  describe '#calabash_start_app' do
+  describe '#start_app' do
     it 'can launch an app' do
       expect(RunLoop).to receive(:run).and_return({})
       app = Calabash::Application.new('/path/to/my/app')
       expect(device).to receive(:ensure_test_server_ready).and_return true
       expect(device).to receive(:fetch_device_info).and_return({})
       expect(device).to receive(:extract_device_info!).and_return true
-      expect(device.calabash_start_app(app)).to be_truthy
+      expect(device.start_app(app)).to be_truthy
       expect(device.run_loop).to be_a_kind_of(Hash)
       expect(device.run_loop).to be == {}
     end

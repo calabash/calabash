@@ -1,15 +1,15 @@
 module Calabash
   module Operations
     # @!visibility private
-    def _calabash_start_app(application, options={})
+    def _start_app(application, options={})
       test_options = options.dup
 
-      Calabash::Device.default.calabash_start_app(application, test_options)
+      Calabash::Device.default.start_app(application, test_options)
     end
 
     # @!visibility private
-    def _calabash_stop_app
-      Calabash::Device.default.calabash_stop_app
+    def _stop_app
+      Calabash::Device.default.stop_app
     end
 
     # @!visibility private

@@ -15,52 +15,52 @@ describe Calabash::Device do
     expect(device.http_client).to be_a(Calabash::HTTP::RetriableClient)
   end
 
-  describe '#calabash_start_app' do
+  describe '#start_app' do
     let(:application) {:my_application}
     let(:options) {{my: :opts}}
 
     describe 'when running in a managed environment' do
       it 'should invoke the managed impl' do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
-        expect(device).not_to receive(:_calabash_start_app)
-        expect(Calabash::Managed).to receive(:calabash_start_app).with(application, options, device)
+        expect(device).not_to receive(:_start_app)
+        expect(Calabash::Managed).to receive(:start_app).with(application, options, device)
 
-        device.calabash_start_app(application, options)
+        device.start_app(application, options)
       end
     end
 
     describe 'when running in an unmanaged environment' do
       it 'should invoke the impl' do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_calabash_start_app).with(application, options)
-        expect(Calabash::Managed).not_to receive(:calabash_start_app)
+        expect(device).to receive(:_start_app).with(application, options)
+        expect(Calabash::Managed).not_to receive(:start_app)
 
-        device.calabash_start_app(application, options)
+        device.start_app(application, options)
       end
     end
   end
 
-  describe '#calabash_stop_app' do
+  describe '#stop_app' do
     let(:application) {:my_application}
     let(:options) {{my: :opts}}
 
     describe 'when running in a managed environment' do
       it 'should invoke the managed impl' do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
-        expect(device).not_to receive(:_calabash_stop_app)
-        expect(Calabash::Managed).to receive(:calabash_stop_app).with(device)
+        expect(device).not_to receive(:_stop_app)
+        expect(Calabash::Managed).to receive(:stop_app).with(device)
 
-        device.calabash_stop_app
+        device.stop_app
       end
     end
 
     describe 'when running in an unmanaged environment' do
       it 'should invoke the impl' do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_calabash_stop_app).with(no_args)
-        expect(Calabash::Managed).not_to receive(:calabash_stop_app)
+        expect(device).to receive(:_stop_app).with(no_args)
+        expect(Calabash::Managed).not_to receive(:stop_app)
 
-        device.calabash_stop_app
+        device.stop_app
       end
     end
   end
@@ -264,17 +264,17 @@ describe Calabash::Device do
   end
 
 
-  describe '#_calabash_start_app' do
+  describe '#_start_app' do
     it 'should have an abstract implementation' do
       app = :my_app
 
-      expect{device.send(:_calabash_start_app, app)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_start_app, app)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
-  describe '#_calabash_stop_app' do
+  describe '#_stop_app' do
     it 'should have an abstract implementation' do
-      expect{device.send(:_calabash_stop_app)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_stop_app)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

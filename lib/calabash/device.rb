@@ -36,20 +36,20 @@ module Calabash
     #   This has to be and instance of Android::Application
     #   when testing on an Android device.
     # @param [Hash] options
-    def calabash_start_app(application, options={})
+    def start_app(application, options={})
       if Managed.managed?
-        Managed.calabash_start_app(application, options, self)
+        Managed.start_app(application, options, self)
       else
-        _calabash_start_app(application, options)
+        _start_app(application, options)
       end
     end
 
     # Shutdown the application and the test server
-    def calabash_stop_app
+    def stop_app
       if Managed.managed?
-        Managed.calabash_stop_app(self)
+        Managed.stop_app(self)
       else
-        _calabash_stop_app
+        _stop_app
       end
     end
 
@@ -141,12 +141,12 @@ module Calabash
     private
 
     # @!visibility private
-    def _calabash_start_app(application, options={})
+    def _start_app(application, options={})
       abstract_method!
     end
 
     # @!visibility private
-    def _calabash_stop_app
+    def _stop_app
       abstract_method!
     end
 

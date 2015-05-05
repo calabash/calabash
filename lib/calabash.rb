@@ -20,7 +20,7 @@ module Calabash
   include Calabash::Wait
   include Calabash::Screenshot
 
-  def calabash_start_app(opt={})
+  def start_app(opt={})
     test_options = opt.dup
     application = test_options.fetch(:application, Application.default)
     test_options.delete(:application)
@@ -29,11 +29,11 @@ module Calabash
       raise 'No application given, and no default application set'
     end
 
-    _calabash_start_app(application, test_options)
+    _start_app(application, test_options)
   end
 
-  def calabash_stop_app
-    _calabash_stop_app
+  def stop_app
+    _stop_app
   end
 
   # Installs the given application. If the application is already installed,

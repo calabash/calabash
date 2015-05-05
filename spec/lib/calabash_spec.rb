@@ -47,13 +47,13 @@ describe Calabash do
     end
   end
 
-  describe '#calabash_start_app' do
+  describe '#start_app' do
     it 'should invoke the implementation method' do
       args = {application: :my_app, my: :arg}
 
-      expect(dummy_instance).to receive(:_calabash_start_app).with(:my_app, {my: :arg})
+      expect(dummy_instance).to receive(:_start_app).with(:my_app, {my: :arg})
 
-      dummy_instance.calabash_start_app(args)
+      dummy_instance.start_app(args)
     end
 
     it 'should use Application.default if no app is given' do
@@ -62,9 +62,9 @@ describe Calabash do
 
       allow(Calabash::Application).to receive(:default).and_return(app)
 
-      expect(dummy_instance).to receive(:_calabash_start_app).with(app, args)
+      expect(dummy_instance).to receive(:_start_app).with(app, args)
 
-      dummy_instance.calabash_start_app(args)
+      dummy_instance.start_app(args)
     end
 
     it 'should fail if no application is given, and Application.default is not set' do
@@ -72,15 +72,15 @@ describe Calabash do
 
       allow(Calabash::Application).to receive(:default).and_return(nil)
 
-      expect{dummy_instance.calabash_start_app(args)}.to raise_error('No application given, and no default application set')
+      expect{dummy_instance.start_app(args)}.to raise_error('No application given, and no default application set')
     end
   end
 
-  describe '#calabash_stop_app' do
+  describe '#stop_app' do
     it 'should invoke the implementation method' do
-      expect(dummy_instance).to receive(:_calabash_stop_app)
+      expect(dummy_instance).to receive(:_stop_app)
 
-      dummy_instance.calabash_stop_app
+      dummy_instance.stop_app
     end
   end
 
