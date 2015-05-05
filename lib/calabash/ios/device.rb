@@ -26,7 +26,7 @@ module Calabash
 
       def test_server_responding?
         begin
-          http_client.get(HTTP::Request.new('version')).status.to_i == 200
+          http_client.get(Calabash::HTTP::Request.new('version')).status.to_i == 200
         rescue HTTP::Error => _
           false
         end
