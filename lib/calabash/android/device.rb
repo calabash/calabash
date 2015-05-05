@@ -49,6 +49,14 @@ module Calabash
         end
       end
 
+      def test_server_ready?
+        begin
+          http_client.get(HTTP::Request.new('ready')).body == 'true'
+        rescue HTTP::Error => _
+          false
+        end
+      end
+
       private
 
       # @!visibility private
