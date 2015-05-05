@@ -47,7 +47,12 @@ module Calabash
       def enter_console(application_path)
         irbrc_path = Environment::IRBRC
 
-        console_environment = {'CAL_DEBUG' => @options[:verbose] ? '1' : '0'}
+        console_environment = {}
+        console_environment['CAL_DEBUG'] = Environment::DEBUG ? '1' : '0'
+
+        if @options[:verbose]
+          console_environment['CAL_DEBUG'] = '1'
+        end
 
         if @platform == :android
           irbrc_path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'android', 'lib', '.irbrc'))
@@ -77,7 +82,7 @@ module Calabash
         Logger.debug "From file: '#{irbrc_path}'"
         Logger.debug "With ENV: '#{console_environment}'"
 
-        exec(console_environment, 'irb')
+        exec(console_environment, RbConfig.ruby, '-S', 'irb')
       end
     end
   end

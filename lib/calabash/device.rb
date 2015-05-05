@@ -65,35 +65,46 @@ module Calabash
     end
 
     # Do not modify
-    def install(path_or_application)
+    def install_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.install(application, self)
+        Managed.install_app(application, self)
       else
-        _install(application)
+        _install_app(application)
       end
     end
 
     # Do not modify
-    def uninstall(path_or_application)
+    def ensure_app_installed(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.uninstall(application.identifier, self)
+        Managed.ensure_app_installed(application, self)
       else
-        _uninstall(application.identifier)
+        _ensure_app_installed(application)
       end
     end
 
     # Do not modify
-    def clear_app(path_or_application)
+    def uninstall_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       if Managed.managed?
-        Managed.clear_app(application.identifier, self)
+        Managed.uninstall_app(application.identifier, self)
       else
-        _clear_app(application.identifier)
+        _uninstall_app(application.identifier)
+      end
+    end
+
+    # Do not modify
+    def clear_app_data(path_or_application)
+      application = parse_path_or_app_parameters(path_or_application)
+
+      if Managed.managed?
+        Managed.clear_app_data(application.identifier, self)
+      else
+        _clear_app_data(application.identifier)
       end
     end
 
@@ -145,17 +156,22 @@ module Calabash
     end
 
     # @!visibility private
-    def _install(application)
+    def _install_app(application)
       abstract_method!
     end
 
     # @!visibility private
-    def _uninstall(identifier)
+    def _ensure_app_installed(application)
       abstract_method!
     end
 
     # @!visibility private
-    def _clear_app(identifier)
+    def _uninstall_app(identifier)
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _clear_app_data(identifier)
       abstract_method!
     end
 
@@ -167,7 +183,7 @@ module Calabash
     # @!visibility private
     def parse_path_or_app_parameters(path_or_application)
       if path_or_application.is_a?(String)
-        Calabash::Application.new(path_or_application)
+        Calabash::Application.from_path(path_or_application)
       elsif path_or_application.is_a?(Calabash::Application)
         path_or_application
       else

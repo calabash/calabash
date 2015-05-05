@@ -13,23 +13,23 @@ module Calabash
     end
 
     # @!visibility private
-    def _reinstall(opt={})
-      abstract_method!
+    def _install_app(path_or_application)
+      Device.default.install_app(path_or_application)
     end
 
     # @!visibility private
-    def _install(path_or_application)
-      Device.default.install(path_or_application)
+    def _ensure_app_installed(path_or_application)
+      Device.default.ensure_app_installed(path_or_application)
     end
 
     # @!visibility private
-    def _uninstall(path_or_application)
-      Device.default.uninstall(path_or_application)
+    def _uninstall_app(path_or_application)
+      Device.default.uninstall_app(path_or_application)
     end
 
     # @!visibility private
-    def _clear_app(path_or_application)
-      Device.default.clear_app(path_or_application)
+    def _clear_app_data(path_or_application)
+      Device.default.clear_app_data(path_or_application)
     end
   end
 end

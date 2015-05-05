@@ -65,48 +65,89 @@ describe Calabash::Device do
     end
   end
 
-  describe '#install' do
+  describe '#install_app' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
 
     describe 'when running in a managed environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
-        expect(device).not_to receive(:_install)
-        expect(Calabash::Managed).to receive(:install).with(application, device)
+        expect(device).not_to receive(:_install_app)
+        expect(Calabash::Managed).to receive(:install_app).with(application, device)
       end
 
       it 'should invoke the managed impl with an application when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.install(application_path)
+        device.install_app(application_path)
       end
 
       it 'should invoke the managed impl with the given application when given an application' do
-        device.install(application)
+        device.install_app(application)
       end
     end
 
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_install).with(application)
-        expect(Calabash::Managed).not_to receive(:install)
+        expect(device).to receive(:_install_app).with(application)
+        expect(Calabash::Managed).not_to receive(:install_app)
       end
 
       it 'should invoke the impl with an application when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.install(application_path)
+        device.install_app(application_path)
       end
 
       it 'should invoke the impl with the given application when given an application' do
-        device.install(application)
+        device.install_app(application)
       end
     end
   end
 
-  describe '#uninstall' do
+  describe '#ensure_app_installed' do
+    let(:application_path) {File.expand_path('./my-application.app')}
+    let(:application) {Calabash::Application.new(application_path)}
+
+    describe 'when running in a managed environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(device).not_to receive(:_ensure_app_installed)
+        expect(Calabash::Managed).to receive(:ensure_app_installed).with(application, device)
+      end
+
+      it 'should invoke the managed impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
+
+        device.ensure_app_installed(application_path)
+      end
+
+      it 'should invoke the managed impl with the given application when given an application' do
+        device.ensure_app_installed(application)
+      end
+    end
+
+    describe 'when running in an unmanaged environment' do
+      before do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(device).to receive(:_ensure_app_installed).with(application)
+        expect(Calabash::Managed).not_to receive(:ensure_app_installed)
+      end
+
+      it 'should invoke the impl with an application when given a path' do
+        allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
+
+        device.ensure_app_installed(application_path)
+      end
+
+      it 'should invoke the impl with the given application when given an application' do
+        device.ensure_app_installed(application)
+      end
+    end
+  end
+
+  describe '#uninstall_app' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
     let(:identifier) {'my-identifier'}
@@ -118,41 +159,41 @@ describe Calabash::Device do
     describe 'when running in a managed environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
-        expect(device).not_to receive(:_uninstall)
-        expect(Calabash::Managed).to receive(:uninstall).with(identifier, device)
+        expect(device).not_to receive(:_uninstall_app)
+        expect(Calabash::Managed).to receive(:uninstall_app).with(identifier, device)
       end
 
       it 'should invoke the managed impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.uninstall(application_path)
+        device.uninstall_app(application_path)
       end
 
       it 'should invoke the managed impl with an identifier when given an application' do
-        device.uninstall(application)
+        device.uninstall_app(application)
       end
     end
 
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_uninstall).with(identifier)
-        expect(Calabash::Managed).not_to receive(:uninstall)
+        expect(device).to receive(:_uninstall_app).with(identifier)
+        expect(Calabash::Managed).not_to receive(:uninstall_app)
       end
 
       it 'should invoke the impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.uninstall(application_path)
+        device.uninstall_app(application_path)
       end
 
       it 'should invoke the impl with an identifier application when given an application' do
-        device.uninstall(application)
+        device.uninstall_app(application)
       end
     end
   end
 
-  describe '#clear_app' do
+  describe '#clear_app_data' do
     let(:application_path) {File.expand_path('./my-application.app')}
     let(:application) {Calabash::Application.new(application_path)}
     let(:identifier) {'my-identifier'}
@@ -164,36 +205,36 @@ describe Calabash::Device do
     describe 'when running in a managed environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
-        expect(device).not_to receive(:_clear_app)
-        expect(Calabash::Managed).to receive(:clear_app).with(identifier, device)
+        expect(device).not_to receive(:_clear_app_data)
+        expect(Calabash::Managed).to receive(:clear_app_data).with(identifier, device)
       end
 
       it 'should invoke the managed impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.clear_app(application_path)
+        device.clear_app_data(application_path)
       end
 
       it 'should invoke the managed impl with an identifier when given an application' do
-        device.clear_app(application)
+        device.clear_app_data(application)
       end
     end
 
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_clear_app).with(identifier)
-        expect(Calabash::Managed).not_to receive(:clear_app)
+        expect(device).to receive(:_clear_app_data).with(identifier)
+        expect(Calabash::Managed).not_to receive(:clear_app_data)
       end
 
       it 'should invoke the impl with an identifier when given a path' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
-        device.clear_app(application_path)
+        device.clear_app_data(application_path)
       end
 
       it 'should invoke the impl with an identifier when given an application' do
-        device.clear_app(application)
+        device.clear_app_data(application)
       end
     end
   end
@@ -237,27 +278,35 @@ describe Calabash::Device do
     end
   end
 
-  describe '#_install' do
+  describe '#_install_app' do
     it 'should have an abstract implementation' do
       arg = 'my-arg'
 
-      expect{device.send(:_install, arg)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_install_app, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
-  describe '#_uninstall' do
+  describe '#_ensure_app_installed' do
     it 'should have an abstract implementation' do
       arg = 'my-arg'
 
-      expect{device.send(:_uninstall, arg)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_ensure_app_installed, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
-  describe '#_clear_app' do
+  describe '#_uninstall_app' do
     it 'should have an abstract implementation' do
       arg = 'my-arg'
 
-      expect{device.send(:_clear_app, arg)}.to raise_error(Calabash::AbstractMethodError)
+      expect{device.send(:_uninstall_app, arg)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_clear_app_data' do
+    it 'should have an abstract implementation' do
+      arg = 'my-arg'
+
+      expect{device.send(:_clear_app_data, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
@@ -326,9 +375,12 @@ describe Calabash::Device do
     end
 
     it 'returns an Application when passed a String' do
-      expected_path = File.expand_path('./path/to/my/app')
-      app = device.send(:parse_path_or_app_parameters, expected_path)
-      expect(app.path).to be == expected_path
+      path = "./my-path"
+      expected_app = :my_app
+
+      expect(Calabash::Application).to receive(:from_path).with(path).and_return(expected_app)
+
+      expect(device.send(:parse_path_or_app_parameters, path)).to eq(expected_app)
     end
   end
 

@@ -84,85 +84,86 @@ describe Calabash do
     end
   end
 
-  describe '#reinstall' do
+  describe 'app life cycle' do
+    let(:methods) {[:install_app, :ensure_app_installed, :uninstall_app, :clear_app_data]}
+
     it 'should invoke the implementation method' do
-      args = {my: :arg}
+      app = :my_app
 
-      expect(dummy_instance).to receive(:_reinstall).with(args)
+      methods.each do |method_name|
+        expect(dummy_instance).to receive(:"_#{method_name}").with(app)
 
-      dummy_instance.reinstall(args)
+        dummy_instance.send(method_name, app)
+      end
     end
-  end
 
-  describe '#install' do
-    it 'should invoke the implementation method' do
-      arg = 'my-arg'
+    it 'should use the default application if no app is given' do
+      app = :my_default_app
 
-      expect(dummy_instance).to receive(:_install).with(arg)
+      allow(Calabash::Application).to receive(:default).and_return(app)
 
-      dummy_instance.install(arg)
+      methods.each do |method_name|
+        expect(dummy_instance).to receive(:"_#{method_name}").with(app)
+
+        dummy_instance.send(method_name)
+      end
     end
-  end
 
-  describe '#uninstall' do
-    it 'should invoke the implementation method' do
-      arg = 'my-arg'
+    it 'should fail if no app is given, and default is not set' do
+      allow(Calabash::Application).to receive(:default).and_return(nil)
 
-      expect(dummy_instance).to receive(:_uninstall).with(arg)
+      methods.each do |method_name|
+        expect(dummy_instance).not_to receive(:"_#{method_name}")
 
-      dummy_instance.uninstall(arg)
-    end
-  end
-
-  describe '#clear_app' do
-    it 'should invoke the implementation method' do
-      arg = 'my-arg'
-
-      expect(dummy_instance).to receive(:_clear_app).with(arg)
-
-      dummy_instance.clear_app(arg)
-    end
-  end
-
-  describe '#_reinstall' do
-    it 'should have an abstract implementation' do
-      expect{dummy.new._reinstall}.to raise_error(Calabash::AbstractMethodError)
+        expect{dummy_instance.send(method_name)}.to raise_error('No application given, and Application.default is not set')
+      end
     end
   end
 
   let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
   let(:dummy_device) {dummy_device_class.new}
 
-  describe '#_install' do
+  describe '#_install_app' do
     it 'should delegate to the default device' do
       arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(dummy_device).to receive(:install).with(arg)
+      expect(dummy_device).to receive(:install_app).with(arg)
 
-      dummy.new._install(arg)
+      dummy.new._install_app(arg)
     end
   end
 
-  describe '#_uninstall' do
+  describe '#_ensure_app_installed' do
     it 'should delegate to the default device' do
       arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:uninstall).with(arg)
+      expect(dummy_device).to receive(:ensure_app_installed).with(arg)
 
-      dummy.new._uninstall(arg)
+      dummy.new._ensure_app_installed(arg)
     end
   end
 
-  describe '#_clear_app' do
+  describe '#_uninstall_app' do
     it 'should delegate to the default device' do
       arg = 'my-arg'
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:clear_app).with(arg)
+      expect(Calabash::Device.default).to receive(:uninstall_app).with(arg)
 
-      dummy.new._clear_app(arg)
+      dummy.new._uninstall_app(arg)
+    end
+  end
+
+  describe '#_clear_app_data' do
+    it 'should delegate to the default device' do
+      arg = 'my-arg'
+
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:clear_app_data).with(arg)
+
+      dummy.new._clear_app_data(arg)
     end
   end
 end

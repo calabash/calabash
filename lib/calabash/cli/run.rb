@@ -51,24 +51,25 @@ module Calabash
       end
 
       def run(application_path, cucumber_arguments)
-        environment = {}
+        cucumber_environment = {}
+        cucumber_environment['CAL_DEBUG'] = Environment::DEBUG ? '1' : '0'
+
+        if @options[:verbose]
+          cucumber_environment['CAL_DEBUG'] = '1'
+        end
 
         if @platform == :android
+          cucumber_environment['CAL_APP'] = Environment::APP_PATH || application_path
+
           if Environment::TEST_SERVER_PATH
-            test_server_path = Environment::TEST_SERVER_PATH
+            cucumber_environment['CAL_TEST_SERVER'] = Environment::TEST_SERVER_PATH
           else
             test_server = Android::Build::TestServer.new(application_path)
 
             raise 'Cannot locate test-server' unless test_server.exists?
 
-            test_server_path = test_server.path
+            cucumber_environment['CAL_TEST_SERVER'] = test_server.path
           end
-
-          environment =
-              {
-                  'TEST_APP_PATH' => test_server_path,
-                  'APP_PATH' => application_path
-              }
         elsif @platform == :ios
           Environment.set_variable!('APP_BUNDLE_PATH', application_path)
         else
@@ -77,9 +78,9 @@ module Calabash
 
         arguments = ['-S', 'cucumber', *cucumber_arguments]
 
-        Logger.debug("Starting Ruby with arguments: #{arguments.join(', ')} and environment #{environment.to_s}")
+        Logger.debug("Starting Ruby with arguments: #{arguments.join(', ')} and environment #{cucumber_environment.to_s}")
 
-        exec(environment, RbConfig.ruby, *arguments)
+        exec(cucumber_environment, RbConfig.ruby, *arguments)
       end
     end
   end

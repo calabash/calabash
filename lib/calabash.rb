@@ -1,10 +1,10 @@
 module Calabash
   require File.join(File.dirname(__FILE__), '..', 'script', 'backwards_compatibility')
+  require 'calabash/environment'
   require 'calabash/logger'
   require 'calabash/color'
   require 'calabash/utility'
   require 'calabash/application'
-  require 'calabash/environment'
   require 'calabash/operations'
   require 'calabash/managed'
   require 'calabash/device'
@@ -36,20 +36,79 @@ module Calabash
     _calabash_stop_app
   end
 
-  def reinstall(opt={})
-    _reinstall(opt)
+  # Installs the given application. If the application is already installed,
+  # the application will be uninstalled, and installed afterwards. If no
+  # application is given, it will install `Application.default`.
+  #
+  # If the given application is an instance of
+  # `Calabash::Android::Application`, the same procedure is executed for the
+  # test-server of the application, if it is set.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`. Defaults to
+  #  `Application.default`
+  def install_app(path_or_application = nil)
+    path_or_application ||= Application.default
+
+    unless path_or_application
+      raise 'No application given, and Application.default is not set'
+    end
+
+    _install_app(path_or_application)
   end
 
-  def install(path_or_application)
-    _install(path_or_application)
+  # Installs the given application *if it is not already installed*. If no
+  # application is given, it will ensure `Application.default` is installed.
+  #
+  # If the given application is an instance of
+  # `Calabash::Android::Application`, the same procedure is executed for the
+  # test-server of the application, if it is set.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`. Defaults to
+  #  `Application.default`
+  def ensure_app_installed(path_or_application = nil)
+    path_or_application ||= Application.default
+
+    unless path_or_application
+      raise 'No application given, and Application.default is not set'
+    end
+
+    _ensure_app_installed(path_or_application)
   end
 
-  def uninstall(path_or_application)
-    _uninstall(path_or_application)
+  # Uninstalls the given application. Does nothing if the application is
+  # already uninstalled. If no application is given, it will uninstall
+  # `Application.default`.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`. Defaults to
+  #  `Application.default`
+  def uninstall_app(path_or_application = nil)
+    path_or_application ||= Application.default
+
+    unless path_or_application
+      raise 'No application given, and Application.default is not set'
+    end
+
+    _uninstall_app(path_or_application)
   end
 
-  def clear_app(path_or_application)
-    _clear_app(path_or_application)
+  # Clears the contents of the given application. This is roughly equivalent to
+  # reinstalling the application. If no  application is given, it will clear
+  # `Application.default`.
+  #
+  # @param [String, Calabash::Application] path_or_application A path to the
+  #  application, or an instance of `Calabash::Application`. Defaults to
+  #  `Application.default`
+  def clear_app_data(path_or_application = nil)
+    path_or_application ||= Application.default
+
+    unless path_or_application
+      raise 'No application given, and Application.default is not set'
+    end
+
+    _clear_app_data(path_or_application)
   end
 
   def self.new_embed_method!(method)

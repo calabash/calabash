@@ -7,8 +7,11 @@ describe Calabash::Android::Application do
 
       stub_const('Calabash::Environment::APP_PATH', app_path)
       stub_const('Calabash::Environment::TEST_SERVER_PATH', test_server_path)
-
+      allow(File).to receive(:exist?).with(app_path).and_return(true)
+      allow(File).to receive(:exist?).with(test_server_path).and_return(true)
+      allow(File).to receive(:directory?).with(app_path).and_return(false)
       allow(Calabash::Android::Application).to receive(:new).with(app_path, test_server_path).and_return(returned_app)
+
       expect(Calabash::Android::Application.default_from_environment).to eq(returned_app)
     end
 
@@ -22,6 +25,9 @@ describe Calabash::Android::Application do
       allow(Calabash::Android::Build::TestServer).to receive(:new).with(app_path).and_return(dummy)
       allow(dummy).to receive(:path).and_return(test_server_path)
       allow(Calabash::Android::Application).to receive(:new).with(app_path, test_server_path).and_return(returned_app)
+      allow(File).to receive(:exist?).with(app_path).and_return(true)
+      allow(File).to receive(:exist?).with(test_server_path).and_return(true)
+      allow(File).to receive(:directory?).with(app_path).and_return(false)
 
       expect(Calabash::Android::Application.default_from_environment).to eq(returned_app)
     end
