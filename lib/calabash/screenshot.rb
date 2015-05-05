@@ -15,7 +15,7 @@ module Calabash
     # screenshot_N, where N is the total amount of screenshots taken for the
     # test run.
     #
-    # @param [String] Name Name of the screenshot.
+    # @param [String] name Name of the screenshot.
     # @return [String] Path to the screenshot
     def screenshot(name=nil)
       Device.default.screenshot(name)
