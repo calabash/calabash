@@ -13,5 +13,7 @@ module Calabash
 
       raise AbstractMethodError.new("Abstract method '#{method_name}'")
     end
+
+    class RetryError < RuntimeError; end
   end
 end

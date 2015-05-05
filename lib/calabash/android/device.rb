@@ -59,6 +59,75 @@ module Calabash
 
       private
 
+      def _calabash_start_app(application, options={})
+        env_options = options.dup
+
+        env_options[:test_server_port] ||= server.test_server_port
+        env_options[:class] ||= 'sh.calaba.instrumentationbackend.InstrumentationBackend'
+        env_options[:target_package] ||= application.identifier
+        env_options[:main_activity] ||= application.main_activity
+
+        cmd_arguments = ["shell am instrument"]
+
+        env_options.each_pair do |key, val|
+          cmd_arguments << ["-e \"#{key.to_s}\" \"#{val.to_s}\""]
+        end
+
+        cmd_arguments << "#{application.test_server.identifier}/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner"
+
+        cmd = cmd_arguments.join(" ")
+
+        @logger.log "Starting test server using: '#{cmd}'"
+
+        unless adb(cmd)
+          raise "Could not execute command to start test server"
+        end
+
+        begin
+          Retriable.retriable(tries: 30, interval: 1, timeout: 30) do
+            unless test_server_responding?
+              raise RetryError
+            end
+          end
+        rescue RetryError => _
+          @logger.log('Could not contact test-server', :error)
+          @logger.log('For information, see the adb logcat', :error)
+          raise 'Could not contact test-server'
+        end
+
+        begin
+          Retriable.retriable(tries: 10, interval: 1, timeout: 10) do
+            unless test_server_ready?
+              raise RetryError
+            end
+          end
+        rescue RetryError => _
+          @logger.log('Test-server was never ready', :error)
+          @logger.log('For information, see the adb logcat', :error)
+          raise 'Test-server was never ready'
+        end
+
+        # Return nil to avoid cluttering the console
+        nil
+      end
+
+      # @!visibility private
+      def _calabash_stop_app
+        Retriable.retriable(tries: 5, interval: 1) do
+          begin
+            http_client.get(HTTP::Request.new('kill'), retries: 1, interval: 0)
+          rescue HTTP::Error => _
+            # It's fine that we can't contact the test-server, as it might already have been shut down
+            if test_server_responding?
+              raise 'Could not kill the test-server'
+            end
+          end
+        end
+
+        # Return nil to avoid cluttering the console
+        nil
+      end
+
       # @!visibility private
       def app_installed?(identifier)
         installed_packages.include?(identifier)
