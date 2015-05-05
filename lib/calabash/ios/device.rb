@@ -9,7 +9,7 @@ module Calabash
         raise 'ni'
       end
 
-      def calabash_start_app(application, options={})
+      def _calabash_start_app(application, options={})
         default_opts =
             {
                 :app => application.path,
