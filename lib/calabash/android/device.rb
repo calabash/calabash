@@ -67,6 +67,10 @@ module Calabash
         env_options[:target_package] ||= application.identifier
         env_options[:main_activity] ||= application.main_activity
 
+        if application.test_server.nil?
+          raise 'Invalid application. No test-server set.'
+        end
+
         cmd_arguments = ["shell am instrument"]
 
         env_options.each_pair do |key, val|
