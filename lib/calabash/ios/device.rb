@@ -9,7 +9,7 @@ module Calabash
         raise 'ni'
       end
 
-      def calabash_start_app(application, options={})
+      def _calabash_start_app(application, options={})
         default_opts =
             {
                 :app => application.path,
@@ -26,10 +26,47 @@ module Calabash
 
       def test_server_responding?
         begin
-          http_client.get(HTTP::Request.new('version')).status.to_i == 200
-        rescue HTTP::Error => _
+          http_client.get(Calabash::HTTP::Request.new('version')).status.to_i == 200
+        rescue Calabash::HTTP::Error => _
           false
         end
+      end
+
+      def _calabash_stop_app
+        return true unless test_server_responding?
+
+        parameters = default_stop_app_parameters
+
+        begin
+          http_client.get(request_factory('exit', parameters))
+        rescue Calabash::HTTP::Error => e
+          raise "Could send 'exit' to the app: #{e}"
+        end
+      end
+
+      def _screenshot(path)
+        request = request_factory('screenshot', {:path => path})
+        begin
+         screenshot = http_client.get(request)
+         File.open(path, 'wb') { |file| file.write screenshot }
+        rescue Calabash::HTTP::Error => _
+          raise "Could not send 'screenshot' to the app: #{e}"
+        end
+        path
+      end
+
+      private
+
+      def default_stop_app_parameters
+        {
+              :post_resign_active_delay => 0.4,
+              :post_will_terminate_delay => 0.4,
+              :exit_code => 0
+        }
+      end
+
+      def request_factory(route, parameters={})
+        Calabash::HTTP::Request.new(route, parameters)
       end
     end
   end
