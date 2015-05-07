@@ -94,4 +94,32 @@ describe Calabash::IOS::Device do
       expect(File.read(path)).to be == data
     end
   end
+
+  describe '#install_app' do
+    let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
+    describe 'raises an error when' do
+      it 'is a physical device' do
+        expect(device).to receive(:run_loop_device).and_return(run_loop_device)
+        expect(run_loop_device).to receive(:simulator?).and_return(false)
+        app = Calabash::Application.new('/path/to.app')
+        expect { device.install_app(app) }.to raise_error
+      end
+
+      it 'cannot install the application on the simulator' do
+        expect(device).to receive(:run_loop_device).and_return(run_loop_device)
+        expect(run_loop_device).to receive(:simulator?).and_return(true)
+        app = Calabash::Application.new('/path/to.app')
+        expect(device).to receive(:install_app_on_simulator).and_raise(StandardError)
+        expect { device.install_app(app) }.to raise_error
+      end
+    end
+
+    it 'installs the app' do
+      expect(device).to receive(:run_loop_device).and_return(run_loop_device)
+      expect(run_loop_device).to receive(:simulator?).and_return(true)
+      app = Calabash::Application.new('/path/to.app')
+      expect(device).to receive(:install_app_on_simulator).and_return('Shutdown')
+      expect(device.install_app(app)).to be == 'Shutdown'
+    end
+  end
 end
