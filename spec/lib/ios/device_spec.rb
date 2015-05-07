@@ -102,7 +102,7 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:run_loop_device).and_return(run_loop_device)
         expect(run_loop_device).to receive(:simulator?).and_return(false)
         app = Calabash::Application.new('/path/to.app')
-        expect { device.install_app(app) }.to raise_error
+        expect { device.install_app(app) }.to raise_error(Calabash::AbstractMethodError)
       end
 
       it 'cannot install the application on the simulator' do

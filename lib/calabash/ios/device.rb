@@ -73,9 +73,19 @@ module Calabash
         if target_device.simulator?
           install_app_on_simulator(application, target_device)
         else
-          raise NotImplementedError,
-                'Installing applications on physical iOS devices is not implemented yet'
+          install_app_on_device(application, target_device.udid)
         end
+      end
+
+      # @todo document install_app_on_device
+      # @todo create a document describing ideviceinstaller implementation
+      def install_app_on_device(application, device_udid)
+        @logger.log('INFO: To install an ipa on a physical device, you must extend', :info)
+        @logger.log('INFO: Calabash::IOS::Device and implement the #install_app_on_device', :info)
+        @logger.log('INFO: method that uses a third-party tool to interact with physical devices.', :info)
+        @logger.log('INFO: For an example of an implementation using ideviceinstaller, see:', :info)
+        @logger.log('INFO:    http://', :info)
+        raise Calabash::AbstractMethodError, 'Device install_on_device must be implemented by you.'
       end
 
       private
