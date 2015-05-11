@@ -3,7 +3,7 @@ module Calabash
     module Helpers
       HELP = {
           help: 'help',
-          gen: 'gen <platform>',
+          gen: 'gen',
           run: 'run [application] [cucumber options]',
           console: 'console [application]',
           version: 'version',
@@ -33,8 +33,7 @@ EOF
       print help information.
 
     #{HELP[:gen]}
-      generate a features folder structure based on the specified platform.
-      can be either 'android', 'ios' or 'cross-platform'
+      generate a features folder structure.
 
     #{HELP[:run]}
       runs Cucumber in the current folder with the environment needed.
