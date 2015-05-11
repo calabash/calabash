@@ -1,6 +1,13 @@
 module Calabash
   module Android
     class Device < Calabash::Android::Operations::Device
+      attr_reader :adb
+
+      def initialize(identifier, server)
+        super
+        @adb = ADB.new(identifier)
+      end
+
       def self.default_serial
         serials = list_serials
 
@@ -31,12 +38,8 @@ module Calabash
         end
       end
 
-      def adb(command)
-        ADB.command(command, identifier)
-      end
-
       def installed_packages
-        adb('shell pm list packages').lines.map do |line|
+        adb.shell('pm list packages').lines.map do |line|
           line.sub('package:', '').chomp
         end
       end
@@ -79,7 +82,7 @@ module Calabash
           raise "The test-server '#{application.test_server.identifier}' is not installed"
         end
 
-        cmd_arguments = ["shell am instrument"]
+        cmd_arguments = ['am instrument']
 
         env_options.each_pair do |key, val|
           cmd_arguments << ["-e \"#{key.to_s}\" \"#{val.to_s}\""]
@@ -91,12 +94,13 @@ module Calabash
 
         @logger.log "Starting test server using: '#{cmd}'"
 
-        result = adb(cmd)
+        begin
+          adb.shell(cmd)
+        rescue ADB::ADBCallError => e
+          @logger.log('ERROR: Could not start the application. adb shell output: ', :error)
+          @logger.log(e.stderr, :error)
 
-        unless result.empty?
-          @logger.log "Unable to start instrumentation", :error
-          @logger.log result, :error
-          raise "Unable to start instrumentation"
+          raise 'Failed to start the application'
         end
 
         begin
