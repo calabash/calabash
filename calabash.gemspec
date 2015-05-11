@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require File.join(__dir__, 'lib', 'calabash', 'version')
+require File.join(File.dirname(__FILE__), 'lib', 'calabash', 'version')
 
 ruby_files = Dir.glob('{lib,bin}/**/*.rb')
 doc_files =  ['README.md', 'LICENSE', 'CONTRIBUTING.md', 'VERSIONING.md']
