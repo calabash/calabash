@@ -46,7 +46,7 @@ module Calabash
 
       def test_server_responding?
         begin
-          http_client.get(HTTP::Request.new('ping')).body == 'pong'
+          http_client.get(HTTP::Request.new('ping'), retries: 1).body == 'pong'
         rescue HTTP::Error => _
           false
         end
