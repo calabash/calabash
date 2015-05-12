@@ -112,6 +112,46 @@ module Calabash
       Device.default.pan(query, from, to, options)
     end
 
+    # Performs a `pan` from the center of the first view that matches
+    # `query_from` to the center of the first view that matches `query_to`.
+    #
+    # @example
+    #  Panning between two elements.
+    #  `pan_between("* id:'first'", "* id:'second'")`
+    #
+    #     id: first
+    #   ┌───────────┐
+    #   │           │
+    #   │     ─     │
+    #   │      \    │
+    #   └───────\───┘
+    #            \
+    #             \
+    #              \
+    #               \
+    #                \
+    #                 \
+    #              ┌───\───────┐
+    #              │    \      │
+    #              │     x     │
+    #              │           │
+    #              └───────────┘
+    #
+    # @option options [Number] :wait_after (0) How many seconds to wait after
+    #   issuing the pan.
+    # @option options [Number] :duration (0.5) How many seconds the swipe takes
+    #   to complete.
+    # @raise [ViewNotFoundError] If the `query_from` returns no results.
+    # @raise [ViewNotFoundError] If the `query_to` returns no results.
+    # @raise [ArgumentError] If `query_from` is invalid.
+    # @raise [ArgumentError] If `query_to` is invalid.
+    def pan_between(query_from, query_to, options={})
+      Query.ensure_valid_query(query_from)
+      Query.ensure_valid_query(query_to)
+
+      Device.default.pan_between(query_from, query_to, options)
+    end
+
     # Performs a `pan` heading `left` on the (first) view that matches `query`.
     # @see pan
     def pan_left(query, options={})

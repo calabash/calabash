@@ -170,6 +170,15 @@ module Calabash
       _pan(query, from, to, {duration: 0.5}.merge(options))
     end
 
+    # Performs a `pan` between two elements.
+    # @see Calabash::Gestures#pan_between
+    def pan_between(query_from, query_to, options={})
+      Query.ensure_valid_query(query_from)
+      Query.ensure_valid_query(query_to)
+
+      _pan_between(query_from, query_to, options)
+    end
+
     # Performs a `flick` on the (first) view that matches `query`.
     # @see Calabash::Gestures#flick
     def flick(query, from, to, options={})
@@ -260,6 +269,11 @@ module Calabash
     # @!visibility private
     def _pan(query, from, to, options={})
         abstract_method!
+    end
+
+    # @!visibility private
+    def _pan_between(query_from, query_to, options={})
+      abstract_method!
     end
 
     # @!visibility private

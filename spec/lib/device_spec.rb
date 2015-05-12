@@ -522,6 +522,41 @@ describe Calabash::Device do
     end
   end
 
+  describe '#pan_between' do
+    it 'should invoke the implementation method' do
+      query_from = "my query"
+      query_to = "my query 2"
+      options = {my: :arg}
+
+      expect(device).to receive(:_pan_between).with(query_from, query_to, hash_including(options))
+
+      device.pan_between(query_from, query_to, options)
+    end
+    it 'raises an error if invalid query_from' do
+      query_from = "my query"
+      query_to = "my query 2"
+
+      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(false)
+
+      expect do
+        device.pan_between(query_from, query_to)
+      end.to raise_error ArgumentError
+    end
+
+    it 'raises an error if invalid query_to' do
+      query_from = "my query"
+      query_to = "my query 2"
+
+      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(true)
+      allow(Calabash::Query).to receive(:valid_query?).with(query_to).and_return(false)
+
+      expect do
+        device.pan_between(query_from, query_to)
+      end.to raise_error ArgumentError
+    end
+  end
+
+
   describe '#flick' do
     it 'should invoke the implementation method' do
       query = "my query"
@@ -570,6 +605,12 @@ describe Calabash::Device do
   describe '#_pan' do
     it 'should have an abstract implementation' do
       expect{device.send(:_pan, 'my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_pan_between' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_pan_between, 'my query', 'my query', {})}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

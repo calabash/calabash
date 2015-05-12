@@ -96,6 +96,43 @@ describe Calabash::Gestures do
     end
   end
 
+  describe '#pan_between' do
+    it 'should delegate to the default device' do
+      query_from = "my query"
+      query_to = "my query 2"
+      options = {my: :arg}
+      args = [query_from, query_to, options]
+
+      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
+      expect(Calabash::Device.default).to receive(:pan_between).with(*args)
+
+      dummy_instance.pan_between(*args)
+    end
+
+    it 'raises an error if invalid query_from' do
+      query_from = "my query"
+      query_to = "my query 2"
+
+      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(false)
+
+      expect do
+        dummy_instance.pan_between(query_from, query_to)
+      end.to raise_error ArgumentError
+    end
+
+    it 'raises an error if invalid query_to' do
+      query_from = "my query"
+      query_to = "my query 2"
+
+      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(true)
+      allow(Calabash::Query).to receive(:valid_query?).with(query_to).and_return(false)
+
+      expect do
+        dummy_instance.pan_between(query_from, query_to)
+      end.to raise_error ArgumentError
+    end
+  end
+
   describe '#pan_left' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
