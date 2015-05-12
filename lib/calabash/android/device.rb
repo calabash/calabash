@@ -1,6 +1,13 @@
 module Calabash
   module Android
     class Device < Calabash::Android::Operations::Device
+      attr_reader :adb
+
+      def initialize(identifier, server)
+        super
+        @adb = ADB.new(identifier)
+      end
+
       def self.default_serial
         serials = list_serials
 
@@ -31,25 +38,120 @@ module Calabash
         end
       end
 
-      def adb(command)
-        ADB.command(command, identifier)
-      end
-
       def installed_packages
-        adb('shell pm list packages').lines.map do |line|
+        adb.shell('pm list packages').lines.map do |line|
           line.sub('package:', '').chomp
         end
       end
 
       def test_server_responding?
         begin
-          http_client.get(HTTP::Request.new('ping')).body == 'pong'
+          http_client.get(HTTP::Request.new('ping'), retries: 1).body == 'pong'
+        rescue HTTP::Error => _
+          false
+        end
+      end
+
+      def test_server_ready?
+        begin
+          http_client.get(HTTP::Request.new('ready')).body == 'true'
         rescue HTTP::Error => _
           false
         end
       end
 
       private
+
+      def _start_app(application, options={})
+        env_options = options.dup
+
+        env_options[:test_server_port] ||= server.test_server_port
+        env_options[:class] ||= 'sh.calaba.instrumentationbackend.InstrumentationBackend'
+        env_options[:target_package] ||= application.identifier
+        env_options[:main_activity] ||= application.main_activity
+
+        if application.test_server.nil?
+          raise 'Invalid application. No test-server set.'
+        end
+
+        unless app_installed?(env_options[:target_package])
+          raise "The application '#{env_options[:target_package]}' is not installed"
+        end
+
+        unless app_installed?(application.test_server.identifier)
+          raise "The test-server '#{application.test_server.identifier}' is not installed"
+        end
+
+        cmd_arguments = ['am instrument']
+
+        env_options.each_pair do |key, val|
+          cmd_arguments << ["-e \"#{key.to_s}\" \"#{val.to_s}\""]
+        end
+
+        cmd_arguments << "#{application.test_server.identifier}/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner"
+
+        cmd = cmd_arguments.join(" ")
+
+        @logger.log "Starting test server using: '#{cmd}'"
+
+        begin
+          adb.shell(cmd)
+        rescue ADB::ADBCallError => e
+          @logger.log('ERROR: Could not start the application. adb shell output: ', :error)
+          @logger.log(e.stderr, :error)
+
+          raise 'Failed to start the application'
+        end
+
+        begin
+          Retriable.retriable(tries: 30, interval: 1, timeout: 30) do
+            unless test_server_responding?
+              raise RetryError
+            end
+          end
+        rescue RetryError => _
+          @logger.log('Could not contact test-server', :error)
+          @logger.log('For information, see the adb logcat', :error)
+          raise 'Could not contact test-server'
+        end
+
+        begin
+          Retriable.retriable(tries: 10, interval: 1, timeout: 10) do
+            unless test_server_ready?
+              raise RetryError
+            end
+          end
+        rescue RetryError => _
+          @logger.log('Test-server was never ready', :error)
+          @logger.log('For information, see the adb logcat', :error)
+          raise 'Test-server was never ready'
+        end
+
+        # Return nil to avoid cluttering the console
+        nil
+      end
+
+      # @!visibility private
+      def _stop_app
+        Retriable.retriable(tries: 5, interval: 1) do
+          begin
+            http_client.get(HTTP::Request.new('kill'), retries: 1, interval: 0)
+          rescue HTTP::Error => _
+            # It's fine that we can't contact the test-server, as it might already have been shut down
+            if test_server_responding?
+              raise 'Could not kill the test-server'
+            end
+          end
+        end
+
+        # Return nil to avoid cluttering the console
+        nil
+      end
+
+      # @!visibility private
+      def app_installed?(identifier)
+        installed_packages.include?(identifier)
+      end
 
       # @!visibility private
       def _screenshot(path)
@@ -112,14 +214,14 @@ module Calabash
 
       # @!visibility private
       def _port_forward(host_port)
-        adb_forward_cmd = "forward tcp:#{host_port} tcp:#{server.test_server_port}"
-        ADB.command(adb_forward_cmd)
+        adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{server.test_server_port}"]
+        ADB.command(*adb_forward_cmd)
       end
 
       # @!visibility private
       def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
-        result = adb("uninstall #{package}").lines.last
+        result = adb.command('uninstall', package).lines.last
 
         if result.downcase.chomp != 'success'
           raise "Could not uninstall app: #{result}"
@@ -133,7 +235,7 @@ module Calabash
       # @!visibility private
       def adb_install_app(application)
         @logger.log "Installing #{application.path}"
-        result = adb("install -r \"#{application.path}\"").lines.last
+        result = adb.command('install' , '-r', application.path).lines.last
 
         if result.downcase.chomp != 'success'
           raise "Could not install app: #{result}"
@@ -152,7 +254,7 @@ module Calabash
           raise "Cannot clear app. '#{package}' is not installed"
         end
 
-        result = adb("shell pm clear #{package}").lines.last
+        result = adb.shell("pm clear #{package}").lines.last
 
         if result.downcase.chomp != 'success'
           raise "Could not clear app: #{result}"

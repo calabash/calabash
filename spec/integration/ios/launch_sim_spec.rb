@@ -22,6 +22,6 @@ describe 'iOS Launch Simulator' do
 
   it 'can launch a simulator' do
     device = Calabash::IOS::Device.new(target, server)
-    device.calabash_start_app(app, launch_options)
+    device.start_app(app, launch_options)
   end
 end

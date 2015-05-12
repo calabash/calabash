@@ -10,18 +10,20 @@ module Calabash
         @client = options[:client] || ::HTTPClient.new
         @server = server
         @retries = options.fetch(:retries, 5)
-        @timeout = options.fetch(:timeout, 30)
+        @timeout = options.fetch(:timeout, 5)
         @interval = options.fetch(:interval, 0.5)
+        @logger = options[:logger] || Logger.new
       end
 
       def get(request, options={})
-        retries = options.fetch(:retries, 5)
-        timeout = options.fetch(:timeout, 30)
-        interval = options.fetch(:interval, 0.5)
+        retries = options.fetch(:retries, @retries)
+        timeout = options.fetch(:timeout, @timeout)
+        interval = options.fetch(:interval, @interval)
 
         intervals = Array.new(retries, interval)
         begin
           Retriable.retriable(intervals: intervals, timeout: timeout) do
+            @logger.log "Getting: #{@server.endpoint + request.route}"
             @client.get(@server.endpoint + request.route, request.params)
           end
         rescue => e

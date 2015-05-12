@@ -25,15 +25,15 @@ module Calabash
     end
 
     # @!visibility private
-    unless respond_to?(:calabash_start_app)
-      define_singleton_method(:calabash_start_app) do |application, options, device|
+    unless respond_to?(:start_app)
+      define_singleton_method(:start_app) do |application, options, device|
         invalid_managed_environment!
       end
     end
 
     # @!visibility private
-    unless respond_to?(:calabash_stop_app)
-      define_singleton_method(:calabash_stop_app) do |device|
+    unless respond_to?(:stop_app)
+      define_singleton_method(:stop_app) do |device|
         invalid_managed_environment!
       end
     end

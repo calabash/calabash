@@ -18,22 +18,22 @@ describe Calabash::Managed do
 
     let(:correct_value) {:rspec_correct_value}
 
-    it 'should never redefine calabash_start_app' do
+    it 'should never redefine start_app' do
       args = [:application, :options, :device]
-      allow(Calabash::Managed).to receive(:calabash_start_app).and_return(correct_value)
+      allow(Calabash::Managed).to receive(:start_app).and_return(correct_value)
 
       force_require 'calabash/managed'
 
-      expect(Calabash::Managed.calabash_start_app(*args)).to eq(correct_value)
+      expect(Calabash::Managed.start_app(*args)).to eq(correct_value)
     end
 
-    it 'should never redefine calabash_stop_app' do
+    it 'should never redefine stop_app' do
       args = [:device]
-      allow(Calabash::Managed).to receive(:calabash_stop_app).and_return(correct_value)
+      allow(Calabash::Managed).to receive(:stop_app).and_return(correct_value)
 
       force_require 'calabash/managed'
 
-      expect(Calabash::Managed.calabash_stop_app(*args)).to eq(correct_value)
+      expect(Calabash::Managed.stop_app(*args)).to eq(correct_value)
     end
 
     it 'should never redefine install_app' do

@@ -47,5 +47,8 @@ module Calabash
 
     # The Android test server path
     TEST_SERVER_PATH = variable('CAL_TEST_SERVER')
+
+    # @!visibility private
+    SKELETON_DIR_PATH = File.join(File.dirname(__FILE__), 'lib', 'skeleton')
   end
 end

@@ -71,12 +71,12 @@ module Calabash
             cucumber_environment['CAL_TEST_SERVER'] = test_server.path
           end
         elsif @platform == :ios
-          Environment.set_variable!('APP_BUNDLE_PATH', application_path)
+          cucumber_environment['CAL_APP'] = Environment::APP_PATH || application_path
         else
           raise "Invalid platform '#{@platform}'"
         end
 
-        arguments = ['-S', 'cucumber', *cucumber_arguments]
+        arguments = ['-S', 'cucumber', '-p', @platform.to_s, *cucumber_arguments]
 
         Logger.debug("Starting Ruby with arguments: #{arguments.join(', ')} and environment #{cucumber_environment.to_s}")
 

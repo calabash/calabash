@@ -17,14 +17,14 @@ describe Calabash::IOS::Device do
     allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
   end
 
-  describe '#calabash_start_app' do
+  describe '#start_app' do
     it 'can launch an app' do
       expect(RunLoop).to receive(:run).and_return({})
       app = Calabash::Application.new('/path/to/my/app')
       expect(device).to receive(:ensure_test_server_ready).and_return true
       expect(device).to receive(:fetch_device_info).and_return({})
       expect(device).to receive(:extract_device_info!).and_return true
-      expect(device.calabash_start_app(app)).to be_truthy
+      expect(device.start_app(app)).to be_truthy
       expect(device.run_loop).to be_a_kind_of(Hash)
       expect(device.run_loop).to be == {}
     end
@@ -55,10 +55,10 @@ describe Calabash::IOS::Device do
     end
   end
 
-  describe '#calabash_stop_app' do
+  describe '#stop_app' do
     it 'does nothing if server is not responding' do
       expect(device).to receive(:test_server_responding?).and_return(false)
-      expect(device.calabash_stop_app).to be_truthy
+      expect(device.stop_app).to be_truthy
     end
 
     it "calls the server 'exit' route" do
@@ -67,13 +67,13 @@ describe Calabash::IOS::Device do
       request = Calabash::HTTP::Request.new('exit', params)
       expect(device).to receive(:request_factory).and_return(request)
       expect(device.http_client).to receive(:get).with(request).and_return([])
-      expect(device.calabash_stop_app).to be_truthy
+      expect(device.stop_app).to be_truthy
     end
 
     it 'raises an exception if server cannot be reached' do
       expect(device).to receive(:test_server_responding?).and_return(true)
       expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
-      expect { device.calabash_stop_app }.to raise_error
+      expect { device.stop_app }.to raise_error
     end
   end
 
