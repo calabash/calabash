@@ -52,24 +52,9 @@ eos
     end
   end
 
-  describe '#adb' do
-    it 'should execute an adb command for the specified device' do
-      serial = 'my-serial'
-      command = 'my command'
-      device = dummy_device_class.new
-      device.instance_eval do
-        @identifier = serial
-      end
-
-      expect(Calabash::Android::ADB).to receive(:command).with(command, serial)
-
-      device.adb(command)
-    end
-  end
-
   describe '#installed_packages' do
     it 'should be able to list installed packages' do
-      allow(dummy_device).to receive(:adb).with('shell pm list packages').and_return("package:com.myapp2.app\npackage:com.android.androidapp\npackage:com.app\n")
+      allow(dummy_device.adb).to receive(:shell).with('pm list packages').and_return("package:com.myapp2.app\npackage:com.android.androidapp\npackage:com.app\n")
 
       expect(dummy_device.installed_packages).to eq([
                                                     'com.myapp2.app',
@@ -84,7 +69,7 @@ eos
       package = 'com.myapp.package'
 
       expect(dummy_device).to receive(:installed_packages).and_return([package])
-      expect(dummy_device).to receive(:adb).with("shell pm clear #{package}").
+      expect(dummy_device.adb).to receive(:shell).with("pm clear #{package}").
          and_return("Success\n")
 
       dummy_device.send(:_clear_app_data, package)
@@ -124,7 +109,7 @@ eos
 
       allow(dummy_device).to receive(:server).and_return(dummy_server)
 
-      expect(Calabash::Android::ADB).to receive(:command).with("forward tcp:#{host_port} tcp:67890")
+      expect(Calabash::Android::ADB).to receive(:command).with('forward', "tcp:#{host_port}", 'tcp:67890')
 
       dummy_device.send(:_port_forward, host_port)
     end

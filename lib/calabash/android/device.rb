@@ -214,14 +214,14 @@ module Calabash
 
       # @!visibility private
       def _port_forward(host_port)
-        adb_forward_cmd = "forward tcp:#{host_port} tcp:#{server.test_server_port}"
-        ADB.command(adb_forward_cmd)
+        adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{server.test_server_port}"]
+        ADB.command(*adb_forward_cmd)
       end
 
       # @!visibility private
       def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
-        result = adb("uninstall #{package}").lines.last
+        result = adb.command('uninstall', package).lines.last
 
         if result.downcase.chomp != 'success'
           raise "Could not uninstall app: #{result}"
@@ -235,7 +235,7 @@ module Calabash
       # @!visibility private
       def adb_install_app(application)
         @logger.log "Installing #{application.path}"
-        result = adb("install -r \"#{application.path}\"").lines.last
+        result = adb.command('install' , '-r', application.path).lines.last
 
         if result.downcase.chomp != 'success'
           raise "Could not install app: #{result}"
@@ -254,7 +254,7 @@ module Calabash
           raise "Cannot clear app. '#{package}' is not installed"
         end
 
-        result = adb("shell pm clear #{package}").lines.last
+        result = adb.shell("pm clear #{package}").lines.last
 
         if result.downcase.chomp != 'success'
           raise "Could not clear app: #{result}"

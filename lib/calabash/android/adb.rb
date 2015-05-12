@@ -48,7 +48,7 @@ module Calabash
       end
 
       def self.open_adb_pipe(*cmd, &block)
-        open_pipe_with_timeout(10, 'adb', *cmd) do |i, o, e|
+        open_pipe_with_timeout(10, Environment.adb_path, *cmd) do |i, o, e|
           block.call(i, o, e) if block
         end
       end
