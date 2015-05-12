@@ -26,7 +26,7 @@ module Calabash
     def initialize(identifier, server, options={})
       @identifier = identifier
       @server = server
-      @logger = options[:logger] || Logger.new
+      @logger = options[:logger] || Calabash::Logger.new
       @http_client = HTTP::RetriableClient.new(server, options.fetch(:http_options, {}))
     end
 
