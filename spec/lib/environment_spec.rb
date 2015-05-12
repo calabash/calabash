@@ -71,15 +71,21 @@ describe Calabash::Environment do
       expect(Calabash::Environment::APP_PATH).to eq(nil)
       expect(Calabash::Environment::WAIT_TIMEOUT).to eq(30)
       expect(Calabash::Environment::SCREENSHOT_DIRECTORY).to eq('screenshots')
+      expect(Calabash::Environment::DEVICE_IDENTIFIER).to be == nil
     end
 
     it 'should return the correct values if the env is set' do
-      _set_env('CAL_DEBUG' => '1', 'CAL_APP' => 'my-app', 'CAL_WAIT_TIMEOUT' => '999', 'CAL_SCREENSHOT_DIR' => 'my-directory')
+      _set_env('CAL_DEBUG' => '1',
+               'CAL_APP' => 'my-app',
+               'CAL_WAIT_TIMEOUT' => '999',
+               'CAL_SCREENSHOT_DIR' => 'my-directory',
+               'CAL_DEVICE_ID' => 'device id')
 
       expect(Calabash::Environment::DEBUG).to eq(true)
       expect(Calabash::Environment::APP_PATH).to eq('my-app')
       expect(Calabash::Environment::WAIT_TIMEOUT).to eq(999)
       expect(Calabash::Environment::SCREENSHOT_DIRECTORY).to eq('my-directory')
+      expect(Calabash::Environment::DEVICE_IDENTIFIER).to eq('device id')
 
       _set_env('CAL_DEBUG' => '0')
       expect(Calabash::Environment::DEBUG).to eq(false)
