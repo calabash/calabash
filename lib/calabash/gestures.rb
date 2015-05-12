@@ -119,23 +119,23 @@ module Calabash
     #  Panning between two elements.
     #  `pan_between("* id:'first'", "* id:'second'")`
     #
-    #     id: first
-    #   ┌───────────┐
-    #   │           │
-    #   │     ─     │
-    #   │      \    │
-    #   └───────\───┘
-    #            \
-    #             \
-    #              \
+    #
+    #      ┌───────────┐
+    #      │           │
+    #      │     ─     │  id: 'first'
+    #      │      \    │
+    #      └───────\───┘
     #               \
     #                \
     #                 \
-    #              ┌───\───────┐
-    #              │    \      │
-    #              │     x     │
-    #              │           │
-    #              └───────────┘
+    #                  \
+    #                   \
+    #                    \
+    #                 ┌───\───────┐
+    #                 │    \      │
+    #   id: 'second'  │     x     │
+    #                 │           │
+    #                 └───────────┘
     #
     # @option options [Number] :wait_after (0) How many seconds to wait after
     #   issuing the pan.
