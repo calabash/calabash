@@ -31,8 +31,7 @@ module Calabash
               enter_console(application_path)
             when '.ipa'
               set_platform!(:ios)
-              # TODO: Extract ID from ipa
-              raise 'FOR NOW WE CANT DO THIS'
+              enter_console(application_path)
             when '.app'
               set_platform!(:ios)
               enter_console(application_path)
