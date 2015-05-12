@@ -1,6 +1,5 @@
 module Calabash
   require File.join(File.dirname(__FILE__), '..', 'script', 'backwards_compatibility')
-  require 'calabash/patches/run_loop'
   require 'calabash/environment'
   require 'calabash/logger'
   require 'calabash/color'
