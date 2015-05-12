@@ -29,5 +29,8 @@ module Calabash
     require 'calabash/android/screenshot'
     require 'calabash/android/server'
     require 'calabash/android/adb'
+    require 'calabash/android/gestures'
+
+    include Calabash::Android::Gestures
   end
 end

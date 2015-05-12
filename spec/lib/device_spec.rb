@@ -431,4 +431,192 @@ describe Calabash::Device do
       end
     end
   end
+
+  describe '#tap' do
+    it 'should invoke the implementation method' do
+      query = "my query"
+      options = {my: :arg}
+
+      expect(device).to receive(:_tap).with(query, hash_including(options))
+
+      device.tap(query, options)
+    end
+
+    it 'raises an error if query is not passed' do
+      expect do
+        device.tap(nil, {option: 'my opt'})
+      end.to raise_error ArgumentError
+
+      expect do
+        device.tap(:not_a_query, {option: 'my opt'})
+      end.to raise_error ArgumentError
+    end
+  end
+
+  describe '#double_tap' do
+    it 'should invoke the implementation method' do
+      query = "my query"
+      options = {my: :arg}
+
+      expect(device).to receive(:_double_tap).with(query, hash_including(options))
+
+      device.double_tap(query, options)
+    end
+
+    it 'raises an error if query is not passed' do
+      expect do
+        device.double_tap(nil, {option: 'my opt'})
+      end.to raise_error ArgumentError
+
+      expect do
+        device.double_tap(:not_a_query, {option: 'my opt'})
+      end.to raise_error ArgumentError
+    end
+  end
+
+  describe '#long_press' do
+    it 'should invoke the implementation method' do
+      query = "my query"
+      options = {my: :arg}
+
+      expect(device).to receive(:_long_press).with(query, hash_including(options))
+
+      device.long_press(query, options)
+    end
+
+    it 'raises an error if query is not passed' do
+      expect do
+        device.long_press(nil, {option: 'my opt'})
+      end.to raise_error ArgumentError
+
+      expect do
+        device.long_press(:not_a_query, {option: 'my opt'})
+      end.to raise_error ArgumentError
+    end
+  end
+
+  describe '#pan' do
+    it 'should invoke the implementation method' do
+      query = "my query"
+      from = {x: 0, y: 0}
+      to = {x: 0, y: 0}
+      options = {my: :arg}
+
+      expect(device).to receive(:_pan).with(query, from, to, hash_including(options))
+
+      device.pan(query, from, to, options)
+    end
+
+    it 'raises an error if query is not passed' do
+      from = {x: 0, y: 0}
+      to = {x: 0, y: 0}
+      options = {my: :arg}
+
+      expect do
+        device.pan(nil, from, to, options)
+      end.to raise_error ArgumentError
+
+      expect do
+        device.pan(:not_a_query, from, to, options)
+      end.to raise_error ArgumentError
+    end
+  end
+
+  describe '#pan_between' do
+    it 'should invoke the implementation method' do
+      query_from = "my query"
+      query_to = "my query 2"
+      options = {my: :arg}
+
+      expect(device).to receive(:_pan_between).with(query_from, query_to, hash_including(options))
+
+      device.pan_between(query_from, query_to, options)
+    end
+    it 'raises an error if invalid query_from' do
+      query_from = "my query"
+      query_to = "my query 2"
+
+      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(false)
+
+      expect do
+        device.pan_between(query_from, query_to)
+      end.to raise_error ArgumentError
+    end
+
+    it 'raises an error if invalid query_to' do
+      query_from = "my query"
+      query_to = "my query 2"
+
+      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(true)
+      allow(Calabash::Query).to receive(:valid_query?).with(query_to).and_return(false)
+
+      expect do
+        device.pan_between(query_from, query_to)
+      end.to raise_error ArgumentError
+    end
+  end
+
+
+  describe '#flick' do
+    it 'should invoke the implementation method' do
+      query = "my query"
+      from = {x: 0, y: 0}
+      to = {x: 0, y: 0}
+      options = {my: :arg}
+
+      expect(device).to receive(:_flick).with(query, from, to, hash_including(options))
+
+      device.flick(query, from, to, options)
+    end
+
+    it 'raises an error if query is not passed' do
+      from = {x: 0, y: 0}
+      to = {x: 0, y: 0}
+      options = {my: :arg}
+
+      expect do
+        device.flick(nil, from, to, options)
+      end.to raise_error ArgumentError
+
+      expect do
+        device.flick(:not_a_query, from, to, options)
+      end.to raise_error ArgumentError
+    end
+  end
+
+  describe '#_tap' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_tap, 'my query')}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_double_tap' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_double_tap, 'my query')}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_long_press' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_long_press, 'my query')}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_pan' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_pan, 'my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_pan_between' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_pan_between, 'my query', 'my query', {})}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_flick' do
+    it 'should have an abstract implementation' do
+      expect{device.send(:_flick, 'my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
 end

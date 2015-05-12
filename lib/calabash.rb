@@ -14,11 +14,18 @@ module Calabash
   require 'calabash/query'
   require 'calabash/query_result'
   require 'calabash/screenshot'
+  require 'calabash/gestures'
+  require 'calabash/query'
+
+  require 'calabash/patch'
+  Calabash::Patch.apply_patches!
+
 
   include Utility
   include Calabash::Operations
   include Calabash::Wait
   include Calabash::Screenshot
+  include Calabash::Gestures
 
   def start_app(opt={})
     test_options = opt.dup
