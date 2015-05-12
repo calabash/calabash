@@ -17,17 +17,6 @@ module Calabash
         end
       end
 
-      def _screenshot(path)
-        request = request_factory('screenshot', {:path => path})
-        begin
-         screenshot = http_client.get(request)
-         File.open(path, 'wb') { |file| file.write screenshot }
-        rescue Calabash::HTTP::Error => _
-          raise "Could not send 'screenshot' to the app: #{e}"
-        end
-        path
-      end
-
       private
 
       def _start_app(application, options={})
