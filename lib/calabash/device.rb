@@ -12,7 +12,7 @@ module Calabash
       @@default = value
     end
 
-    attr_reader :identifier, :server, :http_client
+    attr_reader :identifier, :server, :http_client, :logger
 
     # Create a new device.
     # @param [String] identifier A token that uniquely identifies the device.
