@@ -62,7 +62,7 @@ module Calabash
         begin
          screenshot = http_client.get(request)
          File.open(path, 'wb') { |file| file.write screenshot }
-        rescue Calabash::HTTP::Error => _
+        rescue Calabash::HTTP::Error => e
           raise "Could not send 'screenshot' to the app: #{e}"
         end
         path
