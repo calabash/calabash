@@ -4,6 +4,20 @@ module Calabash
 
       attr_reader :run_loop
 
+      def self.default_simulator_identifier
+        identifier = Environment::DEVICE_IDENTIFIER
+
+        if identifier.nil?
+          RunLoop::Core.default_simulator
+        else
+          run_loop_device = self.fetch_matching_simulator(identifier)
+          if run_loop_device.nil?
+            raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
+          end
+          run_loop_device.instruments_identifier
+        end
+      end
+
       # TODO: Implement this method, remember to add unit tests
       def self.list_devices
         raise 'ni'
