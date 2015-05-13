@@ -105,6 +105,22 @@ module Calabash
           raise "Could not install #{application} on #{run_loop_device}: #{e}"
         end
       end
+
+      def self.fetch_matching_simulator(udid_or_name)
+        sim_control = RunLoop::SimControl.new
+        sim_control.simulators.detect do |sim|
+          sim.instruments_identifier == udid_or_name ||
+                sim.udid == udid_or_name
+        end
+      end
+
+      def self.fetch_matching_physical_device(udid_or_name)
+        xctools = RunLoop::XCTools.new
+        xctools.instruments(:devices).detect do |device|
+          device.name == udid_or_name ||
+                device.udid == udid_or_name
+        end
+      end
     end
   end
 end
