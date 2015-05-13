@@ -4,7 +4,7 @@ describe Calabash::IOS::Device do
   end
 
   let(:identifier) {'my-identifier'}
-  let(:server) {Calabash::Server.new(URI.parse('http://localhost:37265'), 37265)}
+  let(:server) {Calabash::Server.new(URI.parse('http://localhost:37265'))}
   let(:device) {Calabash::IOS::Device.new(identifier, server)}
 
   let(:dummy_device_class) {Class.new(Calabash::IOS::Device) {def initialize; @logger = Calabash::Logger.new; end}}
