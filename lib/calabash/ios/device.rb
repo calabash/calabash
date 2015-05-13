@@ -186,6 +186,25 @@ module Calabash
           end
         end
       end
+
+      def expect_app_installed(bridge)
+        unless bridge.app_is_installed?
+          raise 'App is not installed, you need to install it first.'
+        end
+        true
+      end
+
+      def expect_matching_sha1s(installed_app, new_app)
+        unless installed_app.same_sha1_as?(new_app)
+          logger.log('The installed application and the one under test are different.', :error)
+          logger.log("Installed path: #{installed_app.path}", :error)
+          logger.log("      New path: #{new_app.path}", :error)
+          logger.log("Installed SHA1: #{installed_app.sha1}", :error)
+          logger.log("      New SHA1: #{new_app.sha1}", :error)
+          raise 'The installed app is different from the app under test.  You must install the new app before starting'
+        end
+        true
+      end
     end
   end
 end

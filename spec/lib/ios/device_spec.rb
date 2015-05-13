@@ -225,6 +225,49 @@ describe Calabash::IOS::Device do
         expect(device.install_app(app)).to be == 'Shutdown'
       end
     end
+
+    describe '#expect_app_installed' do
+      let(:dummy_bridge) do
+        class Calabash::DummyBridge
+          def app_is_installed?
+
+          end
+        end
+        Calabash::DummyBridge.new
+      end
+
+      it 'raises an error if the app is not installed' do
+        expect(dummy_bridge).to receive(:app_is_installed?).and_return(false)
+        expect {
+          device.send(:expect_app_installed, dummy_bridge)
+        }.to raise_error
+      end
+
+      it 'returns true if app is installed' do
+        expect(dummy_bridge).to receive(:app_is_installed?).and_return(true)
+        expect(device.send(:expect_app_installed, dummy_bridge)).to be_truthy
+      end
+    end
+
+    describe 'expect_matching_sha1s#' do
+      it 'raises an error if sha1s do not match' do
+        app = Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path)
+        installed_app = Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path)
+        expect(installed_app).to receive(:sha1).at_least(:once).and_return('abcde')
+        expect(app).to receive(:sha1).at_least(:once).and_return('fghij')
+        expect {
+          device.send(:expect_matching_sha1s, installed_app, app)
+        }.to raise_error
+      end
+
+      it 'returns true if the sha1s match' do
+        app = Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path)
+        installed_app = Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path)
+        expect(installed_app).to receive(:sha1).at_least(:once).and_return('abcde')
+        expect(app).to receive(:sha1).at_least(:once).and_return('abcde')
+        expect(device.send(:expect_matching_sha1s, installed_app, app)).to be_truthy
+      end
+    end
   end
 
   describe '.expect_compatible_server_endpoint' do
