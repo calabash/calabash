@@ -17,6 +17,7 @@ module Calabash
     require_old File.join('calabash-cucumber', 'lib', 'calabash-cucumber')
     include Calabash::IOS::Operations
 
+    require 'calabash/ios/environment'
     require 'calabash/ios/device'
     require 'calabash/ios/operations'
     require 'calabash/ios/server'

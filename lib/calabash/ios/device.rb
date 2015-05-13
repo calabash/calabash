@@ -4,6 +4,57 @@ module Calabash
 
       attr_reader :run_loop
 
+      def self.default_simulator_identifier
+        identifier = Environment::DEVICE_IDENTIFIER
+
+        if identifier.nil?
+          RunLoop::Core.default_simulator
+        else
+          run_loop_device = self.fetch_matching_simulator(identifier)
+          if run_loop_device.nil?
+            raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
+          end
+          run_loop_device.instruments_identifier
+        end
+      end
+
+      def self.default_physical_device_identifier
+        identifier = Environment::DEVICE_IDENTIFIER
+
+        if identifier.nil?
+          connected_devices = RunLoop::XCTools.new.instruments(:devices)
+          if connected_devices.empty?
+            raise 'There are no physical devices connected.'
+          elsif connected_devices.count > 1
+            raise 'There is more than one physical devices connected.  Use CAL_DEVICE_ID to indicate which you want to connect to.'
+          else
+            connected_devices.first.instruments_identifier
+          end
+        else
+          run_loop_device = self.fetch_matching_physical_device(identifier)
+          if run_loop_device.nil?
+            raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
+          end
+          run_loop_device.instruments_identifier
+        end
+      end
+
+      def self.default_identifier_for_application(application)
+        if application.simulator_bundle?
+          default_simulator_identifier
+        elsif application.device_binary?
+          default_physical_device_identifier
+        else
+          raise "Invalid application #{application} for platform."
+        end
+      end
+
+      def initialize(identifier, server)
+        super
+
+        Calabash::IOS::Device.expect_compatible_server_endpoint(identifier, server)
+      end
+
       # TODO: Implement this method, remember to add unit tests
       def self.list_devices
         raise 'ni'
@@ -103,6 +154,36 @@ module Calabash
           bridge.install
         rescue StandardError => e
           raise "Could not install #{application} on #{run_loop_device}: #{e}"
+        end
+      end
+
+      def self.fetch_matching_simulator(udid_or_name)
+        sim_control = RunLoop::SimControl.new
+        sim_control.simulators.detect do |sim|
+          sim.instruments_identifier == udid_or_name ||
+                sim.udid == udid_or_name
+        end
+      end
+
+      def self.fetch_matching_physical_device(udid_or_name)
+        xctools = RunLoop::XCTools.new
+        xctools.instruments(:devices).detect do |device|
+          device.name == udid_or_name ||
+                device.udid == udid_or_name
+        end
+      end
+
+      def self.expect_compatible_server_endpoint(identifier, server)
+        if server.localhost?
+          run_loop_device = Calabash::IOS::Device.fetch_matching_simulator(identifier)
+          if run_loop_device.nil?
+            Logger.error("The identifier for this device is '#{identifier}'")
+            Logger.error('which resolves to a physical device.')
+            Logger.error("The server endpoint '#{server.endpoint}' is for an iOS Simulator.")
+            Logger.error('Use CAL_ENDPOINT to specify the IP address of your device')
+            Logger.error("Ex. $ CAL_ENDPOINT=http://10.0.1.2:37265 CAL_DEVICE_ID=#{identifier} be calabash ...")
+            raise "Invalid device endpoint '#{server.endpoint}'"
+          end
         end
       end
     end
