@@ -11,16 +11,16 @@ module Calabash
         Application.new(application_path)
       end
 
+      def initialize(application_path, options = {})
+        super(application_path, options)
+      end
+
       def simulator_bundle?
         File.extname(path) == '.app'
       end
 
       def device_binary?
         File.extname(path) == '.ipa'
-      end
-
-      def initialize(application_path, options = {})
-        super(application_path, options)
       end
     end
   end
