@@ -81,7 +81,7 @@ module Calabash
       def _start_app(application, options={})
         uia_strategy = :preferences
         if application.simulator_bundle?
-          bridge = run_loop_bridge
+          bridge = run_loop_bridge(application)
 
           expect_app_installed(bridge)
 
@@ -185,13 +185,13 @@ module Calabash
 
       # Do not memoize this.  The Bridge initializer does a bunch of work to
       # prepare the environment for simctl actions.
-      def run_loop_bridge
+      def run_loop_bridge(application)
         RunLoop::Simctl::Bridge.new(run_loop_device, application.path)
       end
 
       def install_app_on_simulator(application, run_loop_device)
         begin
-          bridge = run_loop_bridge
+          bridge = run_loop_bridge(application)
           bridge.uninstall
           bridge.install
         rescue StandardError => e
