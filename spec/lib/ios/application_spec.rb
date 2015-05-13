@@ -43,5 +43,39 @@ describe Calabash::IOS::Application do
         expect(app.device_binary?).to be_falsey
       end
     end
+
+    describe '#extract_identifier' do
+
+      let(:identifier) { 'com.example.App' }
+      let (:dummy) do
+        class Calabash::RunLoopLikeApp
+          def bundle_identifier
+            'com.example.App'
+          end
+        end
+        Calabash::RunLoopLikeApp.new
+      end
+
+      it 'from .ipa' do
+        expect(app).to receive(:simulator_bundle?).at_least(:once).and_return(false)
+        expect(app).to receive(:device_binary?).at_least(:once).and_return(true)
+        expect(app).to receive(:run_loop_ipa).and_return(dummy)
+        expect(app.send(:extract_identifier)).to be == 'com.example.App'
+      end
+
+      it 'from .app' do
+        expect(app).to receive(:simulator_bundle?).at_least(:once).and_return(true)
+        expect(app).to receive(:run_loop_app).and_return(dummy)
+        expect(app.send(:extract_identifier)).to be == 'com.example.App'
+      end
+
+      it 'raise error if not an .ipa or .app' do
+        expect(app).to receive(:simulator_bundle?).and_return(false)
+        expect(app).to receive(:device_binary?).and_return(false)
+        expect {
+          app.send(:extract_identifier)
+        }.to raise_error
+      end
+    end
   end
 end
