@@ -77,5 +77,10 @@ describe Calabash::IOS::Application do
         }.to raise_error
       end
     end
+
+    it '#sha1' do
+      expect(RunLoop::Directory).to receive(:directory_digest).with(app.path).and_return('sha1')
+      expect(app.sha1).to be == 'sha1'
+    end
   end
 end

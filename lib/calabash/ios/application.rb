@@ -23,6 +23,10 @@ module Calabash
         File.extname(path) == '.ipa'
       end
 
+      def sha1
+        RunLoop::Directory.directory_digest(path)
+      end
+
       private
 
       def run_loop_ipa
