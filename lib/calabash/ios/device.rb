@@ -71,11 +71,38 @@ module Calabash
       private
 
       def _start_app(application, options={})
+        uia_strategy = :preferences
+        if application.simulator_bundle?
+          bridge = run_loop_bridge
+
+          expect_app_installed(bridge)
+
+          installed_app = Calabash::IOS::Application.new(bridge.fetch_app_dir)
+          expect_matching_sha1s(installed_app, application)
+        elsif application.device_binary?
+          # Would need hooks to ideviceinstaller to check if the app was already
+          # installed.  We would also need information about the app version
+          # to do a check to see if the installed and new ipas were the same.
+
+          # `setPreferencesValueForKey` on iOS 8 devices is broken in Xcode 6
+          #
+          # rdar://18296714
+          # http://openradar.appspot.com/radar?id=5891145586442240
+          # :preferences strategy is broken on iOS 8.0
+          if run_loop_device.version >= RunLoop::Version.new('8.0')
+            uia_strategy = :host
+          end
+        else
+          raise "Application '#{application}' is not a .app or .ipa"
+        end
+
         default_opts =
             {
-                :app => application.path,
-                :device_target => self.identifier,
-                :uia_strategy => :preferences,
+                  # @todo Can run-loop handle both an :app and :bundle_id?
+                  :app => application.path,
+                  :bundle_id => application.identifier,
+                  :device_target => run_loop_device.instruments_identifier,
+                  :uia_strategy => uia_strategy
             }
 
         launch_opts = default_opts.merge(options)
@@ -119,6 +146,7 @@ module Calabash
 
       # @todo document install_app_on_device
       # @todo create a document describing ideviceinstaller implementation
+      # noinspection RubyUnusedLocalVariable
       def install_app_on_device(application, device_udid)
         logger.log('To install an ipa on a physical device, you must extend', :info)
         logger.log('Calabash::IOS::Device and implement the #install_app_on_device', :info)

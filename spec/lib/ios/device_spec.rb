@@ -121,15 +121,84 @@ describe Calabash::IOS::Device do
     end
 
     describe '#start_app' do
-      it 'can launch an app' do
-        expect(RunLoop).to receive(:run).and_return({})
-        app = Calabash::Application.new('/path/to/my/app')
-        expect(device).to receive(:ensure_test_server_ready).and_return true
-        expect(device).to receive(:fetch_device_info).and_return({})
-        expect(device).to receive(:extract_device_info!).and_return true
-        expect(device.start_app(app)).to be_truthy
-        expect(device.run_loop).to be_a_kind_of(Hash)
-        expect(device.run_loop).to be == {}
+      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
+      let(:dummy_bridge) do
+        class Calabash::DummyBridge
+          def fetch_app_dir
+            IOSResources.instance.app_bundle_path
+          end
+        end
+        Calabash::DummyBridge.new
+      end
+
+      let(:dummy_run_loop_device) do
+        class Calabash::DummyRunLoopDevice
+          def instruments_identifier
+            'identifier'
+          end
+
+          def version
+            RunLoop::Version.new('8.0')
+          end
+        end
+        Calabash::DummyRunLoopDevice.new
+      end
+
+      describe 'raises an error when' do
+        describe 'is a simulator' do
+          describe 'raises an error if' do
+            it 'the app is not installed' do
+              expect(app).to receive(:simulator_bundle?).and_return(true)
+              expect(device).to receive(:run_loop_bridge).and_return(dummy_bridge)
+              expect(device).to receive(:expect_app_installed).with(dummy_bridge).and_raise
+              expect {
+                device.start_app(app)
+              }.to raise_error
+            end
+
+            it 'the target app is not the same as the installed app' do
+              expect(app).to receive(:simulator_bundle?).and_return(true)
+              expect(device).to receive(:run_loop_bridge).and_return(dummy_bridge)
+              expect(device).to receive(:expect_app_installed).with(dummy_bridge).and_return true
+              expect(device).to receive(:expect_matching_sha1s).and_raise
+              expect {
+                device.start_app(app)
+              }.to raise_error
+            end
+          end
+
+          it 'launches the app with run-loop' do
+            expect(app).to receive(:simulator_bundle?).at_least(:once).and_return(true)
+            expect(app).to receive(:identifier).and_return('com.example.App')
+            expect(device).to receive(:run_loop_bridge).and_return(dummy_bridge)
+            expect(device).to receive(:expect_app_installed).with(dummy_bridge).and_return true
+            expect(device).to receive(:expect_matching_sha1s).and_return true
+            expect(device).to receive(:run_loop_device).and_return dummy_run_loop_device
+            expect(device).to receive(:ensure_test_server_ready).and_return true
+            expect(device).to receive(:fetch_device_info).and_return({})
+            expect(device).to receive(:extract_device_info!).and_return true
+
+            expect(RunLoop).to receive(:run).and_return({})
+            expect(device.start_app(app)).to be_truthy
+            expect(device.run_loop).to be_a_kind_of(Hash)
+            expect(device.run_loop).to be == {}
+          end
+        end
+
+        it 'is a device' do
+          expect(app).to receive(:simulator_bundle?).and_return(false)
+          expect(app).to receive(:device_binary?).and_return(true)
+          expect(app).to receive(:identifier).and_return('com.example.App')
+          expect(device).to receive(:run_loop_device).at_least(:once).and_return dummy_run_loop_device
+          expect(device).to receive(:ensure_test_server_ready).and_return true
+          expect(device).to receive(:fetch_device_info).and_return({})
+          expect(device).to receive(:extract_device_info!).and_return true
+
+          expect(RunLoop).to receive(:run).and_return({})
+          expect(device.start_app(app)).to be_truthy
+          expect(device.run_loop).to be_a_kind_of(Hash)
+          expect(device.run_loop).to be == {}
+        end
       end
     end
 
