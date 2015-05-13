@@ -17,6 +17,31 @@ describe Calabash::IOS::Device do
     allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
   end
 
+  describe '.default_simulator_identifier' do
+    describe 'when DEVICE_IDENTIFIER is non-nil' do
+      it 'raises an error if the simulator cannot be found' do
+        stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(nil)
+        expect {
+          Calabash::IOS::Device.default_simulator_identifier
+        }.to raise_error
+      end
+
+      it 'returns the instruments identifier of the simulator' do
+        stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
+        sim = RunLoop::Device.new('fake', '8.0', 'some identifier')
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(sim)
+        expect(Calabash::IOS::Device.default_simulator_identifier).to be == sim.instruments_identifier
+      end
+    end
+
+    it 'when DEVICE_IDENTIFIER is nil, returns the default simulator' do
+      stub_const('Calabash::Environment::DEVICE_IDENTIFIER', nil)
+      expect(RunLoop::Core).to receive(:default_simulator).and_return('default sim')
+      expect(Calabash::IOS::Device.default_simulator_identifier).to be == 'default sim'
+    end
+  end
+
   describe '#start_app' do
     it 'can launch an app' do
       expect(RunLoop).to receive(:run).and_return({})
