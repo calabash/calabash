@@ -39,6 +39,16 @@ module Calabash
         end
       end
 
+      def self.default_identifier_for_application(application)
+        if application.simulator_bundle?
+          default_simulator_identifier
+        elsif application.device_binary?
+          default_physical_device_identifier
+        else
+          raise "Invalid application #{application} for platform."
+        end
+      end
+
       # TODO: Implement this method, remember to add unit tests
       def self.list_devices
         raise 'ni'

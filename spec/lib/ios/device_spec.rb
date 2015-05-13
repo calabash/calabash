@@ -90,6 +90,30 @@ describe Calabash::IOS::Device do
     end
   end
 
+  describe '.default_identifier_for_application' do
+    let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
+    it 'returns simulator identifier for .app' do
+      expect(app).to receive(:simulator_bundle?).and_return(true)
+      expect(Calabash::IOS::Device).to receive(:default_simulator_identifier).and_return('sim id')
+      expect(Calabash::IOS::Device.default_identifier_for_application(app)).to be == 'sim id'
+    end
+
+    it 'returns device identifier for .ipa' do
+      expect(app).to receive(:simulator_bundle?).and_return(false)
+      expect(app).to receive(:device_binary?).and_return(true)
+      expect(Calabash::IOS::Device).to receive(:default_physical_device_identifier).and_return('device id')
+      expect(Calabash::IOS::Device.default_identifier_for_application(app)).to be == 'device id'
+    end
+
+    it 'raises an error if the application is not an .app or .ipa' do
+      expect(app).to receive(:simulator_bundle?).and_return(false)
+      expect(app).to receive(:device_binary?).and_return(false)
+      expect {
+        Calabash::IOS::Device.default_identifier_for_application(app)
+      }.to raise_error
+    end
+  end
+
   describe '#start_app' do
     it 'can launch an app' do
       expect(RunLoop).to receive(:run).and_return({})
