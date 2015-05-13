@@ -68,6 +68,14 @@ module Calabash
         end
       end
 
+      def to_s
+        run_loop_device.to_s
+      end
+
+      def inspect
+        run_loop_device.to_s
+      end
+
       private
 
       def _start_app(application, options={})
