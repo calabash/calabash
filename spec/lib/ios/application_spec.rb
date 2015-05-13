@@ -82,5 +82,26 @@ describe Calabash::IOS::Application do
       expect(RunLoop::Directory).to receive(:directory_digest).with(app.path).and_return('sha1')
       expect(app.sha1).to be == 'sha1'
     end
+
+    describe '#same_sha1_as?' do
+      let(:dummy) do
+        class Calabash::HasSHA1
+          def sha1
+            'abcde'
+          end
+        end
+        Calabash::HasSHA1.new
+      end
+
+      it 'returns true if sha1 matches' do
+        expect(app).to receive(:sha1).and_return('abcde')
+        expect(app.same_sha1_as?(dummy)).to be_truthy
+      end
+
+      it 'returns false if sha1 does not match' do
+        expect(app).to receive(:sha1).and_return('efghi')
+        expect(app.same_sha1_as?(dummy)).to be_falsey
+      end
+    end
   end
 end

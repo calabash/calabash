@@ -27,6 +27,10 @@ module Calabash
         RunLoop::Directory.directory_digest(path)
       end
 
+      def same_sha1_as?(other)
+        sha1 == other.sha1
+      end
+
       private
 
       def run_loop_ipa
