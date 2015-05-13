@@ -18,6 +18,27 @@ module Calabash
         end
       end
 
+      def self.default_physical_device_identifier
+        identifier = Environment::DEVICE_IDENTIFIER
+
+        if identifier.nil?
+          connected_devices = RunLoop::XCTools.new.instruments(:devices)
+          if connected_devices.empty?
+            raise 'There are no physical devices connected.'
+          elsif connected_devices.count > 1
+            raise 'There is more than one physical devices connected.  Use CAL_DEVICE_ID to indicate which you want to connect to.'
+          else
+            connected_devices.first.instruments_identifier
+          end
+        else
+          run_loop_device = self.fetch_matching_physical_device(identifier)
+          if run_loop_device.nil?
+            raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
+          end
+          run_loop_device.instruments_identifier
+        end
+      end
+
       # TODO: Implement this method, remember to add unit tests
       def self.list_devices
         raise 'ni'

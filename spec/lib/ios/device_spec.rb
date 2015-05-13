@@ -42,6 +42,54 @@ describe Calabash::IOS::Device do
     end
   end
 
+  describe '.default_physical_device_identifier' do
+    describe 'when DEVICE_IDENTIFIER is non-nil' do
+      it 'raises an error if the device cannot be found' do
+        stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return(nil)
+        expect {
+          Calabash::IOS::Device.default_physical_device_identifier
+        }.to raise_error
+      end
+
+      it 'returns the instruments identifier of the device' do
+        stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
+        p_device = RunLoop::Device.new('fake', '8.0', 'some identifier')
+        expect(p_device).to receive(:physical_device?).at_least(:once).and_return(true)
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return(p_device)
+        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier
+      end
+    end
+
+    describe 'when DEVICE_IDENTIFIER is nil' do
+      describe 'raises an error when' do
+        it 'there are no connected devices' do
+          stub_const('Calabash::Environment::DEVICE_IDENTIFIER', nil)
+          allow_any_instance_of(RunLoop::XCTools).to receive(:instruments).with(:devices).and_return([])
+          expect {
+            Calabash::IOS::Device.default_physical_device_identifier
+          }.to raise_error
+        end
+
+        it 'there is more than one connected device' do
+          stub_const('Calabash::Environment::DEVICE_IDENTIFIER', nil)
+          allow_any_instance_of(RunLoop::XCTools).to receive(:instruments).with(:devices).and_return([1, 2])
+          expect {
+            Calabash::IOS::Device.default_physical_device_identifier
+          }.to raise_error
+        end
+      end
+
+      it 'returns the device identifier of the connected device' do
+        stub_const('Calabash::Environment::DEVICE_IDENTIFIER', nil)
+        p_device = RunLoop::Device.new('fake', '8.0', 'some identifier')
+        allow_any_instance_of(RunLoop::XCTools).to receive(:instruments).with(:devices).and_return([p_device])
+        expect(p_device).to receive(:physical_device?).at_least(:once).and_return(true)
+        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier
+      end
+    end
+  end
+
   describe '#start_app' do
     it 'can launch an app' do
       expect(RunLoop).to receive(:run).and_return({})
