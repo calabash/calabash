@@ -31,7 +31,7 @@ describe Calabash::IOS::Device do
         stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
         sim = RunLoop::Device.new('fake', '8.0', 'some identifier')
         expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(sim)
-        expect(Calabash::IOS::Device.default_simulator_identifier).to be == sim.instruments_identifier
+        expect(Calabash::IOS::Device.default_simulator_identifier).to be == 'fake (8.0 Simulator)'
       end
     end
 
