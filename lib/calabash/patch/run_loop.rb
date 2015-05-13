@@ -31,7 +31,7 @@ else
         end
 
         unless path_to_ipa.end_with?('.ipa')
-          raise "Expected '#{path_to_ipa}' to be"
+          raise "Expected '#{path_to_ipa}' to be an ipa"
         end
         @path = path_to_ipa
       end
