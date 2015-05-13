@@ -4,7 +4,7 @@ describe Calabash::IOS::Device do
   end
 
   let(:identifier) {'my-identifier'}
-  let(:server) {Calabash::Server.new(URI.parse('http://localhost:37265'))}
+  let(:server) {Calabash::IOS::Server.new(URI.parse('http://localhost:37265'))}
   let(:device) {Calabash::IOS::Device.new(identifier, server)}
 
   let(:dummy_device_class) {Class.new(Calabash::IOS::Device) {def initialize; @logger = Calabash::Logger.new; end}}
@@ -114,109 +114,143 @@ describe Calabash::IOS::Device do
     end
   end
 
-  describe '#start_app' do
-    it 'can launch an app' do
-      expect(RunLoop).to receive(:run).and_return({})
-      app = Calabash::Application.new('/path/to/my/app')
-      expect(device).to receive(:ensure_test_server_ready).and_return true
-      expect(device).to receive(:fetch_device_info).and_return({})
-      expect(device).to receive(:extract_device_info!).and_return true
-      expect(device.start_app(app)).to be_truthy
-      expect(device.run_loop).to be_a_kind_of(Hash)
-      expect(device.run_loop).to be == {}
-    end
-  end
+  describe 'instance methods requiring expect_compatible_server_endpoint' do
 
-  describe '#test_server_responding?' do
-    let(:dummy_http_response_class) {Class.new {def status; end}}
-    let(:dummy_http_response) {dummy_http_response_class.new}
-
-    it 'should return false when a Calabash:HTTP::Error is raised' do
-      allow(dummy_device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
-
-      expect(dummy_device.test_server_responding?).to be == false
+    before do
+      allow(Calabash::IOS::Device).to receive(:expect_compatible_server_endpoint).and_return(true)
     end
 
-    it 'should return false when the status code is not 200' do
-      allow(dummy_http_response).to receive(:status).and_return('100')
-      allow(dummy_device.http_client).to receive(:get).and_return(dummy_http_response)
-
-      expect(dummy_device.test_server_responding?).to be == false
+    describe '#start_app' do
+      it 'can launch an app' do
+        expect(RunLoop).to receive(:run).and_return({})
+        app = Calabash::Application.new('/path/to/my/app')
+        expect(device).to receive(:ensure_test_server_ready).and_return true
+        expect(device).to receive(:fetch_device_info).and_return({})
+        expect(device).to receive(:extract_device_info!).and_return true
+        expect(device.start_app(app)).to be_truthy
+        expect(device.run_loop).to be_a_kind_of(Hash)
+        expect(device.run_loop).to be == {}
+      end
     end
 
-    it 'should return true when ping responds pong' do
-      allow(dummy_http_response).to receive(:status).and_return('200')
-      allow(dummy_device.http_client).to receive(:get).and_return(dummy_http_response)
+    describe '#test_server_responding?' do
+      let(:dummy_http_response_class) {Class.new {def status; end}}
+      let(:dummy_http_response) {dummy_http_response_class.new}
 
-      expect(dummy_device.test_server_responding?).to be == true
-    end
-  end
+      it 'should return false when a Calabash:HTTP::Error is raised' do
+        allow(dummy_device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
 
-  describe '#stop_app' do
-    it 'does nothing if server is not responding' do
-      expect(device).to receive(:test_server_responding?).and_return(false)
-      expect(device.stop_app).to be_truthy
-    end
-
-    it "calls the server 'exit' route" do
-      expect(device).to receive(:test_server_responding?).and_return(true)
-      params = device.send(:default_stop_app_parameters)
-      request = Calabash::HTTP::Request.new('exit', params)
-      expect(device).to receive(:request_factory).and_return(request)
-      expect(device.http_client).to receive(:get).with(request).and_return([])
-      expect(device.stop_app).to be_truthy
-    end
-
-    it 'raises an exception if server cannot be reached' do
-      expect(device).to receive(:test_server_responding?).and_return(true)
-      expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
-      expect { device.stop_app }.to raise_error
-    end
-  end
-
-  describe '#screenshot' do
-    it 'raise an exception if the server cannot be reached' do
-      expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
-      expect { device.screenshot('path') }.to raise_error
-    end
-
-    it 'writes screenshot to a file' do
-      path = File.join(Dir.mktmpdir, 'screenshot.png')
-      expect(Calabash::Screenshot).to receive(:obtain_screenshot_path!).and_return(path)
-      request = Calabash::HTTP::Request.new('exit', {path: path})
-      expect(device).to receive(:request_factory).and_return(request)
-      data = 'I am the screenshot!'
-      expect(device.http_client).to receive(:get).with(request).and_return(data)
-      expect(device.screenshot(path)).to be == path
-      expect(File.read(path)).to be == data
-    end
-  end
-
-  describe '#install_app' do
-    let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-    describe 'raises an error when' do
-      it 'is a physical device' do
-        expect(device).to receive(:run_loop_device).and_return(run_loop_device)
-        expect(run_loop_device).to receive(:simulator?).and_return(false)
-        app = Calabash::Application.new('/path/to.app')
-        expect { device.install_app(app) }.to raise_error(Calabash::AbstractMethodError)
+        expect(dummy_device.test_server_responding?).to be == false
       end
 
-      it 'cannot install the application on the simulator' do
+      it 'should return false when the status code is not 200' do
+        allow(dummy_http_response).to receive(:status).and_return('100')
+        allow(dummy_device.http_client).to receive(:get).and_return(dummy_http_response)
+
+        expect(dummy_device.test_server_responding?).to be == false
+      end
+
+      it 'should return true when ping responds pong' do
+        allow(dummy_http_response).to receive(:status).and_return('200')
+        allow(dummy_device.http_client).to receive(:get).and_return(dummy_http_response)
+
+        expect(dummy_device.test_server_responding?).to be == true
+      end
+    end
+
+    describe '#stop_app' do
+      it 'does nothing if server is not responding' do
+        expect(device).to receive(:test_server_responding?).and_return(false)
+        expect(device.stop_app).to be_truthy
+      end
+
+      it "calls the server 'exit' route" do
+        expect(device).to receive(:test_server_responding?).and_return(true)
+        params = device.send(:default_stop_app_parameters)
+        request = Calabash::HTTP::Request.new('exit', params)
+        expect(device).to receive(:request_factory).and_return(request)
+        expect(device.http_client).to receive(:get).with(request).and_return([])
+        expect(device.stop_app).to be_truthy
+      end
+
+      it 'raises an exception if server cannot be reached' do
+        expect(device).to receive(:test_server_responding?).and_return(true)
+        expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
+        expect { device.stop_app }.to raise_error
+      end
+    end
+
+    describe '#screenshot' do
+      it 'raise an exception if the server cannot be reached' do
+        expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
+        expect { device.screenshot('path') }.to raise_error
+      end
+
+      it 'writes screenshot to a file' do
+        path = File.join(Dir.mktmpdir, 'screenshot.png')
+        expect(Calabash::Screenshot).to receive(:obtain_screenshot_path!).and_return(path)
+        request = Calabash::HTTP::Request.new('exit', {path: path})
+        expect(device).to receive(:request_factory).and_return(request)
+        data = 'I am the screenshot!'
+        expect(device.http_client).to receive(:get).with(request).and_return(data)
+        expect(device.screenshot(path)).to be == path
+        expect(File.read(path)).to be == data
+      end
+    end
+
+    describe '#install_app' do
+      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
+      describe 'raises an error when' do
+        it 'is a physical device' do
+          expect(device).to receive(:run_loop_device).and_return(run_loop_device)
+          expect(run_loop_device).to receive(:simulator?).and_return(false)
+          app = Calabash::Application.new('/path/to.app')
+          expect { device.install_app(app) }.to raise_error(Calabash::AbstractMethodError)
+        end
+
+        it 'cannot install the application on the simulator' do
+          expect(device).to receive(:run_loop_device).and_return(run_loop_device)
+          expect(run_loop_device).to receive(:simulator?).and_return(true)
+          app = Calabash::Application.new('/path/to.app')
+          expect(device).to receive(:install_app_on_simulator).and_raise(StandardError)
+          expect { device.install_app(app) }.to raise_error
+        end
+      end
+
+      it 'installs the app' do
         expect(device).to receive(:run_loop_device).and_return(run_loop_device)
         expect(run_loop_device).to receive(:simulator?).and_return(true)
         app = Calabash::Application.new('/path/to.app')
-        expect(device).to receive(:install_app_on_simulator).and_raise(StandardError)
-        expect { device.install_app(app) }.to raise_error
+        expect(device).to receive(:install_app_on_simulator).and_return('Shutdown')
+        expect(device.install_app(app)).to be == 'Shutdown'
       end
     end
+  end
 
-    it 'installs the app' do
-      expect(device).to receive(:run_loop_device).and_return(run_loop_device)
-      expect(run_loop_device).to receive(:simulator?).and_return(true)
-      app = Calabash::Application.new('/path/to.app')
-      expect(device).to receive(:install_app_on_simulator).and_return('Shutdown')
-      expect(device.install_app(app)).to be == 'Shutdown'
+  describe '.expect_compatible_server_endpoint' do
+    it 'server is not localhost do nothing' do
+      expect(server).to receive(:localhost?).and_return(false)
+      expect {
+        Calabash::IOS::Device.send(:expect_compatible_server_endpoint, 'my id', server)
+      }.not_to raise_error
+    end
+
+    describe 'server is localhost' do
+      it 'raises an error if identifier does not resolve to a simulator' do
+        expect(server).to receive(:localhost?).and_return(true)
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(nil)
+        expect {
+          Calabash::IOS::Device.send(:expect_compatible_server_endpoint, 'my id', server)
+        }.to raise_error
+      end
+
+      it 'does nothing if the identifier resolves to a simulator' do
+        expect(server).to receive(:localhost?).and_return(true)
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return('a')
+        expect {
+          Calabash::IOS::Device.send(:expect_compatible_server_endpoint, 'my id', server)
+        }.not_to raise_error
+      end
     end
   end
 end

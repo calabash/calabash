@@ -49,6 +49,12 @@ module Calabash
         end
       end
 
+      def initialize(identifier, server)
+        super
+
+        Calabash::IOS::Device.expect_compatible_server_endpoint(identifier, server)
+      end
+
       # TODO: Implement this method, remember to add unit tests
       def self.list_devices
         raise 'ni'
@@ -164,6 +170,20 @@ module Calabash
         xctools.instruments(:devices).detect do |device|
           device.name == udid_or_name ||
                 device.udid == udid_or_name
+        end
+      end
+
+      def self.expect_compatible_server_endpoint(identifier, server)
+        if server.localhost?
+          run_loop_device = Calabash::IOS::Device.fetch_matching_simulator(identifier)
+          if run_loop_device.nil?
+            Logger.error("The identifier for this device is '#{identifier}'")
+            Logger.error('which resolves to a physical device.')
+            Logger.error("The server endpoint '#{server.endpoint}' is for an iOS Simulator.")
+            Logger.error('Use CAL_ENDPOINT to specify the IP address of your device')
+            Logger.error("Ex. $ CAL_ENDPOINT=http://10.0.1.2:37265 CAL_DEVICE_ID=#{identifier} be calabash ...")
+            raise "Invalid device endpoint '#{server.endpoint}'"
+          end
         end
       end
     end
