@@ -147,9 +147,15 @@ module Calabash
         @run_loop_device ||= RunLoop::Device.device_with_identifier(identifier)
       end
 
+      # Do not memoize this.  The Bridge initializer does a bunch of work to
+      # prepare the environment for simctl actions.
+      def run_loop_bridge
+        RunLoop::Simctl::Bridge.new(run_loop_device, application.path)
+      end
+
       def install_app_on_simulator(application, run_loop_device)
         begin
-          bridge = RunLoop::Simctl::Bridge.new(run_loop_device, application.path)
+          bridge = run_loop_bridge
           bridge.uninstall
           bridge.install
         rescue StandardError => e
