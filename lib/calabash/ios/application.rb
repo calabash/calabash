@@ -22,6 +22,13 @@ module Calabash
       def device_binary?
         File.extname(path) == '.ipa'
       end
+
+      def extract_identifier
+        if simulator_bundle?
+          RunLoop::App.new(path).bundle_identifier
+        end
+      end
+
     end
   end
 end
