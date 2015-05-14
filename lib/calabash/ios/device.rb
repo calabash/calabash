@@ -3,6 +3,7 @@ module Calabash
     class Device < ::Calabash::Device
 
       attr_reader :run_loop
+      attr_reader :start_options
 
       def self.default_simulator_identifier
         identifier = Environment::DEVICE_IDENTIFIER
@@ -10,7 +11,7 @@ module Calabash
         if identifier.nil?
           RunLoop::Core.default_simulator
         else
-          run_loop_device = self.fetch_matching_simulator(identifier)
+          run_loop_device = Device.fetch_matching_simulator(identifier)
           if run_loop_device.nil?
             raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
           end
@@ -31,7 +32,7 @@ module Calabash
             connected_devices.first.instruments_identifier
           end
         else
-          run_loop_device = self.fetch_matching_physical_device(identifier)
+          run_loop_device = Device.fetch_matching_physical_device(identifier)
           if run_loop_device.nil?
             raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
           end
@@ -76,45 +77,86 @@ module Calabash
         run_loop_device.to_s
       end
 
+      # @todo document install_app_on_device
+      # @todo create a document describing ideviceinstaller implementation
+      # noinspection RubyUnusedLocalVariable
+      def install_app_on_physical_device(application, device_udid)
+        logger.log('To install an ipa on a physical device, you must extend', :info)
+        logger.log('Calabash::IOS::Device and implement the #install_app_on_device', :info)
+        logger.log('method that uses a third-party tool to interact with physical devices.', :info)
+        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
+        logger.log('http://', :info)
+        raise Calabash::AbstractMethodError, 'Device install_on_device must be implemented by you.'
+      end
+
+      # @todo document ensure_app_installed_on_device
+      # @todo create a document describing ideviceinstaller implementation
+      # noinspection RubyUnusedLocalVariable
+      def ensure_app_installed_on_physical_device(application, device_udid)
+        logger.log('To check if an app installed on a physical device, you must extend', :info)
+        logger.log('Calabash::IOS::Device and implement the #ensure_app_installed_on_device', :info)
+        logger.log('method that uses a third-party tool to interact with physical devices.', :info)
+        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
+        logger.log('http://', :info)
+        raise Calabash::AbstractMethodError, 'Device ensure_app_installed_on_device must be implemented by you.'
+      end
+
       private
 
       def _start_app(application, options={})
-        uia_strategy = :preferences
         if application.simulator_bundle?
-          bridge = run_loop_bridge(application)
+          start_app_on_simulator(application, options)
 
-          expect_app_installed(bridge)
-
-          installed_app = Calabash::IOS::Application.new(bridge.fetch_app_dir)
-          expect_matching_sha1s(installed_app, application)
         elsif application.device_binary?
-          # Would need hooks to ideviceinstaller to check if the app was already
-          # installed.  We would also need information about the app version
-          # to do a check to see if the installed and new ipas were the same.
-
-          # `setPreferencesValueForKey` on iOS 8 devices is broken in Xcode 6
-          #
-          # rdar://18296714
-          # http://openradar.appspot.com/radar?id=5891145586442240
-          # :preferences strategy is broken on iOS 8.0
-          if run_loop_device.version >= RunLoop::Version.new('8.0')
-            uia_strategy = :host
-          end
+          start_app_on_physical_device(application, options)
         else
-          raise "Application '#{application}' is not a .app or .ipa"
+          raise "Invalid application #{application} for iOS platform."
+        end
+      end
+
+      def start_app_on_simulator(application, options)
+        @run_loop_device ||= Device.fetch_matching_simulator(identifier)
+
+        if @run_loop_device.nil?
+          raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
         end
 
-        default_opts =
-              {
-                    # @todo Can run-loop handle both an :app and :bundle_id?
-                    :app => application.path,
-                    :bundle_id => application.identifier,
-                    :device_target => run_loop_device.instruments_identifier,
-                    :uia_strategy => uia_strategy
-              }
+        expect_valid_simulator_state_for_starting(application, @run_loop_device)
 
-        launch_opts = default_opts.merge(options)
-        @run_loop = RunLoop.run(launch_opts)
+        start_app_with_device_and_options(application, @run_loop_device, options)
+        wait_for_server_to_start
+      end
+
+      # @todo No unit tests.
+      def expect_valid_simulator_state_for_starting(application, run_loop_device)
+        bridge = run_loop_bridge(run_loop_device, application)
+
+        expect_app_installed(bridge)
+
+        installed_app = Calabash::IOS::Application.new(bridge.fetch_app_dir)
+        expect_matching_sha1s(installed_app, application)
+      end
+
+      def start_app_on_physical_device(application, options)
+        # Cannot check to see if app is already installed.
+        # Cannot check to see if app is different.
+
+        @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
+
+        if @run_loop_device.nil?
+          raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
+        end
+
+        start_app_with_device_and_options(application, @run_loop_device, options)
+        wait_for_server_to_start
+      end
+
+      def start_app_with_device_and_options(application, run_loop_device, user_defined_options)
+        start_options = merge_start_options!(application, run_loop_device, user_defined_options)
+        @run_loop = RunLoop.run(start_options)
+      end
+
+      def wait_for_server_to_start
         ensure_test_server_ready
         device_info = fetch_device_info
         extract_device_info!(device_info)
@@ -144,27 +186,54 @@ module Calabash
       end
 
       def _install_app(application)
-        target_device = run_loop_device
-        if target_device.simulator?
-          install_app_on_simulator(application, target_device)
+        if application.simulator_bundle?
+          @run_loop_device ||= Device.fetch_matching_simulator(identifier)
+
+          if @run_loop_device.nil?
+            raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
+          end
+
+          install_app_on_simulator(application, @run_loop_device)
+        elsif application.device_binary?
+          @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
+
+          if @run_loop_device.nil?
+            raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
+          end
+          install_app_on_physical_device(application, @run_loop_device.udid)
         else
-          install_app_on_device(application, target_device.udid)
+          raise "Invalid application #{application} for iOS platform."
         end
       end
 
-      # @todo document install_app_on_device
-      # @todo create a document describing ideviceinstaller implementation
-      # noinspection RubyUnusedLocalVariable
-      def install_app_on_device(application, device_udid)
-        logger.log('To install an ipa on a physical device, you must extend', :info)
-        logger.log('Calabash::IOS::Device and implement the #install_app_on_device', :info)
-        logger.log('method that uses a third-party tool to interact with physical devices.', :info)
-        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('http://', :info)
-        raise Calabash::AbstractMethodError, 'Device install_on_device must be implemented by you.'
-      end
+      def _ensure_app_installed(application)
+        if application.simulator_bundle?
+          @run_loop_device ||= Device.fetch_matching_simulator(identifier)
 
-      private
+          if @run_loop_device.nil?
+            raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
+          end
+
+          bridge = run_loop_bridge(@run_loop_device, application)
+
+          if bridge.app_is_installed?
+            true
+          else
+            install_app_on_simulator(application, @run_loop_device, bridge)
+          end
+        elsif application.device_binary?
+
+          @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
+
+          if @run_loop_device.nil?
+            raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
+          end
+
+          ensure_app_installed_on_physical_device(application, @run_loop_device.udid)
+        else
+          raise "Invalid application #{application} for iOS platform."
+        end
+      end
 
       def default_stop_app_parameters
         {
@@ -185,13 +254,19 @@ module Calabash
 
       # Do not memoize this.  The Bridge initializer does a bunch of work to
       # prepare the environment for simctl actions.
-      def run_loop_bridge(application)
-        RunLoop::Simctl::Bridge.new(run_loop_device, application.path)
+      def run_loop_bridge(run_loop_simulator_device, application)
+        RunLoop::Simctl::Bridge.new(run_loop_simulator_device, application.path)
       end
 
-      def install_app_on_simulator(application, run_loop_device)
+      def install_app_on_simulator(application, run_loop_device, run_loop_bridge = nil)
         begin
-          bridge = run_loop_bridge(application)
+
+          if run_loop_bridge.nil?
+            bridge = run_loop_bridge(run_loop_device, application)
+          else
+            bridge = run_loop_bridge
+          end
+
           bridge.uninstall
           bridge.install
         rescue StandardError => e
@@ -199,7 +274,7 @@ module Calabash
         end
       end
 
-      def self.fetch_matching_simulator(udid_or_name)
+      def Device.fetch_matching_simulator(udid_or_name)
         sim_control = RunLoop::SimControl.new
         sim_control.simulators.detect do |sim|
           sim.instruments_identifier == udid_or_name ||
@@ -207,7 +282,7 @@ module Calabash
         end
       end
 
-      def self.fetch_matching_physical_device(udid_or_name)
+      def Device.fetch_matching_physical_device(udid_or_name)
         xctools = RunLoop::XCTools.new
         xctools.instruments(:devices).detect do |device|
           device.name == udid_or_name ||
@@ -217,7 +292,7 @@ module Calabash
 
       def self.expect_compatible_server_endpoint(identifier, server)
         if server.localhost?
-          run_loop_device = Calabash::IOS::Device.fetch_matching_simulator(identifier)
+          run_loop_device = Device.fetch_matching_simulator(identifier)
           if run_loop_device.nil?
             Logger.error("The identifier for this device is '#{identifier}'")
             Logger.error('which resolves to a physical device.')
@@ -246,6 +321,34 @@ module Calabash
           raise 'The installed app is different from the app under test.  You must install the new app before starting'
         end
         true
+      end
+
+      def merge_start_options!(application, run_loop_device, options_from_user)
+        default_options =
+              {
+                    :app => application.path,
+                    :bundle_id => application.identifier,
+                    :device_target => run_loop_device.instruments_identifier,
+                    :uia_strategy => default_uia_strategy(run_loop_device)
+              }
+        @start_options = default_options.merge(options_from_user)
+      end
+
+      # @todo Move to run-loop!?!
+      # @todo Not tested locally!
+      def default_uia_strategy(run_loop_device)
+        default = :preferences
+        if run_loop_device.physical_device?
+          # `setPreferencesValueForKey` on iOS 8 devices is broken in Xcode 6
+          #
+          # rdar://18296714
+          # http://openradar.appspot.com/radar?id=5891145586442240
+          # :preferences strategy is broken on iOS 8.0
+          if run_loop_device.version >= RunLoop::Version.new('8.0')
+            default = :host
+          end
+        end
+        default
       end
     end
   end
