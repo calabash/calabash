@@ -31,6 +31,7 @@ describe Calabash::IOS::Device do
         stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
         sim = RunLoop::Device.new('fake', '8.0', 'some identifier')
         expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(sim)
+        expect(sim).to receive(:instruments_identifier).and_return 'fake (8.0 Simulator)'
         expect(Calabash::IOS::Device.default_simulator_identifier).to be == 'fake (8.0 Simulator)'
       end
     end
@@ -558,6 +559,7 @@ describe Calabash::IOS::Device do
 
       it 'sets the @start_options instance variable' do
         device.instance_variable_set(:@start_options, nil)
+        expect(run_loop_device).to receive(:instruments_identifier).and_return 'instruments identifier'
         options = device.send(:merge_start_options!,
                               app,
                               run_loop_device,
