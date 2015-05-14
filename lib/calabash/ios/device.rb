@@ -1,10 +1,33 @@
 module Calabash
   module IOS
+
+    # An iOS Device is an iOS Simulator or physical device.
     class Device < ::Calabash::Device
 
+      # @todo Should these be public?
+      # @todo If public, document!
       attr_reader :run_loop
       attr_reader :start_options
 
+      # @todo Implement this method, remember to add unit tests
+      def self.list_devices
+        raise 'ni'
+      end
+
+      # Returns the default simulator identifier.  The string that is return
+      # can be used as an argument to `instruments`.
+      #
+      # You can set the default simulator identifier by setting the
+      # `CAL_DEVICE_ID` environment variable.  If this value is not set, then
+      # the default simulator identifier will indicate the highest supported
+      # iPhone 5s Simulator SDK.  For example, when the active Xcode is 6.3,
+      # the default value will be "iPhone 5s (8.3 Simulator)".
+      #
+      # @see Calabash::Environment::DEVICE_IDENTIFIER
+      #
+      # @return [String] An instruments-ready simulator identifier.
+      # @raise [RuntimeError] When `CAL_DEVICE_ID` is set, this method will
+      #   raise an error if no matching simulator can be found.
       def self.default_simulator_identifier
         identifier = Environment::DEVICE_IDENTIFIER
 
@@ -19,6 +42,26 @@ module Calabash
         end
       end
 
+      # Returns the default physical device identifier.  The string that is
+      # return can be used as an argument to `instruments`.
+      #
+      # You can set the default physical device identifier by setting the
+      # `CAL_DEVICE_ID` environment variable.  If this value is not set,
+      # Calabash will try to detect available devices.
+      # * If no devices are available, this method will raise an error.
+      # * If more than one device is available, this method will raise an error.
+      # * If only one device is available, this method will return the UDID
+      #   of that device.
+      #
+      # @see Calabash::Environment::DEVICE_IDENTIFIER
+      #
+      # @return [String] An instruments-ready device identifier.
+      # @raise [RuntimeError] When `CAL_DEVICE_ID` is set, this method will
+      #   raise an error if no matching physical device can be found.
+      # @raise [RuntimeError] When `CAL_DEVICE_ID` is not set and no physical
+      #   devices are available.
+      # @raise [RuntimeError] When `CAL_DEVICE_ID` is not set and more than one
+      #   physical device is available.
       def self.default_physical_device_identifier
         identifier = Environment::DEVICE_IDENTIFIER
 
@@ -40,6 +83,17 @@ module Calabash
         end
       end
 
+      # Returns the default identifier for an application.  If the application
+      # is a simulator bundle (.app), the default simulator identifier is
+      # returned. If the application is a device binary (.ipa), the default
+      # physical device identifier is returned.
+      #
+      # @see Calabash::IOS::Device#default_simulator_identifier
+      # @see Calabash::IOS::Device#default_physical_device_identifier
+      #
+      # @return [String] An instruments ready identifier based on whether the
+      #  application is for a simulator or phyical device.
+      # @raise [RuntimeError] If the application is not a .app or .ipa.
       def self.default_identifier_for_application(application)
         if application.simulator_bundle?
           default_simulator_identifier
@@ -50,17 +104,28 @@ module Calabash
         end
       end
 
+      # Create a new iOS Device.
+      #
+      # @param [String] identifier The name or UDID of a simulator or physical
+      #  device.
+      # @param [Calabash::IOS::Server] server A representation of the embedded
+      #  Calabash server.
+      #
+      # @return [Calabash::IOS::Device] A representation of an iOS Simulator or
+      #  physical device.
+      # @raise [RuntimeError] If the server points to localhost and the
+      #  identifier is not for a simulator.
+      #
+      # @todo My inclination is to defer calling out to simctl or instruments
+      # here to find the RunLoop::Device that matches identifier.  These are
+      # very expensive calls.
       def initialize(identifier, server)
         super
 
         Calabash::IOS::Device.expect_compatible_server_endpoint(identifier, server)
       end
 
-      # TODO: Implement this method, remember to add unit tests
-      def self.list_devices
-        raise 'ni'
-      end
-
+      # @!visibility private
       def test_server_responding?
         begin
           http_client.get(Calabash::HTTP::Request.new('version')).status.to_i == 200
@@ -69,40 +134,131 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def to_s
         run_loop_device.to_s
       end
 
+      # @!visibility private
       def inspect
         run_loop_device.to_s
       end
 
-      # @todo document install_app_on_device
-      # @todo create a document describing ideviceinstaller implementation
-      # noinspection RubyUnusedLocalVariable
+      # @todo Should app_installed?(app, device_udid) be exposed as hook?
+
+      # Calabash cannot manage apps on physical devices.  There are third-party
+      # tools you can use to manage apps on devices.  Two popular tools are
+      # ideviceinstaller and ios-deploy.  Both can be installed using homebrew.
+      #
+      # To integrate these tools, Calabash provides several methods for you to
+      # override in your project.  In your `features/support/` directory, you
+      # can patch Calabash::IOS::Device with your own implementation of these
+      # methods.  The two methods to override are:
+      #
+      # 1. install_app_on_physical_device
+      # 2. ensure_app_installed_on_physical_device
+      #
+      # @example
+      #   # features/support/ideviceinstaller.rb
+      #
+      #   require 'fileutils'
+      #   class Calabash::IOS::Device
+      #
+      #     def app_installed?(application, device_udid)
+      #       out = `/usr/local/bin/ideviceinstaller --udid #{device_udid} --list-apps`
+      #       out.split(/\s/).include? application.identifier
+      #     end
+      #
+      #     def install_app_on_physical_device(application, device_udid)
+      #       log = FileUtils.touch('./ideviceinstaller.log')
+      #
+      #       if app_installed?(application, device_udid)
+      #         args = [
+      #                   '--udid', device_udid,
+      #                   '--uninstall', application.identifier
+      #                ]
+      #         system('/usr/local/bin/ideviceinstaller', *[args], {:out => log})
+      #         exit_code = $?
+      #         unless exit_code == 0
+      #           raise "Could not uninstall the app (#{exit_code}).  See #{File.expand_path(log)}"
+      #         end
+      #       end
+      #
+      #       args = [
+      #                 '--udid', device_udid,
+      #                 '--install', application.path
+      #              ]
+      #       system('/usr/local/bin/ideviceinstaller', *[args], {:out => log})
+      #       exit_code = $?
+      #       unless exit_code == 0
+      #         raise "Could not install the app (#{exit_code}).  See #{File.expand_path(log)}"
+      #       end
+      #       true
+      #     end
+      #
+      #     def ensure_app_installed_on_physical_device(application, device_udid)
+      #       unless app_installed?(application, device_udid)
+      #         install_app_on_physical_device(application, device_udid)
+      #       end
+      #     end
+      #   end
+      #
+      # For a real-world example of a ruby wrapper around the ideviceinstaller
+      # command-line tool, see https://github.com/calabash/ios-smoke-test-app.
+      #
+      # @see Calabash::IOS::Device#ensure_app_installed_on_physical_device
+      #
+      # @see http://brew.sh/
+      # @see https://github.com/libimobiledevice/ideviceinstaller
+      # @see https://github.com/phonegap/ios-deploy
+      # @see https://github.com/calabash/ios-smoke-test-app/blob/master/CalSmokeApp/features/support/ideviceinstaller.rb
+      # @see https://github.com/blueboxsecurity/idevice
+      #
+      # For an real-world example of a ruby wrapper around the ideviceinstaller
+      # tool, see /blob/master/CalSmokeApp/features/support/ideviceinstaller.rb
+      #
+      # @param [Calabash::IOS::Application] application The application to
+      #  to install.  The important methods on application are `path` and
+      #  `identifier`.
+      # @param [String] device_udid The identifier of the device to install the
+      #  application on.
+      # @raise [Calabash::AbstractMethodError] If this method is not implemented
+      #  by the user.
       def install_app_on_physical_device(application, device_udid)
         logger.log('To install an ipa on a physical device, you must extend', :info)
         logger.log('Calabash::IOS::Device and implement the #install_app_on_device', :info)
         logger.log('method that uses a third-party tool to interact with physical devices.', :info)
         logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('http://', :info)
+        logger.log('https://github.com/calabash/ios-smoke-test-app.', :info)
         raise Calabash::AbstractMethodError, 'Device install_on_device must be implemented by you.'
       end
 
-      # @todo document ensure_app_installed_on_device
-      # @todo create a document describing ideviceinstaller implementation
-      # noinspection RubyUnusedLocalVariable
+      # Calabash cannot manage apps on physical devices.  There are third-party
+      # tools you can use to manage apps on devices.  Two popular tools are
+      # ideviceinstaller and ios-deploy.  Both can be installed using homebrew.
+      #
+      # See the documentation for Calabash::IOS::Device#install_app_on_physical_device
+      # for details about how to integrate a third-party tool into your project.
+      #
+      # @param [Calabash::IOS::Application] application The application to
+      #  to install.  The important methods on application are `path` and
+      #  `identifier`.
+      # @param [String] device_udid The identifier of the device to install the
+      #  application on.
+      # @raise [Calabash::AbstractMethodError] If this method is not implemented
+      #  by the user.
       def ensure_app_installed_on_physical_device(application, device_udid)
         logger.log('To check if an app installed on a physical device, you must extend', :info)
         logger.log('Calabash::IOS::Device and implement the #ensure_app_installed_on_device', :info)
         logger.log('method that uses a third-party tool to interact with physical devices.', :info)
         logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('http://', :info)
+        logger.log('https://github.com/calabash/ios-smoke-test-app.', :info)
         raise Calabash::AbstractMethodError, 'Device ensure_app_installed_on_device must be implemented by you.'
       end
 
       private
 
+      # @!visibility private
       def _start_app(application, options={})
         if application.simulator_bundle?
           start_app_on_simulator(application, options)
@@ -114,6 +270,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def start_app_on_simulator(application, options)
         @run_loop_device ||= Device.fetch_matching_simulator(identifier)
 
@@ -128,18 +285,20 @@ module Calabash
       end
 
       # @todo No unit tests.
+      # @!visibility private
       def expect_valid_simulator_state_for_starting(application, run_loop_device)
         bridge = run_loop_bridge(run_loop_device, application)
 
-        expect_app_installed(bridge)
+        expect_app_installed_on_simulator(bridge)
 
         installed_app = Calabash::IOS::Application.new(bridge.fetch_app_dir)
         expect_matching_sha1s(installed_app, application)
       end
 
+      # @!visibility private
       def start_app_on_physical_device(application, options)
-        # Cannot check to see if app is already installed.
-        # Cannot check to see if app is different.
+        # @todo Cannot check to see if app is already installed.
+        # @todo Cannot check to see if app is different.
 
         @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
 
@@ -151,17 +310,20 @@ module Calabash
         wait_for_server_to_start
       end
 
+      # @!visibility private
       def start_app_with_device_and_options(application, run_loop_device, user_defined_options)
         start_options = merge_start_options!(application, run_loop_device, user_defined_options)
         @run_loop = RunLoop.run(start_options)
       end
 
+      # @!visibility private
       def wait_for_server_to_start
         ensure_test_server_ready
         device_info = fetch_device_info
         extract_device_info!(device_info)
       end
 
+      # @!visibility private
       def _stop_app
         return true unless test_server_responding?
 
@@ -174,6 +336,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def _screenshot(path)
         request = request_factory('screenshot', {:path => path})
         begin
@@ -185,6 +348,7 @@ module Calabash
         path
       end
 
+      # @!visibility private
       def _install_app(application)
         if application.simulator_bundle?
           @run_loop_device ||= Device.fetch_matching_simulator(identifier)
@@ -206,6 +370,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def _ensure_app_installed(application)
         if application.simulator_bundle?
           @run_loop_device ||= Device.fetch_matching_simulator(identifier)
@@ -235,6 +400,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def default_stop_app_parameters
         {
               :post_resign_active_delay => 0.4,
@@ -243,21 +409,25 @@ module Calabash
         }
       end
 
+      # @!visibility private
       def request_factory(route, parameters={})
         Calabash::HTTP::Request.new(route, parameters)
       end
 
+      # @!visibility private
       # RunLoop::Device is incredibly slow; don't call it more than once.
       def run_loop_device
         @run_loop_device ||= RunLoop::Device.device_with_identifier(identifier)
       end
 
+      # @!visibility private
       # Do not memoize this.  The Bridge initializer does a bunch of work to
       # prepare the environment for simctl actions.
       def run_loop_bridge(run_loop_simulator_device, application)
         RunLoop::Simctl::Bridge.new(run_loop_simulator_device, application.path)
       end
 
+      # @!visibility private
       def install_app_on_simulator(application, run_loop_device, run_loop_bridge = nil)
         begin
 
@@ -274,6 +444,8 @@ module Calabash
         end
       end
 
+      # @!visibility private
+      # Expensive!
       def Device.fetch_matching_simulator(udid_or_name)
         sim_control = RunLoop::SimControl.new
         sim_control.simulators.detect do |sim|
@@ -282,6 +454,8 @@ module Calabash
         end
       end
 
+      # @!visibility private
+      # Very expensive!
       def Device.fetch_matching_physical_device(udid_or_name)
         xctools = RunLoop::XCTools.new
         xctools.instruments(:devices).detect do |device|
@@ -290,6 +464,13 @@ module Calabash
         end
       end
 
+      # @!visibility private
+      # @todo Should this take a run_loop_device as an argument, rather than
+      # an identifier?  Since calls to instruments and simctl are very
+      # expensive we want to do as few of them as possible.  Maybe the
+      # localhost? check should be done outside of this method?  If nothing
+      # else, the result of Device.fetch_matching_simulator should be captured
+      # in @run_loop_device.
       def self.expect_compatible_server_endpoint(identifier, server)
         if server.localhost?
           run_loop_device = Device.fetch_matching_simulator(identifier)
@@ -304,13 +485,15 @@ module Calabash
         end
       end
 
-      def expect_app_installed(bridge)
+      # @!visibility private
+      def expect_app_installed_on_simulator(bridge)
         unless bridge.app_is_installed?
           raise 'App is not installed, you need to install it first.'
         end
         true
       end
 
+      # @!visibility private
       def expect_matching_sha1s(installed_app, new_app)
         unless installed_app.same_sha1_as?(new_app)
           logger.log('The installed application and the one under test are different.', :error)
@@ -323,6 +506,8 @@ module Calabash
         true
       end
 
+      # @!visibility private
+      # @todo Needs a bunch of work; see the argument munging in Calabash 0.x Launcher.
       def merge_start_options!(application, run_loop_device, options_from_user)
         default_options =
               {

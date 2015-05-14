@@ -29,6 +29,12 @@ module Calabash
 
     # The path of the default app under test. This value is used if no app is
     # given from the command line. e.g. $ calabash run.
+    #
+    # @todo On iOS, a great deal of effort is spent trying to deduce the
+    # application path for simulators.  This needs to be reproduced here
+    # (somehow).  Or maybe not?  The console requires the app path to perform
+    # commands.  Maybe cucumber should too?  See the todo in the
+    # Calabash::IOS::Application for more details.
     APP_PATH = variable('CAL_APP')
 
     # The time in seconds to wait by default before failing in the methods of
@@ -48,7 +54,16 @@ module Calabash
     # The Android test server path
     TEST_SERVER_PATH = variable('CAL_TEST_SERVER')
 
-    # The default device identifier
+    # The default device identifier.
+    #
+    # To change this value, set the `CAL_DEVICE_ID` environment variable.
+    #
+    # On iOS, this value can be any of the following:
+    # * "iPhone 5s (8.3 Simulator)"
+    # * "EE598265-CAB4-4F6A-96B1-3FA11693325B"   # A simulator UDID.
+    # * 893688959205dc7eb47d603c558ede919ad8dd0f # A physical device UDID.
+    # * "Tom's iPhone" or "saturn"               # The name of a physical device.
+    # * my-special-simulator                     # The name of a configured simulator.
     DEVICE_IDENTIFIER = variable('CAL_DEVICE_ID')
 
     # @!visibility private

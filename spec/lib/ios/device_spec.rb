@@ -510,7 +510,7 @@ describe Calabash::IOS::Device do
       expect(device.send(:wait_for_server_to_start)).to be_truthy
     end
 
-    describe '#expect_app_installed' do
+    describe '#expect_app_installed_on_simulator' do
       let(:dummy_bridge) do
         class Calabash::DummyBridge
           def app_is_installed?
@@ -523,13 +523,13 @@ describe Calabash::IOS::Device do
       it 'raises an error if the app is not installed' do
         expect(dummy_bridge).to receive(:app_is_installed?).and_return(false)
         expect {
-          device.send(:expect_app_installed, dummy_bridge)
+          device.send(:expect_app_installed_on_simulator, dummy_bridge)
         }.to raise_error
       end
 
       it 'returns true if app is installed' do
         expect(dummy_bridge).to receive(:app_is_installed?).and_return(true)
-        expect(device.send(:expect_app_installed, dummy_bridge)).to be_truthy
+        expect(device.send(:expect_app_installed_on_simulator, dummy_bridge)).to be_truthy
       end
     end
 
