@@ -35,7 +35,7 @@ module Calabash
       end
 
       @path = File.expand_path(application_path)
-      @logger = options[:logger] || Logger.new
+      @logger = options[:logger] || Calabash::Logger.new
       @identifier = options[:identifier]
       ensure_application_path
     end
