@@ -105,13 +105,13 @@ module Calabash
         end
 
         default_opts =
-            {
-                  # @todo Can run-loop handle both an :app and :bundle_id?
-                  :app => application.path,
-                  :bundle_id => application.identifier,
-                  :device_target => run_loop_device.instruments_identifier,
-                  :uia_strategy => uia_strategy
-            }
+              {
+                    # @todo Can run-loop handle both an :app and :bundle_id?
+                    :app => application.path,
+                    :bundle_id => application.identifier,
+                    :device_target => run_loop_device.instruments_identifier,
+                    :uia_strategy => uia_strategy
+              }
 
         launch_opts = default_opts.merge(options)
         @run_loop = RunLoop.run(launch_opts)
@@ -135,8 +135,8 @@ module Calabash
       def _screenshot(path)
         request = request_factory('screenshot', {:path => path})
         begin
-         screenshot = http_client.get(request)
-         File.open(path, 'wb') { |file| file.write screenshot }
+          screenshot = http_client.get(request)
+          File.open(path, 'wb') { |file| file.write screenshot }
         rescue Calabash::HTTP::Error => e
           raise "Could not send 'screenshot' to the app: #{e}"
         end
