@@ -45,7 +45,7 @@ module Calabash
         elsif application.device_binary?
           default_physical_device_identifier
         else
-          raise "Invalid application #{application} for platform."
+          raise "Invalid application #{application} for iOS platform."
         end
       end
 
