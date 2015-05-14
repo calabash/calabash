@@ -17,31 +17,35 @@ describe Calabash::IOS::Application do
     end
   end
 
+  describe '#.new' do
+    let(:path) { IOSResources.instance.app_bundle_path }
+
+    it 'raises an error if the path does point to a .app or .apk' do
+      expect(File).to receive(:extname).with(path).at_least(:once).and_return('.png')
+      expect {
+        Calabash::IOS::Application.new(path)
+      }.to raise_error
+    end
+
+    it 'sets its instance variables' do
+      app = Calabash::IOS::Application.new(path)
+      expect(app.instance_variable_get(:@path)).to be_truthy
+      expect(app.instance_variable_get(:@simulator_bundle)).to be_truthy
+      expect(app.instance_variable_get(:@device_binary)).to be == false
+    end
+  end
+
   describe 'instance methods' do
     let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
 
-    describe '#simulator_bundle?' do
-      it 'returns true if path ends with .app' do
-        expect(app).to receive(:path).and_return('./foo.app')
-        expect(app.simulator_bundle?).to be_truthy
-      end
-
-      it 'returns false if path ends with any other extension' do
-        expect(app).to receive(:path).and_return('./foo.png')
-        expect(app.simulator_bundle?).to be_falsey
-      end
+    it '#simulator_bundle?' do
+      app.instance_variable_set(:@simulator_bundle, true)
+      expect(app.simulator_bundle?).to be == true
     end
 
-    describe '#device_binary?' do
-      it 'returns true if path ends with .ipa' do
-        expect(app).to receive(:path).and_return('./foo.ipa')
-        expect(app.device_binary?).to be_truthy
-      end
-
-      it 'returns false if path ends with any other extension' do
-        expect(app).to receive(:path).and_return('./foo.png')
-        expect(app.device_binary?).to be_falsey
-      end
+    it '#device_binary?' do
+      app.instance_variable_set(:@device_binary, true)
+      expect(app.device_binary?).to be == true
     end
 
     describe '#extract_identifier' do

@@ -13,14 +13,21 @@ module Calabash
 
       def initialize(application_path, options = {})
         super(application_path, options)
+
+        @simulator_bundle = File.extname(path) == '.app'
+        @device_binary = File.extname(path) == '.ipa'
+
+        unless @simulator_bundle || @device_binary
+          raise "Expected #{path} to be an .ipa or .app, but found '#{File.extname(path)}'"
+        end
       end
 
       def simulator_bundle?
-        File.extname(path) == '.app'
+        @simulator_bundle
       end
 
       def device_binary?
-        File.extname(path) == '.ipa'
+        @device_binary
       end
 
       def sha1
