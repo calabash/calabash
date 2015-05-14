@@ -14,15 +14,15 @@ describe Calabash::IOS::Device do
 
   let(:device) do
     uri = URI.parse('http://localhost:37265')
-    server = Calabash::Server.new(uri)
+    server = Calabash::IOS::Server.new(uri)
     Calabash::IOS::Device.new(sim_name, server)
   end
 
-  let(:app) { Calabash::Application.new(abp) }
+  let(:app) { Calabash::IOS::Application.new(abp) }
 
-  it '#calabash_stop_app' do
+  it '#stop_app' do
     bridge.launch
-    expect(device.calabash_stop_app).to be_truthy
+    expect(device.stop_app).to be_truthy
   end
 
   it '#screenshot' do
@@ -51,7 +51,7 @@ describe Calabash::IOS::Device do
         new_sha = RunLoop::Directory.directory_digest(new_abp)
         expect(new_sha).not_to be == original_sha
 
-        new_app = Calabash::Application.new(new_abp)
+        new_app = Calabash::IOS::Application.new(new_abp)
         expect(device.install_app(new_app)).to be_truthy
 
         installed_app_bundle = bridge.send(:fetch_app_dir)
@@ -59,6 +59,13 @@ describe Calabash::IOS::Device do
         installed_app_sha = RunLoop::Directory.directory_digest(installed_app_bundle)
         expect(installed_app_sha).to be == new_sha
       end
+    end
+  end
+
+  describe '#start_app' do
+    before { device.ensure_app_installed(app) }
+    it 'it starts the app on a simulator' do
+      device.start_app(app)
     end
   end
 end
