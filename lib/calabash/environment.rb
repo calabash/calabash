@@ -48,7 +48,16 @@ module Calabash
     # The Android test server path
     TEST_SERVER_PATH = variable('CAL_TEST_SERVER')
 
-    # The default device identifier
+    # The default device identifier.
+    #
+    # To change this value, set the `CAL_DEVICE_ID` environment variable.
+    #
+    # On iOS, this value can be any of the following:
+    # * "iPhone 5s (8.3 Simulator)"
+    # * "EE598265-CAB4-4F6A-96B1-3FA11693325B"   # A simulator UDID.
+    # * 893688959205dc7eb47d603c558ede919ad8dd0f # A physical device UDID.
+    # * "Tom's iPhone" or "saturn"               # The name of a physical device.
+    # * my-special-simulator                     # The name of a configured simulator.
     DEVICE_IDENTIFIER = variable('CAL_DEVICE_ID')
 
     # @!visibility private
