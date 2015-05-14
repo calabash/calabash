@@ -35,11 +35,14 @@ begin
 
     require 'calabash/ios'
 
-    SIM=Calabash::IOS::SimulatorLauncher.new()
-
     extend Calabash::IOS
 
     Calabash::Application.default = Calabash::IOS::Application.default_from_environment
+
+    identifier = Calabash::IOS::Device.default_identifier_for_application(Calabash::Application.default)
+    server = Calabash::IOS::Server.default
+
+    Calabash::Device.default = Calabash::IOS::Device.new(identifier, server)
 
     Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
 rescue Exception => e

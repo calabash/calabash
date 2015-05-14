@@ -48,6 +48,9 @@ module Calabash
     # The Android test server path
     TEST_SERVER_PATH = variable('CAL_TEST_SERVER')
 
+    # The default device identifier
+    DEVICE_IDENTIFIER = variable('CAL_DEVICE_ID')
+
     # @!visibility private
     SKELETON_DIR_PATH = File.join(File.dirname(__FILE__), 'lib', 'skeleton')
   end
