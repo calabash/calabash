@@ -29,6 +29,12 @@ module Calabash
 
     # The path of the default app under test. This value is used if no app is
     # given from the command line. e.g. $ calabash run.
+    #
+    # @todo On iOS, a great deal of effort is spent trying to deduce the
+    # application path for simulators.  This needs to be reproduced here
+    # (somehow).  Or maybe not?  The console requires the app path to perform
+    # commands.  Maybe cucumber should too?  See the todo in the
+    # Calabash::IOS::Application for more details.
     APP_PATH = variable('CAL_APP')
 
     # The time in seconds to wait by default before failing in the methods of
