@@ -12,6 +12,19 @@ describe Calabash::IOS::Device do
   let(:dummy_http_class) {Class.new(Calabash::HTTP::RetriableClient) {def initialize; end}}
   let(:dummy_http) {dummy_http_class.new}
 
+  let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
+  let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
+
+  # Mock RunLoop::Simctl::Bridge
+  let(:mock_bridge) do
+    Class.new do
+      def app_is_installed?; ; end
+      def reset_app_sandbox; ; end
+      def uninstall; ; end
+      def install; ; end
+    end.new
+  end
+
   before(:each) do
     allow(dummy_device).to receive(:http_client).and_return(dummy_http)
     allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
@@ -92,7 +105,6 @@ describe Calabash::IOS::Device do
   end
 
   describe '.default_identifier_for_application' do
-    let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
     it 'returns simulator identifier for .app' do
       expect(app).to receive(:simulator_bundle?).and_return(true)
       expect(Calabash::IOS::Device).to receive(:default_simulator_identifier).and_return('sim id')
@@ -163,7 +175,6 @@ describe Calabash::IOS::Device do
     end
 
     describe '#start_app' do
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
       let(:options) { {} }
 
       it 'raises an error if app is not an .ipa or .app' do
@@ -227,12 +238,14 @@ describe Calabash::IOS::Device do
         request = Calabash::HTTP::Request.new('exit', params)
         expect(device).to receive(:request_factory).and_return(request)
         expect(device.http_client).to receive(:get).with(request).and_return([])
+
         expect(device.stop_app).to be_truthy
       end
 
       it 'raises an exception if server cannot be reached' do
         expect(device).to receive(:test_server_responding?).and_return(true)
         expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
+
         expect { device.stop_app }.to raise_error
       end
     end
@@ -240,6 +253,7 @@ describe Calabash::IOS::Device do
     describe '#screenshot' do
       it 'raise an exception if the server cannot be reached' do
         expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
+
         expect { device.screenshot('path') }.to raise_error
       end
 
@@ -250,15 +264,13 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:request_factory).and_return(request)
         data = 'I am the screenshot!'
         expect(device.http_client).to receive(:get).with(request).and_return(data)
+
         expect(device.screenshot(path)).to be == path
         expect(File.read(path)).to be == data
       end
     end
 
     describe '#install_app' do
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-
       it 'raises an error when application is not an .ipa or .app' do
         expect(app).to receive(:simulator_bundle?).at_least(:once).and_return false
         expect(app).to receive(:device_binary?).at_least(:once).and_return false
@@ -312,9 +324,6 @@ describe Calabash::IOS::Device do
     end
 
     describe '#ensure_app_installed' do
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-
       it 'raises an error when application is not an .ipa or .app' do
         expect(app).to receive(:simulator_bundle?).at_least(:once).and_return false
         expect(app).to receive(:device_binary?).at_least(:once).and_return false
@@ -334,20 +343,11 @@ describe Calabash::IOS::Device do
           }.to raise_error
         end
 
-        let(:dummy_bridge) do
-          class Calabash::DummyBridge
-            def app_is_installed?
-
-            end
-          end
-          Calabash::DummyBridge.new
-        end
-
         it 'does nothing if app is already installed' do
           expect(app).to receive(:simulator_bundle?).at_least(:once).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
-          expect(device).to receive(:run_loop_bridge).and_return(dummy_bridge)
-          expect(dummy_bridge).to receive(:app_is_installed?).and_return true
+          expect(device).to receive(:run_loop_bridge).and_return(mock_bridge)
+          expect(mock_bridge).to receive(:app_is_installed?).and_return true
 
           expect(device.ensure_app_installed(app)).to be_truthy
           expect(device.instance_variable_get(:@run_loop_device)).to be == run_loop_device
@@ -356,9 +356,9 @@ describe Calabash::IOS::Device do
         it 'calls install_app_on_simulator if the app is not installed' do
           expect(app).to receive(:simulator_bundle?).at_least(:once).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
-          expect(device).to receive(:run_loop_bridge).and_return(dummy_bridge)
-          expect(dummy_bridge).to receive(:app_is_installed?).and_return false
-          expect(device).to receive(:install_app_on_simulator).with(app, run_loop_device, dummy_bridge).and_return true
+          expect(device).to receive(:run_loop_bridge).and_return(mock_bridge)
+          expect(mock_bridge).to receive(:app_is_installed?).and_return false
+          expect(device).to receive(:install_app_on_simulator).with(app, run_loop_device, mock_bridge).and_return true
 
           expect(device.ensure_app_installed(app)).to be_truthy
           expect(device.instance_variable_get(:@run_loop_device)).to be == run_loop_device
@@ -389,27 +389,17 @@ describe Calabash::IOS::Device do
     end
 
     describe '#install_app_on_simulator' do
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-      let(:dummy_bridge) do
-        class Calabash::DummyBridge
-          def uninstall; ; end
-          def install; ; end
-        end
-        Calabash::DummyBridge.new
-      end
-
       it 'uninstalls and then installs' do
-        expect(dummy_bridge).to receive(:uninstall).and_return true
-        expect(dummy_bridge).to receive(:install).and_return true
+        expect(mock_bridge).to receive(:uninstall).and_return true
+        expect(mock_bridge).to receive(:install).and_return true
 
-        expect(device.send(:install_app_on_simulator, app, run_loop_device, dummy_bridge)).to be_truthy
+        expect(device.send(:install_app_on_simulator, app, run_loop_device, mock_bridge)).to be_truthy
       end
 
-      it 'creates a new bridge if one is not provided' do
-        expect(dummy_bridge).to receive(:uninstall).and_return true
-        expect(dummy_bridge).to receive(:install).and_return true
-        expect(device).to receive(:run_loop_bridge).with(run_loop_device, app).and_return dummy_bridge
+      it 'creates a new mock_bridge if one is not provided' do
+        expect(mock_bridge).to receive(:uninstall).and_return true
+        expect(mock_bridge).to receive(:install).and_return true
+        expect(device).to receive(:run_loop_bridge).with(run_loop_device, app).and_return mock_bridge
 
         expect(device.send(:install_app_on_simulator, app, run_loop_device)).to be_truthy
       end
@@ -424,32 +414,25 @@ describe Calabash::IOS::Device do
         end
 
         it 'calls bridge.uninstall and an exception is raised' do
-          expect(dummy_bridge).to receive(:uninstall).and_raise
+          expect(mock_bridge).to receive(:uninstall).and_raise
 
           expect {
-            device.send(:install_app_on_simulator, app, run_loop_device, dummy_bridge)
+            device.send(:install_app_on_simulator, app, run_loop_device, mock_bridge)
           }.to raise_error
         end
 
         it 'calls bridge.install and an exception is raised' do
-          expect(dummy_bridge).to receive(:uninstall).and_return true
-          expect(dummy_bridge).to receive(:install).and_raise
+          expect(mock_bridge).to receive(:uninstall).and_return true
+          expect(mock_bridge).to receive(:install).and_raise
 
           expect {
-            device.send(:install_app_on_simulator, app, run_loop_device, dummy_bridge)
+            device.send(:install_app_on_simulator, app, run_loop_device, mock_bridge)
           }.to raise_error
         end
       end
     end
 
     describe '#start_app_on_simulator' do
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-      let(:dummy_bridge) do
-        class Calabash::DummyBridge
-        end
-        Calabash::DummyBridge.new
-      end
       it 'raises an error if no matching simulator is found' do
         expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return nil
 
@@ -469,9 +452,6 @@ describe Calabash::IOS::Device do
     end
 
     describe '#start_app_on_device' do
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-
       it 'raises an error if no matching device is found' do
         expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return nil
 
@@ -490,8 +470,6 @@ describe Calabash::IOS::Device do
     end
 
     it '#start_app_with_device_and_options' do
-      app = Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path)
-      run_loop_device = RunLoop::Device.new('denis', '8.3', 'udid')
       options = { :foo => :bar }
       run_loop = { :pid => 1234 }
       expect(device).to receive(:merge_start_options!).with(app, run_loop_device, options).and_return options
@@ -511,25 +489,16 @@ describe Calabash::IOS::Device do
     end
 
     describe '#expect_app_installed_on_simulator' do
-      let(:dummy_bridge) do
-        class Calabash::DummyBridge
-          def app_is_installed?
-
-          end
-        end
-        Calabash::DummyBridge.new
-      end
-
       it 'raises an error if the app is not installed' do
-        expect(dummy_bridge).to receive(:app_is_installed?).and_return(false)
+        expect(mock_bridge).to receive(:app_is_installed?).and_return(false)
         expect {
-          device.send(:expect_app_installed_on_simulator, dummy_bridge)
+          device.send(:expect_app_installed_on_simulator, mock_bridge)
         }.to raise_error
       end
 
       it 'returns true if app is installed' do
-        expect(dummy_bridge).to receive(:app_is_installed?).and_return(true)
-        expect(device.send(:expect_app_installed_on_simulator, dummy_bridge)).to be_truthy
+        expect(mock_bridge).to receive(:app_is_installed?).and_return(true)
+        expect(device.send(:expect_app_installed_on_simulator, mock_bridge)).to be_truthy
       end
     end
 
@@ -554,9 +523,6 @@ describe Calabash::IOS::Device do
     end
 
     describe '#merge_start_options!' do
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-
       it 'sets the @start_options instance variable' do
         device.instance_variable_set(:@start_options, nil)
         expect(run_loop_device).to receive(:instruments_identifier).and_return 'instruments identifier'
@@ -577,40 +543,20 @@ describe Calabash::IOS::Device do
     end
 
     describe '#clear_app_on_simulator' do
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-
-      let(:bridge) do
-        Class.new do
-          def app_is_installed?; ; end
-          def reset_app_sandbox; ; end
-        end.new
-      end
-
       it 'raises an error if app data cannot be cleared' do
-        expect(bridge).to receive(:reset_app_sandbox).and_raise
+        expect(mock_bridge).to receive(:reset_app_sandbox).and_raise
         expect {
-          device.send(:clear_app_data_on_simulator, app, run_loop_device, bridge)
+          device.send(:clear_app_data_on_simulator, app, run_loop_device, mock_bridge)
         }.to raise_error
       end
 
       it 'resets the app sandbox' do
-        expect(bridge).to receive(:reset_app_sandbox).and_return true
-        expect(device.send(:clear_app_data_on_simulator, app, run_loop_device, bridge)).to be_truthy
+        expect(mock_bridge).to receive(:reset_app_sandbox).and_return true
+        expect(device.send(:clear_app_data_on_simulator, app, run_loop_device, mock_bridge)).to be_truthy
       end
     end
 
     describe '#clear_app_data' do
-      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
-      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
-
-      let(:bridge) do
-        Class.new do
-          def app_is_installed?; ; end
-          def reset_app_sandbox; ; end
-        end.new
-      end
-
       describe 'on simulators' do
         it 'raises an error if a matching simulator cannot be found' do
           expect(app).to receive(:simulator_bundle?).and_return true
@@ -623,9 +569,9 @@ describe Calabash::IOS::Device do
         it 'calls clear_app_on_simulator when the app is installed' do
           expect(app).to receive(:simulator_bundle?).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
-          expect(device).to receive(:run_loop_bridge).and_return bridge
-          expect(bridge).to receive(:app_is_installed?).and_return true
-          expect(device).to receive(:clear_app_data_on_simulator).with(app, run_loop_device, bridge).and_return true
+          expect(device).to receive(:run_loop_bridge).and_return mock_bridge
+          expect(mock_bridge).to receive(:app_is_installed?).and_return true
+          expect(device).to receive(:clear_app_data_on_simulator).with(app, run_loop_device, mock_bridge).and_return true
 
           expect(device.send(:clear_app_data, app)).to be_truthy
         end
@@ -633,8 +579,8 @@ describe Calabash::IOS::Device do
         it 'does nothing if the app is not installed' do
           expect(app).to receive(:simulator_bundle?).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
-          expect(device).to receive(:run_loop_bridge).and_return bridge
-          expect(bridge).to receive(:app_is_installed?).and_return false
+          expect(device).to receive(:run_loop_bridge).and_return mock_bridge
+          expect(mock_bridge).to receive(:app_is_installed?).and_return false
 
           expect(device.send(:clear_app_data, app)).to be_truthy
         end
