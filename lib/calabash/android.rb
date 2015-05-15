@@ -1,4 +1,5 @@
 module Calabash
+  # Contains the Android implementations of the Calabash APIs.
   module Android
     TEST_SERVER_CODE_PATH = File.join(File.dirname(__FILE__), '..', '..', 'android', 'test-server')
     UNSIGNED_TEST_SERVER_APK = File.join(File.dirname(__FILE__), 'android', 'lib', 'TestServer.apk')
