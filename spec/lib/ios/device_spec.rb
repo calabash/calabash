@@ -569,5 +569,11 @@ describe Calabash::IOS::Device do
         expect(device.instance_variable_get(:@start_options)).to be == options
       end
     end
+
+    it '#clear_app_data_on_physical_device' do
+      expect {
+        device.clear_app_data_on_physical_device(nil, nil)
+      }.to raise_error
+    end
   end
 end
