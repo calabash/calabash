@@ -65,14 +65,14 @@ eos
   end
 
   describe '#_clear_app_data' do
+    let(:package) { 'com.myapp.package' }
+    let(:dummy_app) { Class.new { def identifier; 'com.myapp.package'; end }.new }
     it 'should clear the app using adb' do
-      package = 'com.myapp.package'
-
       expect(dummy_device).to receive(:installed_packages).and_return([package])
       expect(dummy_device.adb).to receive(:shell).with("pm clear #{package}").
          and_return("Success\n")
 
-      dummy_device.send(:_clear_app_data, package)
+      dummy_device.send(:_clear_app_data, dummy_app)
     end
   end
 

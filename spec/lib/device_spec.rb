@@ -155,7 +155,7 @@ describe Calabash::Device do
     before do
       allow(application).to receive(:identifier).and_return(identifier)
     end
-    
+
     describe 'when running in a managed environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(true)
@@ -223,7 +223,7 @@ describe Calabash::Device do
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_clear_app_data).with(identifier)
+        expect(device).to receive(:_clear_app_data).with(application)
         expect(Calabash::Managed).not_to receive(:clear_app_data)
       end
 
@@ -233,7 +233,7 @@ describe Calabash::Device do
         device.clear_app_data(application_path)
       end
 
-      it 'should invoke the impl with an identifier when given an application' do
+      it 'should invoke the impl with the given application when given an application' do
         device.clear_app_data(application)
       end
     end

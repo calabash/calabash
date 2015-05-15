@@ -104,7 +104,7 @@ module Calabash
       if Managed.managed?
         Managed.clear_app_data(application.identifier, self)
       else
-        _clear_app_data(application.identifier)
+        _clear_app_data(application)
       end
     end
 
@@ -221,7 +221,7 @@ module Calabash
     end
 
     # @!visibility private
-    def _clear_app_data(identifier)
+    def _clear_app_data(application)
       abstract_method!
     end
 
