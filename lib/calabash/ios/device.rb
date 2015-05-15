@@ -426,6 +426,43 @@ module Calabash
         end
       end
 
+      def _clear_app_data(application)
+        if application.simulator_bundle?
+          @run_loop_device ||= Device.fetch_matching_simulator(identifier)
+
+          if @run_loop_device.nil?
+            raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
+          end
+
+          bridge = run_loop_bridge(@run_loop_device, application)
+          if bridge.app_is_installed?
+            clear_app_data_on_simulator(application, @run_loop_device, bridge)
+          else
+            true
+          end
+        elsif application.device_binary?
+          @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
+
+          if @run_loop_device.nil?
+            raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
+          end
+
+          clear_app_data_on_physical_device(application, @run_loop_device.udid)
+        else
+          raise "Invalid application #{application} for iOS platform."
+        end
+      end
+
+      # @!visibility private
+      def clear_app_data_on_simulator(application, run_loop_device, bridge)
+        begin
+          bridge.reset_app_sandbox
+          true
+        rescue e
+          raise "Could not clear app data for #{application.identifier} on #{run_loop_device}: #{e}"
+        end
+      end
+
       # @!visibility private
       def default_stop_app_parameters
         {
@@ -465,7 +502,7 @@ module Calabash
 
           bridge.uninstall
           bridge.install
-        rescue StandardError => e
+        rescue e
           raise "Could not install #{application} on #{run_loop_device}: #{e}"
         end
       end

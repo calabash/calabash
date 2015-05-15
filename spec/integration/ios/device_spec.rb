@@ -68,4 +68,11 @@ describe Calabash::IOS::Device do
       device.start_app(app)
     end
   end
+
+  describe '#clear_app_data' do
+    before { device.ensure_app_installed(app) }
+    it 'clears the app data on a simulator' do
+      device.clear_app_data(app)
+    end
+  end
 end
