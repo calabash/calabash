@@ -208,8 +208,8 @@ module Calabash
       end
 
       # @!visibility private
-      def _uninstall_app(package)
-        adb_uninstall_app(package)
+      def _uninstall_app(application)
+        adb_uninstall_app(application.identifier)
       end
 
       # @!visibility private

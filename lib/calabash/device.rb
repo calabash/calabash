@@ -93,7 +93,7 @@ module Calabash
       if Managed.managed?
         Managed.uninstall_app(application.identifier, self)
       else
-        _uninstall_app(application.identifier)
+        _uninstall_app(application)
       end
     end
 
@@ -216,7 +216,7 @@ module Calabash
     end
 
     # @!visibility private
-    def _uninstall_app(identifier)
+    def _uninstall_app(application)
       abstract_method!
     end
 
