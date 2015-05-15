@@ -9,11 +9,6 @@ module Calabash
       attr_reader :run_loop
       attr_reader :start_options
 
-      # @todo Implement this method, remember to add unit tests
-      def self.list_devices
-        raise 'ni'
-      end
-
       # Returns the default simulator identifier.  The string that is return
       # can be used as an argument to `instruments`.
       #
