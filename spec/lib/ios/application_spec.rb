@@ -22,6 +22,7 @@ describe Calabash::IOS::Application do
 
     it 'raises an error if the path does point to a .app or .apk' do
       expect(File).to receive(:extname).with(path).at_least(:once).and_return('.png')
+
       expect {
         Calabash::IOS::Application.new(path)
       }.to raise_error
@@ -51,31 +52,27 @@ describe Calabash::IOS::Application do
     describe '#extract_identifier' do
 
       let(:identifier) { 'com.example.App' }
-      let (:dummy) do
-        class Calabash::RunLoopLikeApp
-          def bundle_identifier
-            'com.example.App'
-          end
-        end
-        Calabash::RunLoopLikeApp.new
-      end
+      let (:dummy) { Class.new { def bundle_identifier; 'com.example.App'; end }.new }
 
       it 'from .ipa' do
         expect(app).to receive(:simulator_bundle?).at_least(:once).and_return(false)
         expect(app).to receive(:device_binary?).at_least(:once).and_return(true)
         expect(app).to receive(:run_loop_ipa).and_return(dummy)
+
         expect(app.send(:extract_identifier)).to be == 'com.example.App'
       end
 
       it 'from .app' do
         expect(app).to receive(:simulator_bundle?).at_least(:once).and_return(true)
         expect(app).to receive(:run_loop_app).and_return(dummy)
+
         expect(app.send(:extract_identifier)).to be == 'com.example.App'
       end
 
       it 'raise error if not an .ipa or .app' do
         expect(app).to receive(:simulator_bundle?).and_return(false)
         expect(app).to receive(:device_binary?).and_return(false)
+
         expect {
           app.send(:extract_identifier)
         }.to raise_error
@@ -84,26 +81,22 @@ describe Calabash::IOS::Application do
 
     it '#sha1' do
       expect(RunLoop::Directory).to receive(:directory_digest).with(app.path).and_return('sha1')
+
       expect(app.sha1).to be == 'sha1'
     end
 
     describe '#same_sha1_as?' do
-      let(:dummy) do
-        class Calabash::HasSHA1
-          def sha1
-            'abcde'
-          end
-        end
-        Calabash::HasSHA1.new
-      end
+      let(:dummy) { Class.new { def sha1; 'abcde'; end }.new }
 
       it 'returns true if sha1 matches' do
         expect(app).to receive(:sha1).and_return('abcde')
+
         expect(app.same_sha1_as?(dummy)).to be_truthy
       end
 
       it 'returns false if sha1 does not match' do
         expect(app).to receive(:sha1).and_return('efghi')
+
         expect(app.same_sha1_as?(dummy)).to be_falsey
       end
     end
