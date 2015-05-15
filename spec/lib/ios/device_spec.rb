@@ -569,5 +569,96 @@ describe Calabash::IOS::Device do
         expect(device.instance_variable_get(:@start_options)).to be == options
       end
     end
+
+    it '#clear_app_data_on_physical_device' do
+      expect {
+        device.clear_app_data_on_physical_device(nil, nil)
+      }.to raise_error
+    end
+
+    describe '#clear_app_on_simulator' do
+      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
+      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
+
+      let(:bridge) do
+        Class.new do
+          def app_is_installed?; ; end
+          def reset_app_sandbox; ; end
+        end.new
+      end
+
+      it 'raises an error if app data cannot be cleared' do
+        expect(bridge).to receive(:reset_app_sandbox).and_raise
+        expect {
+          device.send(:clear_app_data_on_simulator, app, run_loop_device, bridge)
+        }.to raise_error
+      end
+
+      it 'resets the app sandbox' do
+        expect(bridge).to receive(:reset_app_sandbox).and_return true
+        expect(device.send(:clear_app_data_on_simulator, app, run_loop_device, bridge)).to be_truthy
+      end
+    end
+
+    describe '#clear_app_data' do
+      let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
+      let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
+
+      let(:bridge) do
+        Class.new do
+          def app_is_installed?; ; end
+          def reset_app_sandbox; ; end
+        end.new
+      end
+
+      describe 'on simulators' do
+        it 'raises an error if a matching simulator cannot be found' do
+          expect(app).to receive(:simulator_bundle?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return nil
+          expect {
+            device.send(:clear_app_data, app)
+          }.to raise_error
+        end
+
+        it 'calls clear_app_on_simulator when the app is installed' do
+          expect(app).to receive(:simulator_bundle?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
+          expect(device).to receive(:run_loop_bridge).and_return bridge
+          expect(bridge).to receive(:app_is_installed?).and_return true
+          expect(device).to receive(:clear_app_data_on_simulator).with(app, run_loop_device, bridge).and_return true
+
+          expect(device.send(:clear_app_data, app)).to be_truthy
+        end
+
+        it 'does nothing if the app is not installed' do
+          expect(app).to receive(:simulator_bundle?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
+          expect(device).to receive(:run_loop_bridge).and_return bridge
+          expect(bridge).to receive(:app_is_installed?).and_return false
+
+          expect(device.send(:clear_app_data, app)).to be_truthy
+        end
+      end
+
+      describe 'on devices' do
+        it 'raises an error if a matching device cannot be found' do
+          expect(app).to receive(:simulator_bundle?).and_return false
+          expect(app).to receive(:device_binary?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return nil
+          expect {
+            device.send(:clear_app_data, app)
+          }.to raise_error
+        end
+
+        it 'calls clear_app_on_physical_device' do
+          expect(app).to receive(:simulator_bundle?).and_return false
+          expect(app).to receive(:device_binary?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return run_loop_device
+          expect(device).to receive(:clear_app_data_on_physical_device).with(app, run_loop_device.udid).and_return true
+
+          expect(device.send(:clear_app_data, app)).to be_truthy
+        end
+      end
+    end
   end
 end

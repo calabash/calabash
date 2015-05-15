@@ -165,8 +165,8 @@ module Calabash
       end
 
       # @!visibility private
-      def _clear_app_data(identifier)
-        adb_clear_app_data(identifier)
+      def _clear_app_data(application)
+        adb_clear_app_data(application.identifier)
       end
 
       # @!visibility private
