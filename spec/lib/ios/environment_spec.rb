@@ -36,6 +36,7 @@ describe Calabash::IOS::Environment do
 
     it 'returns the correct default values' do
       _nil_env
+
       uri = Calabash::IOS::Environment::DEVICE_ENDPOINT
       expect(uri).to be_a_kind_of(URI)
       expect(uri.to_s).to be == 'http://localhost:37265'
@@ -43,6 +44,7 @@ describe Calabash::IOS::Environment do
 
     it 'returns the correct values if the env is set' do
       _set_env('CAL_ENDPOINT' => 'http://denis.local:37265')
+
       uri = Calabash::IOS::Environment::DEVICE_ENDPOINT
       expect(uri).to be_a_kind_of(URI)
       expect(uri.to_s).to be == 'http://denis.local:37265'
