@@ -606,5 +606,56 @@ describe Calabash::IOS::Device do
         end
       end
     end
+
+    describe '#uninstall_app' do
+      describe 'on simulators' do
+        it 'raises an error if a matching simulator cannot be found' do
+          expect(app).to receive(:simulator_bundle?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return nil
+          expect {
+            device.send(:uninstall_app, app)
+          }.to raise_error
+        end
+
+        it 'calls uninstall_app_on_simulator when the app is installed' do
+          expect(app).to receive(:simulator_bundle?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
+          expect(device).to receive(:run_loop_bridge).and_return mock_bridge
+          expect(mock_bridge).to receive(:app_is_installed?).and_return true
+          expect(device).to receive(:uninstall_app_on_simulator).with(app, run_loop_device, mock_bridge).and_return true
+
+          expect(device.send(:uninstall_app, app)).to be_truthy
+        end
+
+        it 'does nothing if the app is not installed' do
+          expect(app).to receive(:simulator_bundle?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
+          expect(device).to receive(:run_loop_bridge).and_return mock_bridge
+          expect(mock_bridge).to receive(:app_is_installed?).and_return false
+
+          expect(device.send(:uninstall_app, app)).to be_truthy
+        end
+      end
+
+      describe 'on devices' do
+        it 'raises an error if a matching device cannot be found' do
+          expect(app).to receive(:simulator_bundle?).and_return false
+          expect(app).to receive(:device_binary?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return nil
+          expect {
+            device.send(:uninstall_app, app)
+          }.to raise_error
+        end
+
+        it 'calls clear_app_on_physical_device' do
+          expect(app).to receive(:simulator_bundle?).and_return false
+          expect(app).to receive(:device_binary?).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return run_loop_device
+          expect(device).to receive(:uninstall_app_on_physical_device).with(app, run_loop_device.udid).and_return true
+
+          expect(device.send(:uninstall_app, app)).to be_truthy
+        end
+      end
+    end
   end
 end

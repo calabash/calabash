@@ -177,17 +177,17 @@ describe Calabash::Device do
     describe 'when running in an unmanaged environment' do
       before do
         allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:_uninstall_app).with(identifier)
+        expect(device).to receive(:_uninstall_app).with(application)
         expect(Calabash::Managed).not_to receive(:uninstall_app)
       end
 
-      it 'should invoke the impl with an identifier when given a path' do
+      it 'should invoke the impl with the given application when given an application' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.uninstall_app(application_path)
       end
 
-      it 'should invoke the impl with an identifier application when given an application' do
+      it 'should invoke the impl with the given application when given an application' do
         device.uninstall_app(application)
       end
     end
@@ -227,7 +227,7 @@ describe Calabash::Device do
         expect(Calabash::Managed).not_to receive(:clear_app_data)
       end
 
-      it 'should invoke the impl with an identifier when given a path' do
+      it 'should invoke the impl with the given application when given an application' do
         allow(Calabash::Application).to receive(:new).with(application_path).and_return(application)
 
         device.clear_app_data(application_path)
