@@ -1,4 +1,5 @@
 module Calabash
+  # Contains the iOS implementations of the Calabash APIs.
   module IOS
     require 'calabash'
     include Calabash
