@@ -555,6 +555,44 @@ module Calabash
       end
 
       # @!visibility private
+      def _uninstall_app(application)
+        if application.simulator_bundle?
+          @run_loop_device ||= Device.fetch_matching_simulator(identifier)
+
+          if @run_loop_device.nil?
+            raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
+          end
+
+          bridge = run_loop_bridge(@run_loop_device, application)
+          if bridge.app_is_installed?
+            uninstall_app_on_simulator(application, @run_loop_device, bridge)
+          else
+            true
+          end
+        elsif application.device_binary?
+          @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
+
+          if @run_loop_device.nil?
+            raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
+          end
+
+          uninstall_app_on_physical_device(application, @run_loop_device.udid)
+        else
+          raise "Invalid application #{application} for iOS platform."
+        end
+      end
+
+      # @!visibility private
+      def uninstall_app_on_simulator(application, run_loop_device, bridge)
+        begin
+          bridge.uninstall
+          true
+        rescue e
+          raise "Could not uninstall #{application.identifier} on #{run_loop_device}: #{e}"
+        end
+      end
+
+      # @!visibility private
       def default_stop_app_parameters
         {
               :post_resign_active_delay => 0.4,

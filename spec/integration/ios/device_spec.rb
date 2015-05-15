@@ -75,4 +75,12 @@ describe Calabash::IOS::Device do
       device.clear_app_data(app)
     end
   end
+
+  describe '#uninstall_app' do
+    before { device.ensure_app_installed(app) }
+    it 'uninstalls the app from a simulator' do
+      device.uninstall_app(app)
+    end
+  end
+
 end
