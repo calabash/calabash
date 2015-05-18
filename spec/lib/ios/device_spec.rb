@@ -25,6 +25,12 @@ describe Calabash::IOS::Device do
     end.new
   end
 
+  let(:device_info) do
+    Class.new do
+      def simulator?; ; end
+    end.new
+  end
+
   before(:each) do
     allow(dummy_device).to receive(:http_client).and_return(dummy_http)
     allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
@@ -241,8 +247,7 @@ describe Calabash::IOS::Device do
     end
 
     describe '#test_server_responding?' do
-      let(:dummy_http_response_class) {Class.new {def status; end}}
-      let(:dummy_http_response) {dummy_http_response_class.new}
+      let(:dummy_http_response) { Class.new {def status; end}.new }
 
       it 'should return false when a Calabash:HTTP::Error is raised' do
         allow(dummy_device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
@@ -266,9 +271,12 @@ describe Calabash::IOS::Device do
     end
 
     describe '#stop_app' do
-      it 'does nothing if server is not responding' do
+      before { device.instance_variable_set(:@runtime_info, {}) }
+
+      it 'clears the runtime_info if the server is not responding' do
         expect(device).to receive(:test_server_responding?).and_return(false)
         expect(device.stop_app).to be_truthy
+        expect(device.send(:runtime_info)).to be == nil
       end
 
       it "calls the server 'exit' route" do
@@ -279,6 +287,7 @@ describe Calabash::IOS::Device do
         expect(device.http_client).to receive(:get).with(request).and_return([])
 
         expect(device.stop_app).to be_truthy
+        expect(device.send(:runtime_info)).to be == nil
       end
 
       it 'raises an exception if server cannot be reached' do
@@ -286,6 +295,7 @@ describe Calabash::IOS::Device do
         expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
 
         expect { device.stop_app }.to raise_error
+        expect(device.send(:runtime_info)).to be == nil
       end
     end
 
@@ -522,9 +532,10 @@ describe Calabash::IOS::Device do
       device_info = {:device => :info}
       expect(device).to receive(:ensure_test_server_ready).and_return true
       expect(device).to receive(:fetch_device_info).and_return device_info
-      expect(device).to receive(:extract_device_info!).with(device_info).and_return true
+      expect(device).to receive(:new_device_runtime_info).with(device_info).and_return device_info
 
       expect(device.send(:wait_for_server_to_start)).to be_truthy
+      expect(device.send(:runtime_info)).to be == device_info
     end
 
     describe '#expect_app_installed_on_simulator' do
@@ -693,6 +704,64 @@ describe Calabash::IOS::Device do
           expect(device).to receive(:uninstall_app_on_physical_device).with(app, run_loop_device.udid).and_return true
 
           expect(device.send(:uninstall_app, app)).to be_truthy
+        end
+      end
+    end
+
+    describe '#fetch_device_info' do
+      let(:dummy_http_response) { Class.new {def body; '[]'; end}.new }
+      let(:request) { Calabash::HTTP::Request.new('version') }
+
+      before do
+        expect(device).to receive(:request_factory).with('version').and_return(request)
+        expect(device.http_client).to receive(:get).with(request).and_return dummy_http_response
+      end
+
+      it 'raises an error if response cannot be parsed to JSON' do
+        expect(JSON).to receive(:parse).with('[]').and_raise
+        expect {
+          device.send(:fetch_device_info)
+        }.to raise_error
+      end
+
+      it 'parses the body of the response to a ruby object' do
+        expect(device.send(:fetch_device_info)).to be == []
+      end
+    end
+
+    describe '#method_missing' do
+      describe 'runtime_info is nil' do
+        it 'and runtime_info implements the method' do
+          device.instance_variable_set(:@runtime_info, nil)
+          expect do
+            device.simulator?
+          end.to raise_error
+        end
+
+        it 'and runtime_info and self does not implement the method' do
+          device.instance_variable_set(:@runtime_info, nil)
+          expect do
+            device.send(:unknown_method)
+          end.to raise_error
+        end
+      end
+
+      describe '#runtime_info is non-nil' do
+        describe 'forwarding the method to runtime_info' do
+          it 'raises an error when the runtime_info method raises an error' do
+            device.instance_variable_set(:@runtime_info, device_info)
+            expect(device_info).to receive(:simulator?).and_raise ArgumentError
+            expect {
+              expect(device.send(:simulator?))
+            }.to raise_error ArgumentError
+
+          end
+
+          it 'calls and returns the runtime_info method' do
+            device.instance_variable_set(:@runtime_info, device_info)
+            expect(device_info).to receive(:simulator?).and_return 42
+            expect(device.send(:simulator?)).to be == 42
+          end
         end
       end
     end

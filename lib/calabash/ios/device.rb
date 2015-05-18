@@ -4,6 +4,8 @@ module Calabash
     # An iOS Device is an iOS Simulator or physical device.
     class Device < ::Calabash::Device
 
+      require 'calabash/ios/device_runtime_info'
+
       # @todo Should these be public?
       # @todo If public, document!
       attr_reader :run_loop
@@ -378,6 +380,38 @@ module Calabash
 
       private
 
+      attr_reader :runtime_info
+
+      # @!visibility private
+      def method_missing(name, *args, &block)
+        # Need to check if runtime_info instance responds to a method, but
+        # runtime_info will be nil until start_app has finished.
+        #
+        # Tried to use Forwardable, but the machinery for detecting the state
+        # @runtime_info is nil was complicated.  It is also not clear yet if
+        # will need/want to move the physical-device hooks out of this class
+        # and to a delegate.
+        #
+        # This strategy requires that DeviceRuntimeInfo
+        local_runtime_info = runtime_info || DeviceRuntimeInfo.new({})
+
+        if !local_runtime_info.methods.include?(name) && !methods.include?(name)
+          super(name, *args, &block)
+        end
+
+        if runtime_info.nil?
+          logger.log("The method '#{name}' is not available to IOS::Device until", :info)
+          logger.log('the app has been launched with Calabash start_app.', :info)
+          raise "The method '#{name}' can only be called after the app has been launched"
+        end
+
+        begin
+          runtime_info.send(name, *args, &block)
+        rescue => e
+          raise  e.class, e
+        end
+      end
+
       # @!visibility private
       def _start_app(application, options={})
         if application.simulator_bundle?
@@ -440,19 +474,28 @@ module Calabash
       def wait_for_server_to_start
         ensure_test_server_ready
         device_info = fetch_device_info
-        extract_device_info!(device_info)
+        @runtime_info = new_device_runtime_info(device_info)
+      end
+
+      # @!visibility private
+      def new_device_runtime_info(device_info)
+        DeviceRuntimeInfo.new(device_info)
       end
 
       # @!visibility private
       def _stop_app
-        return true unless test_server_responding?
-
-        parameters = default_stop_app_parameters
-
         begin
-          http_client.get(request_factory('exit', parameters))
+          if test_server_responding?
+            parameters = default_stop_app_parameters
+            request = request_factory('exit', parameters)
+            http_client.get(request)
+          else
+            true
+          end
         rescue Calabash::HTTP::Error => e
           raise "Could send 'exit' to the app: #{e}"
+        ensure
+          @runtime_info = nil
         end
       end
 
@@ -730,6 +773,17 @@ module Calabash
           end
         end
         default
+      end
+
+      # @!visibility private
+      def fetch_device_info
+        request = request_factory('version')
+        body = http_client.get(request).body
+        begin
+          JSON.parse(body)
+        rescue TypeError, JSON::ParserError => _
+          raise "Could not parse response '#{body}'; the app has probably crashed"
+        end
       end
     end
   end
