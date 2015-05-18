@@ -4,7 +4,7 @@ module Calabash
     # An iOS Device is an iOS Simulator or physical device.
     class Device < ::Calabash::Device
 
-      require 'calabash/ios/device_runtime_info'
+      require 'calabash/ios/runtime_attributes'
 
       # @todo Should these be public?
       # @todo If public, document!
@@ -380,7 +380,7 @@ module Calabash
 
       private
 
-      attr_reader :runtime_info
+      attr_reader :runtime_attributes
 
       # @!visibility private
       def method_missing(name, *args, &block)
@@ -388,25 +388,25 @@ module Calabash
         # runtime_info will be nil until start_app has finished.
         #
         # Tried to use Forwardable, but the machinery for detecting the state
-        # @runtime_info is nil was complicated.  It is also not clear yet if
+        # @runtime_attributes is nil was complicated.  It is also not clear yet if
         # will need/want to move the physical-device hooks out of this class
         # and to a delegate.
         #
         # This strategy requires that DeviceRuntimeInfo
-        local_runtime_info = runtime_info || DeviceRuntimeInfo.new({})
+        local_runtime_info = runtime_attributes || RuntimeAttributes.new(nil)
 
         if !local_runtime_info.methods.include?(name) && !methods.include?(name)
           super(name, *args, &block)
         end
 
-        if runtime_info.nil?
+        if runtime_attributes.nil?
           logger.log("The method '#{name}' is not available to IOS::Device until", :info)
           logger.log('the app has been launched with Calabash start_app.', :info)
           raise "The method '#{name}' can only be called after the app has been launched"
         end
 
         begin
-          runtime_info.send(name, *args, &block)
+          runtime_attributes.send(name, *args, &block)
         rescue => e
           raise  e.class, e
         end
@@ -473,13 +473,13 @@ module Calabash
       # @!visibility private
       def wait_for_server_to_start
         ensure_test_server_ready
-        device_info = fetch_device_info
-        @runtime_info = new_device_runtime_info(device_info)
+        device_info = fetch_runtime_attributes
+        @runtime_attributes = new_device_runtime_info(device_info)
       end
 
       # @!visibility private
       def new_device_runtime_info(device_info)
-        DeviceRuntimeInfo.new(device_info)
+        RuntimeAttributes.new(device_info)
       end
 
       # @!visibility private
@@ -495,7 +495,7 @@ module Calabash
         rescue Calabash::HTTP::Error => e
           raise "Could send 'exit' to the app: #{e}"
         ensure
-          @runtime_info = nil
+          @runtime_attributes = nil
         end
       end
 
@@ -776,7 +776,7 @@ module Calabash
       end
 
       # @!visibility private
-      def fetch_device_info
+      def fetch_runtime_attributes
         request = request_factory('version')
         body = http_client.get(request).body
         begin
