@@ -161,6 +161,19 @@ describe Calabash::IOS::Device do
     end
 
     describe 'abstract methods' do
+
+      it '#app_installed_on_physical_device?' do
+        expect {
+          device.app_installed_on_physical_device?('app', 'device id')
+        }.to raise_error Calabash::AbstractMethodError
+      end
+
+      it '#clear_app_data_on_physical_device' do
+        expect {
+          device.clear_app_data_on_physical_device('app', 'device id')
+        }.to raise_error Calabash::AbstractMethodError
+      end
+
       it '#install_app_on_physical_device' do
         expect {
           device.install_app_on_physical_device('app', 'device id')
