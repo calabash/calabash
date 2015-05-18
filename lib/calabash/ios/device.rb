@@ -545,6 +545,12 @@ module Calabash
       end
 
       # @!visibility private
+      def _enter_text(text)
+        # @todo implement this
+        raise 'ni'
+      end
+
+      # @!visibility private
       def clear_app_data_on_simulator(application, run_loop_device, bridge)
         begin
           bridge.reset_app_sandbox

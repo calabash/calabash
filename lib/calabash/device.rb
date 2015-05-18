@@ -188,6 +188,12 @@ module Calabash
       _flick(query, from, to, {duration: 0.5}.merge(options))
     end
 
+    # Enter `text` into the currently focused view.
+    # @see Calabash::Text#enter_text
+    def enter_text(text)
+      _enter_text(text)
+    end
+
     private
 
     # @!visibility private
@@ -280,6 +286,11 @@ module Calabash
     # @!visibility private
     def _flick(query, from, to, options={})
         abstract_method!
+    end
+
+    # @!visibility private
+    def _enter_text(text)
+      abstract_method!
     end
   end
 end
