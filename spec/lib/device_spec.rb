@@ -239,31 +239,6 @@ describe Calabash::Device do
     end
   end
 
-  describe '#port_forward' do
-    let(:host_port) {:my_host_port}
-
-    describe 'when running in a managed environment' do
-      it 'should invoke the managed impl' do
-        allow(Calabash::Managed).to receive(:managed?).and_return(true)
-        expect(device).not_to receive(:_port_forward)
-        expect(Calabash::Managed).to receive(:port_forward).with(host_port, device)
-
-        device.port_forward(host_port)
-      end
-    end
-
-    describe 'when running in an unmanaged environment' do
-      it 'should invoke the impl' do
-        allow(Calabash::Managed).to receive(:managed?).and_return(false)
-        expect(device).to receive(:port_forward).with(host_port)
-        expect(Calabash::Managed).not_to receive(:port_forward)
-
-        device.port_forward(host_port)
-      end
-    end
-  end
-
-
   describe '#_start_app' do
     it 'should have an abstract implementation' do
       app = :my_app
@@ -315,14 +290,6 @@ describe Calabash::Device do
       arg = 'my-arg'
 
       expect{device.send(:_screenshot, arg)}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_port_forward' do
-    it 'should have an abstract implementation' do
-      arg = 'my-arg'
-
-      expect{device.send(:_port_forward, arg)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 

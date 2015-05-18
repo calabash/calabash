@@ -60,6 +60,15 @@ module Calabash
         end
       end
 
+      # Do not modify
+      def port_forward(host_port)
+        if Managed.managed?
+          Managed.port_forward(host_port, self)
+        else
+          _port_forward(host_port)
+        end
+      end
+
       private
 
       def _start_app(application, options={})
