@@ -172,10 +172,36 @@ describe Calabash::IOS::Device do
           device.ensure_app_installed_on_physical_device('app', 'device id')
         }.to raise_error Calabash::AbstractMethodError
       end
+
+      it '#uninstall_app_on_physical_device' do
+        expect {
+          device.uninstall_app_on_physical_device('app', 'device id')
+        }.to raise_error Calabash::AbstractMethodError
+      end
     end
 
     describe '#start_app' do
       let(:options) { {} }
+
+      describe '#to_s' do
+        it 'returns a string with identifier if @run_loop_device is nil' do
+          device.instance_variable_set(:@run_loop_device, nil)
+          expect(device.to_s).to be == "#<iOS Device 'my-identifier'>"
+        end
+
+        it 'calls run_loop_device.to_s if @run_loop_device is non-nil' do
+          expect(run_loop_device).to receive(:to_s).and_return 'device'
+          device.instance_variable_set(:@run_loop_device, run_loop_device)
+          expect(device.to_s).to be == 'device'
+        end
+      end
+
+      describe '#inspect' do
+        it 'calls to_s' do
+          expect(device).to receive(:to_s).and_return 'device'
+          expect(device.inspect).to be == 'device'
+        end
+      end
 
       it 'raises an error if app is not an .ipa or .app' do
         expect(app).to receive(:simulator_bundle?).and_return false

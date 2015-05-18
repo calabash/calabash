@@ -131,12 +131,16 @@ module Calabash
 
       # @!visibility private
       def to_s
-        run_loop_device.to_s
+        if @run_loop_device
+          run_loop_device.to_s
+        else
+          "#<iOS Device '#{identifier}'>"
+        end
       end
 
       # @!visibility private
       def inspect
-        run_loop_device.to_s
+        to_s
       end
 
       # Calabash cannot manage apps on physical devices.  There are third-party
