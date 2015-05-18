@@ -101,6 +101,30 @@ eos
     end
   end
 
+  describe '#port_forward' do
+    let(:host_port) {:my_host_port}
+
+    describe 'when running in a managed environment' do
+      it 'should invoke the managed impl' do
+        allow(Calabash::Managed).to receive(:managed?).and_return(true)
+        expect(dummy_device).not_to receive(:_port_forward)
+        expect(Calabash::Managed).to receive(:port_forward).with(host_port, dummy_device)
+
+        dummy_device.port_forward(host_port)
+      end
+    end
+
+    describe 'when running in an unmanaged environment' do
+      it 'should invoke the impl' do
+        allow(Calabash::Managed).to receive(:managed?).and_return(false)
+        expect(dummy_device).to receive(:port_forward).with(host_port)
+        expect(Calabash::Managed).not_to receive(:port_forward)
+
+        dummy_device.port_forward(host_port)
+      end
+    end
+  end
+
   describe '#_port_forward' do
     it 'should use adb to forward the host port to the server port' do
       host_port = 12345

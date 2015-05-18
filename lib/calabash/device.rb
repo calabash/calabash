@@ -108,15 +108,6 @@ module Calabash
       end
     end
 
-    # Do not modify
-    def port_forward(host_port)
-      if Managed.managed?
-        Managed.port_forward(host_port, self)
-      else
-        _port_forward(host_port)
-      end
-    end
-
     class EnsureTestServerReadyTimeoutError < RuntimeError; end
 
     # Ensures the test server is ready
@@ -222,11 +213,6 @@ module Calabash
 
     # @!visibility private
     def _clear_app_data(application)
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _port_forward(host_port)
       abstract_method!
     end
 
