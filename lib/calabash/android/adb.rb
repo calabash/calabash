@@ -43,7 +43,7 @@ module Calabash
             end
           end
 
-          t.join
+          t.join if t
         end
       end
 
