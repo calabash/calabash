@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+
+gem 'calabash', :path => '../../'
+
+gem 'pry'
+gem 'pry-nav'

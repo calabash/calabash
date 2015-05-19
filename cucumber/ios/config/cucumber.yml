@@ -1,0 +1,19 @@
+<%
+
+APP = File.join(File.dirname(__FILE__), "..", "..", "spec", "resources", "ios", "CalSmoke-cal.app")
+
+if ENV["USER"] == "jenkins"
+  formatter = "progress"
+else
+  formatter = "Slowhandcuke::Formatter"
+end
+
+%>
+
+verbose: CAL_DEBUG=1
+formatter: -f <%= formatter %>
+
+app:           CAL_APP="<%= APP %>"
+
+simulator:     -p app -p formatter
+default:       -p simulator
