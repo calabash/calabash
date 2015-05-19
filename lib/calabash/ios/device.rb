@@ -89,7 +89,7 @@ module Calabash
       # @see Calabash::IOS::Device#default_physical_device_identifier
       #
       # @return [String] An instruments ready identifier based on whether the
-      #  application is for a simulator or phyical device.
+      #  application is for a simulator or physical device.
       # @raise [RuntimeError] If the application is not a .app or .ipa.
       def self.default_identifier_for_application(application)
         if application.simulator_bundle?
@@ -143,6 +143,149 @@ module Calabash
       # @!visibility private
       def inspect
         to_s
+      end
+
+      # The device family of this device.
+      #
+      # @example
+      #  # will be one of
+      #  iPhone
+      #  iPod
+      #  iPad
+      #
+      # @return [String] the device family
+      # @raise [RuntimeError] If the app has not been launched.
+      def device_family
+        # For iOS Simulators, this can be obtained by asking the run_loop_device
+        # and analyzing the name of the device.  This  does not require the app
+        # to be launched, but it is expensive (takes many seconds).
+
+        # For physical devices, this can only be obtained using a third-party
+        # tool like ideviceinfo or asking the server.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.device_family
+      end
+
+      # The form factor of the device under test.
+      #
+      # Will be one of:
+      #
+      #   * ipad
+      #   * iphone 4in
+      #   * iphone 3.5in
+      #   * iphone 6
+      #   * iphone 6+
+      #   * unknown # if no information can be found.
+      #
+      # @note iPod is not on this list for a reason!  An iPod has an iPhone
+      #  form factor. If you need to detect an iPod use `device_family`. Also
+      #  note that there are no iPod simulators.
+      #
+      # @return [String] The form factor of the device under test.
+      # @raise [RuntimeError] If the app has not been launched.
+      def form_factor
+        # For iOS Simulators, this can be obtained by asking the run_loop_device
+        # and analyzing the name of the device.  This  does not require the app
+        # to be launched, but it is expensive (takes many seconds).
+
+        # For physical devices, this can only be obtained using a third-party
+        # tool like ideviceinfo or asking the server.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.form_factor
+      end
+
+      # @!visibility private
+      # The iOS version on the test device.
+      #
+      # @return [RunLoop::Version] The major.minor.patch[.pre\d] version of the
+      #   iOS version on the device.
+      def ios_version
+        # Can be obtain by asking for a device's run_loop_device. This does not
+        # require the app to be launched, but it is expensive
+        # (takes many seconds).  run_loop_device is memoized so the expense
+        # is only incurred 1x per device instance.
+
+        # Can also be obtained by asking the server after the app is launched
+        # on the device which would be cheaper.
+        run_loop_device.version
+      end
+
+      # Is the app that is running an iPhone-only app emulated on an iPad?
+      #
+      # @note If the app is running in emulation mode, there will be a 1x or 2x
+      #   scale button visible on the iPad.
+      #
+      # @return [Boolean] true if the app running on this devices is an
+      #   iPhone-only app emulated on an iPad
+      # @raise [RuntimeError] If the app has not been launched.
+      def iphone_app_emulated_on_ipad?
+        # It is possible to find this information on iOS Simulators without
+        # launching the app.  It is not possible to find this information
+        # when targeting a physical device unless a third-party tool is used.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.iphone_app_emulated_on_ipad?
+      end
+
+      # Is this device a physical device?
+      # @return [Boolean] Returns true if this device is a physical device.
+      def physical_device?
+        # Can be obtain by asking for a device's run_loop_device. This does not
+        # require the app to be launched, but it is expensive
+        # (takes many seconds).  run_loop_device is memoized so the expense
+        # is only incurred 1x per device instance.
+
+        # Can also be obtained by asking the server after the app is launched
+        # on the device which would be cheaper.
+        run_loop_device.physical_device?
+      end
+
+      # Information about the runtime screen dimensions of the app under test.
+      #
+      # This is a hash of form:
+      #
+      # ```
+      #    {
+      #      :sample => 1,
+      #      :height => 1334,
+      #      :width => 750,
+      #      :scale" => 2
+      #    }
+      # ```
+      #
+      # @return [Hash] screen dimensions, scale and down/up sampling fraction.
+      # @raise [RuntimeError] If the app has not been launched.
+      def screen_dimensions
+        # This can only be obtained at runtime because of iOS scaling and
+        # sampling.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.screen_dimensions
+      end
+
+      # The version of the embedded Calabash server that is running in the
+      # app under test on this device.
+      #
+      # @return [RunLoop::Version] The major.minor.patch[.pre\d] version of the
+      #   embedded Calabash server
+      # @raise [RuntimeError] If the app has not been launched.
+      def server_version
+        # It is possible to find this information without launching the app but
+        # it's probably best to ask the server for this information after the
+        # app has launched.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.server_version
+      end
+
+      # Is this device a simulator?
+      # @return [Boolean] Returns true if this device is a simulator.
+      def simulator?
+        # Can be obtain by asking for a device's run_loop_device. This does not
+        # require the app to be launched, but it is expensive
+        # (takes many seconds).  run_loop_device is memoized so the expense
+        # is only incurred 1x per device instance.
+
+        # Can also be obtained by asking the server after the app is launched
+        # on the device which would be cheaper.
+        run_loop_device.simulator?
       end
 
       # Calabash cannot manage apps on physical devices.  There are third-party
@@ -381,36 +524,6 @@ module Calabash
       private
 
       attr_reader :runtime_attributes
-
-      # @!visibility private
-      def method_missing(name, *args, &block)
-        # Need to check if runtime_info instance responds to a method, but
-        # runtime_info will be nil until start_app has finished.
-        #
-        # Tried to use Forwardable, but the machinery for detecting the state
-        # @runtime_attributes is nil was complicated.  It is also not clear yet if
-        # will need/want to move the physical-device hooks out of this class
-        # and to a delegate.
-        #
-        # This strategy requires that DeviceRuntimeInfo
-        local_runtime_info = runtime_attributes || RuntimeAttributes.new(nil)
-
-        if !local_runtime_info.methods.include?(name) && !methods.include?(name)
-          super(name, *args, &block)
-        end
-
-        if runtime_attributes.nil?
-          logger.log("The method '#{name}' is not available to IOS::Device until", :info)
-          logger.log('the app has been launched with Calabash start_app.', :info)
-          raise "The method '#{name}' can only be called after the app has been launched"
-        end
-
-        begin
-          runtime_attributes.send(name, *args, &block)
-        rescue => e
-          raise  e.class, e
-        end
-      end
 
       # @!visibility private
       def _start_app(application, options={})
@@ -784,6 +897,16 @@ module Calabash
         rescue TypeError, JSON::ParserError => _
           raise "Could not parse response '#{body}'; the app has probably crashed"
         end
+      end
+
+      # @!visibility private
+      def expect_runtime_attributes_available(method_name)
+        if runtime_attributes.nil?
+          logger.log("The method '#{method_name}' is not available to IOS::Device until", :info)
+          logger.log('the app has been launched with Calabash start_app.', :info)
+          raise "The method '#{method_name}' can only be called after the app has been launched"
+        end
+        true
       end
     end
   end

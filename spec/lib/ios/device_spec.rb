@@ -28,6 +28,11 @@ describe Calabash::IOS::Device do
   let(:runtime_attrs) do
     Class.new do
       def simulator?; ; end
+      def device_family; ; end
+      def form_factor; ;  end
+      def iphone_app_emulated_on_ipad?; ; end
+      def server_version; ; end
+      def screen_dimensions; ; end
     end.new
   end
 
@@ -729,41 +734,115 @@ describe Calabash::IOS::Device do
       end
     end
 
-    describe '#method_missing' do
-      describe 'runtime_info is nil' do
-        it 'and runtime_info implements the method' do
-          device.instance_variable_set(:@runtime_attributes, nil)
-          expect do
-            device.simulator?
-          end.to raise_error
-        end
-
-        it 'and runtime_info and self does not implement the method' do
-          device.instance_variable_set(:@runtime_attributes, nil)
-          expect do
-            device.send(:unknown_method)
-          end.to raise_error
-        end
+    describe '#expect_runtime_attributes_available' do
+      it 'raises an error when runtime_attributes are not available' do
+        device.instance_variable_set(:@runtime_attributes, nil)
+        expect {
+          device.send(:expect_runtime_attributes_available, 'foo')
+        }.to raise_error
       end
 
-      describe '#runtime_info is non-nil' do
-        describe 'forwarding the method to runtime_info' do
-          it 'raises an error when the runtime_info method raises an error' do
-            device.instance_variable_set(:@runtime_attributes, runtime_attrs)
-            expect(runtime_attrs).to receive(:simulator?).and_raise ArgumentError
-            expect {
-              expect(device.send(:simulator?))
-            }.to raise_error ArgumentError
-
-          end
-
-          it 'calls and returns the runtime_info method' do
-            device.instance_variable_set(:@runtime_attributes, runtime_attrs)
-            expect(runtime_attrs).to receive(:simulator?).and_return 42
-            expect(device.send(:simulator?)).to be == 42
-          end
-        end
+      it 'returns true if runtime_attributes are available' do
+        device.instance_variable_set(:@runtime_attributes, 'anything')
+        expect(device.send(:expect_runtime_attributes_available, 'foo')).to be == true
       end
+    end
+
+    describe '#device_family' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.device_family
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:device_family).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.device_family).to be == 'something'
+      end
+    end
+
+    describe '#form_factor' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.form_factor
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:form_factor).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.form_factor).to be == 'something'
+      end
+    end
+
+    it '#ios_version' do
+      expect(device).to receive(:run_loop_device).and_return run_loop_device
+      expect(device.ios_version).to be == run_loop_device.version
+    end
+
+    describe '#iphone_app_emulated_on_ipad?' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.iphone_app_emulated_on_ipad?
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:iphone_app_emulated_on_ipad?).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.iphone_app_emulated_on_ipad?).to be == 'something'
+      end
+    end
+
+    it '#physical_device?' do
+      expect(device).to receive(:run_loop_device).and_return run_loop_device
+      expect(run_loop_device).to receive(:physical_device?).and_return 'something'
+      expect(device.physical_device?).to be == 'something'
+    end
+
+    describe '#screen_dimensions' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.screen_dimensions
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:screen_dimensions).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.screen_dimensions).to be == 'something'
+      end
+    end
+
+    describe '#server_version' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.server_version
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:server_version).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.server_version).to be == 'something'
+      end
+    end
+
+    it '#simulator>' do
+      expect(device).to receive(:run_loop_device).and_return run_loop_device
+      expect(run_loop_device).to receive(:simulator?).and_return 'something'
+      expect(device.simulator?).to be == 'something'
     end
   end
 end
