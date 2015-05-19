@@ -14,8 +14,6 @@ module Calabash
       Calabash.send(:included, base)
     end
 
-    # Include old methods
-    require_old File.join('calabash-cucumber', 'lib', 'calabash-cucumber')
     include Calabash::IOS::Operations
 
     require 'calabash/ios/environment'

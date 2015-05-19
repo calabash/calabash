@@ -25,6 +25,17 @@ describe Calabash::IOS::Device do
     end.new
   end
 
+  let(:runtime_attrs) do
+    Class.new do
+      def simulator?; ; end
+      def device_family; ; end
+      def form_factor; ;  end
+      def iphone_app_emulated_on_ipad?; ; end
+      def server_version; ; end
+      def screen_dimensions; ; end
+    end.new
+  end
+
   before(:each) do
     allow(dummy_device).to receive(:http_client).and_return(dummy_http)
     allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path)
@@ -241,8 +252,7 @@ describe Calabash::IOS::Device do
     end
 
     describe '#test_server_responding?' do
-      let(:dummy_http_response_class) {Class.new {def status; end}}
-      let(:dummy_http_response) {dummy_http_response_class.new}
+      let(:dummy_http_response) { Class.new {def status; end}.new }
 
       it 'should return false when a Calabash:HTTP::Error is raised' do
         allow(dummy_device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
@@ -266,9 +276,12 @@ describe Calabash::IOS::Device do
     end
 
     describe '#stop_app' do
-      it 'does nothing if server is not responding' do
+      before { device.instance_variable_set(:@runtime_attributes, {}) }
+
+      it 'clears the runtime_info if the server is not responding' do
         expect(device).to receive(:test_server_responding?).and_return(false)
         expect(device.stop_app).to be_truthy
+        expect(device.send(:runtime_attributes)).to be == nil
       end
 
       it "calls the server 'exit' route" do
@@ -279,6 +292,7 @@ describe Calabash::IOS::Device do
         expect(device.http_client).to receive(:get).with(request).and_return([])
 
         expect(device.stop_app).to be_truthy
+        expect(device.send(:runtime_attributes)).to be == nil
       end
 
       it 'raises an exception if server cannot be reached' do
@@ -286,6 +300,7 @@ describe Calabash::IOS::Device do
         expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
 
         expect { device.stop_app }.to raise_error
+        expect(device.send(:runtime_attributes)).to be == nil
       end
     end
 
@@ -519,12 +534,13 @@ describe Calabash::IOS::Device do
     end
 
     it '#wait_for_server_to_start' do
-      device_info = {:device => :info}
+      runtime_attrs = {:device => :info}
       expect(device).to receive(:ensure_test_server_ready).and_return true
-      expect(device).to receive(:fetch_device_info).and_return device_info
-      expect(device).to receive(:extract_device_info!).with(device_info).and_return true
+      expect(device).to receive(:fetch_runtime_attributes).and_return runtime_attrs
+      expect(device).to receive(:new_device_runtime_info).with(runtime_attrs).and_return runtime_attrs
 
       expect(device.send(:wait_for_server_to_start)).to be_truthy
+      expect(device.send(:runtime_attributes)).to be == runtime_attrs
     end
 
     describe '#expect_app_installed_on_simulator' do
@@ -695,6 +711,138 @@ describe Calabash::IOS::Device do
           expect(device.send(:uninstall_app, app)).to be_truthy
         end
       end
+    end
+
+    describe '#fetch_runtime_attributes' do
+      let(:dummy_http_response) { Class.new {def body; '[]'; end}.new }
+      let(:request) { Calabash::HTTP::Request.new('version') }
+
+      before do
+        expect(device).to receive(:request_factory).with('version').and_return(request)
+        expect(device.http_client).to receive(:get).with(request).and_return dummy_http_response
+      end
+
+      it 'raises an error if response cannot be parsed to JSON' do
+        expect(JSON).to receive(:parse).with('[]').and_raise
+        expect {
+          device.send(:fetch_runtime_attributes)
+        }.to raise_error
+      end
+
+      it 'parses the body of the response to a ruby object' do
+        expect(device.send(:fetch_runtime_attributes)).to be == []
+      end
+    end
+
+    describe '#expect_runtime_attributes_available' do
+      it 'raises an error when runtime_attributes are not available' do
+        device.instance_variable_set(:@runtime_attributes, nil)
+        expect {
+          device.send(:expect_runtime_attributes_available, 'foo')
+        }.to raise_error
+      end
+
+      it 'returns true if runtime_attributes are available' do
+        device.instance_variable_set(:@runtime_attributes, 'anything')
+        expect(device.send(:expect_runtime_attributes_available, 'foo')).to be == true
+      end
+    end
+
+    describe '#device_family' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.device_family
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:device_family).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.device_family).to be == 'something'
+      end
+    end
+
+    describe '#form_factor' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.form_factor
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:form_factor).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.form_factor).to be == 'something'
+      end
+    end
+
+    it '#ios_version' do
+      expect(device).to receive(:run_loop_device).and_return run_loop_device
+      expect(device.ios_version).to be == run_loop_device.version
+    end
+
+    describe '#iphone_app_emulated_on_ipad?' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.iphone_app_emulated_on_ipad?
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:iphone_app_emulated_on_ipad?).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.iphone_app_emulated_on_ipad?).to be == 'something'
+      end
+    end
+
+    it '#physical_device?' do
+      expect(device).to receive(:run_loop_device).and_return run_loop_device
+      expect(run_loop_device).to receive(:physical_device?).and_return 'something'
+      expect(device.physical_device?).to be == 'something'
+    end
+
+    describe '#screen_dimensions' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.screen_dimensions
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:screen_dimensions).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.screen_dimensions).to be == 'something'
+      end
+    end
+
+    describe '#server_version' do
+      it 'raises an error if runtime_attributes are not set' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_raise
+        expect do
+          device.server_version
+        end.to raise_error
+      end
+
+      it 'asks runtime_attributes for the value' do
+        expect(device).to receive(:expect_runtime_attributes_available).and_return true
+        expect(runtime_attrs).to receive(:server_version).and_return 'something'
+        expect(device).to receive(:runtime_attributes).and_return runtime_attrs
+        expect(device.server_version).to be == 'something'
+      end
+    end
+
+    it '#simulator>' do
+      expect(device).to receive(:run_loop_device).and_return run_loop_device
+      expect(run_loop_device).to receive(:simulator?).and_return 'something'
+      expect(device.simulator?).to be == 'something'
     end
   end
 end
