@@ -2,9 +2,9 @@
 
 require File.join(File.dirname(__FILE__), 'lib', 'calabash', 'version')
 
-ruby_files = Dir.glob('{lib,bin}/**/*.rb')
+lib_files = Dir.glob('{lib,bin}/**/{.irbrc,*.{rb,feature,yml}}')
 doc_files =  ['README.md', 'LICENSE', 'CONTRIBUTING.md', 'VERSIONING.md']
-gem_files = ruby_files + doc_files
+gem_files = lib_files + doc_files
 
 Gem::Specification.new do |spec|
   spec.name          = 'calabash'
