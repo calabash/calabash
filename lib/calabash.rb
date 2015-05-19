@@ -17,6 +17,7 @@ module Calabash
   require 'calabash/screenshot'
   require 'calabash/gestures'
   require 'calabash/query'
+  require 'calabash/formatters/html'
 
   require 'calabash/patch'
   Calabash::Patch.apply_patches!
