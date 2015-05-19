@@ -14,12 +14,12 @@ module Calabash
       Calabash.send(:included, base)
     end
 
-    include Calabash::IOS::Operations
-
     require 'calabash/ios/environment'
     require 'calabash/ios/device'
     require 'calabash/ios/operations'
     require 'calabash/ios/server'
     require 'calabash/ios/application'
+
+    include Calabash::IOS::Operations
   end
 end
