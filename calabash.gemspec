@@ -39,7 +39,6 @@ Public License.}
   spec.executables   = 'calabash'
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'cucumber', '>= 1.3', '< 3.0'
   spec.add_dependency 'edn', '>= 1.0.6', '< 2.0'
   spec.add_dependency 'slowhandcuke', '>= 0.0.3', '< 1.0'
   spec.add_dependency 'geocoder', '>= 1.1.8', '< 2.0'
