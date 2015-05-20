@@ -14,6 +14,14 @@ module Calabash
       Calabash.send(:included, base)
     end
 
+    # @todo Should we restrict access to some class and modules?
+    #
+    # For example, I don't want casual users to have automatic access to the
+    # RuntimeInfo class or the MapRoute module.
+
+    require 'calabash/ios/runtime_attributes'
+    require 'calabash/ios/routes/map_route'
+
     require 'calabash/ios/environment'
     require 'calabash/ios/device'
     require 'calabash/ios/operations'
