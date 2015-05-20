@@ -4,7 +4,7 @@ module Calabash
     # An iOS Device is an iOS Simulator or physical device.
     class Device < ::Calabash::Device
 
-      require 'calabash/ios/runtime_attributes'
+      include Calabash::IOS::Routes::MapRoute
 
       # @todo Should these be public?
       # @todo If public, document!
