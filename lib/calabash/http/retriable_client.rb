@@ -12,7 +12,7 @@ module Calabash
         @retries = options.fetch(:retries, 5)
         @timeout = options.fetch(:timeout, 5)
         @interval = options.fetch(:interval, 0.5)
-        @logger = options[:logger] || Logger.new
+        @logger = options[:logger] || Calabash::Logger.new
       end
 
       def get(request, options={})
