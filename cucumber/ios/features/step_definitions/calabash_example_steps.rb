@@ -1,9 +1,19 @@
 Given(/^I see the (first|second) tab$/) do |tab|
-  puts 'passed!'
+  wait_for_view('tabBarButton')
+
+  expect(tab).to be == 'first'
+
+  wait_for_view 'first page'
+
+  # wait_for_elements_exist('tabBarButton')
+  # touch("tabBarButton index:#{tab.eql?('first') ? 0 : 1}")
+  # expected_view = tab.eql?('first') ? 'first page' : 'second page'
+  # wait_for_elements_exist("view marked:'#{expected_view}'")
+
 end
 
 Then(/^I type "([^"]*)"$/) do |text_to_type|
-  puts 'passed!'
+  query('textField', [{'setText' => text_to_type}])
 end
 
 When(/^I search for cell "([^"]*)" scrolling (up|down|left|right)$/) do |mark, direction|
