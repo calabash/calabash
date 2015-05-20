@@ -37,14 +37,12 @@ Public License.}
   spec.executables   = 'calabash'
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'cucumber', '~> 1.3'
-  spec.add_dependency 'calabash-common', '~> 0.0', '>= 0.0.1'
+  spec.add_dependency 'cucumber', '~> 1.3', '< 3.0'
   spec.add_dependency 'edn', '~> 1.0', '>= 1.0.6'
   spec.add_dependency 'slowhandcuke','~> 0.0', '>= 0.0.3'
   spec.add_dependency 'geocoder', '~> 1.1', '>= 1.1.8'
   spec.add_dependency 'httpclient', '~> 2.6'
   spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
-  spec.add_dependency 'sim_launcher', '< 0.5', '>= 0.4.13'
   spec.add_dependency 'run_loop', '>= 1.3.3', '< 2.0'
   spec.add_dependency 'retriable', '~> 2.0'
 
@@ -54,7 +52,6 @@ Public License.}
 
   # Run-loop should control the version.
   spec.add_dependency 'awesome_print'
-  spec.add_dependency 'CFPropertyList'
   spec.add_dependency 'json'
 
   # Development dependencies.
