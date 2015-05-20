@@ -52,7 +52,6 @@ Public License.}
 
   # Run-loop should control the version.
   spec.add_dependency 'awesome_print'
-  spec.add_dependency 'CFPropertyList'
   spec.add_dependency 'json'
 
   # Development dependencies.
