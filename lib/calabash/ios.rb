@@ -16,6 +16,7 @@ module Calabash
 
     require 'calabash/ios/runtime_attributes'
     require 'calabash/ios/routes/error'
+    require 'calabash/ios/routes/route_mixin'
     require 'calabash/ios/routes/map_route'
 
     require 'calabash/ios/environment'
