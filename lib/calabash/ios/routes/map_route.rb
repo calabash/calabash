@@ -13,7 +13,7 @@ module Calabash
 
         private
 
-        def parameters(query, method_name, *method_args)
+        def make_map_parameters(query, method_name, *method_args)
           {
                 :operation =>
                       {
@@ -33,7 +33,7 @@ module Calabash
         end
 
         def request(query, method_name, *method_args)
-          parameters = parameters(query, method_name, *method_args)
+          parameters = make_map_parameters(query, method_name, *method_args)
           data = data(parameters)
           Calabash::HTTP::Request.new('map', data)
         end

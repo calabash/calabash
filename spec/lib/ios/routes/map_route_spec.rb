@@ -26,7 +26,7 @@ describe Calabash::IOS::Routes::MapRoute do
                       },
                 :query => 'query'
           }
-    expect(route.send(:parameters,'query', 'name', 'args')).to be == expected
+    expect(route.send(:make_map_parameters, 'query', 'name', 'args')).to be == expected
   end
 
   describe '#data' do
@@ -45,7 +45,7 @@ describe Calabash::IOS::Routes::MapRoute do
   end
 
   it '#request' do
-    expect(route).to receive(:parameters).with('query', 'name', 'args').and_return({})
+    expect(route).to receive(:make_map_parameters).with('query', 'name', 'args').and_return({})
     expect(route).to receive(:data).with({}).and_return 'JSON'
     request = route.send(:request, 'query', 'name', 'args')
     expect(request).to be_a_kind_of Calabash::HTTP::Request
