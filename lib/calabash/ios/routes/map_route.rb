@@ -6,7 +6,7 @@ module Calabash
         class MapRouteError < StandardError; end
 
         def map_route(query, method_name, *method_args)
-          request = request(query, method_name, *method_args)
+          request = make_map_request(query, method_name, *method_args)
           response = post(request)
           handle_response(response, query)
         end
@@ -24,18 +24,13 @@ module Calabash
           }
         end
 
-        def data(parameters)
-          begin
-            JSON.generate(parameters)
-          rescue TypeError => e
-            raise MapRouteError, "#{e}: could not generate JSON from '#{parameters}'"
-          end
-        end
-
-        def request(query, method_name, *method_args)
+        def make_map_request(query, method_name, *method_args)
           parameters = make_map_parameters(query, method_name, *method_args)
-          data = data(parameters)
-          Calabash::HTTP::Request.new('map', data)
+          begin
+            Calabash::HTTP::Request.request('map', parameters)
+          rescue => e
+            raise MapRouteError, e
+          end
         end
 
         def post(request)

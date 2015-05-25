@@ -29,28 +29,22 @@ describe Calabash::IOS::Routes::MapRoute do
     expect(route.send(:make_map_parameters, 'query', 'name', 'args')).to be == expected
   end
 
-  describe '#data' do
-    let(:parameters) { {} }
-    it 'raises error if JSON.generate raises TypeError' do
-      expect(JSON).to receive(:generate).with(parameters).and_raise TypeError
+  describe '#make_map_request' do
+    it "makes a 'map' request" do
+      expect(route).to receive(:make_map_parameters).with('query', 'name', 'args').and_return({})
+      request = route.send(:make_map_request, 'query', 'name', 'args')
+      expect(request).to be_a_kind_of Calabash::HTTP::Request
+      expect(request.route).to be == 'map'
+      expect(request.params).to be == '{}'
+    end
+
+    it 'raises an error if a request cannot be made' do
+      expect(route).to receive(:make_map_parameters).with('query', 'name', 'args').and_return({})
+      expect(Calabash::HTTP::Request).to receive(:request).and_raise StandardError
       expect do
-        route.send(:data, parameters)
-      end.to raise_error
+        route.send(:make_map_request, 'query', 'name', 'args')
+      end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
     end
-
-    it 'it generates JSON from parameters' do
-      expect(JSON).to receive(:generate).with(parameters).and_return 'JSON'
-      expect(route.send(:data, parameters)).to be == 'JSON'
-    end
-  end
-
-  it '#request' do
-    expect(route).to receive(:make_map_parameters).with('query', 'name', 'args').and_return({})
-    expect(route).to receive(:data).with({}).and_return 'JSON'
-    request = route.send(:request, 'query', 'name', 'args')
-    expect(request).to be_a_kind_of Calabash::HTTP::Request
-    expect(request.route).to be == 'map'
-    expect(request.params).to be == 'JSON'
   end
 
   it '#post' do
