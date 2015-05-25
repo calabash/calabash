@@ -3,8 +3,6 @@ module Calabash
     module Routes
       module MapRoute
 
-        class MapRouteError < StandardError; end
-
         def map_route(query, method_name, *method_args)
           request = make_map_request(query, method_name, *method_args)
           response = post(request)

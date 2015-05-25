@@ -1,5 +1,7 @@
 describe Calabash::IOS::Routes::MapRoute do
 
+  let(:route_error) { Calabash::IOS::Routes::MapRouteError }
+
   let(:route) do
     Class.new do
       include Calabash::IOS::Routes::MapRoute
@@ -43,7 +45,7 @@ describe Calabash::IOS::Routes::MapRoute do
       expect(Calabash::HTTP::Request).to receive(:request).and_raise StandardError
       expect do
         route.send(:make_map_request, 'query', 'name', 'args')
-      end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+      end.to raise_error route_error
     end
   end
 
@@ -64,21 +66,21 @@ describe Calabash::IOS::Routes::MapRoute do
         expect(JSON).to receive(:parse).with(body).and_raise TypeError
         expect do
           route.send(:handle_response, response, 'query')
-        end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+        end.to raise_error route_error
       end
 
       it 'parsing body raises JSON::ParseError' do
         expect(JSON).to receive(:parse).with(body).and_raise JSON::ParserError
         expect do
           route.send(:handle_response, response, 'query')
-        end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+        end.to raise_error route_error
       end
 
       it 'parsed body outcome key value is not SUCCESS or FAILURE' do
         expect(JSON).to receive(:parse).with(body).and_return({'outcome' => 'invalid value'})
         expect do
           route.send(:handle_response, response, 'query')
-        end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+        end.to raise_error route_error
       end
     end
 
@@ -92,10 +94,10 @@ describe Calabash::IOS::Routes::MapRoute do
     it "calls 'failure' when outcome is 'FAILURE'" do
       hash = {'outcome' => 'FAILURE'}
       expect(JSON).to receive(:parse).with(body).and_return(hash)
-      expect(route).to receive(:failure).with(hash, 'query').and_raise Calabash::IOS::Routes::MapRoute::MapRouteError
+      expect(route).to receive(:failure).with(hash, 'query').and_raise route_error
       expect do
         route.send(:handle_response, response, 'query')
-      end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+      end.to raise_error route_error
     end
   end
 
@@ -103,23 +105,23 @@ describe Calabash::IOS::Routes::MapRoute do
   it '#failure' do
     expect do
       route.send(:failure, {}, 'query')
-    end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+    end.to raise_error route_error
 
     expect do
       route.send(:failure, {'reason' => 'reason'}, 'query')
-    end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+    end.to raise_error route_error
 
     expect do
       route.send(:failure, {'reason' => ''}, 'query')
-    end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+    end.to raise_error route_error
 
     expect do
       route.send(:failure, {'details' => 'details'}, 'query')
-    end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+    end.to raise_error route_error
 
     expect do
       route.send(:failure, {'details' => ''}, 'query')
-    end.to raise_error Calabash::IOS::Routes::MapRoute::MapRouteError
+    end.to raise_error route_error
   end
 
   it '#success' do
