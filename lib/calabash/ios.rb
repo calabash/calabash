@@ -23,6 +23,7 @@ module Calabash
     require 'calabash/ios/routes/map_route'
 
     require 'calabash/ios/environment'
+    require 'calabash/ios/physical_device_mixin'
     require 'calabash/ios/device'
     require 'calabash/ios/operations'
     require 'calabash/ios/server'
