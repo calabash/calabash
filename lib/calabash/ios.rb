@@ -18,6 +18,7 @@ module Calabash
     require 'calabash/ios/routes/error'
     require 'calabash/ios/routes/route_mixin'
     require 'calabash/ios/routes/map_route'
+    require 'calabash/ios/routes/uia_route'
 
     require 'calabash/ios/environment'
     require 'calabash/ios/physical_device_mixin'
