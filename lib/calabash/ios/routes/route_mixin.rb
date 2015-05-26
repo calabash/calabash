@@ -5,35 +5,35 @@ module Calabash
 
         private
 
-        def route_post_request(request, error_class)
+        def route_post_request(request)
           begin
             http_client.post(request)
           rescue => e
-            raise error_class, e
+            raise RouteError, e
           end
         end
 
-        def route_handle_response(response, query, error_class)
+        def route_handle_response(response, query)
           body = response.body
           begin
             hash = JSON.parse(body)
           rescue TypeError, JSON::ParserError => e
-            raise error_class, "Could not parse response '#{body}: #{e}'"
+            raise RouteError, "Could not parse response '#{body}: #{e}'"
           end
 
           outcome = hash['outcome']
 
           case outcome
             when 'FAILURE'
-              route_failure(hash, query, error_class)
+              route_failure(hash, query)
             when 'SUCCESS'
               route_success(hash, query)
             else
-              raise error_class, "Server responded with an invalid outcome: '#{hash['outcome']}'"
+              raise RouteError, "Server responded with an invalid outcome: '#{hash['outcome']}'"
           end
         end
 
-        def route_failure(hash, query, error_class)
+        def route_failure(hash, query)
 
           fetch_value = lambda do |key|
             value = hash[key]
@@ -46,7 +46,7 @@ module Calabash
 
           reason = fetch_value.call('reason')
           details = fetch_value.call('details')
-          raise error_class, "Map failed reason: '#{reason}' details: '#{details}' for query '#{query}'"
+          raise RouteError, "Map failed reason: '#{reason}' details: '#{details}' for query '#{query}'"
         end
 
         def route_success(hash, query)
