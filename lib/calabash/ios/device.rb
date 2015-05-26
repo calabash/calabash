@@ -9,6 +9,8 @@ module Calabash
       include Calabash::IOS::Routes::MapRoute
       include Calabash::IOS::Routes::UIARoute
 
+      include Calabash::IOS::Gestures
+
       # @todo Should these be public?
       # @todo If public, document!
       attr_reader :run_loop

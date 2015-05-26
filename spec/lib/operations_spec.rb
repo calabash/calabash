@@ -27,17 +27,4 @@ describe Calabash::Operations do
       operations._stop_app
     end
   end
-
-  describe '#escape_single_quotes' do
-    it 'does nothing if there are no single quotes to escape' do
-      string = 'I have no quotes.'
-      expect(operations.escape_single_quotes(string)).to be == string
-    end
-
-    it 'escapes all single quotes' do
-      string = "Let's get this done y'all."
-      expected = "Let\\'s get this done y\\'all."
-      expect(operations.escape_single_quotes(string)).to be == expected
-    end
-  end
 end

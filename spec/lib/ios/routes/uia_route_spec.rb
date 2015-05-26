@@ -149,4 +149,88 @@ describe Calabash::IOS::Routes::UIARoute do
       expect(device.send(:uia_over_host, 'command')).to be == {}
     end
   end
+
+  it '#uia_serialize_and_call' do
+    expect(device).to receive(:uia_serialize_command).with('command', 1, 2, 3).and_return 'serialized'
+    expect(device).to receive(:uia_route).with('serialized').and_return ['result']
+
+    expect(device.send(:uia_serialize_and_call, 'command', 1, 2, 3)).to be == 'result'
+  end
+
+  describe 'Serializing UIA commands' do
+    describe '#escape_single_quotes' do
+      it 'does nothing if there are no single quotes to escape' do
+        string = 'I have no quotes.'
+        expect(device.send(:escape_single_quotes, string)).to be == string
+      end
+
+      it 'escapes all single quotes' do
+        string = "Let's get this done y'all."
+        expected = "Let\\'s get this done y\\'all."
+        expect(device.send(:escape_single_quotes, string)).to be == expected
+      end
+    end
+
+    describe '#uia_escape_string' do
+      it 'calls escape_single_quotes' do
+        expect(device).to receive(:escape_single_quotes).with('String').and_return 'String'
+
+        expect(device.send(:uia_escape_string, 'String')).to be == 'String'
+      end
+
+      # I am not sure this correct.
+      it 'can escape newlines' do
+        string = "String with\na newline."
+        expect(device).to receive(:escape_single_quotes).with(string).and_return string
+
+        expect(device.send(:uia_escape_string, string)).to be == "String with\\na newline."
+      end
+    end
+
+    describe '#uia_serialze_argument' do
+      it 'escapes strings' do
+        expect(device).to receive(:uia_escape_string).with('String').and_return 'String'
+
+        actual = device.send(:uia_serialize_argument, 'String')
+        expect(actual).to be == "'String'"
+      end
+
+      describe 'calls to_edn on' do
+        it 'Hash' do
+          actual = device.send(:uia_serialize_argument, {:a => 'b'})
+          expect(actual).to be == "'{:a \"b\"}'"
+        end
+
+        it 'Array' do
+          actual = device.send(:uia_serialize_argument, [1, 2, 3])
+          expect(actual).to be == "'[1 2 3]'"
+        end
+
+        it 'Boolean' do
+          actual = device.send(:uia_serialize_argument, true)
+          expect(actual).to be == "'true'"
+        end
+
+        it 'nil' do
+          actual = device.send(:uia_serialize_argument, nil)
+          expect(actual).to be == "'nil'"
+        end
+      end
+    end
+
+    it '#uia_serialize_arguments' do
+      expect(device).to receive(:uia_serialize_argument).with(1).and_return '1'
+      expect(device).to receive(:uia_serialize_argument).with(2).and_return '2'
+      expect(device).to receive(:uia_serialize_argument).with(3).and_return '3'
+
+      actual = device.send(:uia_serialize_arguments, [1, 2, 3])
+      expect(actual).to be == ['1', '2', '3']
+    end
+
+    it '#uia_serialize_command' do
+      expect(device).to receive(:uia_serialize_arguments).with([1, 2, 3]).and_return ['1', '2', '3']
+      actual = device.send(:uia_serialize_command, :tapOffset, 1, 2, 3)
+      expect(actual).to be == 'uia.tapOffset(1, 2, 3)'
+    end
+  end
 end
