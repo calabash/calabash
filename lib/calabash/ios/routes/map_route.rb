@@ -5,8 +5,8 @@ module Calabash
 
         def map_route(query, method_name, *method_args)
           request = make_map_request(query, method_name, *method_args)
-          response = route_post_request(request, MapRouteError)
-          route_handle_response(response, query, MapRouteError)
+          response = route_post_request(request)
+          route_handle_response(response, query)
         end
 
         private
@@ -27,7 +27,7 @@ module Calabash
           begin
             Calabash::HTTP::Request.request('map', parameters)
           rescue => e
-            raise MapRouteError, e
+            raise RouteError, e
           end
         end
       end
