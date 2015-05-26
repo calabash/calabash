@@ -11,6 +11,7 @@ module Calabash
       # @todo Should these be public?
       # @todo If public, document!
       attr_reader :run_loop
+      attr_reader :uia_strategy
       attr_reader :start_options
 
       # Returns the default simulator identifier.  The string that is return
@@ -350,6 +351,7 @@ module Calabash
       def start_app_with_device_and_options(application, run_loop_device, user_defined_options)
         start_options = merge_start_options!(application, run_loop_device, user_defined_options)
         @run_loop = RunLoop.run(start_options)
+        @uia_strategy = @run_loop[:uia_strategy]
       end
 
       # @!visibility private
