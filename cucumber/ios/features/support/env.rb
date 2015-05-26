@@ -9,3 +9,7 @@ identifier = Calabash::IOS::Device.default_identifier_for_application(Calabash::
 server = Calabash::IOS::Server.default
 
 Calabash::Device.default = Calabash::IOS::Device.new(identifier, server)
+
+unless Calabash::Environment.xamarin_test_cloud?
+  require 'pry'
+end

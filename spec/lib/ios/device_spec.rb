@@ -525,11 +525,12 @@ describe Calabash::IOS::Device do
 
     it '#start_app_with_device_and_options' do
       options = { :foo => :bar }
-      run_loop = { :pid => 1234 }
+      run_loop = { :pid => 1234, :uia_strategy => :strategy }
       expect(device).to receive(:merge_start_options!).with(app, run_loop_device, options).and_return options
       expect(RunLoop).to receive(:run).with(options).and_return run_loop
 
-      expect(device.send(:start_app_with_device_and_options, app, run_loop_device, options)).to be == run_loop
+      expect(device.send(:start_app_with_device_and_options, app, run_loop_device, options)).to be_truthy
+      expect(device.instance_variable_get(:@uia_strategy)).to be == :strategy
       expect(device.instance_variable_get(:@run_loop)).to be == run_loop
     end
 
