@@ -52,6 +52,19 @@ module Calabash
             raise RouteError, e
           end
         end
+
+        # @todo Move this to somewhere public.
+        # Escapes single quotes in `string`.
+        #
+        # @example
+        #   > escape_quotes("Let's get this done.")
+        #   => "Let\\'s get this done."
+        # @param [String] string The string to escape.
+        # @return [String] A string with its single quotes properly escaped.
+        def escape_single_quotes(string)
+          string.gsub("'", "\\\\'")
+        end
+
       end
     end
   end

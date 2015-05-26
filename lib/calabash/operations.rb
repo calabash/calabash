@@ -6,17 +6,6 @@ module Calabash
       Calabash::Device.default.map_route(query, :query, *args)
     end
 
-    # Escapes single quotes in `string`.
-    #
-    # @example
-    #   > escape_quotes("Let's get this done.")
-    #   => "Let\\'s get this done."
-    # @param [String] string The string to escape.
-    # @return [String] A string with its single quotes properly escaped.
-    def escape_single_quotes(string)
-      string.gsub("'", "\\\\'")
-    end
-
     # @!visibility private
     def _start_app(application, options={})
       test_options = options.dup
