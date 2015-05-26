@@ -1,9 +1,7 @@
 module Calabash
   module IOS
     module Routes
-      class MapRouteError < StandardError
-
-      end
+      class RouteError < StandardError;  end
     end
   end
 end

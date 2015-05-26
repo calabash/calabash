@@ -1,6 +1,6 @@
 describe Calabash::IOS::Routes::MapRoute do
 
-  let(:route_error) { Calabash::IOS::Routes::MapRouteError }
+  let(:route_error) { Calabash::IOS::Routes::RouteError }
 
   let(:device) do
     Class.new do
@@ -31,6 +31,7 @@ describe Calabash::IOS::Routes::MapRoute do
   describe '#make_map_request' do
     it "makes a 'map' request" do
       expect(device).to receive(:make_map_parameters).with('query', 'name', 'args').and_return({})
+
       request = device.send(:make_map_request, 'query', 'name', 'args')
       expect(request).to be_a_kind_of Calabash::HTTP::Request
       expect(request.route).to be == 'map'
@@ -40,6 +41,7 @@ describe Calabash::IOS::Routes::MapRoute do
     it 'raises an error if a request cannot be made' do
       expect(device).to receive(:make_map_parameters).with('query', 'name', 'args').and_return({})
       expect(Calabash::HTTP::Request).to receive(:request).and_raise StandardError
+
       expect do
         device.send(:make_map_request, 'query', 'name', 'args')
       end.to raise_error route_error
@@ -51,7 +53,7 @@ describe Calabash::IOS::Routes::MapRoute do
 
       it 'posting the request raises an error' do
         expect(device).to receive(:make_map_request).and_return 'request'
-        expect(device).to receive(:route_post_request).with('request', route_error).and_raise route_error
+        expect(device).to receive(:route_post_request).with('request').and_raise route_error
 
         expect do
           device.map_route('query', 'name', 'args')
@@ -60,8 +62,8 @@ describe Calabash::IOS::Routes::MapRoute do
 
       it 'handling the response raises an error' do
         expect(device).to receive(:make_map_request).and_return 'request'
-        expect(device).to receive(:route_post_request).with('request', route_error).and_return 'result'
-        expect(device).to receive(:route_handle_response).with('result', 'query', route_error).and_raise route_error
+        expect(device).to receive(:route_post_request).with('request').and_return 'result'
+        expect(device).to receive(:route_handle_response).with('result', 'query').and_raise route_error
 
         expect do
           device.map_route('query', 'name', 'args')
@@ -71,8 +73,9 @@ describe Calabash::IOS::Routes::MapRoute do
 
     it "makes an http call to the 'map' route" do
       expect(device).to receive(:make_map_request).and_return 'request'
-      expect(device).to receive(:route_post_request).with('request', route_error).and_return 'result'
-      expect(device).to receive(:route_handle_response).with('result', 'query', route_error).and_return []
+      expect(device).to receive(:route_post_request).with('request').and_return 'result'
+      expect(device).to receive(:route_handle_response).with('result', 'query').and_return []
+
       expect(device.map_route('query', 'name', 'args')).to be == []
     end
   end

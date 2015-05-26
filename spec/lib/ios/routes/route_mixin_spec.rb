@@ -1,6 +1,6 @@
 describe Calabash::IOS::Routes::RouteMixin do
 
-  let(:error_class) { Class.new(StandardError) }
+  let(:error_class) { Calabash::IOS::Routes::RouteError }
 
   let(:device) do
     Class.new do
@@ -26,14 +26,14 @@ describe Calabash::IOS::Routes::RouteMixin do
     it 'calls http_client.post' do
       expect(device.http_client).to receive(:post).with('request').and_return 'response'
 
-      expect(device.send(:route_post_request, 'request', error_class)).to be == 'response'
+      expect(device.send(:route_post_request, 'request')).to be == 'response'
     end
 
-    it 're-raises error with error_class' do
+    it "does not re-raise errors raised by 'post'" do
       expect(device.http_client).to receive(:post).with('request').and_raise ArgumentError
 
       expect do
-        device.send(:route_post_request, 'request', error_class)
+        device.send(:route_post_request, 'request')
       end.to raise_error error_class
     end
   end
@@ -49,7 +49,7 @@ describe Calabash::IOS::Routes::RouteMixin do
         expect(JSON).to receive(:parse).with(body).and_raise TypeError
 
         expect do
-          device.send(:route_handle_response, response, 'query', error_class)
+          device.send(:route_handle_response, response, 'query')
         end.to raise_error error_class
       end
 
@@ -57,7 +57,7 @@ describe Calabash::IOS::Routes::RouteMixin do
         expect(JSON).to receive(:parse).with(body).and_raise JSON::ParserError
 
         expect do
-          device.send(:route_handle_response, response, 'query', error_class)
+          device.send(:route_handle_response, response, 'query')
         end.to raise_error error_class
       end
 
@@ -65,7 +65,7 @@ describe Calabash::IOS::Routes::RouteMixin do
         expect(JSON).to receive(:parse).with(body).and_return({'outcome' =>
                                                                      'invalid value'})
         expect do
-          device.send(:route_handle_response, response, 'query', error_class)
+          device.send(:route_handle_response, response, 'query')
         end.to raise_error error_class
       end
     end
@@ -75,17 +75,17 @@ describe Calabash::IOS::Routes::RouteMixin do
       expect(JSON).to receive(:parse).with(body).and_return(hash)
       expect(device).to receive(:route_success).with(hash, 'query').and_return 'query results'
 
-      actual = device.send(:route_handle_response, response, 'query', error_class)
+      actual = device.send(:route_handle_response, response, 'query')
       expect(actual).to be == 'query results'
     end
 
     it "calls 'failure' when outcome is 'FAILURE'" do
       hash = {'outcome' => 'FAILURE'}
       expect(JSON).to receive(:parse).with(body).and_return(hash)
-      expect(device).to receive(:route_failure).with(hash, 'query', error_class).and_raise error_class
+      expect(device).to receive(:route_failure).with(hash, 'query').and_raise error_class
 
       expect do
-        device.send(:route_handle_response, response, 'query', error_class)
+        device.send(:route_handle_response, response, 'query')
       end.to raise_error error_class
     end
   end
@@ -93,23 +93,23 @@ describe Calabash::IOS::Routes::RouteMixin do
 
   it '#route_failure' do
     expect do
-      device.send(:route_failure, {}, 'query', error_class)
+      device.send(:route_failure, {}, 'query')
     end.to raise_error error_class
 
     expect do
-      device.send(:route_failure, {'reason' => 'reason'}, 'query', error_class)
+      device.send(:route_failure, {'reason' => 'reason'}, 'query')
     end.to raise_error error_class
 
     expect do
-      device.send(:route_failure, {'reason' => ''}, 'query', error_class)
+      device.send(:route_failure, {'reason' => ''}, 'query')
     end.to raise_error error_class
 
     expect do
-      device.send(:route_failure, {'details' => 'details'}, 'query', error_class)
+      device.send(:route_failure, {'details' => 'details'}, 'query')
     end.to raise_error error_class
 
     expect do
-      device.send(:route_failure, {'details' => ''}, 'query', error_class)
+      device.send(:route_failure, {'details' => ''}, 'query')
     end.to raise_error error_class
   end
 
