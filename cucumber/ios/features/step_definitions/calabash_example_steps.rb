@@ -13,6 +13,7 @@ Given(/^I see the (first|second) tab$/) do |tab|
 end
 
 Then(/^I type "([^"]*)"$/) do |text_to_type|
+  tap('textField')
   query('textField', [{'setText' => text_to_type}])
 end
 
