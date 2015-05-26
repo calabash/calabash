@@ -3,5 +3,9 @@ module Calabash
     class Error < StandardError
 
     end
+
+    class RequestError < StandardError
+
+    end
   end
 end

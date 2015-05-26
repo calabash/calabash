@@ -5,6 +5,7 @@ module Calabash
     class Device < ::Calabash::Device
 
       include Calabash::IOS::PhysicalDeviceMixin
+      include Calabash::IOS::Routes::RouteMixin
       include Calabash::IOS::Routes::MapRoute
 
       # @todo Should these be public?
