@@ -7,6 +7,7 @@ module Calabash
       include Calabash::IOS::PhysicalDeviceMixin
       include Calabash::IOS::Routes::RouteMixin
       include Calabash::IOS::Routes::MapRoute
+      include Calabash::IOS::Routes::UIARoute
 
       # @todo Should these be public?
       # @todo If public, document!
