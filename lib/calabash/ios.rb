@@ -22,7 +22,7 @@ module Calabash
 
     require 'calabash/ios/device/gestures'
 
-    require 'calabash/ios/status_bar'
+    require 'calabash/ios/device/status_bar'
 
     require 'calabash/ios/environment'
     require 'calabash/ios/device/physical_device_mixin'
