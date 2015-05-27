@@ -200,19 +200,19 @@ describe Calabash::Gestures do
   end
 
   describe '#pan_screen_up' do
-    it 'should invoke #pan_up' do
+    it 'should invoke #_pan_screen_up' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:pan_up).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_pan_screen_up).with(options)
       dummy_instance.pan_screen_up(options)
     end
   end
 
   describe '#pan_screen_down' do
-    it 'should invoke #pan_down' do
+    it 'should invoke #_pan_screen_down' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:pan_down).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_pan_screen_down).with(options)
       dummy_instance.pan_screen_down(options)
     end
   end
@@ -313,20 +313,44 @@ describe Calabash::Gestures do
   end
 
   describe '#flick_screen_up' do
-    it 'should invoke #flick_up' do
+    it 'should invoke #_flick_screen_up' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:flick_up).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_flick_screen_up).with(options)
       dummy_instance.flick_screen_up(options)
     end
   end
 
   describe '#flick_screen_down' do
-    it 'should invoke #flick_down' do
+    it 'should invoke #_flick_screen_down' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:flick_down).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_flick_screen_down).with(options)
       dummy_instance.flick_screen_down(options)
+    end
+  end
+
+  describe '#_pan_screen_up' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_pan_screen_up)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_pan_screen_down' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_pan_screen_down)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_flick_screen_up' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_flick_screen_up)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_flick_screen_down' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_flick_screen_down)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 end

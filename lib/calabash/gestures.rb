@@ -192,13 +192,13 @@ module Calabash
     # Performs a `pan` heading `up` on the screen.
     # @see pan_up
     def pan_screen_up(options={})
-      pan_up("* id:'content'", options)
+      _pan_screen_up(options)
     end
 
     # Performs a `pan` heading `down` on the screen.
     # @see pan_down
     def pan_screen_down(options={})
-      pan_down("* id:'content'", options)
+      _pan_screen_down(options)
     end
 
     # Performs a `flick` on the (first) view that matches `query`.
@@ -266,13 +266,33 @@ module Calabash
     # Performs a `flick` heading `up` on the screen.
     # @see flick_up
     def flick_screen_up(options={})
-      flick_up("* id:'content'", options)
+      _flick_screen_up(options)
     end
 
     # Performs a `flick` heading `down` on the screen.
     # @see flick_down
     def flick_screen_down(options={})
-      flick_down("* id:'content'", options)
+      _flick_screen_down(options)
+    end
+
+    # !@visibility private
+    def _pan_screen_up(options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _pan_screen_down(options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _flick_screen_up(options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _flick_screen_down(options={})
+      abstract_method!
     end
   end
 end
