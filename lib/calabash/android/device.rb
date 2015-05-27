@@ -248,6 +248,26 @@ module Calabash
       end
 
       # @!visibility private
+      def _double_tap(query, options={})
+        x = options[:at][:x]
+        y = options[:at][:y]
+        offset = options[:offset]
+
+        gesture_options =
+            {
+                x: x,
+                y: y,
+                offset: offset,
+            }
+
+        gesture = Gestures::Gesture.double_tap(gesture_options)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                          query_string: query.to_s,
+                                                          timeout: options[:timeout]))
+      end
+
+      # @!visibility private
       def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
         result = adb.command('uninstall', package).lines.last
