@@ -77,7 +77,8 @@ module Calabash
 
     # Performs a `pan` on the (first) view that matches `query`.
     # A pan is a straight line swipe that pauses at the final point
-    # before releasing the gesture.
+    # before releasing the gesture. This is the general purpose pan method. For
+    # standardized pans see `pan_left`, `pan_right`, `pan_up`, and `pan_down`.
     #
     # @example
     #  Consider a pan on a scrollable view.  When the finger is is released,
@@ -97,9 +98,10 @@ module Calabash
     # @param [String] query A query describing the view to pan inside.
     # @param [Hash] options Options for modifying the details of the pan.
     #
-    # @option options [Hash] :at ({x: 50, y: 50}) The point at which the gesture
-    #   originates from.  It is a percentage-based translation using top-left
-    #   `(0,0)` as the reference point.
+    # @option options [Hash] :from {:x, :y} The point at which the gesture
+    #   originates from.
+    # @option options [Hash] :to {:x, :y} The point at which the gesture
+    #   ends.
     # @option options [Number] :wait_after (0) How many seconds to wait after
     #   issuing the pan.
     # @option options [Number] :duration (0.5) How many seconds the swipe takes
