@@ -14,19 +14,19 @@ module Calabash
       Calabash.send(:included, base)
     end
 
-    require 'calabash/ios/runtime_attributes'
-    require 'calabash/ios/routes/error'
-    require 'calabash/ios/routes/route_mixin'
-    require 'calabash/ios/routes/map_route'
-    require 'calabash/ios/routes/uia_route'
+    require 'calabash/ios/device/runtime_attributes'
+    require 'calabash/ios/device/routes/error'
+    require 'calabash/ios/device/routes/route_mixin'
+    require 'calabash/ios/device/routes/map_route'
+    require 'calabash/ios/device/routes/uia_route'
 
-    require 'calabash/ios/gestures'
+    require 'calabash/ios/device/gestures'
 
-    require 'calabash/ios/status_bar'
+    require 'calabash/ios/device/status_bar'
 
     require 'calabash/ios/environment'
-    require 'calabash/ios/physical_device_mixin'
-    require 'calabash/ios/device'
+    require 'calabash/ios/device/physical_device_mixin'
+    require 'calabash/ios/device/device'
     require 'calabash/ios/operations'
     require 'calabash/ios/server'
     require 'calabash/ios/application'
