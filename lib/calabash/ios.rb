@@ -25,7 +25,7 @@ module Calabash
     require 'calabash/ios/status_bar'
 
     require 'calabash/ios/environment'
-    require 'calabash/ios/physical_device_mixin'
+    require 'calabash/ios/device/physical_device_mixin'
     require 'calabash/ios/device/device'
     require 'calabash/ios/operations'
     require 'calabash/ios/server'
