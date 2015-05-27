@@ -11,6 +11,8 @@ module Calabash
 
       include Calabash::IOS::Gestures
 
+      include Calabash::IOS::StatusBar
+
       # @todo Should these be public?
       # @todo If public, document!
       attr_reader :run_loop
