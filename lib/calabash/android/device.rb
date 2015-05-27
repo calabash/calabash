@@ -269,6 +269,18 @@ module Calabash
           raise "Could not clear app: #{result}"
         end
       end
+
+      # @!visibility private
+      def execute_gesture(multi_touch_gesture)
+        request = HTTP::Request.new('gesture', json: multi_touch_gesture.to_json)
+
+        body = http_client.get(request, timeout: multi_touch_gesture.timeout + 10).body
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          raise "Failed to perform gesture. #{result['reason']}"
+        end
+      end
     end
   end
 end
