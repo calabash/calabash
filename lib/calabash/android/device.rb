@@ -326,10 +326,10 @@ module Calabash
       # @!visibility private
       def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
-        result = adb.command('uninstall', package).lines.last
+        result = adb.command('uninstall', package, timeout: 60).lines.last
 
         if result.downcase.chomp != 'success'
-          raise "Could not uninstall app: #{result}"
+          raise "Could not uninstall app: #{result.chomp}"
         end
 
         if installed_packages.include?(package)
@@ -340,10 +340,10 @@ module Calabash
       # @!visibility private
       def adb_install_app(application)
         @logger.log "Installing #{application.path}"
-        result = adb.command('install' , '-r', application.path).lines.last
+        result = adb.command('install' , '-r', application.path, timeout: 60).lines.last
 
         if result.downcase.chomp != 'success'
-          raise "Could not install app: #{result}"
+          raise "Could not install app: #{result.chomp}"
         end
 
         unless installed_packages.include?(application.identifier)
