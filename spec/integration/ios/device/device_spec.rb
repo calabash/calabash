@@ -83,4 +83,29 @@ describe Calabash::IOS::Device do
     end
   end
 
+  describe 'runtime API' do
+
+    before do
+      device.ensure_app_installed(app)
+      device.start_app(app)
+    end
+
+    it 'can report runtime attributes' do
+      expect(device.device_family).to be == 'iPhone'
+      expect(device.form_factor).to be == 'iphone 4in'
+      expect(device.ios_version).to be == run_loop_device.version
+      expect(device.iphone_app_emulated_on_ipad?).to be == false
+      expect(device.physical_device?).to be == false
+      expect(device.screen_dimensions).to be == { :sample => 1,
+                                                  :height => 1136,
+                                                  :width => 640,
+                                                  :scale => 2 }
+      run_loop_app = RunLoop::App.new(abp)
+      path_to_exec = File.join(abp, run_loop_app.executable_name)
+      raw_output = `xcrun strings #{path_to_exec} | grep -E 'CALABASH VERSION'`
+      version = raw_output.split(' ')[2]
+      expect(device.server_version).to be == RunLoop::Version.new(version)
+      expect(device.simulator?).to be == true
+    end
+  end
 end

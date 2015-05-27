@@ -4,6 +4,8 @@ module Calabash
     TEST_SERVER_CODE_PATH = File.join(File.dirname(__FILE__), '..', '..', 'android', 'test-server')
     UNSIGNED_TEST_SERVER_APK = File.join(File.dirname(__FILE__), 'android', 'lib', 'TestServer.apk')
 
+    require File.join(File.dirname(__FILE__), '..', '..', 'script', 'backwards_compatibility')
+
     require 'calabash'
     include Calabash
 
@@ -31,7 +33,9 @@ module Calabash
     require 'calabash/android/server'
     require 'calabash/android/adb'
     require 'calabash/android/gestures'
+    require 'calabash/android/text'
 
     include Calabash::Android::Gestures
+    include Calabash::Android::Text
   end
 end

@@ -4,9 +4,19 @@ module Calabash
     # An iOS Device is an iOS Simulator or physical device.
     class Device < ::Calabash::Device
 
+      include Calabash::IOS::PhysicalDeviceMixin
+      include Calabash::IOS::Routes::RouteMixin
+      include Calabash::IOS::Routes::MapRoute
+      include Calabash::IOS::Routes::UIARoute
+
+      include Calabash::IOS::Gestures
+
+      include Calabash::IOS::StatusBar
+
       # @todo Should these be public?
       # @todo If public, document!
       attr_reader :run_loop
+      attr_reader :uia_strategy
       attr_reader :start_options
 
       # Returns the default simulator identifier.  The string that is return
@@ -87,7 +97,7 @@ module Calabash
       # @see Calabash::IOS::Device#default_physical_device_identifier
       #
       # @return [String] An instruments ready identifier based on whether the
-      #  application is for a simulator or phyical device.
+      #  application is for a simulator or physical device.
       # @raise [RuntimeError] If the application is not a .app or .ipa.
       def self.default_identifier_for_application(application)
         if application.simulator_bundle?
@@ -143,240 +153,152 @@ module Calabash
         to_s
       end
 
-      # Calabash cannot manage apps on physical devices.  There are third-party
-      # tools you can use to manage apps on devices.  Two popular tools are
-      # ideviceinstaller and ios-deploy.  Both can be installed using homebrew.
+      # The device family of this device.
       #
-      # To integrate these tools, Calabash provides several methods for you to
-      # override in your project.  In your `features/support/` directory, you
-      # can patch Calabash::IOS::Device with your own implementation of these
-      # methods.  The five methods to override are:
+      # @example
+      #  # will be one of
+      #  iPhone
+      #  iPod
+      #  iPad
       #
-      # 1. app_installed_on_physical_device?
-      # 2. install_app_on_physical_device
-      # 3. ensure_app_installed_on_physical_device
-      # 4. clear_app_data_on_physical_device
-      # 5. uninstall_app_on_physical_device
+      # @return [String] the device family
+      # @raise [RuntimeError] If the app has not been launched.
+      def device_family
+        # For iOS Simulators, this can be obtained by asking the run_loop_device
+        # and analyzing the name of the device.  This  does not require the app
+        # to be launched, but it is expensive (takes many seconds).
+
+        # For physical devices, this can only be obtained using a third-party
+        # tool like ideviceinfo or asking the server.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.device_family
+      end
+
+      # The form factor of the device under test.
+      #
+      # Will be one of:
+      #
+      #   * ipad
+      #   * iphone 4in
+      #   * iphone 3.5in
+      #   * iphone 6
+      #   * iphone 6+
+      #   * unknown # if no information can be found.
+      #
+      # @note iPod is not on this list for a reason!  An iPod has an iPhone
+      #  form factor. If you need to detect an iPod use `device_family`. Also
+      #  note that there are no iPod simulators.
+      #
+      # @return [String] The form factor of the device under test.
+      # @raise [RuntimeError] If the app has not been launched.
+      def form_factor
+        # For iOS Simulators, this can be obtained by asking the run_loop_device
+        # and analyzing the name of the device.  This  does not require the app
+        # to be launched, but it is expensive (takes many seconds).
+
+        # For physical devices, this can only be obtained using a third-party
+        # tool like ideviceinfo or asking the server.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.form_factor
+      end
+
+      # @!visibility private
+      # The iOS version on the test device.
+      #
+      # @return [RunLoop::Version] The major.minor.patch[.pre\d] version of the
+      #   iOS version on the device.
+      def ios_version
+        # Can be obtain by asking for a device's run_loop_device. This does not
+        # require the app to be launched, but it is expensive
+        # (takes many seconds).  run_loop_device is memoized so the expense
+        # is only incurred 1x per device instance.
+
+        # Can also be obtained by asking the server after the app is launched
+        # on the device which would be cheaper.
+        run_loop_device.version
+      end
+
+      # Is the app that is running an iPhone-only app emulated on an iPad?
+      #
+      # @note If the app is running in emulation mode, there will be a 1x or 2x
+      #   scale button visible on the iPad.
+      #
+      # @return [Boolean] true if the app running on this devices is an
+      #   iPhone-only app emulated on an iPad
+      # @raise [RuntimeError] If the app has not been launched.
+      def iphone_app_emulated_on_ipad?
+        # It is possible to find this information on iOS Simulators without
+        # launching the app.  It is not possible to find this information
+        # when targeting a physical device unless a third-party tool is used.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.iphone_app_emulated_on_ipad?
+      end
+
+      # Is this device a physical device?
+      # @return [Boolean] Returns true if this device is a physical device.
+      def physical_device?
+        # Can be obtain by asking for a device's run_loop_device. This does not
+        # require the app to be launched, but it is expensive
+        # (takes many seconds).  run_loop_device is memoized so the expense
+        # is only incurred 1x per device instance.
+
+        # Can also be obtained by asking the server after the app is launched
+        # on the device which would be cheaper.
+        run_loop_device.physical_device?
+      end
+
+      # Information about the runtime screen dimensions of the app under test.
+      #
+      # This is a hash of form:
       #
       # ```
-      #  # features/support/ideviceinstaller.rb
-      #
-      #  require 'fileutils'
-      #  class Calabash::IOS::Device
-      #
-      #    def app_installed_on_physical_device?(application, device_udid)
-      #      out = `/usr/local/bin/ideviceinstaller --udid #{device_udid} --list-apps`
-      #      out.split(/\s/).include? application.identifier
-      #    end
-      #
-      #    def install_app_on_physical_device(application, device_udid)
-      #
-      #      if app_installed_on_physical_device?(application, device_udid)
-      #        uninstall_app_on_physical_device(application, device_udid)
-      #      end
-      #
-      #      args =
-      #            [
-      #                  '--udid', device_udid,
-      #                  '--install', application.path
-      #            ]
-      #
-      #      log = FileUtils.touch('./ideviceinstaller.log')
-      #      system('/usr/local/bin/ideviceinstaller', *args, {:out => log})
-      #
-      #      exit_code = $?
-      #      unless exit_code == 0
-      #        raise "Could not install the app (#{exit_code}).  See #{File.expand_path(log)}"
-      #      end
-      #      true
-      #    end
-      #
-      #    def uninstall_app_on_physical_device(application, device_udid)
-      #
-      #      if app_installed_on_physical_device?(application, device_udid)
-      #
-      #        args =
-      #              [
-      #                    '--udid', device_udid,
-      #                    '--uninstall', application.identifier
-      #              ]
-      #
-      #        log = FileUtils.touch('./ideviceinstaller.log')
-      #        system('/usr/local/bin/ideviceinstaller', *args, {:out => log})
-      #
-      #        exit_code = $?
-      #        unless exit_code == 0
-      #          raise "Could not uninstall the app (#{exit_code}).  See #{File.expand_path(log)}"
-      #        end
-      #      end
-      #      true
-      #    end
-      #
-      #    def ensure_app_installed_on_physical_device(application, device_udid)
-      #      unless app_installed_on_physical_device?(application, device_udid)
-      #        install_app_on_physical_device(application, device_udid)
-      #      end
-      #      true
-      #    end
-      #
-      #    # The only way to clear the data is to uninstall the app.
-      #    def clear_app_data_on_physical_device(application, device_udid)
-      #      if app_installed_on_physical_device?(application, device_udid)
-      #        install_app_on_physical_device(application, device_udid)
-      #      end
-      #      true
-      #    end
-      #  end
+      #    {
+      #      :sample => 1,
+      #      :height => 1334,
+      #      :width => 750,
+      #      :scale" => 2
+      #    }
       # ```
       #
-      # For a real-world example of a ruby wrapper around the ideviceinstaller
-      # command-line tool, see https://github.com/calabash/ios-smoke-test-app.
-      #
-      # @see #app_installed_on_physical_device?
-      # @see #install_app_on_physical_device
-      # @see #ensure_app_installed_on_physical_device
-      # @see #clear_app_data_on_physical_device
-      # @see #uninstall_app_on_physical_device
-      #
-      # @see http://brew.sh/
-      # @see https://github.com/libimobiledevice/ideviceinstaller
-      # @see https://github.com/phonegap/ios-deploy
-      # @see https://github.com/calabash/ios-smoke-test-app/blob/master/CalSmokeApp/features/support/ideviceinstaller.rb
-      # @see https://github.com/blueboxsecurity/idevice
-      #
-      # For an real-world example of a ruby wrapper around the ideviceinstaller
-      # tool, see /blob/master/CalSmokeApp/features/support/ideviceinstaller.rb
-      #
-      # @param [Calabash::IOS::Application] application The application to
-      #  to install.  The important methods on application are `path` and
-      #  `identifier`.
-      # @param [String] device_udid The identifier of the device to install the
-      #  application on.
-      #
-      # @return [Boolean] If the app was installed ont the device.
-      #
-      # @raise [Calabash::AbstractMethodError] If this method is not implemented
-      #  by the user.
-      def install_app_on_physical_device(application, device_udid)
-        logger.log('To install an ipa on a physical device, you must extend', :info)
-        logger.log('Calabash::IOS::Device and implement the #install_app_on_physical_device', :info)
-        logger.log('method that using a third-party tool to interact with physical devices.', :info)
-        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('https://github.com/calabash/ios-smoke-test-app.', :info)
-        raise Calabash::AbstractMethodError,
-              'Device install_app_on_physical_device must be implemented by you.'
+      # @return [Hash] screen dimensions, scale and down/up sampling fraction.
+      # @raise [RuntimeError] If the app has not been launched.
+      def screen_dimensions
+        # This can only be obtained at runtime because of iOS scaling and
+        # sampling.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.screen_dimensions
       end
 
-      # Calabash cannot manage apps on physical devices.  There are third-party
-      # tools you can use to manage apps on devices.  Two popular tools are
-      # ideviceinstaller and ios-deploy.  Both can be installed using homebrew.
+      # The version of the embedded Calabash server that is running in the
+      # app under test on this device.
       #
-      # See the documentation for {Calabash::IOS::Device#install_app_on_physical_device}
-      # for details about how to integrate a third-party tool into your project.
-      #
-      # @param [Calabash::IOS::Application] application The application to
-      #  to install.  The important methods on application are `path` and
-      #  `identifier`.
-      # @param [String] device_udid The identifier of the device to install the
-      #  application on.
-      #
-      # @return [Boolean] If the app is installed on the physical_device.
-      #
-      # @raise [Calabash::AbstractMethodError] If this method is not implemented
-      #  by the user.
-      def ensure_app_installed_on_physical_device(application, device_udid)
-        logger.log('To check if an app installed on a physical device, you must extend', :info)
-        logger.log('Calabash::IOS::Device and implement the #ensure_app_installed_on_device', :info)
-        logger.log('method that using a third-party tool to interact with physical devices.', :info)
-        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('https://github.com/calabash/ios-smoke-test-app.', :info)
-        raise Calabash::AbstractMethodError,
-              'Device ensure_app_installed_on_device must be implemented by you.'
+      # @return [RunLoop::Version] The major.minor.patch[.pre\d] version of the
+      #   embedded Calabash server
+      # @raise [RuntimeError] If the app has not been launched.
+      def server_version
+        # It is possible to find this information without launching the app but
+        # it's probably best to ask the server for this information after the
+        # app has launched.
+        expect_runtime_attributes_available(__method__)
+        runtime_attributes.server_version
       end
 
-      # Calabash cannot manage apps on physical devices.  There are third-party
-      # tools you can use to manage apps on devices.  Two popular tools are
-      # ideviceinstaller and ios-deploy.  Both can be installed using homebrew.
-      #
-      # See the documentation for {Calabash::IOS::Device#install_app_on_physical_device}
-      # for details about how to integrate a third-party tool into your project.
-      #
-      # @param [Calabash::IOS::Application] application The application to
-      #  to install.  The important methods on application are `path` and
-      #  `identifier`.
-      # @param [String] device_udid The identifier of the device to install the
-      #  application on.
-      #
-      # @return [Boolean] Return true if the application data was cleared.
-      #
-      # @raise [Calabash::AbstractMethodError] If this method is not implemented
-      #  by the user.
-      def clear_app_data_on_physical_device(application, device_udid)
-        logger.log('To clear app data on a physical device, you must extend', :info)
-        logger.log('Calabash::IOS::Device and implement the #clear_app_data_on_physical_device', :info)
-        logger.log('method using a third-party tool to interact with physical devices.', :info)
-        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('https://github.com/calabash/ios-smoke-test-app.', :info)
-        raise Calabash::AbstractMethodError,
-              'Device clear_app_data_on_physical_device must be implemented by you.'
-      end
+      # Is this device a simulator?
+      # @return [Boolean] Returns true if this device is a simulator.
+      def simulator?
+        # Can be obtain by asking for a device's run_loop_device. This does not
+        # require the app to be launched, but it is expensive
+        # (takes many seconds).  run_loop_device is memoized so the expense
+        # is only incurred 1x per device instance.
 
-      # Calabash cannot manage apps on physical devices.  There are third-party
-      # tools you can use to manage apps on devices.  Two popular tools are
-      # ideviceinstaller and ios-deploy.  Both can be installed using homebrew.
-      #
-      # See the documentation for {Calabash::IOS::Device#install_app_on_physical_device}
-      # for details about how to integrate a third-party tool into your project.
-      #
-      # @param [Calabash::IOS::Application] application The application to
-      #  to install.  The important methods on application are `path` and
-      #  `identifier`.
-      # @param [String] device_udid The identifier of the device to install the
-      #  application on.
-      #
-      # @return [Boolean] Return true if the application is installed on the
-      #  device.
-      #
-      # @raise [Calabash::AbstractMethodError] If this method is not implemented
-      #  by the user.
-      def app_installed_on_physical_device?(application, device_udid)
-        logger.log('To determine if an app is installed on a physical device, you must extend', :info)
-        logger.log('Calabash::IOS::Device and implement the #app_installed_on_physical_device', :info)
-        logger.log('method using a third-party tool to interact with physical devices.', :info)
-        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('https://github.com/calabash/ios-smoke-test-app.', :info)
-        raise Calabash::AbstractMethodError,
-              'Device app_installed_on_physical_device? must be implemented by you.'
-      end
-
-      # Calabash cannot manage apps on physical devices.  There are third-party
-      # tools you can use to manage apps on devices.  Two popular tools are
-      # ideviceinstaller and ios-deploy.  Both can be installed using homebrew.
-      #
-      # See the documentation for {Calabash::IOS::Device#install_app_on_physical_device}
-      # for details about how to integrate a third-party tool into your project.
-      #
-      # @param [Calabash::IOS::Application] application The application to
-      #  to install.  The important methods on application are `path` and
-      #  `identifier`.
-      # @param [String] device_udid The identifier of the device to install the
-      #  application on.
-      #
-      # @return [Boolean] Return true if the application was uninstalled.
-      #
-      # @raise [Calabash::AbstractMethodError] If this method is not implemented
-      #  by the user.
-      def uninstall_app_on_physical_device(application, device_udid)
-        logger.log('To uninstall an ipa on a physical device, you must extend', :info)
-        logger.log('Calabash::IOS::Device and implement the #uninstall_app_on_physical_device', :info)
-        logger.log('method that using a third-party tool to interact with physical devices.', :info)
-        logger.log('For an example of an implementation using ideviceinstaller, see:', :info)
-        logger.log('https://github.com/calabash/ios-smoke-test-app.', :info)
-        raise Calabash::AbstractMethodError,
-              'Device uninstall_app_on_physical_device must be implemented by you.'
+        # Can also be obtained by asking the server after the app is launched
+        # on the device which would be cheaper.
+        run_loop_device.simulator?
       end
 
       private
+
+      attr_reader :runtime_attributes
 
       # @!visibility private
       def _start_app(application, options={})
@@ -434,25 +356,35 @@ module Calabash
       def start_app_with_device_and_options(application, run_loop_device, user_defined_options)
         start_options = merge_start_options!(application, run_loop_device, user_defined_options)
         @run_loop = RunLoop.run(start_options)
+        @uia_strategy = @run_loop[:uia_strategy]
       end
 
       # @!visibility private
       def wait_for_server_to_start
         ensure_test_server_ready
-        device_info = fetch_device_info
-        extract_device_info!(device_info)
+        device_info = fetch_runtime_attributes
+        @runtime_attributes = new_device_runtime_info(device_info)
+      end
+
+      # @!visibility private
+      def new_device_runtime_info(device_info)
+        RuntimeAttributes.new(device_info)
       end
 
       # @!visibility private
       def _stop_app
-        return true unless test_server_responding?
-
-        parameters = default_stop_app_parameters
-
         begin
-          http_client.get(request_factory('exit', parameters))
+          if test_server_responding?
+            parameters = default_stop_app_parameters
+            request = request_factory('exit', parameters)
+            http_client.get(request)
+          else
+            true
+          end
         rescue Calabash::HTTP::Error => e
           raise "Could send 'exit' to the app: #{e}"
+        ensure
+          @runtime_attributes = nil
         end
       end
 
@@ -546,6 +478,12 @@ module Calabash
         else
           raise "Invalid application #{application} for iOS platform."
         end
+      end
+
+      # @!visibility private
+      def _enter_text(text)
+        # @todo implement this
+        raise 'ni'
       end
 
       # @!visibility private
@@ -730,6 +668,27 @@ module Calabash
           end
         end
         default
+      end
+
+      # @!visibility private
+      def fetch_runtime_attributes
+        request = request_factory('version')
+        body = http_client.get(request).body
+        begin
+          JSON.parse(body)
+        rescue TypeError, JSON::ParserError => _
+          raise "Could not parse response '#{body}'; the app has probably crashed"
+        end
+      end
+
+      # @!visibility private
+      def expect_runtime_attributes_available(method_name)
+        if runtime_attributes.nil?
+          logger.log("The method '#{method_name}' is not available to IOS::Device until", :info)
+          logger.log('the app has been launched with Calabash start_app.', :info)
+          raise "The method '#{method_name}' can only be called after the app has been launched"
+        end
+        true
       end
     end
   end

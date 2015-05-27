@@ -14,14 +14,23 @@ module Calabash
       Calabash.send(:included, base)
     end
 
-    # Include old methods
-    require_old File.join('calabash-cucumber', 'lib', 'calabash-cucumber')
-    include Calabash::IOS::Operations
+    require 'calabash/ios/device/runtime_attributes'
+    require 'calabash/ios/device/routes/error'
+    require 'calabash/ios/device/routes/route_mixin'
+    require 'calabash/ios/device/routes/map_route'
+    require 'calabash/ios/device/routes/uia_route'
+
+    require 'calabash/ios/device/gestures'
+
+    require 'calabash/ios/device/status_bar'
 
     require 'calabash/ios/environment'
-    require 'calabash/ios/device'
+    require 'calabash/ios/device/physical_device_mixin'
+    require 'calabash/ios/device/device'
     require 'calabash/ios/operations'
     require 'calabash/ios/server'
     require 'calabash/ios/application'
+
+    include Calabash::IOS::Operations
   end
 end

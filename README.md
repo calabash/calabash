@@ -27,3 +27,11 @@ $ be rake unit # All unit tests.
 $ be rake spec # All tests.  Launches iOS Simulators, etc.
 $ be guard     # Run unit tests as you develop.
 ```
+
+### cucumber
+
+```
+$ cd cucumber/ios
+$ bundle update
+$ be cucumber
+```

@@ -1,5 +1,4 @@
 module Calabash
-  require File.join(File.dirname(__FILE__), '..', 'script', 'backwards_compatibility')
   require 'calabash/patch/run_loop'
   require 'calabash/environment'
   require 'calabash/logger'
@@ -17,6 +16,7 @@ module Calabash
   require 'calabash/screenshot'
   require 'calabash/gestures'
   require 'calabash/query'
+  require 'calabash/text'
 
   require 'calabash/patch'
   Calabash::Patch.apply_patches!
@@ -27,6 +27,7 @@ module Calabash
   include Calabash::Wait
   include Calabash::Screenshot
   include Calabash::Gestures
+  include Calabash::Text
 
   def start_app(opt={})
     test_options = opt.dup
