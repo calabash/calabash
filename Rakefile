@@ -29,6 +29,12 @@ namespace :android do
     Calabash::Build::AndroidTestServer.build_test_server
   end
 
+  task :build_native do
+    `NDK_PROJECT_PATH='android/calmd5' $NDK_HOME/ndk-build`
+    `rm -r lib/calabash/android/lib/calmd5`
+    `mv android/calmd5/libs lib/calabash/android/lib/calmd5`
+  end
+
   task :build => [:ensure_files_exist, :build_test_server] do
   end
 end
