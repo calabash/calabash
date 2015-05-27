@@ -184,7 +184,7 @@ module Calabash
 
         if installed_packages.include?(application.identifier)
           @logger.log 'Application is already installed. Uninstalling application.'
-          _uninstall_app(application.identifier)
+          _uninstall_app(application)
         end
 
         adb_install_app(application)
