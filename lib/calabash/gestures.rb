@@ -77,7 +77,8 @@ module Calabash
 
     # Performs a `pan` on the (first) view that matches `query`.
     # A pan is a straight line swipe that pauses at the final point
-    # before releasing the gesture.
+    # before releasing the gesture. This is the general purpose pan method. For
+    # standardized pans see `pan_left`, `pan_right`, `pan_up`, and `pan_down`.
     #
     # @example
     #  Consider a pan on a scrollable view.  When the finger is is released,
@@ -97,9 +98,10 @@ module Calabash
     # @param [String] query A query describing the view to pan inside.
     # @param [Hash] options Options for modifying the details of the pan.
     #
-    # @option options [Hash] :at ({x: 50, y: 50}) The point at which the gesture
-    #   originates from.  It is a percentage-based translation using top-left
-    #   `(0,0)` as the reference point.
+    # @option options [Hash] :from ({:x, :y}) The point at which the gesture
+    #   originates from.
+    # @option options [Hash] :to ({:x, :y}) The point at which the gesture
+    #   ends.
     # @option options [Number] :wait_after (0) How many seconds to wait after
     #   issuing the pan.
     # @option options [Number] :duration (0.5) How many seconds the swipe takes
@@ -155,26 +157,26 @@ module Calabash
     # Performs a `pan` heading `left` on the (first) view that matches `query`.
     # @see pan
     def pan_left(query, options={})
-      pan(query, {x: 100, y: 50}, {x: 0, y: 50}, options)
+      pan(query, {x: 90, y: 50}, {x: 10, y: 50}, options)
     end
 
     # Performs a `pan` heading `right` on the (first) view that matches
     # `query`.
     # @see pan
     def pan_right(query, options={})
-      pan(query, {x: 0, y: 50}, {x: 100, y: 50}, options)
+      pan(query, {x: 10, y: 50}, {x: 90, y: 50}, options)
     end
 
     # Performs a `pan` heading `up` on the (first) view that matches `query`.
     # @see pan
     def pan_up(query, options={})
-      pan(query, {x: 50, y: 100}, {x: 50, y: 0}, options)
+      pan(query, {x: 50, y: 90}, {x: 50, y: 10}, options)
     end
 
     # Performs a `pan` heading `down` on the (first) view that matches `query`.
     # @see pan
     def pan_down(query, options={})
-      pan(query, {x: 50, y: 0}, {x: 50, y: 100}, options)
+      pan(query, {x: 50, y: 10}, {x: 50, y: 90}, options)
     end
 
     # Performs a `pan` heading `left` on the screen.
@@ -192,13 +194,13 @@ module Calabash
     # Performs a `pan` heading `up` on the screen.
     # @see pan_up
     def pan_screen_up(options={})
-      pan_up("* id:'content'", options)
+      _pan_screen_up(options)
     end
 
     # Performs a `pan` heading `down` on the screen.
     # @see pan_down
     def pan_screen_down(options={})
-      pan_down("* id:'content'", options)
+      _pan_screen_down(options)
     end
 
     # Performs a `flick` on the (first) view that matches `query`.
@@ -229,26 +231,26 @@ module Calabash
     # Performs a `flick` heading `left` on the (first) view that matches `query`.
     # @see flick
     def flick_left(query, options={})
-      flick(query, {x: 100, y: 50}, {x: 0, y: 50}, options)
+      flick(query, {x: 90, y: 50}, {x: 10, y: 50}, options)
     end
 
     # Performs a `flick` heading `right` on the (first) view that matches
     # `query`.
     # @see flick
     def flick_right(query, options={})
-      flick(query, {x: 0, y: 50}, {x: 100, y: 50}, options)
+      flick(query, {x: 10, y: 50}, {x: 90, y: 50}, options)
     end
 
     # Performs a `flick` heading `up` on the (first) view that matches `query`.
     # @see flick
     def flick_up(query, options={})
-      flick(query, {x: 50, y: 100}, {x: 50, y: 0}, options)
+      flick(query, {x: 50, y: 90}, {x: 50, y: 10}, options)
     end
 
     # Performs a `flick` heading `down` on the (first) view that matches `query`.
     # @see flick
     def flick_down(query, options={})
-      flick(query, {x: 50, y: 0}, {x: 50, y: 100}, options)
+      flick(query, {x: 50, y: 10}, {x: 50, y: 90}, options)
     end
 
     # Performs a `flick` heading `left` on the screen.
@@ -266,13 +268,33 @@ module Calabash
     # Performs a `flick` heading `up` on the screen.
     # @see flick_up
     def flick_screen_up(options={})
-      flick_up("* id:'content'", options)
+      _flick_screen_up(options)
     end
 
     # Performs a `flick` heading `down` on the screen.
     # @see flick_down
     def flick_screen_down(options={})
-      flick_down("* id:'content'", options)
+      _flick_screen_down(options)
+    end
+
+    # !@visibility private
+    def _pan_screen_up(options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _pan_screen_down(options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _flick_screen_up(options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _flick_screen_down(options={})
+      abstract_method!
     end
   end
 end

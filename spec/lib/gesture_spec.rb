@@ -136,8 +136,8 @@ describe Calabash::Gestures do
   describe '#pan_left' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 100, y: 50}
-      to = {x: 0, y: 50}
+      from = {x: 90, y: 50}
+      to = {x: 10, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -148,8 +148,8 @@ describe Calabash::Gestures do
   describe '#pan_right' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 0, y: 50}
-      to = {x: 100, y: 50}
+      from = {x: 10, y: 50}
+      to = {x: 90, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -160,8 +160,8 @@ describe Calabash::Gestures do
   describe '#pan_up' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 100}
-      to = {x: 50, y: 0}
+      from = {x: 50, y: 90}
+      to = {x: 50, y: 10}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -172,8 +172,8 @@ describe Calabash::Gestures do
   describe '#pan_down' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 0}
-      to = {x: 50, y: 100}
+      from = {x: 50, y: 10}
+      to = {x: 50, y: 90}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -200,19 +200,19 @@ describe Calabash::Gestures do
   end
 
   describe '#pan_screen_up' do
-    it 'should invoke #pan_up' do
+    it 'should invoke #_pan_screen_up' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:pan_up).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_pan_screen_up).with(options)
       dummy_instance.pan_screen_up(options)
     end
   end
 
   describe '#pan_screen_down' do
-    it 'should invoke #pan_down' do
+    it 'should invoke #_pan_screen_down' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:pan_down).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_pan_screen_down).with(options)
       dummy_instance.pan_screen_down(options)
     end
   end
@@ -249,8 +249,8 @@ describe Calabash::Gestures do
   describe '#flick_left' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 100, y: 50}
-      to = {x: 0, y: 50}
+      from = {x: 90, y: 50}
+      to = {x: 10, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)
@@ -261,8 +261,8 @@ describe Calabash::Gestures do
   describe '#flick_right' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 0, y: 50}
-      to = {x: 100, y: 50}
+      from = {x: 10, y: 50}
+      to = {x: 90, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)
@@ -273,8 +273,8 @@ describe Calabash::Gestures do
   describe '#flick_up' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 100}
-      to = {x: 50, y: 0}
+      from = {x: 50, y: 90}
+      to = {x: 50, y: 10}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)
@@ -285,8 +285,8 @@ describe Calabash::Gestures do
   describe '#flick_down' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 0}
-      to = {x: 50, y: 100}
+      from = {x: 50, y: 10}
+      to = {x: 50, y: 90}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)
@@ -313,20 +313,44 @@ describe Calabash::Gestures do
   end
 
   describe '#flick_screen_up' do
-    it 'should invoke #flick_up' do
+    it 'should invoke #_flick_screen_up' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:flick_up).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_flick_screen_up).with(options)
       dummy_instance.flick_screen_up(options)
     end
   end
 
   describe '#flick_screen_down' do
-    it 'should invoke #flick_down' do
+    it 'should invoke #_flick_screen_down' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:flick_down).with("* id:'content'", options)
+      expect(dummy_instance).to receive(:_flick_screen_down).with(options)
       dummy_instance.flick_screen_down(options)
+    end
+  end
+
+  describe '#_pan_screen_up' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_pan_screen_up)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_pan_screen_down' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_pan_screen_down)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_flick_screen_up' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_flick_screen_up)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_flick_screen_down' do
+    it 'should have an abstract implementation' do
+      expect{dummy_instance.send(:_flick_screen_down)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 end

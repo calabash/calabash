@@ -135,7 +135,19 @@ module Calabash
     def tap(query, options={})
       Query.ensure_valid_query(query)
 
-      _tap(query, {duration: 0.5}.merge(options))
+      gesture_options = options.dup
+      gesture_options[:at] ||= {}
+      gesture_options[:at][:x] ||= 50
+      gesture_options[:at][:y] ||= 50
+      gesture_options[:offset] ||= {}
+      gesture_options[:offset][:x] ||= 0
+      gesture_options[:offset][:y] ||= 0
+      gesture_options[:wait_after] ||= 0
+      gesture_options[:timeout] ||= 5
+
+      _tap(query, gesture_options)
+
+      sleep(gesture_options[:wait_after])
     end
 
     # Performs a `double_tap` on the (first) view that matches `query`.
@@ -143,7 +155,19 @@ module Calabash
     def double_tap(query, options={})
       Query.ensure_valid_query(query)
 
-      _double_tap(query, options)
+      gesture_options = options.dup
+      gesture_options[:at] ||= {}
+      gesture_options[:at][:x] ||= 50
+      gesture_options[:at][:y] ||= 50
+      gesture_options[:offset] ||= {}
+      gesture_options[:offset][:x] ||= 0
+      gesture_options[:offset][:y] ||= 0
+      gesture_options[:wait_after] ||= 0
+      gesture_options[:timeout] ||= 5
+
+      _double_tap(query, gesture_options)
+
+      sleep(gesture_options[:wait_after])
     end
 
     # Performs a `long_press` on the (first) view that matches `query`.
@@ -151,7 +175,20 @@ module Calabash
     def long_press(query, options={})
       Query.ensure_valid_query(query)
 
-      _long_press(query, options)
+      gesture_options = options.dup
+      gesture_options[:at] ||= {}
+      gesture_options[:at][:x] ||= 50
+      gesture_options[:at][:y] ||= 50
+      gesture_options[:offset] ||= {}
+      gesture_options[:offset][:x] ||= 0
+      gesture_options[:offset][:y] ||= 0
+      gesture_options[:wait_after] ||= 0
+      gesture_options[:timeout] ||= 5
+      gesture_options[:duration] ||= 1
+
+      _long_press(query, gesture_options)
+
+      sleep(gesture_options[:wait_after])
     end
 
     # Performs a `pan` on the (first) view that matches `query`.
@@ -159,7 +196,12 @@ module Calabash
     def pan(query, from, to, options={})
       Query.ensure_valid_query(query)
 
-      _pan(query, from, to, {duration: 0.5}.merge(options))
+      ensure_valid_swipe_params(from, to)
+
+      gesture_options = options.dup
+      gesture_options[:duration] ||= 0.5
+
+      _pan(query, from, to, gesture_options)
     end
 
     # Performs a `pan` between two elements.
@@ -168,7 +210,7 @@ module Calabash
       Query.ensure_valid_query(query_from)
       Query.ensure_valid_query(query_to)
 
-      _pan_between(query_from, query_to, options)
+      _pan_between(query_from, query_to, options.dup)
     end
 
     # Performs a `flick` on the (first) view that matches `query`.
@@ -176,7 +218,12 @@ module Calabash
     def flick(query, from, to, options={})
       Query.ensure_valid_query(query)
 
-      _flick(query, from, to, {duration: 0.5}.merge(options))
+      ensure_valid_swipe_params(from, to)
+
+      gesture_options = options.dup
+      gesture_options[:duration] ||= 0.5
+
+      _flick(query, from, to, gesture_options)
     end
 
     # Enter `text` into the currently focused view.
@@ -245,6 +292,59 @@ module Calabash
     end
 
     # @!visibility private
+    def ensure_valid_swipe_params(from, to)
+      unless from.is_a?(Hash)
+        message = "Invalid 'from' (#{from}). Expected a hash"
+        raise ArgumentError, message
+      end
+
+      unless from.include?(:x)
+        message = 'No from[:x] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+
+      unless from.include?(:y)
+        message = 'No from[:y] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+
+      unless (0..100).include?(from[:x])
+        message = 'Invalid from[:x] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+
+      unless (0..100).include?(from[:y])
+        message = 'Invalid from[:y] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+
+      unless to.is_a?(Hash)
+        message = "Invalid 'to' (#{to}). Expected a hash"
+        raise ArgumentError, message
+      end
+
+      unless to.include?(:x)
+        message = 'No to[:x] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+
+      unless to.include?(:y)
+        message = 'No to[:y] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+
+      unless (0..100).include?(to[:x])
+        message = 'Invalid to[:x] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+
+      unless (0..100).include?(to[:y])
+        message = 'Invalid to[:y] given. Expected a number between 0 and 100'
+        raise ArgumentError, message
+      end
+    end
+
+    # @!visibility private
     def _tap(query, options={})
         abstract_method!
     end
@@ -271,7 +371,7 @@ module Calabash
 
     # @!visibility private
     def _flick(query, from, to, options={})
-        abstract_method!
+      abstract_method!
     end
 
     # @!visibility private

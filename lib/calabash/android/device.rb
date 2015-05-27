@@ -228,6 +228,102 @@ module Calabash
       end
 
       # @!visibility private
+      def _tap(query, options={})
+        x = options[:at][:x]
+        y = options[:at][:y]
+        offset = options[:offset]
+
+        gesture_options =
+          {
+              x: x,
+              y: y,
+              offset: offset,
+          }
+
+        gesture = Gestures::Gesture.tap(gesture_options)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                 query_string: query.to_s,
+                                                 timeout: options[:timeout]))
+      end
+
+      # @!visibility private
+      def _double_tap(query, options={})
+        x = options[:at][:x]
+        y = options[:at][:y]
+        offset = options[:offset]
+
+        gesture_options =
+            {
+                x: x,
+                y: y,
+                offset: offset,
+            }
+
+        gesture = Gestures::Gesture.double_tap(gesture_options)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                          query_string: query.to_s,
+                                                          timeout: options[:timeout]))
+      end
+
+      # @!visibility private
+      def _long_press(query, options={})
+        x = options[:at][:x]
+        y = options[:at][:y]
+        offset = options[:offset]
+        duration = options[:duration]
+
+        gesture_options =
+          {
+              x: x,
+              y: y,
+              offset: offset,
+              time: duration
+          }
+
+        gesture = Gestures::Gesture.tap(gesture_options)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                 query_string: query.to_s,
+                                                 timeout: options[:timeout]))
+      end
+
+      # @!visibility private
+      def _pan(query, from, to, options={})
+        from_x = from[:x]
+        from_y = from[:y]
+        from = {x: from_x, y: from_y}
+        to_x = to[:x]
+        to_y = to[:y]
+        to = {x: to_x, y: to_y}
+        duration = options[:duration]
+
+        gesture = Gestures::Gesture.generate_swipe(from, to, time: duration)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                          query_string: query.to_s,
+                                                          timeout: options[:timeout]))
+      end
+
+      # @!visibility private
+      def _flick(query, from, to, options={})
+        from_x = from[:x]
+        from_y = from[:y]
+        from = {x: from_x, y: from_y}
+        to_x = to[:x]
+        to_y = to[:y]
+        to = {x: to_x, y: to_y}
+        duration = options[:duration]
+
+        gesture = Gestures::Gesture.generate_swipe(from, to, time: duration, flick: true)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                          query_string: query.to_s,
+                                                          timeout: options[:timeout]))
+      end
+
+      # @!visibility private
       def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
         result = adb.command('uninstall', package).lines.last
@@ -271,6 +367,17 @@ module Calabash
       end
 
       # @!visibility private
+      def execute_gesture(multi_touch_gesture)
+        request = HTTP::Request.new('gesture', json: multi_touch_gesture.to_json)
+
+        body = http_client.get(request, timeout: multi_touch_gesture.timeout + 10).body
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          raise "Failed to perform gesture. #{result['reason']}"
+        end
+      end
+
       def _enter_text(text)
         perform_action('keyboard_enter_text', text)
       end
