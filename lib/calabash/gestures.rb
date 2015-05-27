@@ -155,26 +155,26 @@ module Calabash
     # Performs a `pan` heading `left` on the (first) view that matches `query`.
     # @see pan
     def pan_left(query, options={})
-      pan(query, {x: 100, y: 50}, {x: 0, y: 50}, options)
+      pan(query, {x: 90, y: 50}, {x: 10, y: 50}, options)
     end
 
     # Performs a `pan` heading `right` on the (first) view that matches
     # `query`.
     # @see pan
     def pan_right(query, options={})
-      pan(query, {x: 0, y: 50}, {x: 100, y: 50}, options)
+      pan(query, {x: 10, y: 50}, {x: 90, y: 50}, options)
     end
 
     # Performs a `pan` heading `up` on the (first) view that matches `query`.
     # @see pan
     def pan_up(query, options={})
-      pan(query, {x: 50, y: 100}, {x: 50, y: 0}, options)
+      pan(query, {x: 50, y: 90}, {x: 50, y: 10}, options)
     end
 
     # Performs a `pan` heading `down` on the (first) view that matches `query`.
     # @see pan
     def pan_down(query, options={})
-      pan(query, {x: 50, y: 0}, {x: 50, y: 100}, options)
+      pan(query, {x: 50, y: 10}, {x: 50, y: 90}, options)
     end
 
     # Performs a `pan` heading `left` on the screen.
@@ -229,26 +229,26 @@ module Calabash
     # Performs a `flick` heading `left` on the (first) view that matches `query`.
     # @see flick
     def flick_left(query, options={})
-      flick(query, {x: 100, y: 50}, {x: 0, y: 50}, options)
+      flick(query, {x: 90, y: 50}, {x: 10, y: 50}, options)
     end
 
     # Performs a `flick` heading `right` on the (first) view that matches
     # `query`.
     # @see flick
     def flick_right(query, options={})
-      flick(query, {x: 0, y: 50}, {x: 100, y: 50}, options)
+      flick(query, {x: 10, y: 50}, {x: 90, y: 50}, options)
     end
 
     # Performs a `flick` heading `up` on the (first) view that matches `query`.
     # @see flick
     def flick_up(query, options={})
-      flick(query, {x: 50, y: 100}, {x: 50, y: 0}, options)
+      flick(query, {x: 50, y: 90}, {x: 50, y: 10}, options)
     end
 
     # Performs a `flick` heading `down` on the (first) view that matches `query`.
     # @see flick
     def flick_down(query, options={})
-      flick(query, {x: 50, y: 0}, {x: 50, y: 100}, options)
+      flick(query, {x: 50, y: 10}, {x: 50, y: 90}, options)
     end
 
     # Performs a `flick` heading `left` on the screen.
