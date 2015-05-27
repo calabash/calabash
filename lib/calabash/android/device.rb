@@ -269,6 +269,11 @@ module Calabash
           raise "Could not clear app: #{result}"
         end
       end
+
+      # @!visibility private
+      def _enter_text(text)
+        perform_action('keyboard_enter_text', text)
+      end
     end
   end
 end
