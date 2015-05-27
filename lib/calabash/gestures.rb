@@ -98,9 +98,9 @@ module Calabash
     # @param [String] query A query describing the view to pan inside.
     # @param [Hash] options Options for modifying the details of the pan.
     #
-    # @option options [Hash] :from {:x, :y} The point at which the gesture
+    # @option options [Hash] :from ({:x, :y}) The point at which the gesture
     #   originates from.
-    # @option options [Hash] :to {:x, :y} The point at which the gesture
+    # @option options [Hash] :to ({:x, :y}) The point at which the gesture
     #   ends.
     # @option options [Number] :wait_after (0) How many seconds to wait after
     #   issuing the pan.
