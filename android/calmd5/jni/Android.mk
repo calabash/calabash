@@ -6,7 +6,7 @@ LOCAL_PATH := $(call my-dir)
 #
 include $(CLEAR_VARS)
 LOCAL_MODULE := calmd5-legacy
-LOCAL_SRC_FILES := md5.c
+LOCAL_SRC_FILES := main.c md5.c
 
 include $(BUILD_EXECUTABLE)
 
@@ -15,7 +15,7 @@ include $(BUILD_EXECUTABLE)
 #
 include $(CLEAR_VARS)
 LOCAL_MODULE := calmd5
-LOCAL_SRC_FILES := md5.c
+LOCAL_SRC_FILES := main.c md5.c
 LOCAL_LDFLAGS := -fPIE -pie
 
 include $(BUILD_EXECUTABLE)
