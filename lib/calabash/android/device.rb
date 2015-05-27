@@ -290,6 +290,23 @@ module Calabash
       end
 
       # @!visibility private
+      def _pan(query, from, to, options={})
+        from_x = from[:x]
+        from_y = from[:y]
+        from = {x: from_x, y: from_y}
+        to_x = to[:x]
+        to_y = to[:y]
+        to = {x: to_x, y: to_y}
+        duration = options[:duration]
+
+        gesture = Gestures::Gesture.generate_swipe(from, to, time: duration)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                          query_string: query.to_s,
+                                                          timeout: options[:timeout]))
+      end
+
+      # @!visibility private
       def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
         result = adb.command('uninstall', package).lines.last
