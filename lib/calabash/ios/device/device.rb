@@ -8,10 +8,9 @@ module Calabash
       include Calabash::IOS::Routes::RouteMixin
       include Calabash::IOS::Routes::MapRoute
       include Calabash::IOS::Routes::UIARoute
+      include Calabash::IOS::StatusBarMixin
 
       include Calabash::IOS::Gestures
-
-      include Calabash::IOS::StatusBar
 
       # @todo Should these be public?
       # @todo If public, document!
