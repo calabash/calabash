@@ -1,7 +1,9 @@
 require 'calabash'
 require 'calabash/ios'
-
 World(Calabash::IOS)
+
+require 'calabash/ios/cucumber'
+World(Calabash::IOS::Cucumber)
 
 Calabash::Application.default = Calabash::IOS::Application.default_from_environment
 
