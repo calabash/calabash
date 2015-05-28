@@ -9,7 +9,7 @@ describe Calabash::IOS::StatusBarMixin do
   end
 
   it '#status_bar_orientation' do
-    query = '/orientation'
+    query = nil
     route = :orientation
     parameters = :status_bar
     expect(device).to receive(:map_route).with(query, route, parameters).and_return ['o']

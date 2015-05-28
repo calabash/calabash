@@ -10,7 +10,7 @@ module Calabash
       # @return [String] Returns the device orientation as one of
       #  `{'down' | 'up' | 'left' | 'right'}`.
       def status_bar_orientation
-        map_route('/orientation', :orientation, :status_bar).first
+        map_route(nil, :orientation, :status_bar).first
       end
     end
   end
