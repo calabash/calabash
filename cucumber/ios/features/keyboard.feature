@@ -1,4 +1,3 @@
-@wip
 Feature: say hello to the first view
 
   Background: I should see the first view
