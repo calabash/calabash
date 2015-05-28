@@ -113,11 +113,20 @@ describe Calabash::IOS::Routes::RouteMixin do
     end.to raise_error error_class
   end
 
-  it '#route_success' do
-    hash = {'results' => []}
-    actual = device.send(:route_success, hash, 'query')
-    expect(actual).to be_a_kind_of Calabash::QueryResult
-    expect(actual.query).to be == 'query'
-    expect(actual).to be == []
+  describe '#route_success' do
+    let(:hash) { {'results' => []} }
+
+    it 'returns a query result if query is not nil' do
+      actual = device.send(:route_success, hash, 'query')
+      expect(actual).to be_a_kind_of Calabash::QueryResult
+      expect(actual.query).to be == 'query'
+      expect(actual).to be == []
+    end
+
+    it 'returns an Array if query is nil' do
+      actual = device.send(:route_success, hash, nil)
+      expect(actual).to be_a_kind_of Array
+      expect(actual).to be == []
+    end
   end
 end
