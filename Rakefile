@@ -19,6 +19,14 @@ begin
 rescue LoadError => _
 end
 
+namespace :cucumber do
+  task :ios do
+    Dir.chdir('cucumber/ios/') do
+      sh 'bundle exec cucumber -t @wip'
+    end
+  end
+end
+
 namespace :android do
   task :ensure_files_exist do
     Calabash::Build::AndroidTestServer.ensure_test_server_exists
