@@ -44,7 +44,6 @@ Public License.}
   spec.add_dependency 'httpclient', '~> 2.6'
   spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
   spec.add_dependency 'run_loop', '>= 1.3.3', '< 2.0'
-  spec.add_dependency 'retriable', '~> 2.0'
 
   # These dependencies should match the xamarin-test-cloud dependencies.
   spec.add_dependency 'rubyzip', '~> 1.1'
