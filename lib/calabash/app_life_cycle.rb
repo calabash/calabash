@@ -1,5 +1,5 @@
 module Calabash
-  module Operations
+  module AppLifeCycle
 
     # @todo Needs docs!
     def query(query, *args)

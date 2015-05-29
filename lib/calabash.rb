@@ -5,7 +5,7 @@ module Calabash
   require 'calabash/color'
   require 'calabash/utility'
   require 'calabash/application'
-  require 'calabash/operations'
+  require 'calabash/app_life_cycle'
   require 'calabash/managed'
   require 'calabash/device'
   require 'calabash/http'
@@ -23,7 +23,7 @@ module Calabash
 
 
   include Utility
-  include Calabash::Operations
+  include Calabash::AppLifeCycle
   include Calabash::Wait
   include Calabash::Screenshot
   include Calabash::Gestures
