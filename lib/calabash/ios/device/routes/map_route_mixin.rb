@@ -1,7 +1,7 @@
 module Calabash
   module IOS
     module Routes
-      module MapRoute
+      module MapRouteMixin
 
         def map_route(query, method_name, *method_args)
           request = make_map_request(query, method_name, *method_args)

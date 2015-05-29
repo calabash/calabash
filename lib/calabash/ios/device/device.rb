@@ -6,7 +6,7 @@ module Calabash
 
       include Calabash::IOS::PhysicalDeviceMixin
       include Calabash::IOS::Routes::RouteMixin
-      include Calabash::IOS::Routes::MapRoute
+      include Calabash::IOS::Routes::MapRouteMixin
       include Calabash::IOS::Routes::UIARoute
       include Calabash::IOS::StatusBarMixin
 
