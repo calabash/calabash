@@ -5,7 +5,7 @@ module Calabash
   require 'calabash/color'
   require 'calabash/utility'
   require 'calabash/application'
-  require 'calabash/operations'
+  require 'calabash/app_life_cycle'
   require 'calabash/managed'
   require 'calabash/device'
   require 'calabash/http'
@@ -23,7 +23,7 @@ module Calabash
 
 
   include Utility
-  include Calabash::Operations
+  include Calabash::AppLifeCycle
   include Calabash::Wait
   include Calabash::Screenshot
   include Calabash::Gestures
@@ -118,6 +118,12 @@ module Calabash
     end
 
     _clear_app_data(path_or_application)
+  end
+
+  # @todo Needs a better home.
+  # @todo Needs docs!
+  def query(query, *args)
+    Calabash::Device.default.map_route(query, :query, *args)
   end
 
   def self.new_embed_method!(method)

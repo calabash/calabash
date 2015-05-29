@@ -1,6 +1,6 @@
-describe Calabash::Operations do
-  let(:operations_class) {Class.new {include Calabash::Operations}}
-  let(:operations) {operations_class.new}
+describe Calabash::AppLifeCycle do
+  let(:life_cycle_class) {Class.new {include Calabash::AppLifeCycle}}
+  let(:life_cycle) {life_cycle_class.new}
   let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
   let(:dummy_device) {dummy_device_class.new}
 
@@ -15,7 +15,7 @@ describe Calabash::Operations do
       expect(options).to receive(:dup).and_return(dup_options)
       expect(Calabash::Device.default).to receive(:start_app).with(app, dup_options)
 
-      operations._start_app(app, options)
+      life_cycle._start_app(app, options)
     end
   end
 
@@ -24,7 +24,7 @@ describe Calabash::Operations do
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
       expect(Calabash::Device.default).to receive(:stop_app)
 
-      operations._stop_app
+      life_cycle._stop_app
     end
   end
 end
