@@ -15,7 +15,6 @@ describe Calabash::Wait do
       expect(default_options[:timeout]).to eq(Calabash::Environment::WAIT_TIMEOUT)
       expect(default_options[:message].call({timeout: 10})).to eq("Timed out after waiting for 10 seconds...")
       expect(default_options[:retry_frequency]).to eq(0.3)
-      expect(default_options[:post_timeout]).to eq(0)
       expect(default_options[:exception_class]).to eq(Calabash::Wait::TimeoutError)
       expect(default_options[:screenshot_on_error]).to eq(true)
 
@@ -28,7 +27,6 @@ describe Calabash::Wait do
       Calabash::Wait.default_options[:timeout] = 60
       Calabash::Wait.default_options[:message] = 'test'
       Calabash::Wait.default_options[:retry_frequency] = 1
-      Calabash::Wait.default_options[:post_timeout] = 10
       Calabash::Wait.default_options[:exception_class] = String
       Calabash::Wait.default_options[:screenshot_on_error] = false
 
@@ -37,7 +35,6 @@ describe Calabash::Wait do
       expect(default_options[:timeout]).to eq(60)
       expect(default_options[:message]).to eq('test')
       expect(default_options[:retry_frequency]).to eq(1)
-      expect(default_options[:post_timeout]).to eq(10)
       expect(default_options[:exception_class]).to eq(String)
       expect(default_options[:screenshot_on_error]).to eq(false)
 
