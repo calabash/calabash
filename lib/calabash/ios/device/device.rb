@@ -5,7 +5,7 @@ module Calabash
     class Device < ::Calabash::Device
 
       include Calabash::IOS::PhysicalDeviceMixin
-      include Calabash::IOS::Routes::RouteMixin
+      include Calabash::IOS::Routes::HandleRouteMixin
       include Calabash::IOS::Routes::MapRouteMixin
       include Calabash::IOS::Routes::UIARouteMixin
       include Calabash::IOS::StatusBarMixin

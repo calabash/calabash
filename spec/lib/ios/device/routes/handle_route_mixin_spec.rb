@@ -1,10 +1,10 @@
-describe Calabash::IOS::Routes::RouteMixin do
+describe Calabash::IOS::Routes::HandleRouteMixin do
 
   let(:error_class) { Calabash::IOS::Routes::RouteError }
 
   let(:device) do
     Class.new do
-      include Calabash::IOS::Routes::RouteMixin
+      include Calabash::IOS::Routes::HandleRouteMixin
 
       attr_reader :http_client
 

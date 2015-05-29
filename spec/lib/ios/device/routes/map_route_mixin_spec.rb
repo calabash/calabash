@@ -4,7 +4,7 @@ describe Calabash::IOS::Routes::MapRouteMixin do
 
   let(:device) do
     Class.new do
-      include Calabash::IOS::Routes::RouteMixin
+      include Calabash::IOS::Routes::HandleRouteMixin
       include Calabash::IOS::Routes::MapRouteMixin
     end.new
   end

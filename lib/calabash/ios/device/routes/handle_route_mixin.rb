@@ -1,7 +1,7 @@
 module Calabash
   module IOS
     module Routes
-      module RouteMixin
+      module HandleRouteMixin
 
         private
 
