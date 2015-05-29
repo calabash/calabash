@@ -9,14 +9,18 @@ module Calabash
         {
             # default upper limit on how long to wait
             timeout: Environment::WAIT_TIMEOUT,
+
             # default message (String or Proc) if timeout occurs
             message: lambda do |options|
               "Timed out after waiting for #{options[:timeout]} seconds..."
             end,
+
             # default polling frequency for waiting
             retry_frequency: 0.3,
+
             # default exception type to raise when the timeout is exceeded
             exception_class: Calabash::Wait::TimeoutError,
+
             # whether to embed a screenshot on failure
             screenshot_on_error: true
         }
