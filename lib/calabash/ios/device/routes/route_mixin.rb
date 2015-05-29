@@ -50,7 +50,11 @@ module Calabash
         end
 
         def route_success(hash, query)
-          Calabash::QueryResult.create(hash['results'], query)
+          if query.nil?
+            hash['results']
+          else
+            Calabash::QueryResult.create(hash['results'], query)
+          end
         end
       end
     end

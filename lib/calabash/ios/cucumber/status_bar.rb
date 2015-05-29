@@ -1,21 +1,14 @@
 module Calabash
   module IOS
-
-    # Contains methods for interacting with the status bar.
-    module StatusBar
-
+    module Cucumber
       # Returns the home button position relative to the status bar.
-      #
-      # @note You should always prefer to use this method over
-      #  `device_orientation`.
       #
       # @note This method works even if a status bar is not visible.
       #
       # @return [String] Returns the device orientation as one of
       #  `{'down' | 'up' | 'left' | 'right'}`.
-      # @todo Decide what to pass as the 'query' parameter.
       def status_bar_orientation
-        map_route('/orientation', :orientation, :status_bar).first
+        Device.default.status_bar_orientation
       end
 
       # Is the device in the portrait orientation?
