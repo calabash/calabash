@@ -27,10 +27,8 @@ module Calabash
     require 'calabash/ios/environment'
     require 'calabash/ios/device/physical_device_mixin'
     require 'calabash/ios/device/device'
-    require 'calabash/ios/operations'
     require 'calabash/ios/server'
     require 'calabash/ios/application'
 
-    include Calabash::IOS::Operations
   end
 end
