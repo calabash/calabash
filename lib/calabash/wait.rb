@@ -107,10 +107,11 @@ module Calabash
     # If the block does not evaluate to truthy within the given timeout
     # an TimeoutError will be raised.
     #
-    # The default timeout will be `Environment::WAIT_TIMEOUT`.
+    # The default timeout will be `Wait.default_options[:timeout]`.
     #
     # @see Calabash::Wait#with_timeout
     # @see Calabash::Environment::WAIT_TIMEOUT
+    # @see Calabash::Wait.default_options
     #
     # @param [String, Proc] timeout_message The error message if timed out.
     # @param [Hash] options Used to control the behavior of the wait.
