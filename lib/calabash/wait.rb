@@ -186,8 +186,9 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-               {exception_class: timeout_options[:exception_class],
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
         views_exist?(queries)
       end
@@ -215,8 +216,9 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-               {exception_class: timeout_options[:exception_class],
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
         !view_exists?(query)
       end
@@ -244,8 +246,9 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-               {exception_class: timeout_options[:exception_class],
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
         !views_exist?(queries)
       end
