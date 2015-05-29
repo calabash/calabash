@@ -120,6 +120,12 @@ module Calabash
     _clear_app_data(path_or_application)
   end
 
+  # @todo Needs a better home.
+  # @todo Needs docs!
+  def query(query, *args)
+    Calabash::Device.default.map_route(query, :query, *args)
+  end
+
   def self.new_embed_method!(method)
     EmbeddingContext.new_embed_method(method)
   end

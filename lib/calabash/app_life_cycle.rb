@@ -1,11 +1,6 @@
 module Calabash
   module AppLifeCycle
 
-    # @todo Needs docs!
-    def query(query, *args)
-      Calabash::Device.default.map_route(query, :query, *args)
-    end
-
     # @!visibility private
     def _start_app(application, options={})
       test_options = options.dup
