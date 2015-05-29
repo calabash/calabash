@@ -103,15 +103,27 @@ module Calabash
 
     # Evaluates the given block until the block evaluates to truthy. If the
     # block raises an error, it is **not** rescued.
-    # If the block does not evaluate to truthy within the given `timeout`
+    #
+    # If the block does not evaluate to truthy within the given timeout
     # an TimeoutError will be raised.
     #
-    # @param [Number] timeout The time before failing
-    # @param [String, Proc] timeout_message The error message if timed out
+    # The default timeout will be `Wait.default_options[:timeout]`.
+    #
     # @see Calabash::Wait#with_timeout
+    # @see Calabash::Environment::WAIT_TIMEOUT
+    # @see Calabash::Wait.default_options
+    #
+    # @param [String, Proc] timeout_message The error message if timed out.
+    # @param [Hash] options Used to control the behavior of the wait.
+    # @option options [Number] :timeout (30) How long to wait before timing out.
+    # @option options [Number] :retry_frequency (0.3) How often to check for
+    #  the condition block to be truthy.
+    # @option options [Boolean] :screenshot_on_error (true) Take a screenshot
+    #  if the block fails to be truthy or an error is raised in the block.
     # @return The returned value of `block` if it is truthy
-    def wait_for(timeout, timeout_message, options={}, &block)
+    def wait_for(timeout_message, options={}, &block)
       wait_options = Wait.default_options.merge(options)
+      timeout = wait_options[:timeout]
 
       with_timeout(timeout, timeout_message, wait_options[:exception_class]) do
         loop do
@@ -144,9 +156,10 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-                {exception_class: timeout_options[:exception_class],
-                 retry_frequency: timeout_options[:retry_frequency]}) do
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
+                retry_frequency: timeout_options[:retry_frequency]}) do
         view_exists?(query)
       end.first
     end
@@ -174,8 +187,9 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-               {exception_class: timeout_options[:exception_class],
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
         views_exist?(queries)
       end
@@ -203,8 +217,9 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-               {exception_class: timeout_options[:exception_class],
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
         !view_exists?(query)
       end
@@ -232,8 +247,9 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-               {exception_class: timeout_options[:exception_class],
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
         !views_exist?(queries)
       end
