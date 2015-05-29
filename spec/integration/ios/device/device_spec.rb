@@ -20,6 +20,8 @@ describe Calabash::IOS::Device do
 
   let(:app) { Calabash::IOS::Application.new(abp) }
 
+  before { bridge.uninstall }
+
   it '#stop_app' do
     bridge.launch
     expect(device.stop_app).to be_truthy
@@ -62,31 +64,32 @@ describe Calabash::IOS::Device do
     end
   end
 
-  describe '#start_app' do
-    before { device.ensure_app_installed(app) }
-    it 'it starts the app on a simulator' do
-      device.start_app(app)
-    end
-  end
+  describe 'Starting, clearing app data, and uninstalling' do
+    before { bridge.install }
 
-  describe '#clear_app_data' do
-    before { device.ensure_app_installed(app) }
-    it 'clears the app data on a simulator' do
-      device.clear_app_data(app)
+    describe '#start_app' do
+      it 'it starts the app on a simulator' do
+        device.start_app(app)
+      end
     end
-  end
 
-  describe '#uninstall_app' do
-    before { device.ensure_app_installed(app) }
-    it 'uninstalls the app from a simulator' do
-      device.uninstall_app(app)
+    describe '#clear_app_data' do
+      it 'clears the app data on a simulator' do
+        device.clear_app_data(app)
+      end
+    end
+
+    describe '#uninstall_app' do
+      it 'uninstalls the app from a simulator' do
+        device.uninstall_app(app)
+      end
     end
   end
 
   describe 'runtime API' do
 
     before do
-      device.ensure_app_installed(app)
+      bridge.install
       device.start_app(app)
     end
 
