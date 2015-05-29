@@ -112,7 +112,7 @@ describe Calabash::Wait do
 
       expect(dummy).to receive(:with_timeout).with(10, 'msg', my_error)
 
-      dummy.wait_for(10, 'msg', exception_class: my_error, retry_frequency: 0)
+      dummy.wait_for('msg', timeout: 10, exception_class: my_error, retry_frequency: 0)
     end
 
     it 'should invoke the block given in with_timeout continuously until it returns truthy' do
@@ -128,7 +128,7 @@ describe Calabash::Wait do
 
       expect(dummy).to receive(:test).exactly(10).times.and_call_original
 
-      dummy.wait_for(10, 'msg', exception_class: my_error, retry_frequency: 0) do
+      dummy.wait_for('msg', timeout: 10, exception_class: my_error, retry_frequency: 0) do
         dummy.test
       end
     end
@@ -147,7 +147,7 @@ describe Calabash::Wait do
       expect(dummy).to receive(:test).exactly(10).times.and_call_original
       expect(dummy).to receive(:sleep).exactly(9).times.with(2)
 
-      dummy.wait_for(10, 'msg', exception_class: my_error, retry_frequency: 2) do
+      dummy.wait_for('msg', timeout: 10, exception_class: my_error, retry_frequency: 2) do
         dummy.test
       end
     end
@@ -168,7 +168,7 @@ describe Calabash::Wait do
       expect(dummy).to receive(:test).exactly(10).times.and_call_original
       expect(dummy).to receive(:sleep).exactly(9).times.with(5)
 
-      dummy.wait_for(10, 'msg') do
+      dummy.wait_for('msg', timeout: 10) do
         dummy.test
       end
     end
@@ -176,7 +176,7 @@ describe Calabash::Wait do
     it 'should return the value of the block given' do
       dummy.define_singleton_method(:test) {'truthy'}
 
-      expect(dummy.wait_for(10, 'msg') do
+      expect(dummy.wait_for('msg', timeout: 10) do
         dummy.test
       end).to eq('truthy')
     end
@@ -442,8 +442,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:view_exists?).with(query).and_return([{}])
-      expect(dummy).to receive(:wait_for).with(default_options[:timeout], anything,
-                                               {exception_class: Calabash::Wait::ViewNotFoundError,
+      expect(dummy).to receive(:wait_for).with(anything,
+                                               {timeout: default_options[:timeout],
+                                                exception_class: Calabash::Wait::ViewNotFoundError,
                                                 retry_frequency: default_options[:retry_frequency]}).and_call_original
 
       dummy.wait_for_view(query)
@@ -459,8 +460,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:view_exists?).with(query).and_return([{}])
-      expect(dummy).to receive(:wait_for).with(timeout, message,
-                                               {exception_class: exception_class,
+      expect(dummy).to receive(:wait_for).with(message,
+                                               {timeout: timeout,
+                                                exception_class: exception_class,
                                                 retry_frequency: retry_frequency}).and_call_original
 
       dummy.wait_for_view(query, timeout: timeout, message: message,
@@ -532,8 +534,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:views_exist?).with([query]).and_return([[{}]])
-      expect(dummy).to receive(:wait_for).with(default_options[:timeout], anything,
-                                               {exception_class: Calabash::Wait::ViewNotFoundError,
+      expect(dummy).to receive(:wait_for).with(anything,
+                                               {timeout: default_options[:timeout],
+                                                exception_class: Calabash::Wait::ViewNotFoundError,
                                                 retry_frequency: default_options[:retry_frequency]}).and_call_original
 
       dummy.wait_for_views(query)
@@ -549,8 +552,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:views_exist?).with([query]).and_return([[{}]])
-      expect(dummy).to receive(:wait_for).with(timeout, message,
-                                               {exception_class: exception_class,
+      expect(dummy).to receive(:wait_for).with(message,
+                                               {timeout: timeout,
+                                                exception_class: exception_class,
                                                 retry_frequency: retry_frequency}).and_call_original
 
       dummy.wait_for_views(query, timeout: timeout, message: message,
@@ -589,8 +593,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:view_exists?).with(query).and_return(false)
-      expect(dummy).to receive(:wait_for).with(default_options[:timeout], anything,
-                                               {exception_class: Calabash::Wait::ViewFoundError,
+      expect(dummy).to receive(:wait_for).with(anything,
+                                               {timeout: default_options[:timeout],
+                                                exception_class: Calabash::Wait::ViewFoundError,
                                                 retry_frequency: default_options[:retry_frequency]}).and_call_original
 
       dummy.wait_for_no_view(query)
@@ -606,8 +611,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:view_exists?).with(query).and_return(false)
-      expect(dummy).to receive(:wait_for).with(timeout, message,
-                                               {exception_class: exception_class,
+      expect(dummy).to receive(:wait_for).with(message,
+                                               {timeout: timeout,
+                                                exception_class: exception_class,
                                                 retry_frequency: retry_frequency}).and_call_original
 
       dummy.wait_for_no_view(query, timeout: timeout, message: message,
@@ -669,8 +675,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:views_exist?).with([query]).and_return(false)
-      expect(dummy).to receive(:wait_for).with(default_options[:timeout], anything,
-                                               {exception_class: Calabash::Wait::ViewFoundError,
+      expect(dummy).to receive(:wait_for).with(anything,
+                                               {timeout: default_options[:timeout],
+                                                exception_class: Calabash::Wait::ViewFoundError,
                                                 retry_frequency: default_options[:retry_frequency]}).and_call_original
 
       dummy.wait_for_no_views(query)
@@ -686,8 +693,9 @@ describe Calabash::Wait do
 
       expect(dummy).not_to receive(:sleep)
       expect(dummy).to receive(:views_exist?).with([query]).and_return(false)
-      expect(dummy).to receive(:wait_for).with(timeout, message,
-                                               {exception_class: exception_class,
+      expect(dummy).to receive(:wait_for).with(message,
+                                               {timeout: timeout,
+                                                exception_class: exception_class,
                                                 retry_frequency: retry_frequency}).and_call_original
 
       dummy.wait_for_no_views(query, timeout: timeout, message: message,
