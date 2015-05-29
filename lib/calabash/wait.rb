@@ -120,8 +120,9 @@ module Calabash
     # @option options [Boolean] :screenshot_on_error (true) Take a screenshot
     #  if the block fails to be truthy or an error is raised in the block.
     # @return The returned value of `block` if it is truthy
-    def wait_for(timeout, timeout_message, options={}, &block)
+    def wait_for(timeout_message, options={}, &block)
       wait_options = Wait.default_options.merge(options)
+      timeout = wait_options[:timeout]
 
       with_timeout(timeout, timeout_message, wait_options[:exception_class]) do
         loop do
@@ -154,9 +155,10 @@ module Calabash
 
       timeout_options = defaults.merge(options)
 
-      wait_for(timeout_options[:timeout], timeout_options[:message],
-                {exception_class: timeout_options[:exception_class],
-                 retry_frequency: timeout_options[:retry_frequency]}) do
+      wait_for(timeout_options[:message],
+               {timeout: timeout_options[:timeout],
+                exception_class: timeout_options[:exception_class],
+                retry_frequency: timeout_options[:retry_frequency]}) do
         view_exists?(query)
       end.first
     end
