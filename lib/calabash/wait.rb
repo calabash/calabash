@@ -103,12 +103,22 @@ module Calabash
 
     # Evaluates the given block until the block evaluates to truthy. If the
     # block raises an error, it is **not** rescued.
-    # If the block does not evaluate to truthy within the given `timeout`
+    #
+    # If the block does not evaluate to truthy within the given timeout
     # an TimeoutError will be raised.
     #
-    # @param [Number] timeout The time before failing
-    # @param [String, Proc] timeout_message The error message if timed out
+    # The default timeout will be `Environment::WAIT_TIMEOUT`.
+    #
     # @see Calabash::Wait#with_timeout
+    # @see Calabash::Environment::WAIT_TIMEOUT
+    #
+    # @param [String, Proc] timeout_message The error message if timed out.
+    # @param [Hash] options Used to control the behavior of the wait.
+    # @option options [Number] :timeout (30) How long to wait before timing out.
+    # @option options [Number] :retry_frequency (0.3) How often to check for
+    #  the condition block to be truthy.
+    # @option options [Boolean] :screenshot_on_error (true) Take a screenshot
+    #  if the block fails to be truthy or an error is raised in the block.
     # @return The returned value of `block` if it is truthy
     def wait_for(timeout, timeout_message, options={}, &block)
       wait_options = Wait.default_options.merge(options)
