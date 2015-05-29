@@ -16,11 +16,11 @@ module Calabash
 
     require 'calabash/ios/device/runtime_attributes'
     require 'calabash/ios/device/routes/error'
-    require 'calabash/ios/device/routes/route_mixin'
-    require 'calabash/ios/device/routes/map_route'
-    require 'calabash/ios/device/routes/uia_route'
+    require 'calabash/ios/device/routes/handle_route_mixin'
+    require 'calabash/ios/device/routes/map_route_mixin'
+    require 'calabash/ios/device/routes/uia_route_mixin'
 
-    require 'calabash/ios/device/gestures'
+    require 'calabash/ios/device/gestures_mixin'
 
     require 'calabash/ios/device/status_bar_mixin'
 

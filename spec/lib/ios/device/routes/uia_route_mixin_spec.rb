@@ -1,11 +1,11 @@
-describe Calabash::IOS::Routes::UIARoute do
+describe Calabash::IOS::Routes::UIARouteMixin do
 
   let(:route_error) { Calabash::IOS::Routes::RouteError }
 
   let(:device) do
     Class.new do
-      include Calabash::IOS::Routes::RouteMixin
-      include Calabash::IOS::Routes::UIARoute
+      include Calabash::IOS::Routes::HandleRouteMixin
+      include Calabash::IOS::Routes::UIARouteMixin
 
       attr_reader :run_loop, :http_client, :uia_strategy
 

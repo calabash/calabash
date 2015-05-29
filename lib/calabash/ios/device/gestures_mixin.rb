@@ -1,20 +1,6 @@
 module Calabash
   module IOS
-    module Gestures
-
-      # Unlike the Calabash Android server, the iOS server does not wait
-      # before gestures.  We need to do this in the client for now.
-      # @todo Replace with waiting on the iOS Server
-      def gesture_waiter
-        @gesture_waiter ||= lambda do |reference_to_self|
-          Class.new do
-            include Calabash::Wait
-            define_method(:query) do |query, *args|
-              reference_to_self.map_route(query, :query, *args)
-            end
-          end.new
-        end.call(self)
-      end
+    module GesturesMixin
 
       # @todo Extract offset from options
       # @todo Needs unit tests.
@@ -31,6 +17,22 @@ module Calabash
         # 4. Return the view found by query - the view that was touched.
         # @todo For review:  Should gestures return views?
         Calabash::QueryResult.create([view_to_touch], query)
+      end
+
+      private
+
+      # Unlike the Calabash Android server, the iOS server does not wait
+      # before gestures.  We need to do this in the client for now.
+      # @todo Replace with waiting on the iOS Server
+      def gesture_waiter
+        @gesture_waiter ||= lambda do |reference_to_self|
+          Class.new do
+            include Calabash::Wait
+            define_method(:query) do |query, *args|
+              reference_to_self.map_route(query, :query, *args)
+            end
+          end.new
+        end.call(self)
       end
     end
   end

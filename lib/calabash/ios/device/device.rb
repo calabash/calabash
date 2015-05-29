@@ -5,12 +5,12 @@ module Calabash
     class Device < ::Calabash::Device
 
       include Calabash::IOS::PhysicalDeviceMixin
-      include Calabash::IOS::Routes::RouteMixin
-      include Calabash::IOS::Routes::MapRoute
-      include Calabash::IOS::Routes::UIARoute
+      include Calabash::IOS::Routes::HandleRouteMixin
+      include Calabash::IOS::Routes::MapRouteMixin
+      include Calabash::IOS::Routes::UIARouteMixin
       include Calabash::IOS::StatusBarMixin
 
-      include Calabash::IOS::Gestures
+      include Calabash::IOS::GesturesMixin
 
       # @todo Should these be public?
       # @todo If public, document!

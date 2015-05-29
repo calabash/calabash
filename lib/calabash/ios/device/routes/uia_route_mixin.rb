@@ -1,7 +1,7 @@
 module Calabash
   module IOS
     module Routes
-      module UIARoute
+      module UIARouteMixin
 
         require 'run_loop'
         require 'edn'

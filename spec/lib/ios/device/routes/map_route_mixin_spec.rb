@@ -1,11 +1,11 @@
-describe Calabash::IOS::Routes::MapRoute do
+describe Calabash::IOS::Routes::MapRouteMixin do
 
   let(:route_error) { Calabash::IOS::Routes::RouteError }
 
   let(:device) do
     Class.new do
-      include Calabash::IOS::Routes::RouteMixin
-      include Calabash::IOS::Routes::MapRoute
+      include Calabash::IOS::Routes::HandleRouteMixin
+      include Calabash::IOS::Routes::MapRouteMixin
     end.new
   end
 
