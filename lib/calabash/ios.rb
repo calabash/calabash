@@ -22,15 +22,14 @@ module Calabash
 
     require 'calabash/ios/device/gestures_mixin'
 
-    require 'calabash/ios/device/status_bar_mixin'
-
     require 'calabash/ios/environment'
     require 'calabash/ios/device/physical_device_mixin'
+    require 'calabash/ios/device/status_bar_mixin'
+    require 'calabash/ios/device/keyboard_mixin'
     require 'calabash/ios/device/device'
+
     require 'calabash/ios/operations'
     require 'calabash/ios/server'
     require 'calabash/ios/application'
-
-    include Calabash::IOS::Operations
   end
 end
