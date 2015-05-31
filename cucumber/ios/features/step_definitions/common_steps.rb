@@ -5,10 +5,8 @@ Given(/^I see the (first|second) tab$/) do |tab|
   wait_for_view("view marked:'#{expected_view}'")
 end
 
-Then(/^I type "([^"]*)"$/) do |text_to_type|
+And(/^I touch the text field$/) do
   tap('textField')
-  wait_for_keyboard
-  query('textField', [{'setText' => text_to_type}])
 end
 
 When(/^I search for cell "([^"]*)" scrolling (up|down|left|right)$/) do |mark, direction|
