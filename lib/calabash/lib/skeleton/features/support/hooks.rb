@@ -6,7 +6,6 @@ Before do |scenario|
   end
 
   AppLifeCycle.on_new_scenario(scenario)
-  Cucumber.wants_to_quit = true
 
   start_app
 end
