@@ -96,3 +96,36 @@ ARGV.concat [ '--readline',
 
 
 Calabash::IRBRC.message_of_the_day
+
+
+def print_marks(marks, max_width)
+  counter = -1
+  marks.sort.each { |elm|
+    printf("%4s %#{max_width + 2}s => %s\n", "[#{counter = counter + 1}]", elm[0], elm[1])
+  }
+end
+
+def accessibility_marks(kind, opts={})
+  opts = {:print => true, :return => false}.merge(opts)
+
+  kinds = [:id, :label]
+  raise "'#{kind}' is not one of '#{kinds}'" unless kinds.include?(kind)
+
+  res = Array.new
+  max_width = 0
+  query('*').each { |view|
+    aid = view[kind.to_s]
+    unless aid.nil? or aid.eql?('')
+      cls = view['class']
+      len = cls.length
+      max_width = len if len > max_width
+      res << [cls, aid]
+    end
+  }
+  print_marks(res, max_width) if opts[:print]
+  opts[:return] ? res : nil
+end
+
+def ids
+  accessibility_marks(:id)
+end
