@@ -10,6 +10,7 @@ module Calabash
       include Calabash::IOS::Routes::UIARouteMixin
       include Calabash::IOS::StatusBarMixin
       include Calabash::IOS::KeyboardMixin
+      include Calabash::IOS::TextMixin
 
       include Calabash::IOS::GesturesMixin
 

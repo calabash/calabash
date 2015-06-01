@@ -26,6 +26,8 @@ module Calabash
     require 'calabash/ios/device/physical_device_mixin'
     require 'calabash/ios/device/status_bar_mixin'
     require 'calabash/ios/device/keyboard_mixin'
+    require 'calabash/ios/device/text_mixin'
+
     require 'calabash/ios/device/device'
 
     require 'calabash/ios/operations'
