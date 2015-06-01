@@ -3,5 +3,5 @@ Then(/^I wait for the keyboard$/) do
 end
 
 Then(/^I type "([^"]*)"$/) do |text_to_type|
-  pending
+  enter_text(text_to_type)
 end
