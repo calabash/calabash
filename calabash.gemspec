@@ -4,7 +4,8 @@ require File.join(File.dirname(__FILE__), 'lib', 'calabash', 'version')
 
 lib_files = Dir.glob('{lib,bin}/**/{.irbrc,*.{rb,feature,yml}}')
 doc_files =  ['README.md', 'LICENSE', 'CONTRIBUTING.md', 'VERSIONING.md']
-gem_files = lib_files + doc_files
+jar_files =  ['lib/calabash/android/lib/screenshot_taker.jar']
+gem_files = lib_files + doc_files + jar_files
 
 Gem::Specification.new do |spec|
   spec.name          = 'calabash'
