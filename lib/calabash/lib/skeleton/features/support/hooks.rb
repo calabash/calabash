@@ -75,7 +75,7 @@ module AppLifeCycle
         ensure_app_installed
         clear_app_data
       when '', nil
-        raise "No reset method given"
+        raise 'No reset method given'
       else
         raise "Invalid reset method '#{RESET_METHOD}'"
     end
