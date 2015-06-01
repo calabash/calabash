@@ -47,8 +47,10 @@ module Calabash
         end
       end
 
-      def self.open_adb_pipe(*cmd, &block)
-        open_pipe_with_timeout(10, Environment.adb_path, *cmd) do |i, o, e|
+      def self.open_adb_pipe(*cmd, **options, &block)
+        timeout = options.fetch(:timeout, 10)
+
+        open_pipe_with_timeout(timeout, Environment.adb_path, *cmd) do |i, o, e|
           block.call(i, o, e) if block
         end
       end
@@ -63,7 +65,7 @@ module Calabash
         input = args[:input]
 
         begin
-          exit_code = open_adb_pipe(*cmd) do |i, o, e|
+          exit_code = open_adb_pipe(*cmd, args) do |i, o, e|
             if input
               input.each do |p_cmd|
                 begin
@@ -111,7 +113,7 @@ module Calabash
         ADB.command(*cmd, args)
       end
 
-      def shell(shell_cmd)
+      def shell(shell_cmd, options={})
         input =
             [
                 shell_cmd,
@@ -119,7 +121,9 @@ module Calabash
                 'exit 0',
             ]
 
-        result = command('shell', input: input)
+        args = options.merge(input: input)
+
+        result = command('shell', args)
         out = result.lines[4..-4].join
         exit_code_s = result.lines[-2]
 
