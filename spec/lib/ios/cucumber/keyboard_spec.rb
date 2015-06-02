@@ -2,7 +2,11 @@ describe Calabash::IOS::Cucumber do
 
   let(:device) do
     Class.new do
-      def status_bar_orientation; ; end
+      def docked_keyboard_visible?; false; end
+      def undocked_keyboard_visible?; false; end
+      def split_keyboard_visible?; false; end
+      def wait_for_keyboard(_); ; end
+      def text_of_first_responder; ; end
     end.new
   end
 
@@ -20,27 +24,63 @@ describe Calabash::IOS::Cucumber do
     end.new
   end
 
-  describe '#docked_keyboard_visible?' do
-
+  before do
+    expect(Calabash::IOS::Device).to receive(:default).at_least(:once).and_return device
   end
 
-  describe '#undocked_keyboard_visible?' do
+  it '#docked_keyboard_visible?' do
+    expect(device).to receive(:docked_keyboard_visible?).and_return 'true'
 
+    expect(world.docked_keyboard_visible?).to be == 'true'
   end
 
-  describe '#split_keyboard_visible?' do
+  it '#undocked_keyboard_visible?' do
+    expect(device).to receive(:undocked_keyboard_visible?).and_return 'true'
 
+    expect(world.undocked_keyboard_visible?).to be == 'true'
+  end
+
+  it '#split_keyboard_visible?' do
+    expect(device).to receive(:split_keyboard_visible?).and_return 'true'
+
+    expect(world.split_keyboard_visible?).to be == 'true'
   end
 
   describe '#keyboard_visible?' do
+    it 'returns false if no keyboard is visible' do
+      expect(world.keyboard_visible?).to be_falsey
+    end
 
+    describe 'returns true if any keyboard is visible' do
+      it 'docked keyboard' do
+        expect(device).to receive(:docked_keyboard_visible?).and_return true
+
+        expect(world.keyboard_visible?).to be_truthy
+      end
+
+      it 'undocked keyboard' do
+        expect(device).to receive(:undocked_keyboard_visible?).and_return true
+
+        expect(world.keyboard_visible?).to be_truthy
+      end
+
+      it 'split keyboard' do
+        expect(device).to receive(:split_keyboard_visible?).and_return true
+
+        expect(world.keyboard_visible?).to be_truthy
+      end
+    end
   end
 
-  describe '#wait_for_keyboard' do
+  it '#wait_for_keyboard' do
+    expect(device).to receive(:wait_for_keyboard).with(5).and_return 'true'
 
+    expect(world.wait_for_keyboard(5)).to be == 'true'
   end
 
-  describe '#text_of_first_responder' do
+  it '#text_of_first_responder' do
+    expect(device).to receive(:text_of_first_responder).and_return 'text'
 
+    expect(world.text_of_first_responder).to be == 'text'
   end
 end
