@@ -77,7 +77,7 @@ module Calabash
       # Returns empty string if no textField or textView elements are found to be
       # the first responder.  Otherwise, it will return the text in the
       # UITextField or UITextField that is associated with the keyboard.
-      def text_of_keyboard_first_responder
+      def text_from_keyboard_first_responder
         raise 'There must be a visible keyboard.' unless keyboard_visible?
 
         text = ''

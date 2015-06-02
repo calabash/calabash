@@ -6,7 +6,7 @@ describe Calabash::IOS::Cucumber do
       def undocked_keyboard_visible?; false; end
       def split_keyboard_visible?; false; end
       def wait_for_keyboard(_); ; end
-      def text_of_keyboard_first_responder; ; end
+      def text_from_keyboard_first_responder; ; end
     end.new
   end
 
@@ -79,8 +79,8 @@ describe Calabash::IOS::Cucumber do
   end
 
   it '#text_of_first_responder' do
-    expect(device).to receive(:text_of_keyboard_first_responder).and_return 'text'
+    expect(device).to receive(:text_from_keyboard_first_responder).and_return 'text'
 
-    expect(world.text_of_keyboard_first_responder).to be == 'text'
+    expect(world.text_from_keyboard_first_responder).to be == 'text'
   end
 end

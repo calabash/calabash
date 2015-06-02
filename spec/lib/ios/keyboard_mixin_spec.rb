@@ -226,12 +226,12 @@ describe Calabash::IOS::KeyboardMixin do
       end
     end
 
-    describe '#text_of_keyboard_first_responder' do
+    describe '#text_from_keyboard_first_responder' do
       it 'raises error if keyboard is not visible' do
         expect(device).to receive(:keyboard_visible?).and_raise RuntimeError
 
         expect do
-          device.text_of_keyboard_first_responder
+          device.text_from_keyboard_first_responder
         end.to raise_error RuntimeError
       end
 
@@ -244,7 +244,7 @@ describe Calabash::IOS::KeyboardMixin do
           expect(device).to receive(query_method).with('textField').and_return 'text'
           expect(device).not_to receive(query_method).with('textView')
 
-          expect(device.text_of_keyboard_first_responder).to be == 'text'
+          expect(device.text_from_keyboard_first_responder).to be == 'text'
         end
 
         it 'can find the text of a UITextView' do
@@ -252,7 +252,7 @@ describe Calabash::IOS::KeyboardMixin do
           expect(device).to receive(query_method).with('textField').and_return nil
           expect(device).to receive(query_method).with('textView').and_return 'text'
 
-          expect(device.text_of_keyboard_first_responder).to be == 'text'
+          expect(device.text_from_keyboard_first_responder).to be == 'text'
         end
 
         it "returns '' when there is no UITextField or UITextView visible" do
@@ -260,7 +260,7 @@ describe Calabash::IOS::KeyboardMixin do
           expect(device).to receive(query_method).with('textField').and_return nil
           expect(device).to receive(query_method).with('textView').and_return nil
 
-          expect(device.text_of_keyboard_first_responder).to be == ''
+          expect(device.text_from_keyboard_first_responder).to be == ''
         end
       end
     end
