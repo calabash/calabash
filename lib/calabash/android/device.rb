@@ -307,9 +307,16 @@ module Calabash
       def _ensure_app_installed(application)
         @logger.log "Ensuring #{application.path} is installed"
 
-        # @todo: Ensure it is the same app (checksum).
         if installed_packages.include?(application.identifier)
-          @logger.log 'Application is already installed. Will not install.'
+          @logger.log 'Application is already installed. Ensuring right checksum'
+
+          installed_app = installed_apps.find{|app| app[:package] == application.identifier}
+          installed_app_md5_checksum = md5_checksum(installed_app[:path])
+
+          if application.md5_checksum != installed_app_md5_checksum
+            @logger.log("The md5 checksum has changed (#{application.md5_checksum} != #{installed_app_md5_checksum}.", :info)
+            _install_app(application)
+          end
         else
           adb_install_app(application)
         end
