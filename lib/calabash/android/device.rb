@@ -471,6 +471,45 @@ module Calabash
       def params_for_request(parameters)
         {json: parameters.to_json}
       end
+
+      # @!visibility private
+      def can_handle_pie_binaries?
+        # Newer Androids requires PIE enabled executables, older Androids break on them
+        info[:sdk_version] >= 16
+      end
+
+      # @!visibility private
+      def detect_abi
+        abi = adb.shell('getprop ro.product.cpu.abi').chomp
+
+        if abi == 'armeabi-v7a'
+          # armeabi-v7a does not necessarily support NEON vector instructions,
+          # our binaries for this arch requires that, so if CPU does not support
+          # NEON fall back to regular armeabi
+          cpuinfo = adb.shell('cat /proc/cpuinfo')
+
+          if cpuinfo.match /Features.*neon.*/
+            abi
+          else
+            'armeabi'
+          end
+        else
+          abi
+        end
+      end
+
+      # @!visibility private
+      def info
+        @info ||=
+            {
+                os_version: adb.shell('getprop ro.build.version.release').chomp,
+                sdk_version: adb.shell('getprop ro.build.version.sdk').to_i,
+                product_name: adb.shell('getprop ro.product.name').chomp,
+                model: adb.shell('getprop ro.product.model').chomp,
+                cpu_architecture: detect_abi,
+                manufacturer: adb.shell('getprop ro.product.manufacturer').chomp
+            }
+      end
     end
   end
 end
