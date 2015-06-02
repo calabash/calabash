@@ -1,3 +1,5 @@
+require 'digest'
+
 module Calabash
   # A representation of the application that is under test.
   class Application
@@ -47,6 +49,10 @@ module Calabash
 
     def identifier
       @identifier ||= extract_identifier
+    end
+
+    def md5_checksum
+      Digest::MD5.file(path).hexdigest
     end
 
     private
