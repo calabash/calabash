@@ -4,7 +4,9 @@ module Calabash
 
       def enter_text(text)
         wait_for_keyboard
-        uia_type_string(text)
+        existing_text = text_from_keyboard_first_responder
+        options = { existing_text: existing_text }
+        uia_type_string(text, options)
       end
 
       def _enter_text_in(query, text)
