@@ -60,6 +60,8 @@ module Calabash
       DAEMON_STARTED_MESSAGE = "* daemon not running. starting it now on port 5037 *\n* daemon started successfully *\n"
 
       def self.command(*cmd, **args)
+        Logger.debug("ADB Command: #{cmd.join(', ')}")
+        Logger.debug("ADB input: #{args[:input]}")
         stderr = nil
         stdout = nil
         exit_code = nil
