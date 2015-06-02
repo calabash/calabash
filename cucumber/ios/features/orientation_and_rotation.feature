@@ -1,10 +1,9 @@
-@wip
 @orientation
 @rotation
 Feature: Orientation and Rotation
   In order to test how an app responds to rotation changes.
   As a developer and tester
-  I want a Calabash orientation API
+  I want a Calabash Orientation API
 
   Scenario: Find orientation of the status bar relative to the home button
     Given that the app has launched
