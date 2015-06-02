@@ -3,7 +3,7 @@ module Calabash
     module TextMixin
 
       def enter_text(text)
-        wait_for_keyboard
+        wait_for_keyboard(Calabash::Wait.default_options[:timeout])
         existing_text = text_from_keyboard_first_responder
         options = { existing_text: existing_text }
         uia_type_string(text, options)

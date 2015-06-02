@@ -6,7 +6,7 @@ describe Calabash::IOS::TextMixin do
 
       def uia_type_string(_, _); ; end
       def _tap(_); ; end
-      def wait_for_keyboard; ; end
+      def wait_for_keyboard(_); ; end
       def text_from_keyboard_first_responder; ; end
 
     end.new
