@@ -160,6 +160,17 @@ module Calabash
         perform_action('keyboard_enter_text', text)
       end
 
+      def md5_checksum(file_path)
+        result = adb.shell("#{md5_binary} '#{file_path}'")
+        captures = result.match(/(\w+)/).captures
+
+        if captures.length != 1
+          raise "Invalid MD5 result '#{result}' using #{md5_binary}"
+        end
+
+        captures[0]
+      end
+
       private
 
       def _start_app(application, options={})
@@ -470,6 +481,22 @@ module Calabash
       # @!visibility private
       def params_for_request(parameters)
         {json: parameters.to_json}
+      end
+
+      # @!visibility private
+      def md5_binary
+        if @md5_binary
+          @md5_binary
+        else
+          if adb.shell('md5', no_exit_code_check: true).chomp == 'md5 file ...'
+            @md5_binary = 'md5'
+          else
+            # The device does not have 'md5'
+            calmd5 = Calabash::Android.binary_location('calmd5', info[:cpu_architecture], can_handle_pie_binaries?)
+            adb.command('push', calmd5, '/data/local/tmp/calmd5')
+            @md5_binary = '/data/local/tmp/calmd5'
+          end
+        end
       end
 
       # @!visibility private
