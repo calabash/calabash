@@ -10,7 +10,7 @@ module Calabash
       #
       # @return [Boolean] Returns true if a keyboard is visible and docked.
       def docked_keyboard_visible?
-        IOS::Device.default.docked_keyboard_visible?
+        Device.default.docked_keyboard_visible?
       end
 
       # Returns true if an undocked keyboard is visible.
@@ -20,7 +20,7 @@ module Calabash
       # @return [Boolean] Returns false if the device is not an iPad; all
       # keyboards on the iPhone and iPod are docked.
       def undocked_keyboard_visible?
-        IOS::Device.default.undocked_keyboard_visible?
+        Device.default.undocked_keyboard_visible?
       end
 
       # Returns true if a split keyboard is visible.
@@ -31,7 +31,7 @@ module Calabash
       # @return [Boolean] Returns false if the device is not an iPad; all
       # keyboards on the Phone and iPod are docked and not split.
       def split_keyboard_visible?
-        IOS::Device.default.split_keyboard_visible?
+        Device.default.split_keyboard_visible?
       end
 
       # Returns true if there is a visible keyboard.
@@ -49,7 +49,7 @@ module Calabash
       # @raise [Calabash::Wait::TimeoutError] Raises error if no keyboard
       #  appears.
       def wait_for_keyboard(timeout=Calabash::Wait.default_options[:timeout])
-        IOS::Device.default.wait_for_keyboard(timeout)
+        Device.default.wait_for_keyboard(timeout)
       end
 
       # Returns the the text in the first responder.
