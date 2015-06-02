@@ -47,6 +47,18 @@ module Calabash
         end
       end
 
+      def installed_apps
+        adb.shell('pm list packages -f').lines.map do |line|
+          # line will be package:<path>=<package>
+          # e.g. "package:/system/app/GoogleEars.apk=com.google.android.ears"
+          info = line.sub("package:", "")
+
+          app_path, app_id = info.split('=').map(&:chomp)
+
+          {package: app_id, path: app_path}
+        end
+      end
+
       def test_server_responding?
         begin
           http_client.get(HTTP::Request.new('ping'), retries: 1).body == 'pong'
