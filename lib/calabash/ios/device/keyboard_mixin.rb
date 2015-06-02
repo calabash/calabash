@@ -10,12 +10,13 @@ module Calabash
       #
       # Keyboards on the iPhone and iPod are docked.
       def docked_keyboard_visible?
-        return false if query_for_keyboard.empty?
+        query_result = query_for_keyboard
+        return false if query_result.empty?
 
         return true if device_family_iphone?
 
         # iPad
-        rect = res['rect']
+        rect = query_result.first['rect']
         orientation = status_bar_orientation.to_sym
         case orientation
           when :left then
@@ -68,6 +69,29 @@ module Calabash
         end
       end
 
+      # Returns the the text in the first responder.
+      #
+      # The first responder will be the UITextField or UITextView instance
+      # that is associated with the visible keyboard.
+      #
+      # Returns empty string if no textField or textView elements are found to be
+      # the first responder.  Otherwise, it will return the text in the
+      # UITextField or UITextField that is associated with the keyboard.
+      def text_of_keyboard_first_responder
+        raise 'There must be a visible keyboard.' unless keyboard_visible?
+
+        text = ''
+        ['textField', 'textView'].each do |ui_class|
+          text = query_for_text_of_first_responder(ui_class)
+          if text.nil?
+            text = ''
+          else
+            break
+          end
+        end
+        text
+      end
+
       private
 
       # @!visibility private
@@ -77,7 +101,7 @@ module Calabash
 
       def device_family_iphone?
         family = device_family
-        family == 'iPhone' || family == 'iPad'
+        family == 'iPhone'
       end
 
       # Unlike the Calabash Android server, the iOS server does not wait
@@ -102,29 +126,6 @@ module Calabash
       # results.  UIKBKeyView are the individual key views on the keyboard.
       def query_for_keyboard_keys
         keyboard_waiter.query(KEYBOARD_KEY_QUERY)
-      end
-
-      # Returns the the text in the first responder.
-      #
-      # The first responder will be the UITextField or UITextView instance
-      # that is associated with the visible keyboard.
-      #
-      # Returns empty string if no textField or textView elements are found to be
-      # the first responder.  Otherwise, it will return the text in the
-      # UITextField or UITextField that is associated with the keyboard.
-      def text_of_first_responder
-        raise 'There must be a visible keyboard.' unless keyboard_visible?
-
-        text = ''
-        ['textField', 'textView'].each do |ui_class|
-          text = query_for_text_of_first_responder(ui_class)
-          if text.nil?
-            text = ''
-          else
-            break
-          end
-        end
-        text
       end
 
       def query_for_text_of_first_responder(query)

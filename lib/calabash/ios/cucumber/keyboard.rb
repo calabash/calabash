@@ -62,8 +62,8 @@ module Calabash
       # UITextField or UITextField that is associated with the keyboard.
       #
       # @raise [RuntimeError] If there is no visible keyboard.
-      def text_of_first_responder
-        IOS::Device.default.text_of_first_responder
+      def text_of_keyboard_first_responder
+        Device.default.text_of_keyboard_first_responder
       end
     end
   end
