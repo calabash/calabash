@@ -209,23 +209,6 @@ describe Calabash::IOS::KeyboardMixin do
       end
     end
 
-    describe '#wait_for_keyboard' do
-      it 'does not raise an error if keyboard is visible' do
-        expect(device).to receive(:keyboard_visible?).and_return true
-
-        expect(device.wait_for_keyboard(5)).to be_truthy
-      end
-
-      it 'raises timeout error if keyboard is not visible' do
-        expect(device).to receive(:keyboard_visible?).at_least(:once).and_return false
-        waiter = device.send(:keyboard_waiter)
-        expect(waiter).to receive(:with_timeout) { device.keyboard_visible? }.and_raise Calabash::Wait::TimeoutError
-        expect do
-          expect(device.wait_for_keyboard(1))
-        end.to raise_error Calabash::Wait::TimeoutError
-      end
-    end
-
     describe '#text_from_keyboard_first_responder' do
       it 'raises error if keyboard is not visible' do
         expect(device).to receive(:keyboard_visible?).and_raise RuntimeError

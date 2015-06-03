@@ -25,7 +25,7 @@ describe Calabash::IOS::API do
   end
 
   before do
-    expect(Calabash::IOS::Device).to receive(:default).at_least(:once).and_return device
+    allow(Calabash::IOS::Device).to receive(:default).at_least(:once).and_return device
   end
 
   it '#docked_keyboard_visible?' do
@@ -73,7 +73,7 @@ describe Calabash::IOS::API do
   end
 
   it '#wait_for_keyboard' do
-    expect(device).to receive(:wait_for_keyboard).with(5).and_return 'true'
+    expect(world).to receive(:wait_for_keyboard).with(5).and_return 'true'
 
     expect(world.wait_for_keyboard(5)).to be == 'true'
   end

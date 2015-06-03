@@ -48,8 +48,16 @@ module Calabash
       # @param [Number] timeout How long to wait for the keyboard.
       # @raise [Calabash::Wait::TimeoutError] Raises error if no keyboard
       #  appears.
-      def wait_for_keyboard(timeout=Calabash::Wait.default_options[:timeout])
-        Device.default.wait_for_keyboard(timeout)
+      def wait_for_keyboard(timeout=nil)
+        if timeout.nil?
+          the_timeout = Calabash::Wait.default_options[:timeout]
+        else
+          the_timeout = timeout
+        end
+        message = "Timed out after #{the_timeout} seconds for the keyboard to appear"
+        with_timeout(the_timeout, message) do
+          keyboard_visible?
+        end
       end
 
       # Returns the the text in the first responder.
