@@ -1,6 +1,6 @@
 module Calabash
   module IOS
-    module Operations
+    module API
 
     end
   end

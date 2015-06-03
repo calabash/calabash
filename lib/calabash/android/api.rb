@@ -1,6 +1,6 @@
 module Calabash
   module Android
-    module Operations
+    module API
     end
   end
 end

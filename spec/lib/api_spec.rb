@@ -1,5 +1,5 @@
-describe Calabash::Operations do
-  let(:operations_class) {Class.new {include Calabash::Operations}}
+describe Calabash::API do
+  let(:operations_class) {Class.new {include Calabash::API}}
   let(:operations) {operations_class.new}
   let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
   let(:dummy_device) {dummy_device_class.new}

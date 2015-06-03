@@ -31,7 +31,7 @@ module Calabash
 
     require 'calabash/ios/device/device'
 
-    require 'calabash/ios/operations'
+    require 'calabash/ios/api'
     require 'calabash/ios/server'
     require 'calabash/ios/application'
   end
