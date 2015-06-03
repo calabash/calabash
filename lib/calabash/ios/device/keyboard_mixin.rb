@@ -61,14 +61,6 @@ module Calabash
         docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
       end
 
-      # Waits for a keyboard to appear.
-      def wait_for_keyboard(timeout)
-        message = "Timed out after #{timeout} seconds for the keyboard to appear"
-        keyboard_waiter.with_timeout(timeout, message) do
-          keyboard_visible?
-        end
-      end
-
       # Returns the the text in the first responder.
       #
       # The first responder will be the UITextField or UITextView instance
