@@ -5,7 +5,6 @@ module Calabash
   require 'calabash/color'
   require 'calabash/utility'
   require 'calabash/application'
-  require 'calabash/api'
   require 'calabash/managed'
   require 'calabash/device'
   require 'calabash/http'
@@ -23,7 +22,6 @@ module Calabash
 
 
   include Utility
-  include Calabash::API
   include Calabash::Wait
   include Calabash::Screenshot
   include Calabash::Gestures
