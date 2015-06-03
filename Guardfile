@@ -25,4 +25,5 @@ guard(:rspec, options)  do
   watch(%r{^lib/calabash/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { 'spec/lib' }
   watch('spec/resources/ios/ios_resources.rb') { 'spec/lib' }
+  watch('lib/calabash.rb') { 'spec/lib' }
 end
