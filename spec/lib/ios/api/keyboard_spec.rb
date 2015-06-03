@@ -1,4 +1,4 @@
-describe Calabash::IOS::Cucumber do
+describe Calabash::IOS::API do
 
   let(:device) do
     Class.new do
@@ -12,8 +12,8 @@ describe Calabash::IOS::Cucumber do
 
   let(:world) do
     Class.new do
-      require 'calabash/ios/cucumber'
-      include Calabash::IOS::Cucumber
+      require 'calabash/ios/api'
+      include Calabash::IOS::API
       def to_s
         '#<Cucumber World>'
       end
