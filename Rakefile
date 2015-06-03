@@ -22,7 +22,13 @@ end
 namespace :cucumber do
   task :ios do
     Dir.chdir('cucumber/ios/') do
-      sh 'bundle exec cucumber -t @wip'
+      sh 'bundle exec cucumber'
+    end
+  end
+
+  task :android do
+    Dir.chdir('cucumber/android') do
+      sh 'bundle exec cucumber'
     end
   end
 end
