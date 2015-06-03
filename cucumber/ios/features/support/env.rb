@@ -1,9 +1,9 @@
 require 'calabash'
 require 'calabash/ios'
-World(Calabash::IOS)
+require 'calabash/ios/api'
 
-require 'calabash/ios/cucumber'
-World(Calabash::IOS::Cucumber)
+World(Calabash)
+World(Calabash::IOS::API)
 
 Calabash::Application.default = Calabash::IOS::Application.default_from_environment
 

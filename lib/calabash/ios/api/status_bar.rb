@@ -1,6 +1,6 @@
 module Calabash
   module IOS
-    module Cucumber
+    module API
       # Returns the home button position relative to the status bar.
       #
       # @note This method works even if a status bar is not visible.

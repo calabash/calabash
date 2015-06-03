@@ -1,6 +1,6 @@
 module Calabash
   module IOS
-    module Cucumber
+    module API
 
       # Returns true if a docked keyboard is visible.
       #
