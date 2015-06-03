@@ -2,6 +2,17 @@ describe Calabash do
   let(:dummy) {Class.new {include Calabash}}
   let(:dummy_instance) {dummy.new}
 
+  let(:device) do
+    Class.new do
+      def start_app(_, _); ; end
+      def stop_app; ; end
+      def install_app(_); ; end
+      def ensure_app_installed(_); ; end
+      def uninstall_app(_); ; end
+      def clear_app_data(_); ; end
+    end.new
+  end
+
   describe 'when asked to embed' do
     before do
       # Reset EmbeddingContext
@@ -47,11 +58,14 @@ describe Calabash do
     end
   end
 
-  describe '#start_app' do
-    it 'should invoke the implementation method' do
-      args = {application: :my_app, my: :arg}
+  before do
+    allow(Calabash::Device).to receive(:default).and_return device
+  end
 
-      expect(dummy_instance).to receive(:_start_app).with(:my_app, {my: :arg})
+  describe '#start_app' do
+    it 'calls Device.default.start_app' do
+      args = {application: :my_app, my: :arg}
+      expect(device).to receive(:start_app).with(:my_app, {my: :arg})
 
       dummy_instance.start_app(args)
     end
@@ -60,9 +74,8 @@ describe Calabash do
       app = :my_app_2
       args = {my: :arg}
 
-      allow(Calabash::Application).to receive(:default).and_return(app)
-
-      expect(dummy_instance).to receive(:_start_app).with(app, args)
+      expect(Calabash::Application).to receive(:default).and_return(app)
+      expect(device).to receive(:start_app).with(app, args)
 
       dummy_instance.start_app(args)
     end
@@ -72,14 +85,15 @@ describe Calabash do
 
       allow(Calabash::Application).to receive(:default).and_return(nil)
 
-      expect{dummy_instance.start_app(args)}.to raise_error('No application given, and no default application set')
+      expect do
+        dummy_instance.start_app(args)
+      end.to raise_error('No application given, and no default application set')
     end
   end
 
   describe '#stop_app' do
-    it 'should invoke the implementation method' do
-      expect(dummy_instance).to receive(:_stop_app)
-
+    it 'calls Device.default.stop_app' do
+      expect(device).to receive(:stop_app)
       dummy_instance.stop_app
     end
   end
@@ -87,11 +101,11 @@ describe Calabash do
   describe 'app life cycle' do
     let(:methods) {[:install_app, :ensure_app_installed, :uninstall_app, :clear_app_data]}
 
-    it 'should invoke the implementation method' do
+    it 'invokes the implementation method' do
       app = :my_app
 
       methods.each do |method_name|
-        expect(dummy_instance).to receive(:"_#{method_name}").with(app)
+        expect(device).to receive(:"#{method_name}").with(app)
 
         dummy_instance.send(method_name, app)
       end
@@ -103,7 +117,7 @@ describe Calabash do
       allow(Calabash::Application).to receive(:default).and_return(app)
 
       methods.each do |method_name|
-        expect(dummy_instance).to receive(:"_#{method_name}").with(app)
+        expect(device).to receive(:"#{method_name}").with(app)
 
         dummy_instance.send(method_name)
       end
@@ -117,53 +131,6 @@ describe Calabash do
 
         expect{dummy_instance.send(method_name)}.to raise_error('No application given, and Application.default is not set')
       end
-    end
-  end
-
-  let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
-  let(:dummy_device) {dummy_device_class.new}
-
-  describe '#_install_app' do
-    it 'should delegate to the default device' do
-      arg = 'my-arg'
-
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(dummy_device).to receive(:install_app).with(arg)
-
-      dummy.new._install_app(arg)
-    end
-  end
-
-  describe '#_ensure_app_installed' do
-    it 'should delegate to the default device' do
-      arg = 'my-arg'
-
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(dummy_device).to receive(:ensure_app_installed).with(arg)
-
-      dummy.new._ensure_app_installed(arg)
-    end
-  end
-
-  describe '#_uninstall_app' do
-    it 'should delegate to the default device' do
-      arg = 'my-arg'
-
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:uninstall_app).with(arg)
-
-      dummy.new._uninstall_app(arg)
-    end
-  end
-
-  describe '#_clear_app_data' do
-    it 'should delegate to the default device' do
-      arg = 'my-arg'
-
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:clear_app_data).with(arg)
-
-      dummy.new._clear_app_data(arg)
     end
   end
 end
