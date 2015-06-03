@@ -127,9 +127,11 @@ describe Calabash do
       allow(Calabash::Application).to receive(:default).and_return(nil)
 
       methods.each do |method_name|
-        expect(dummy_instance).not_to receive(:"_#{method_name}")
+        expect(device).not_to receive(:"#{method_name}")
 
-        expect{dummy_instance.send(method_name)}.to raise_error('No application given, and Application.default is not set')
+        expect do
+          dummy_instance.send(method_name)
+        end.to raise_error('No application given, and Application.default is not set')
       end
     end
   end
