@@ -1,6 +1,6 @@
 module Calabash
   module Android
-    class Device < Calabash::Android::Operations::Device
+    class Device < Calabash::Android::Device
       attr_reader :adb
 
       def initialize(identifier, server)
