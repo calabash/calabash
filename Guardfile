@@ -26,4 +26,6 @@ guard(:rspec, options)  do
   watch('spec/spec_helper.rb')  { 'spec/lib' }
   watch('spec/resources/ios/ios_resources.rb') { 'spec/lib' }
   watch('lib/calabash.rb') { 'spec/lib' }
+  watch('lib/ios.rb') { 'spec/lib' }
+  watch('lib/android.rb') { 'spec/lib' }
 end
