@@ -1,8 +1,9 @@
-require 'calabash'
+require 'calabash/api'
 require 'calabash/ios'
 require 'calabash/ios/api'
 
 World(Calabash)
+World(Calabash::API)
 World(Calabash::IOS::API)
 
 Calabash::Application.default = Calabash::IOS::Application.default_from_environment

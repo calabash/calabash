@@ -5,7 +5,6 @@ module Calabash
   require 'calabash/color'
   require 'calabash/utility'
   require 'calabash/application'
-  require 'calabash/api'
   require 'calabash/managed'
   require 'calabash/device'
   require 'calabash/http'
@@ -23,7 +22,6 @@ module Calabash
 
 
   include Utility
-  include Calabash::API
   include Calabash::Wait
   include Calabash::Screenshot
   include Calabash::Gestures
@@ -38,11 +36,11 @@ module Calabash
       raise 'No application given, and no default application set'
     end
 
-    _start_app(application, test_options)
+    Device.default.start_app(application, test_options)
   end
 
   def stop_app
-    _stop_app
+    Device.default.stop_app
   end
 
   # Installs the given application. If the application is already installed,
@@ -63,7 +61,7 @@ module Calabash
       raise 'No application given, and Application.default is not set'
     end
 
-    _install_app(path_or_application)
+    Device.default.install_app(path_or_application)
   end
 
   # Installs the given application *if it is not already installed*. If no
@@ -83,7 +81,7 @@ module Calabash
       raise 'No application given, and Application.default is not set'
     end
 
-    _ensure_app_installed(path_or_application)
+    Device.default.ensure_app_installed(path_or_application)
   end
 
   # Uninstalls the given application. Does nothing if the application is
@@ -100,7 +98,7 @@ module Calabash
       raise 'No application given, and Application.default is not set'
     end
 
-    _uninstall_app(path_or_application)
+    Device.default.uninstall_app(path_or_application)
   end
 
   # Clears the contents of the given application. This is roughly equivalent to
@@ -117,7 +115,7 @@ module Calabash
       raise 'No application given, and Application.default is not set'
     end
 
-    _clear_app_data(path_or_application)
+    Device.default.clear_app_data(path_or_application)
   end
 
   def self.new_embed_method!(method)
