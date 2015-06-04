@@ -37,6 +37,11 @@ module Calabash
         @test_server = Application.new(test_server_path, nil, options) if test_server_path
       end
 
+      def aapt_dump(app, key)
+        lines = `"#{Calabash::Android::Environment.tools_dir}/aapt" dump badging "#{app}"`.lines.collect(&:strip)
+        lines.select { |l| l.start_with?("#{key}:") }
+      end
+
       def extract_identifier
         package_line = aapt_dump(@path, 'package').first
         raise "'package' not found in aapt output" unless package_line
