@@ -40,6 +40,9 @@ __MACOSX
 (.*/)?\#[^/]*\#$
 old/*
 
+# vim tags
+tags
+
 # Android test server
 lib/calabash/android/lib/TestServer.apk
 
