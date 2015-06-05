@@ -8,6 +8,29 @@ module Calabash
         @adb = ADB.new(identifier)
       end
 
+      def map_route(query, method_name, *method_args)
+        parameters =
+              {
+                    :query => query,
+                    :operation =>
+                          {
+                                :method_name => method_name,
+                                :arguments => method_args
+                          }
+              }
+        request = Calabash::HTTP::Request.request('map', parameters)
+        res = http_client.post(request).body
+
+        res = JSON.parse(res)
+        if res['outcome'] != 'SUCCESS'
+          # Reason can be 'nil'
+          # Can return 'detail' or 'details?'
+          raise "map #{query}, #{method_name} failed because: #{res['reason'] || 'unknown'}\n#{res['details'] || res['detail']}"
+        end
+
+        res['results']
+      end
+
       def self.default_serial
         serials = list_serials
 
