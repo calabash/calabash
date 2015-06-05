@@ -23,6 +23,11 @@ module Calabash
           #Errno::ETIMEDOUT
         ]
 
+      HEADER =
+            {
+                  'Content-Type' => 'application/json;charset=utf-8'
+            }
+
       def initialize(server, options = {})
         @client = options[:client] || ::HTTPClient.new
         @server = server
@@ -46,6 +51,7 @@ module Calabash
         retries = options.fetch(:retries, @retries)
         timeout = options.fetch(:timeout, @timeout)
         interval = options.fetch(:interval, @interval)
+        header = options.fetch(:header, HEADER)
 
         @logger.log "Getting: #{@server.endpoint + request.route}"
 
@@ -65,7 +71,8 @@ module Calabash
           client.receive_timeout = [time_diff, client.receive_timeout].min
 
           begin
-            return client.send(request_method, @server.endpoint + request.route, request.params)
+            return client.send(request_method, @server.endpoint + request.route,
+                               request.params, header)
           rescue *RETRY_ON => e
             @logger.log "Http error: #{e}"
             last_error = e
