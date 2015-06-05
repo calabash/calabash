@@ -19,5 +19,7 @@ module Calabash
     require 'calabash/ios/server'
     require 'calabash/ios/application'
     require 'calabash/ios/device'
+
+    include Calabash::IOS::API
   end
 end
