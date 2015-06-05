@@ -1,7 +1,7 @@
 Feature:  Tap Gesture
   In order to test the Tap Gesture API
   As a Calabash developer and tester
-  I want Scenarios that demonstrate tapping
+  I want Scenarios that demonstrates tapping
 
   Scenario:  Single tap
     Given I see the home page
