@@ -19,6 +19,11 @@ begin
 rescue LoadError => _
 end
 
+# Generating tags for vim
+task :ctags do
+  sh 'ctags --tag-relative -R --exclude=.git --languages=-sql lib/ spec/ cucumber/'
+end
+
 namespace :cucumber do
   task :ios do
     Dir.chdir('cucumber/ios/') do
