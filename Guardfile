@@ -28,4 +28,6 @@ guard(:rspec, options)  do
   watch('lib/calabash.rb') { 'spec/lib' }
   watch('lib/ios.rb') { 'spec/lib' }
   watch('lib/android.rb') { 'spec/lib' }
+  watch('lib/android/api.rb') { 'spec/lib' }
+  watch('lib/ios/api.rb') { 'spec/lib' }
 end
