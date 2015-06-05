@@ -1,7 +1,5 @@
-require 'calabash/api'
 require 'calabash/android'
 
-World(Calabash::API)
 World(Calabash::Android)
 
 identifier = Calabash::Android::Device.default_serial
