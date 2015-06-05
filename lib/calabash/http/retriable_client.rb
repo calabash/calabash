@@ -62,6 +62,8 @@ module Calabash
         client.receive_timeout = timeout
 
         retries.times do
+          # Subtract the aggregate time we've spent thus far to make sure we're
+          # not exceeding the request timeout across retries.
           time_diff = start_time + timeout - Time.now
 
           if time_diff <= 0
