@@ -20,15 +20,12 @@ module Calabash
     require 'calabash/android/environment'
     require 'calabash/android/application'
     require 'calabash/android/build'
-    require 'calabash/android/api'
     require 'calabash/android/device'
     require 'calabash/android/screenshot'
     require 'calabash/android/server'
     require 'calabash/android/adb'
-    require 'calabash/android/gestures'
-    require 'calabash/android/text'
+    require 'calabash/android/api'
 
-    include Calabash::Android::Gestures
-    include Calabash::Android::Text
+    include Calabash::Android::API
   end
 end
