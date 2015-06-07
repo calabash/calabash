@@ -95,3 +95,36 @@ Then(/^I can clear the text field with the clear text button$/) do
     fail("Excepted text field to be empty, but found '#{text}'")
   end
 end
+
+And(/^the text field has "([^"]*)" in it$/) do |text|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:text}])
+end
+
+And(/^the (default|ascii|numbers and punctuation|url|number|phone|name and phone|email|decimal|twitter|web search) (?:keyboard|pad) is showing$/) do |kb_type|
+  qstr = 'UITextField'
+  target = keyboard_type_from_step_argument kb_type
+  ensure_keyboard_type(qstr, target)
+  tap(qstr)
+  wait_for_keyboard
+end
+
+And(/^realize my mistake and delete (\d+) characters? and replace with "([^"]*)"$/) do |num_taps, replacement|
+  before = text_from_keyboard_first_responder
+  num = num_taps.to_i
+
+  num.times do
+    tap_keyboard_delete_key
+  end
+
+  idx = (before.length - num) - 1
+  expected = "#{before[0..idx]}#{replacement}"
+
+  enter_text(replacement)
+
+  actual = text_from_keyboard_first_responder
+
+  unless actual.eql?(expected)
+    screenshot_and_raise "expected '#{expected}' after tapping the delete key '#{num}' times but found '#{actual}'"
+  end
+end
