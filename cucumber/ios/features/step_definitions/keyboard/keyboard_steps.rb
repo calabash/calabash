@@ -128,3 +128,8 @@ And(/^realize my mistake and delete (\d+) characters? and replace with "([^"]*)"
     screenshot_and_raise "expected '#{expected}' after tapping the delete key '#{num}' times but found '#{actual}'"
   end
 end
+
+Then(/^I text my friend a facepalm "([^"]*)"$/) do |text|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:text}])
+end
