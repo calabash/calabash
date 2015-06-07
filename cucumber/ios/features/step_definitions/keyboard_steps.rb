@@ -69,3 +69,29 @@ Then(/^I can clear the text field with the editing menu$/) do
     fail("Excepted text field to be empty, but found '#{text}'")
   end
 end
+
+Then(/^I can clear the text field with the clear text button$/) do
+  wait_for_view 'UITextField'
+
+  clear_button_mode = query('UITextField', :clearButtonMode).first
+  unless clear_button_mode == 3
+    fail("Expected the text field clearButtonMode to be '3' but found '#{clear_button_mode}'")
+  end
+
+  text = query('UITextField', :text).first
+  if text == '' || text == nil
+      fail('Expected some text in the text field so the clear button would appear')
+  end
+
+  query_string = 'UITextField descendant button'
+  wait_for_view query_string
+
+  tap(query_string)
+
+  text = query('UITextField', :text).first
+
+  # Depending on the version, :text will be nil or ''
+  unless text == '' || text == nil
+    fail("Excepted text field to be empty, but found '#{text}'")
+  end
+end

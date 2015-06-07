@@ -31,3 +31,7 @@ Feature: Keyboard
   Scenario: I can clear the text using the editing menu
     Given I have entered some text in the text field
     Then I can clear the text field with the editing menu
+
+  Scenario: I can clear the text using the clear button
+   Given I have entered some text in the text field
+   Then I can clear the text field with the clear text button
