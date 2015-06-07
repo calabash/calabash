@@ -151,3 +151,14 @@ Then(/^I change my pin to "([^"]*)"$/) do |pin|
   wait_for_view 'UITextField'
   query('UITextField', [{setText:pin}])
 end
+
+Then(/^dial "([^"]*)"$/) do |phone_number|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:phone_number}])
+end
+
+
+Then(/^try to call "([^"]*)" at "([^"]*)"$/) do |arg1, arg2|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:"#{arg1} #{arg2}"}])
+end

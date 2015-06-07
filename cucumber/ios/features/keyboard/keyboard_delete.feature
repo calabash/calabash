@@ -43,3 +43,22 @@ Feature: keyboard delete
     And the number pad is showing
     Then I change my pin to "0123"
     And realize my mistake and delete 3 characters and replace with "034"
+
+  @phone_number
+  Scenario: Phone pad
+    And the phone pad is showing
+    Then dial "8675409"
+    And realize my mistake and delete 3 characters and replace with "309"
+
+  @phone_number
+  Scenario: Phone pad with an international number
+    And the phone pad is showing
+    Then dial "+86898888888*"
+    And realize my mistake and delete 1 characters and replace with "8"
+
+  @phone_number
+  @name_and_phone
+  Scenario: Name and phone keyboard
+    And the name and phone keyboard is showing
+    Then try to call "GHOST BUSTERS" at "5556162"
+    And realize my mistake and delete 4 characters and replace with "2368"
