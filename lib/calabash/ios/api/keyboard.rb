@@ -91,6 +91,73 @@ module Calabash
         Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
       end
 
+      # Touches the keyboard delete key.
+      #
+      # The 'delete' key difficult to find and touch because its behavior
+      # changes depending on the iOS version and keyboard type.  Consider the
+      # following:
+      #
+      # On iOS 6, the 'delete' char code is _not_ \b.
+      # On iOS 7: The Delete char code is \b on non-numeric keyboards.
+      #           On numeric keyboards, the delete key is a button on the
+      #           the keyboard.
+      #
+      # By default, Calabash uses a raw UIAutomaton JavaScript call to tap the
+      # element named 'Delete'.  This works well in English localizations for
+      # most keyboards.  If you find that it does not work, use the options
+      # pass either an translation of 'Delete' for your localization or use the
+      # default the escaped keyboard character.
+      #
+      # @example
+      #   # Uses UIAutomation to tap the 'Delete' key or button.
+      #   tap_keyboard_delete_key
+      #
+      #   # Types the \b key.
+      #   tap_keyboard_delete_key({:use_escaped_char => true})
+      #
+      #   # Types the \d key.
+      #   tap_keyboard_delete_key({:use_escaped_char => '\d'})
+      #
+      #   # Uses UIAutomation to tap the 'Slet' key or button.
+      #   tap_keyboard_delete_key({:delete_key_label => 'Slet'})
+      #
+      #   # Don't specify both options!  If :use_escape_sequence is truthy,
+      #   # Calabash will ignore the :delete_key_label and try to use an
+      #   # escaped character sequence.
+      #   tap_keyboard_delete_key({:use_escaped_char => true,
+      #                            :delete_key_label => 'Slet'})
+      #
+      # @param [Hash] options Alternative ways to tap the delete key.
+      # @option options [Boolean, String] :use_escaped_char (false) If true,
+      #  delete by typing the \b character.  If this value is truthy, but not
+      #  'true', they it is expected to be an alternative escaped character.
+      # @option options [String] :delete_key_label ('Delete') An alternative
+      #  localization of 'Delete'.
+      # @todo Need translations of 'Delete' key.
+      def tap_keyboard_delete_key(options = {})
+        default_options =
+              {
+                    use_escaped_char: false,
+                    delete_key_label: 'Delete'
+              }
+        merged_options = default_options.merge(options)
+
+        use_escape_sequence = merged_options[:use_escaped_char]
+        if use_escape_sequence
+          if use_escape_sequence.to_s == 'true'
+            # Use the default \b
+            char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:delete]
+          else
+            char_sequence = use_escape_sequence
+          end
+          return Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
+        end
+
+        delete_key_label = merged_options[:delete_key_label]
+        uia = "uia.keyboard().elements().firstWithName('#{delete_key_label}').tap()"
+        Device.default.uia_route(uia)
+      end
+
       # Returns the the text in the first responder.
       #
       # The first responder will be the UITextField or UITextView instance
@@ -111,8 +178,16 @@ module Calabash
       # noinspection RubyStringKeysInHashInspection
       ESCAPED_KEYBOARD_CHARACTERS =
             {
+                  :action => '\n',
+
+                  # This works for some combinations of keyboard types and
+                  # iOS version.  The current solution is use a raw UIA call
+                  # to find the 'Delete' key, which may not work in some
+                  # situations, for example in non-English environments.  The
+                  # tap_keyboard_delete_key allows an option to us this escape
+                  # sequence.
                   :delete => '\b',
-                  :action => '\n'
+
                   # These are not supported yet and I am pretty sure that they
                   # cannot be touched by passing an escaped character and instead
                   # the must be found using UIAutomation calls.  -jmoody

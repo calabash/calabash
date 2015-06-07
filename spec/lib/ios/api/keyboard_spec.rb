@@ -178,4 +178,41 @@ describe Calabash::IOS::API do
 
     expect(world.tap_keyboard_action_key).to be_truthy
   end
+
+  describe '#tap_keyboard_delete_key' do
+    it "taps the element marked 'Delete'" do
+      script = "uia.keyboard().elements().firstWithName('Delete').tap()"
+      expect(device).to receive(:uia_route).with(script).and_return []
+
+      expect(world.tap_keyboard_delete_key).to be_truthy
+    end
+
+    it 'respects the :delete_key_label' do
+      label = 'Slet'
+      script = "uia.keyboard().elements().firstWithName('Slet').tap()"
+      expect(device).to receive(:uia_route).with(script).and_return []
+
+      options = { delete_key_label: label }
+      expect(world.tap_keyboard_delete_key(options)).to be_truthy
+    end
+
+    describe 'respects :use_escaped_char' do
+      it 'uses the default escape sequence' do
+        script = "uia.keyboard().typeString('\\b')"
+        expect(device).to receive(:uia_route).with(script).and_return []
+
+        options = { use_escaped_char: '\b' }
+        expect(world.tap_keyboard_delete_key(options)).to be_truthy
+      end
+
+      it 'used the escape sequence the user passes' do
+        char = '\d'
+        script = "uia.keyboard().typeString('#{char}')"
+        expect(device).to receive(:uia_route).with(script).and_return []
+
+        options = { use_escaped_char: char }
+        expect(world.tap_keyboard_delete_key(options)).to be_truthy
+      end
+    end
+  end
 end
