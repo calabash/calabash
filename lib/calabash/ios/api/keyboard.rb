@@ -73,6 +73,16 @@ module Calabash
       def text_from_keyboard_first_responder
         Device.default.text_from_keyboard_first_responder
       end
+
+      private
+
+      def keyboard_wait_timeout(timeout)
+        if timeout.nil?
+          Calabash::Wait.default_options[:timeout]
+        else
+          timeout
+        end
+      end
     end
   end
 end

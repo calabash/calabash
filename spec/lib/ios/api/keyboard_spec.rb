@@ -83,4 +83,16 @@ describe Calabash::IOS::API do
 
     expect(world.text_from_keyboard_first_responder).to be == 'text'
   end
+
+  describe '#keyboard_wait_timeout' do
+    it 'returns timeout passed if it is non-nil' do
+      expect(world.send(:keyboard_wait_timeout, 0.1)).to be == 0.1
+    end
+
+    it 'returns the default Wait timeout otherwise' do
+      expect(Calabash::Wait).to receive(:default_options).and_return(timeout: 0.4)
+
+      expect(world.send(:keyboard_wait_timeout, nil)).to be == 0.4
+    end
+  end
 end
