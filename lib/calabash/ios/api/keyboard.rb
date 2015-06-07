@@ -71,6 +71,26 @@ module Calabash
         end
       end
 
+      # Touches the keyboard action key.
+      #
+      # The action key depends on the keyboard.  Some examples include:
+      #
+      # * Return
+      # * Next
+      # * Go
+      # * Join
+      # * Search
+      #
+      # Not all keyboards have an action key.  For example, numeric keyboards
+      #  do not have an action key.
+      #
+      # @raise [RuntimeError] If the text cannot be typed.
+      # @todo Refactor uia_route to a public API call
+      def tap_keyboard_action_key
+        char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:action]
+        Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
+      end
+
       # Returns the the text in the first responder.
       #
       # The first responder will be the UITextField or UITextView instance
@@ -86,6 +106,21 @@ module Calabash
       end
 
       private
+
+      # @!visibility private
+      # noinspection RubyStringKeysInHashInspection
+      ESCAPED_KEYBOARD_CHARACTERS =
+            {
+                  :delete => '\b',
+                  :action => '\n'
+                  # These are not supported yet and I am pretty sure that they
+                  # cannot be touched by passing an escaped character and instead
+                  # the must be found using UIAutomation calls.  -jmoody
+                  #'Dictation' => nil,
+                  #'Shift' => nil,
+                  #'International' => nil,
+                  #'More' => nil,
+            }
 
       def keyboard_wait_timeout(timeout)
         if timeout.nil?

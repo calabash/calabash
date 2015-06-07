@@ -5,8 +5,8 @@ describe Calabash::IOS::API do
       def docked_keyboard_visible?; false; end
       def undocked_keyboard_visible?; false; end
       def split_keyboard_visible?; false; end
-      def wait_for_keyboard(_); ; end
       def text_from_keyboard_first_responder; ; end
+      def uia_route(_); ; end
     end.new
   end
 
@@ -170,5 +170,12 @@ describe Calabash::IOS::API do
 
       expect(world.send(:keyboard_wait_timeout, nil)).to be == 0.4
     end
+  end
+
+  it '#tap_keyboard_action_key' do
+    script = "uia.keyboard().typeString('\\n')"
+    expect(device).to receive(:uia_route).with(script).and_return []
+
+    expect(world.tap_keyboard_action_key).to be_truthy
   end
 end
