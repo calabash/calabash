@@ -56,6 +56,21 @@ module Calabash
         end
       end
 
+      # Waits for the keyboard to disappear.
+      #
+      # @see Calabash::Wait.default_options
+      #
+      # @param [Number] timeout How log to wait for the keyboard to disappear.
+      # @raise [Calabash::Wait::TimeoutError] Raises error if any keyboard is
+      #  visible after the `timeout`.
+      def wait_for_no_keyboard(timeout=nil)
+        keyboard_timeout = keyboard_wait_timeout(timeout)
+        message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to disappear"
+        wait_for(message, timeout: keyboard_timeout) do
+          !keyboard_visible?
+        end
+      end
+
       # Returns the the text in the first responder.
       #
       # The first responder will be the UITextField or UITextView instance

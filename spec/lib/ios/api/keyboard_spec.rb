@@ -111,6 +111,47 @@ describe Calabash::IOS::API do
       end.not_to raise_error
     end
   end
+
+  describe '#wait_for_no_keyboard' do
+    it 'waits for no visible keyboard' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(true, false)
+
+      expect do
+        world.wait_for_no_keyboard(5)
+      end.not_to raise_error
+    end
+
+    it 'raises a timeout error if keyboard does not disappear' do
+      expect(world).to receive(:keyboard_visible?).at_least(:once).and_return true
+
+      expect do
+        world.wait_for_no_keyboard(0.01)
+      end.to raise_error Calabash::Wait::TimeoutError
+    end
+
+    it 'uses default time out if none is given' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(true, false)
+      message = 'Timed out after 0.5 seconds waiting for the keyboard to disappear'
+      expect(world).to receive(:wait_for).with(message, timeout: 0.5).and_call_original
+
+      expect do
+        world.wait_for_no_keyboard
+      end.not_to raise_error
+    end
   end
 
   it '#text_of_first_responder' do
