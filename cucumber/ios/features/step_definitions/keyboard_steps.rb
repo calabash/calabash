@@ -31,3 +31,8 @@ When(/^I type "([^"]*)" character by character$/) do |string|
     enter_text(character)
   end
 end
+
+And(/^I can dismiss the keyboard by touching the Done key$/) do
+  tap_keyboard_action_key
+  wait_for_no_keyboard
+end

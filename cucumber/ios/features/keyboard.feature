@@ -15,6 +15,7 @@ Feature: Keyboard
     And the text in the text field should be "Hello"
     When I type " World!" character by character
     Then the text in the text field should be "Hello World!"
+    And I can dismiss the keyboard by touching the Done key
 
   Scenario: I can ask questions about the keyboard visibility
     And I touch the text field
