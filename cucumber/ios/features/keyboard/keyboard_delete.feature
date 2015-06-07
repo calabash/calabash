@@ -9,18 +9,18 @@ Feature: keyboard delete
   Background: I should see the first view
     Given I see the first tab
 
-  Scenario: Exercise the default keyboard
+  Scenario: Default keyboard
     And the default keyboard is showing
     And the text field has "mary had a little limb" in it
     And realize my mistake and delete 3 characters and replace with "amb"
 
   @ascii
-  Scenario: Exercise the ascii keyboard
+  Scenario: Ascii keyboard
     And the ascii keyboard is showing
     Then I text my friend a facepalm "(>_>]"
     And realize my mistake and delete 1 character and replace with ")"
 
-  Scenario: Exercise the numbers and punctuation keyboard
+  Scenario: Numbers and punctuation keyboard
     And the numbers and punctuation keyboard is showing
     Then I say, "Yeah"
     Then he said, "Hear what I say, sir."
@@ -31,3 +31,9 @@ Feature: keyboard delete
     Then he said, "What's your number?"
     Then I say, "54-36", that's my number
     And realize my mistake and delete 2 characters and replace with "46"
+
+  @url
+  Scenario: URL keyboard
+    And the url keyboard is showing
+    Then I try to visit "amazon.com.uk"
+    And realize my mistake and delete 4 characters and replace with ".uk"

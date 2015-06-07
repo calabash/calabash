@@ -140,3 +140,9 @@ Then(/^I say, "54-36", that's my number$/) do
   wait_for_view 'UITextField'
   query('UITextField', [{setText:'54-36'}])
 end
+
+
+Then(/^I try to visit "([^"]*)"$/) do |url|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:url}])
+end
