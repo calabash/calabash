@@ -146,3 +146,8 @@ Then(/^I try to visit "([^"]*)"$/) do |url|
   wait_for_view 'UITextField'
   query('UITextField', [{setText:url}])
 end
+
+Then(/^I change my pin to "([^"]*)"$/) do |pin|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:pin}])
+end

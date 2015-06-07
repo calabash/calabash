@@ -37,3 +37,9 @@ Feature: keyboard delete
     And the url keyboard is showing
     Then I try to visit "amazon.com.uk"
     And realize my mistake and delete 4 characters and replace with ".uk"
+
+  @number_pad
+  Scenario: Number pad
+    And the number pad is showing
+    Then I change my pin to "0123"
+    And realize my mistake and delete 3 characters and replace with "034"
