@@ -19,3 +19,15 @@ Feature: keyboard delete
     And the ascii keyboard is showing
     Then I text my friend a facepalm "(>_>]"
     And realize my mistake and delete 1 character and replace with ")"
+
+  Scenario: Exercise the numbers and punctuation keyboard
+    And the numbers and punctuation keyboard is showing
+    Then I say, "Yeah"
+    Then he said, "Hear what I say, sir."
+    And he said, "You do what I say, sir."
+    And he said, "Put your hand on your head, sir."
+    And he said, "And you will get no hurt now."
+    Then I say, "Yeah"
+    Then he said, "What's your number?"
+    Then I say, "54-36", that's my number
+    And realize my mistake and delete 2 characters and replace with "46"

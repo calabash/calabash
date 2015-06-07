@@ -133,3 +133,10 @@ Then(/^I text my friend a facepalm "([^"]*)"$/) do |text|
   wait_for_view 'UITextField'
   query('UITextField', [{setText:text}])
 end
+
+Then(/^I say, "([^"]*)"$/) { |_| }
+Then(/^he said, "([^"]*)"$/) { |_| }
+Then(/^I say, "54-36", that's my number$/) do
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:'54-36'}])
+end
