@@ -1,4 +1,3 @@
-@wip
 @keyboard
 Feature: Keyboard
   In order to test how to interact with keyboard
@@ -8,11 +7,14 @@ Feature: Keyboard
   Background: I should see the first view
     Given I see the first tab
 
+  @wip
   Scenario: I should be able to type something
     And I touch the text field
     Then I wait for the keyboard
     Then I type "Hello"
     And the text in the text field should be "Hello"
+    When I type " World!" character by character
+    Then the text in the text field should be "Hello World!"
 
   Scenario: I can ask questions about the keyboard visibility
     And I touch the text field

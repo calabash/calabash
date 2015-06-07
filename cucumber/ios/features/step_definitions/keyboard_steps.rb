@@ -25,3 +25,9 @@ end
 And(/^the split keyboard is not visible$/) do
   expect(split_keyboard_visible?).to be_falsey
 end
+
+When(/^I type "([^"]*)" character by character$/) do |string|
+  string.each_char do |character|
+    enter_text(character)
+  end
+end
