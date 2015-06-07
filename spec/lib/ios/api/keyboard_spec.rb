@@ -13,14 +13,12 @@ describe Calabash::IOS::API do
   let(:world) do
     Class.new do
       require 'calabash/ios/api'
+      include Calabash::Wait
       include Calabash::IOS::API
-      def to_s
-        '#<Cucumber World>'
-      end
 
-      def inspect
-        to_s
-      end
+      def screenshot_embed; ; end
+      def to_s; '#<Cucumber World>'; end
+      def inspect; to_s; end
     end.new
   end
 
@@ -72,10 +70,47 @@ describe Calabash::IOS::API do
     end
   end
 
-  it '#wait_for_keyboard' do
-    expect(world).to receive(:wait_for_keyboard).with(5).and_return 'true'
+  describe '#wait_for_keyboard' do
+    it 'waits for the keyboard' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(false, true)
 
-    expect(world.wait_for_keyboard(5)).to be == 'true'
+      expect do
+        world.wait_for_keyboard(5)
+      end.not_to raise_error
+    end
+
+    it 'raises a timeout error if keyboard does not appear' do
+      expect(world).to receive(:keyboard_visible?).at_least(:once).and_return false
+
+      expect do
+        world.wait_for_keyboard(0.01)
+      end.to raise_error Calabash::Wait::TimeoutError
+    end
+
+    it 'uses default time out if none is given' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(false, true)
+      message = 'Timed out after 0.5 seconds waiting for the keyboard to appear'
+      expect(world).to receive(:wait_for).with(message, timeout: 0.5).and_call_original
+
+      expect do
+        world.wait_for_keyboard
+      end.not_to raise_error
+    end
+  end
   end
 
   it '#text_of_first_responder' do

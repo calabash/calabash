@@ -49,13 +49,9 @@ module Calabash
       # @raise [Calabash::Wait::TimeoutError] Raises error if no keyboard
       #  appears.
       def wait_for_keyboard(timeout=nil)
-        if timeout.nil?
-          the_timeout = Calabash::Wait.default_options[:timeout]
-        else
-          the_timeout = timeout
-        end
-        message = "Timed out after #{the_timeout} seconds for the keyboard to appear"
-        with_timeout(the_timeout, message) do
+        keyboard_timeout = keyboard_wait_timeout(timeout)
+        message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to appear"
+        wait_for(message, timeout: keyboard_timeout) do
           keyboard_visible?
         end
       end
