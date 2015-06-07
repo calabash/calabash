@@ -36,3 +36,36 @@ And(/^I can dismiss the keyboard by touching the Done key$/) do
   tap_keyboard_action_key
   wait_for_no_keyboard
 end
+
+Given(/^I have entered some text in the text field$/) do
+  wait_for_view('UITextField')
+  query('UITextField', [setText:'some text'])
+end
+
+Then(/^I can clear the text field with setText:$/) do
+  wait_for_view('UITextField')
+  query('UITextField', [setText:''])
+  expect(query('UITextField', :text).first).to be == ''
+end
+
+Then(/^I can clear the text field with the editing menu$/) do
+  unless keyboard_visible?
+    tap('UITextField')
+    wait_for_keyboard
+  end
+
+  tap('UITextField')
+
+  tap("UICalloutBarButton marked:'Select All'")
+
+  tap("UICalloutBarButton marked:'Cut'")
+
+  wait_for_no_view('UICalloutBarButton')
+
+  text = query('UITextField', :text).first
+
+  # Depending on the version, :text will be nil or ''
+  unless text == '' || text == nil
+    fail("Excepted text field to be empty, but found '#{text}'")
+  end
+end

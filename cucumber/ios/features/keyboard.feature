@@ -7,7 +7,6 @@ Feature: Keyboard
   Background: I should see the first view
     Given I see the first tab
 
-  @wip
   Scenario: I should be able to type something
     And I touch the text field
     Then I wait for the keyboard
@@ -24,3 +23,11 @@ Feature: Keyboard
     And the docked keyboard is visible
     And the undocked keyboard is not visible
     And the split keyboard is not visible
+
+  Scenario: I can clear the text using setText:
+    Given I have entered some text in the text field
+    Then I can clear the text field with setText:
+
+  Scenario: I can clear the text using the editing menu
+    Given I have entered some text in the text field
+    Then I can clear the text field with the editing menu
