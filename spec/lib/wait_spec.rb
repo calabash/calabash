@@ -1,5 +1,11 @@
 describe Calabash::Wait do
-  let(:dummy) {Class.new {include Calabash::Wait; def screenshot_embed; end; def query(_); end}.new}
+  let(:dummy) do
+    Class.new do
+      include Calabash::Wait
+      def screenshot_embed; ; end
+      def query(_); ; end
+    end.new
+  end
 
   after do
     hide_const('Calabash::Wait::Timeout')
