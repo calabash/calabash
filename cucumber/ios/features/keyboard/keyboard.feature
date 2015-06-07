@@ -1,6 +1,6 @@
 @keyboard
 Feature: Keyboard
-  In order to test how to interact with keyboard
+  In order to test keyboard interactions
   As a developer and tester
   I want a Calabash Keyboard API
 
