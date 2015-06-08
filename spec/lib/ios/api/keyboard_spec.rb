@@ -22,6 +22,14 @@ describe Calabash::IOS::API do
     end.new
   end
 
+  let(:short_timeout) do
+    if Luffa::Environment.travis_ci?
+      0.1
+    else
+      0.01
+    end
+  end
+
   before do
     allow(Calabash::IOS::Device).to receive(:default).at_least(:once).and_return device
   end
@@ -90,7 +98,7 @@ describe Calabash::IOS::API do
       expect(world).to receive(:keyboard_visible?).at_least(:once).and_return false
 
       expect do
-        world.wait_for_keyboard(0.01)
+        world.wait_for_keyboard(short_timeout)
       end.to raise_error Calabash::Wait::TimeoutError
     end
 
@@ -132,7 +140,7 @@ describe Calabash::IOS::API do
       expect(world).to receive(:keyboard_visible?).at_least(:once).and_return true
 
       expect do
-        world.wait_for_no_keyboard(0.01)
+        world.wait_for_no_keyboard(short_timeout)
       end.to raise_error Calabash::Wait::TimeoutError
     end
 
