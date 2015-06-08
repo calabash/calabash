@@ -2,9 +2,12 @@ require 'httpclient'
 
 module Calabash
   module HTTP
+
+    # An HTTP client that retries its connection on errors and can time out.
     class RetriableClient
       attr_reader :client
 
+      # @!visibility private
        RETRY_ON =
         [
           # The connection, request, or response timed out
@@ -23,11 +26,26 @@ module Calabash
           #Errno::ETIMEDOUT
         ]
 
+      # @!visibility private
       HEADER =
             {
                   'Content-Type' => 'application/json;charset=utf-8'
             }
 
+      # Creates a new retriable client.
+      #
+      # This initializer takes multiple options.  If the option is not
+      # documented, it should be considered _private_. You use undocumented
+      # options at your own risk.
+      #
+      # @param [Calabash::Server] server The server to make the HTTP request
+      #  on.
+      # @param [Hash] options Control the retry, timeout, and interval.
+      # @option options [Number] :retries (5) How often to retry.
+      # @option options [Number] :timeout (5) How long to wait for a response
+      #  before timing out.
+      # @option options [Number] :interval (0.5) How long to sleep between
+      #  retries.
       def initialize(server, options = {})
         @client = options[:client] || ::HTTPClient.new
         @server = server
@@ -37,10 +55,36 @@ module Calabash
         @logger = options[:logger] || Calabash::Logger.new
       end
 
+      # Make an HTTP get request.
+      #
+      # This method takes multiple options.  If the option is not documented,
+      # it should be considered _private_.  You use undocumented options at
+      # your own risk.
+      #
+      # @param [Calabash::HTTP::Request] request The request.
+      # @param [Hash] options Control the retry, timeout, and interval.
+      # @option options [Number] :retries (5) How often to retry.
+      # @option options [Number] :timeout (5) How long to wait for a response
+      #  before timing out.
+      # @option options [Number] :interval (0.5) How long to sleep between
+      #  retries.
       def get(request, options={})
         request(request, :get, options)
       end
 
+      # Make an HTTP post request.
+      #
+      # This method takes multiple options.  If the option is not documented,
+      # it should be considered _private_.  You use undocumented options at
+      # your own risk.
+      #
+      # @param [Calabash::HTTP::Request] request The request.
+      # @param [Hash] options Control the retry, timeout, and interval.
+      # @option options [Number] :retries (5) How often to retry.
+      # @option options [Number] :timeout (5) How long to wait for a response
+      #  before timing out.
+      # @option options [Number] :interval (0.5) How long to sleep between
+      #  retries.
       def post(request, options={})
         request(request, :post, options)
       end

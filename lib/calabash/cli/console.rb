@@ -1,5 +1,7 @@
 module Calabash
+  # @!visibility private
   module CLI
+    # @!visibility private
     module Console
       def parse_console_arguments!
         application = @arguments.shift

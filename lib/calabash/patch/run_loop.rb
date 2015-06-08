@@ -4,6 +4,8 @@ if RunLoop.const_defined?(:Ipa)
   "\033[34mRunLoop::Ipa patch can be removed.\033[0m"
 else
   "\033[34mApplying RunLoop::Ipa patch.\033[0m"
+
+  # @!visibility private
   module RunLoop
     # A model of the an .ipa - a application binary for iOS devices.
     class Ipa

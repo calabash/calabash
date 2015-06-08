@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # @!visibility private
     module Gestures
       # @!visibility private
       def _pan_screen_up(options={})

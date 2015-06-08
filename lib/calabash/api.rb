@@ -1,4 +1,5 @@
 module Calabash
+  # The base module of the Calabash public API.
   module API
 
     # @todo Needs docs!

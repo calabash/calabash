@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # A representation of a Calabash Android device.
     class Device < Calabash::Android::Operations::Device
       attr_reader :adb
 

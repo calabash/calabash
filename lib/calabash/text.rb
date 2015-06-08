@@ -1,4 +1,6 @@
 module Calabash
+
+  # A public API for entering text.
   module Text
     include Calabash::Utility
 

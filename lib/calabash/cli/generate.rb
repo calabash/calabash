@@ -1,7 +1,9 @@
 require 'fileutils'
 
 module Calabash
+  # @!visibility private
   module CLI
+    # @!visibility private
     module Generate
       def parse_generate_arguments!
         type = @arguments.shift

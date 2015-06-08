@@ -1,4 +1,5 @@
 module Calabash
+  # @!visibility private
   module CLI
     require 'calabash/cli/build'
     require 'calabash/cli/console'

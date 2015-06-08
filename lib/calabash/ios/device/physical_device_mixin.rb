@@ -1,6 +1,7 @@
 module Calabash
   module IOS
 
+    # @!visibility private
     # A mixin for IOS::Device that provides methods that users can override
     # to use a third-party tool like `ideviceinstaller` or `ios-deploy` to
     # manage apps on physical devices.

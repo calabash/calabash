@@ -1,6 +1,8 @@
 module Calabash
   module IOS
+    # @!visibility private
     module Routes
+      # @!visibility private
       module MapRouteMixin
 
         def map_route(query, method_name, *method_args)

@@ -1,5 +1,6 @@
 module Calabash
   module IOS
+    # @!visibility private
     module GesturesMixin
 
       # @todo Extract offset from options

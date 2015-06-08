@@ -1,5 +1,8 @@
 module Calabash
+  # @!visibility private
   module Patch
+
+    # @!visibility private
     module Array
       def to_pct
         if length != 2

@@ -108,11 +108,12 @@ module Calabash
       end
     end
 
+    # @!visibility private
     class EnsureTestServerReadyTimeoutError < RuntimeError; end
 
     # Ensures the test server is ready
     #
-    # @raises [RuntimeError] Raises error when the server does not respond
+    # @raise [RuntimeError] Raises error when the server does not respond
     def ensure_test_server_ready(options={})
       begin
         Timeout.timeout(options.fetch(:timeout, 30), EnsureTestServerReadyTimeoutError) do

@@ -1,5 +1,6 @@
 module Calabash
   module IOS
+    # @!visibility private
     module TextMixin
 
       def enter_text(text)

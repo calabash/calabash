@@ -1,5 +1,7 @@
 module Calabash
+  # @!visibility private
   module CLI
+    # @!visibility private
     module Resign
       def parse_resign_arguments!
         fail('Can only resign Android applications') unless @platform.nil? || @platform == :android

@@ -1,9 +1,13 @@
 module Calabash
+
+  # @!visibility private
   class AbstractMethodError < StandardError
 
   end
 
   module Utility
+
+    # @!visibility private
     def abstract_method!
       method_name = if Kernel.method_defined?(:caller_locations)
                       caller_locations.first.label
@@ -14,6 +18,7 @@ module Calabash
       raise AbstractMethodError.new("Abstract method '#{method_name}'")
     end
 
+    # @! visibility private
     class RetryError < RuntimeError; end
 
     # A convenience method for creating a percentage hash that that can be

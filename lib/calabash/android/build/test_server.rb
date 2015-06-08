@@ -1,6 +1,7 @@
 module Calabash
   module Android
     module Build
+      # @!visibility private
       class TestServer
         def initialize(application_path)
           @application_path = application_path

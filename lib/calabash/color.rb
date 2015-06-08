@@ -1,4 +1,5 @@
 module Calabash
+  # @!visibility private
   module Color
     def self.colorize(string, color)
       "\e[#{color}m#{string}\e[0m"

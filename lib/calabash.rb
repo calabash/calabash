@@ -1,3 +1,8 @@
+# Calabash is a Behavior-driven development (BDD) framework for Android and
+# iOS. It supports both native and hybrid app testing.
+#
+# It is developed and maintained by Xamarin and is released under the Eclipse
+# Public License.
 module Calabash
   require 'calabash/patch/run_loop'
   require 'calabash/environment'
