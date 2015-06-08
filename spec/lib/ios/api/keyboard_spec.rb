@@ -5,23 +5,29 @@ describe Calabash::IOS::API do
       def docked_keyboard_visible?; false; end
       def undocked_keyboard_visible?; false; end
       def split_keyboard_visible?; false; end
-      def wait_for_keyboard(_); ; end
       def text_from_keyboard_first_responder; ; end
+      def uia_route(_); ; end
     end.new
   end
 
   let(:world) do
     Class.new do
       require 'calabash/ios/api'
+      include Calabash::Wait
       include Calabash::IOS::API
-      def to_s
-        '#<Cucumber World>'
-      end
 
-      def inspect
-        to_s
-      end
+      def screenshot_embed; ; end
+      def to_s; '#<Cucumber World>'; end
+      def inspect; to_s; end
     end.new
+  end
+
+  let(:short_timeout) do
+    if Luffa::Environment.travis_ci?
+      0.1
+    else
+      0.01
+    end
   end
 
   before do
@@ -72,15 +78,149 @@ describe Calabash::IOS::API do
     end
   end
 
-  it '#wait_for_keyboard' do
-    expect(world).to receive(:wait_for_keyboard).with(5).and_return 'true'
+  describe '#wait_for_keyboard' do
+    it 'waits for the keyboard' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(false, true)
 
-    expect(world.wait_for_keyboard(5)).to be == 'true'
+      expect do
+        world.wait_for_keyboard(5)
+      end.not_to raise_error
+    end
+
+    it 'raises a timeout error if keyboard does not appear' do
+      expect(world).to receive(:keyboard_visible?).at_least(:once).and_return false
+
+      expect do
+        world.wait_for_keyboard(short_timeout)
+      end.to raise_error Calabash::Wait::TimeoutError
+    end
+
+    it 'uses default time out if none is given' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(false, true)
+      message = 'Timed out after 0.5 seconds waiting for the keyboard to appear'
+      expect(world).to receive(:wait_for).with(message, timeout: 0.5).and_call_original
+
+      expect do
+        world.wait_for_keyboard
+      end.not_to raise_error
+    end
+  end
+
+  describe '#wait_for_no_keyboard' do
+    it 'waits for no visible keyboard' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(true, false)
+
+      expect do
+        world.wait_for_no_keyboard(5)
+      end.not_to raise_error
+    end
+
+    it 'raises a timeout error if keyboard does not disappear' do
+      expect(world).to receive(:keyboard_visible?).at_least(:once).and_return true
+
+      expect do
+        world.wait_for_no_keyboard(short_timeout)
+      end.to raise_error Calabash::Wait::TimeoutError
+    end
+
+    it 'uses default time out if none is given' do
+      options =
+            {
+                  timeout: 0.5,
+                  retry_frequency: 0.01,
+                  exception_class: Calabash::Wait::TimeoutError
+            }
+      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      expect(world).to receive(:keyboard_visible?).and_return(true, false)
+      message = 'Timed out after 0.5 seconds waiting for the keyboard to disappear'
+      expect(world).to receive(:wait_for).with(message, timeout: 0.5).and_call_original
+
+      expect do
+        world.wait_for_no_keyboard
+      end.not_to raise_error
+    end
   end
 
   it '#text_of_first_responder' do
     expect(device).to receive(:text_from_keyboard_first_responder).and_return 'text'
 
     expect(world.text_from_keyboard_first_responder).to be == 'text'
+  end
+
+  describe '#keyboard_wait_timeout' do
+    it 'returns timeout passed if it is non-nil' do
+      expect(world.send(:keyboard_wait_timeout, 0.1)).to be == 0.1
+    end
+
+    it 'returns the default Wait timeout otherwise' do
+      expect(Calabash::Wait).to receive(:default_options).and_return(timeout: 0.4)
+
+      expect(world.send(:keyboard_wait_timeout, nil)).to be == 0.4
+    end
+  end
+
+  it '#tap_keyboard_action_key' do
+    script = "uia.keyboard().typeString('\\n')"
+    expect(device).to receive(:uia_route).with(script).and_return []
+
+    expect(world.tap_keyboard_action_key).to be_truthy
+  end
+
+  describe '#tap_keyboard_delete_key' do
+    it "taps the element marked 'Delete'" do
+      script = "uia.keyboard().elements().firstWithName('Delete').tap()"
+      expect(device).to receive(:uia_route).with(script).and_return []
+
+      expect(world.tap_keyboard_delete_key).to be_truthy
+    end
+
+    it 'respects the :delete_key_label' do
+      label = 'Slet'
+      script = "uia.keyboard().elements().firstWithName('Slet').tap()"
+      expect(device).to receive(:uia_route).with(script).and_return []
+
+      options = { delete_key_label: label }
+      expect(world.tap_keyboard_delete_key(options)).to be_truthy
+    end
+
+    describe 'respects :use_escaped_char' do
+      it 'uses the default escape sequence' do
+        script = "uia.keyboard().typeString('\\b')"
+        expect(device).to receive(:uia_route).with(script).and_return []
+
+        options = { use_escaped_char: '\b' }
+        expect(world.tap_keyboard_delete_key(options)).to be_truthy
+      end
+
+      it 'used the escape sequence the user passes' do
+        char = '\d'
+        script = "uia.keyboard().typeString('#{char}')"
+        expect(device).to receive(:uia_route).with(script).and_return []
+
+        options = { use_escaped_char: char }
+        expect(world.tap_keyboard_delete_key(options)).to be_truthy
+      end
+    end
   end
 end
