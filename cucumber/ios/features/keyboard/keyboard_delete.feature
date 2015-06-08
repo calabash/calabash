@@ -81,3 +81,9 @@ Feature: keyboard delete
     And the decimal keyboard is showing
     Then I type "1113213212"
     And realize my mistake and delete 1 character and replace with "1"
+
+  @twitter
+  Scenario: exercise the twitter keyboard
+    And the twitter keyboard is showing
+    Then I tweet "rocking robin, tweet tweet" and tag with "#thweet"
+    And realize my mistake and delete 5 characters and replace with "weet"

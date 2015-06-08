@@ -171,3 +171,8 @@ Then(/^I type pi as "([^"]*)"$/) do |pi|
   wait_for_view 'UITextField'
   query('UITextField', [{setText:pi}])
 end
+
+Then(/^I tweet "([^"]*)" and tag with "([^"]*)"$/) do |tweet, tag|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:"#{tweet} #{tag}"}])
+end
