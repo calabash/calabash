@@ -2,7 +2,7 @@
 When(/^I touch the check box$/) do
   result = wait_for_view("* marked:'checkBox'")
   @checkbox_checked = result['checked']
-  tap_mark('checkBox')
+  tap("* marked:'checkBox'")
 end
 
 Then(/^the check box should change state\.$/) do

@@ -4,7 +4,7 @@ Given(/^I see the home page$/) do
 end
 
 And(/^I navigate to the Sample Views page$/) do
-  tap_mark('buttonGotoViewsSample')
+  tap("* marked:'buttonGotoViewsSample'")
   queries =
         [
               "* marked:'checkBox'",
