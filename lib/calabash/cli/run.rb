@@ -1,5 +1,7 @@
 module Calabash
+  # @!visibility private
   module CLI
+    # @!visibility private
     module Run
       def parse_run_arguments!
         first_argument = @arguments.first # Do not remove the entry from the arguments yet - it might be a cucumber arg

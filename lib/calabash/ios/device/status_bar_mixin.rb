@@ -1,8 +1,8 @@
 module Calabash
   module IOS
+    # @!visibility private
     module StatusBarMixin
 
-      # @!visibility private
       # Returns the home button position relative to the status bar.
       #
       # @note This method works even if a status bar is not visible.

@@ -1,5 +1,7 @@
 module Calabash
+  # @!visibility private
   module CLI
+    # @!visibility private
     module Helpers
       HELP = {
           help: 'help',

@@ -1,4 +1,6 @@
 module Calabash
+
+  # A public API for waiting for things to happen.
   module Wait
     # @!visibility private
     class TimeoutError < RuntimeError
@@ -411,9 +413,9 @@ module Calabash
     #    fail(MyError, "Should see at least 5 entries, saw #{entries}")
     #  end
     #
-    # @param "Exception type or message"
-    # @param "Message if exception type is given"
-    # @raise Default RuntimeError, with `message`
+    # @raise [RuntimeError, StandardError] By default, raises a RuntimeError with
+    #  `message`.  You can pass in your own Exception class to override the
+    #  the default behavior.
     def fail(*several_variants)
       arg0 = several_variants[0]
       arg1 = several_variants[1]
@@ -433,9 +435,9 @@ module Calabash
 
     # Raises an exception and always embeds a screenshot
     #
-    # @param "Exception type or message"
-    # @param "Message if exception type is given"
-    # @raise "Default RuntimeError, with `message`"
+    # @raise [RuntimeError, StandardError] By default, raises a RuntimeError with
+    #  `message`.  You can pass in your own Exception class to override the
+    #  the default behavior.
     # @see Wait#fail
     def screenshot_and_raise(*several_variants)
       arg0 = several_variants[0]

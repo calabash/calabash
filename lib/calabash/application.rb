@@ -1,4 +1,5 @@
 module Calabash
+  # A representation of the application that is under test.
   class Application
     include Calabash::Utility
 

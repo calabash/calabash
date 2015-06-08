@@ -1,5 +1,6 @@
 module Calabash
   module CLI
+    # @!visibility private
     module Build
       def parse_build_arguments!
         fail('Should only build test-server for Android') unless @platform.nil? || @platform == :android

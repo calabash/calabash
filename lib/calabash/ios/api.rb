@@ -1,5 +1,9 @@
 module Calabash
+
+  # The iOS implementation of the public and private Calabash APIs.
   module IOS
+
+    # The iOS implementation of the public Calabash API.
     module API
       require 'calabash/api'
       require 'calabash/gestures'

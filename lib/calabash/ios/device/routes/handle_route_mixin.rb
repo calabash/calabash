@@ -1,6 +1,8 @@
 module Calabash
   module IOS
+    # @!visibility private
     module Routes
+      # @!visibility private
       module HandleRouteMixin
 
         private

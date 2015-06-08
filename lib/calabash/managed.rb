@@ -1,13 +1,19 @@
-# These methods define functionality when running in a managed environment (e.g. Xamarin Test Cloud)
-# Never modify any of these methods! If you need to run in a managed environment, patch this class.
-#
-# Notice that the Managed class will not redefine the methods if they already exist. This removes
-# possible timing issues when loading Calabash and loading the patching files.
 module Calabash
+
+  # @!visibility private
   class InvalidManagedEnvironment < ScriptError
 
   end
 
+  # These methods define functionality when running in a managed environment
+  # (e.g. Xamarin Test Cloud).
+  #
+  # Never modify any of these methods! If you need to run in a managed
+  # environment, patch this class.
+  #
+  # Notice that the Managed class will not redefine the methods if they already
+  # exist. This removes possible timing issues when loading Calabash and
+  # loading the patching files.
   class Managed
     # Are we running in a managed environment?
     #

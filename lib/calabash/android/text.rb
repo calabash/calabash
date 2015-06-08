@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # @!visibility private
     module Text
       def _enter_text_in(query, text)
         tap(query)

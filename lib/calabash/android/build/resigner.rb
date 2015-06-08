@@ -1,6 +1,7 @@
 module Calabash
   module Android
     module Build
+      # @!visibility private
       class Resigner
         def initialize(application_path, options={})
           @application_path = application_path

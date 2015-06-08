@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # A class to represent an Android application (.apk).
     class Application < Calabash::Application
       attr_reader :test_server
 

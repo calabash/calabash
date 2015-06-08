@@ -1,4 +1,5 @@
 module Calabash
+  # @!visibility private
   module Patch
     require 'calabash/patch/array'
 

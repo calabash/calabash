@@ -3,7 +3,9 @@ require 'open3'
 
 module Calabash
   module Android
+    # @!visibility private
     class ADB
+      # @!visibility private
       class ADBCallError < StandardError
         attr_reader :stderr, :stdout
 

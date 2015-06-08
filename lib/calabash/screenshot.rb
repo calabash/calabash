@@ -2,6 +2,8 @@ require 'fileutils'
 require 'pathname'
 
 module Calabash
+
+  # A public API for taking screenshots.
   module Screenshot
     # @!visibility private
     SCREENSHOT_DIRECTORY_PREFIX = 'test_run_'
