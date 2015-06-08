@@ -176,3 +176,8 @@ Then(/^I tweet "([^"]*)" and tag with "([^"]*)"$/) do |tweet, tag|
   wait_for_view 'UITextField'
   query('UITextField', [{setText:"#{tweet} #{tag}"}])
 end
+
+Then(/^search for "([^"]*)"$/) do |search_for|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:search_for}])
+end

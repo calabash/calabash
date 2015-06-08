@@ -83,7 +83,13 @@ Feature: keyboard delete
     And realize my mistake and delete 1 character and replace with "1"
 
   @twitter
-  Scenario: exercise the twitter keyboard
+  Scenario: Twitter keyboard
     And the twitter keyboard is showing
     Then I tweet "rocking robin, tweet tweet" and tag with "#thweet"
     And realize my mistake and delete 5 characters and replace with "weet"
+
+  @web_search
+  Scenario: Web search keyboard
+    And the web search keyboard is showing
+    Then search for "Repot Man"
+    And realize my mistake and delete 5 characters and replace with " Man"
