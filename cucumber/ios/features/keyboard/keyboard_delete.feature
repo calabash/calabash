@@ -68,3 +68,16 @@ Feature: keyboard delete
     And the email keyboard is showing
     Then I start to send an email to "fubart@example.com"
     And realize my mistake and delete 13 characters and replace with "@example.com"
+
+  # Flickering. In the rest of the world, they use a ',' instead of a '.'
+  @decimal
+  Scenario: Decimal keyboard: pi
+    And the decimal keyboard is showing
+    Then I type pi as "3.16"
+    And realize my mistake and delete 1 character and replace with "4"
+
+  @decimal
+  Scenario: Decimal keyboard: look and say
+    And the decimal keyboard is showing
+    Then I type "1113213212"
+    And realize my mistake and delete 1 character and replace with "1"

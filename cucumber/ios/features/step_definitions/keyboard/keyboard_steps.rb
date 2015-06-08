@@ -162,8 +162,12 @@ Then(/^try to call "([^"]*)" at "([^"]*)"$/) do |arg1, arg2|
   query('UITextField', [{setText:"#{arg1} #{arg2}"}])
 end
 
-
 Then(/^I start to send an email to "([^"]*)"$/) do |email|
   wait_for_view 'UITextField'
   query('UITextField', [{setText:email}])
+end
+
+Then(/^I type pi as "([^"]*)"$/) do |pi|
+  wait_for_view 'UITextField'
+  query('UITextField', [{setText:pi}])
 end
