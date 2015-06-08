@@ -62,3 +62,9 @@ Feature: keyboard delete
     And the name and phone keyboard is showing
     Then try to call "GHOST BUSTERS" at "5556162"
     And realize my mistake and delete 4 characters and replace with "2368"
+
+  @email
+  Scenario: Email keyboard
+    And the email keyboard is showing
+    Then I start to send an email to "fubart@example.com"
+    And realize my mistake and delete 13 characters and replace with "@example.com"
