@@ -1,6 +1,19 @@
 module Calabash
   module IOS
-    module API
+    module Text
+      # @!visibility private
+      def enter_text(text)
+        wait_for_keyboard
+        existing_text = text_from_keyboard_first_responder
+        options = { existing_text: existing_text }
+        Device.default.uia_type_string(text, options)
+      end
+
+      # @!visibility private
+      def _enter_text_in(query, text)
+        tap(query)
+        enter_text(text)
+      end
 
       # Returns true if a docked keyboard is visible.
       #
@@ -136,10 +149,10 @@ module Calabash
       # @todo Need translations of 'Delete' key.
       def tap_keyboard_delete_key(options = {})
         default_options =
-              {
-                    use_escaped_char: false,
-                    delete_key_label: 'Delete'
-              }
+            {
+                use_escaped_char: false,
+                delete_key_label: 'Delete'
+            }
         merged_options = default_options.merge(options)
 
         use_escape_sequence = merged_options[:use_escaped_char]
@@ -177,25 +190,25 @@ module Calabash
       # @!visibility private
       # noinspection RubyStringKeysInHashInspection
       ESCAPED_KEYBOARD_CHARACTERS =
-            {
-                  :action => '\n',
+          {
+              :action => '\n',
 
-                  # This works for some combinations of keyboard types and
-                  # iOS version.  The current solution is use a raw UIA call
-                  # to find the 'Delete' key, which may not work in some
-                  # situations, for example in non-English environments.  The
-                  # tap_keyboard_delete_key allows an option to us this escape
-                  # sequence.
-                  :delete => '\b',
+              # This works for some combinations of keyboard types and
+              # iOS version.  The current solution is use a raw UIA call
+              # to find the 'Delete' key, which may not work in some
+              # situations, for example in non-English environments.  The
+              # tap_keyboard_delete_key allows an option to us this escape
+              # sequence.
+              :delete => '\b',
 
-                  # These are not supported yet and I am pretty sure that they
-                  # cannot be touched by passing an escaped character and instead
-                  # the must be found using UIAutomation calls.  -jmoody
-                  #'Dictation' => nil,
-                  #'Shift' => nil,
-                  #'International' => nil,
-                  #'More' => nil,
-            }
+              # These are not supported yet and I am pretty sure that they
+              # cannot be touched by passing an escaped character and instead
+              # the must be found using UIAutomation calls.  -jmoody
+              #'Dictation' => nil,
+              #'Shift' => nil,
+              #'International' => nil,
+              #'More' => nil,
+          }
 
       def keyboard_wait_timeout(timeout)
         if timeout.nil?

@@ -15,11 +15,13 @@ module Calabash
     end
 
     require 'calabash/ios/environment'
-    require 'calabash/ios/api'
-    require 'calabash/ios/server'
     require 'calabash/ios/application'
     require 'calabash/ios/device'
+    require 'calabash/ios/orientation'
+    require 'calabash/ios/server'
+    require 'calabash/ios/text'
 
-    include Calabash::IOS::API
+    include Calabash::IOS::Orientation
+    include Calabash::IOS::Text
   end
 end

@@ -1,4 +1,4 @@
-describe Calabash::IOS::API do
+describe Calabash::IOS::Orientation do
 
   let(:device) do
     Class.new do
@@ -8,16 +8,13 @@ describe Calabash::IOS::API do
 
   let(:world) do
     Class.new do
-      require 'calabash/ios/api'
-      include Calabash::IOS::API
-      def to_s
-        '#<Cucumber World>'
-      end
-
-      def inspect
-        to_s
-      end
+      require 'calabash/ios'
+      include Calabash::IOS
     end.new
+  end
+
+  before do
+    allow(Calabash::Device).to receive(:default).and_return device
   end
 
   it '#status_bar_orientation' do

@@ -1,24 +1,22 @@
-describe Calabash::IOS::API do
-
+describe Calabash::IOS::Text do
   let(:device) do
     Class.new do
+      def uia_type_string(_, _); ; end
       def docked_keyboard_visible?; false; end
       def undocked_keyboard_visible?; false; end
       def split_keyboard_visible?; false; end
       def text_from_keyboard_first_responder; ; end
       def uia_route(_); ; end
+      def screenshot(_); end
     end.new
   end
 
   let(:world) do
     Class.new do
-      require 'calabash/ios/api'
-      include Calabash::Wait
-      include Calabash::IOS::API
+      require 'calabash/ios'
+      include Calabash::IOS
 
       def screenshot_embed; ; end
-      def to_s; '#<Cucumber World>'; end
-      def inspect; to_s; end
     end.new
   end
 
@@ -31,7 +29,24 @@ describe Calabash::IOS::API do
   end
 
   before do
-    allow(Calabash::IOS::Device).to receive(:default).at_least(:once).and_return device
+    allow(Calabash::Device).to receive(:default).at_least(:once).and_return device
+  end
+
+  it '#enter_text' do
+    existing_text = 'existing'
+    options = { existing_text: existing_text }
+    expect(world).to receive(:wait_for_keyboard).and_return true
+    expect(world).to receive(:text_from_keyboard_first_responder).and_return existing_text
+    expect(device).to receive(:uia_type_string).with('text', options).and_return({})
+
+    expect(world.enter_text('text')).to be_truthy
+  end
+
+  it '#enter_text_in' do
+    expect(world).to receive(:tap).with('query').and_return([])
+    expect(world).to receive(:enter_text).with('text').and_return({})
+
+    expect(world._enter_text_in('query', 'text')).to be_truthy
   end
 
   it '#docked_keyboard_visible?' do
@@ -81,11 +96,11 @@ describe Calabash::IOS::API do
   describe '#wait_for_keyboard' do
     it 'waits for the keyboard' do
       options =
-            {
-                  timeout: 0.5,
-                  retry_frequency: 0.01,
-                  exception_class: Calabash::Wait::TimeoutError
-            }
+          {
+              timeout: 0.5,
+              retry_frequency: 0.01,
+              exception_class: Calabash::Wait::TimeoutError
+          }
       expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
       expect(world).to receive(:keyboard_visible?).and_return(false, true)
 
@@ -104,11 +119,11 @@ describe Calabash::IOS::API do
 
     it 'uses default time out if none is given' do
       options =
-            {
-                  timeout: 0.5,
-                  retry_frequency: 0.01,
-                  exception_class: Calabash::Wait::TimeoutError
-            }
+          {
+              timeout: 0.5,
+              retry_frequency: 0.01,
+              exception_class: Calabash::Wait::TimeoutError
+          }
       expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
       expect(world).to receive(:keyboard_visible?).and_return(false, true)
       message = 'Timed out after 0.5 seconds waiting for the keyboard to appear'
@@ -123,11 +138,11 @@ describe Calabash::IOS::API do
   describe '#wait_for_no_keyboard' do
     it 'waits for no visible keyboard' do
       options =
-            {
-                  timeout: 0.5,
-                  retry_frequency: 0.01,
-                  exception_class: Calabash::Wait::TimeoutError
-            }
+          {
+              timeout: 0.5,
+              retry_frequency: 0.01,
+              exception_class: Calabash::Wait::TimeoutError
+          }
       expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
       expect(world).to receive(:keyboard_visible?).and_return(true, false)
 
@@ -146,11 +161,11 @@ describe Calabash::IOS::API do
 
     it 'uses default time out if none is given' do
       options =
-            {
-                  timeout: 0.5,
-                  retry_frequency: 0.01,
-                  exception_class: Calabash::Wait::TimeoutError
-            }
+          {
+              timeout: 0.5,
+              retry_frequency: 0.01,
+              exception_class: Calabash::Wait::TimeoutError
+          }
       expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
       expect(world).to receive(:keyboard_visible?).and_return(true, false)
       message = 'Timed out after 0.5 seconds waiting for the keyboard to disappear'

@@ -27,7 +27,6 @@ module Calabash
 
     require 'calabash/android/application'
     require 'calabash/android/build'
-    require 'calabash/android/api'
     require 'calabash/android/device'
     require 'calabash/android/screenshot'
     require 'calabash/android/server'
