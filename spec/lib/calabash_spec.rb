@@ -64,10 +64,10 @@ describe Calabash do
 
   describe '#start_app' do
     it 'calls Device.default.start_app' do
-      args = {application: :my_app, my: :arg}
-      expect(device).to receive(:start_app).with(:my_app, {my: :arg})
+      args = [:my_app, {my: :arg}]
+      expect(device).to receive(:start_app).with(*args)
 
-      dummy_instance.start_app(args)
+      dummy_instance.start_app(*args)
     end
 
     it 'should use Application.default if no app is given' do
@@ -87,7 +87,7 @@ describe Calabash do
 
       expect do
         dummy_instance.start_app(args)
-      end.to raise_error('No application given, and no default application set')
+      end.to raise_error('No application given, and Application.default is not set')
     end
   end
 

@@ -36,16 +36,14 @@ module Calabash
   include Calabash::Text
   include Calabash::Interactions
 
-  def start_app(opt={})
-    test_options = opt.dup
-    application = test_options.fetch(:application, Application.default)
-    test_options.delete(:application)
+  def start_app(path_or_application = nil, **opt)
+    path_or_application ||= Application.default
 
-    if application.nil?
-      raise 'No application given, and no default application set'
+    unless path_or_application
+      raise 'No application given, and Application.default is not set'
     end
 
-    Device.default.start_app(application, test_options)
+    Device.default.start_app(path_or_application, opt.dup)
   end
 
   def stop_app

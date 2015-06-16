@@ -16,7 +16,8 @@ describe Calabash::Device do
   end
 
   describe '#start_app' do
-    let(:application) {:my_application}
+    let(:application_path) {File.expand_path('./my-application.app')}
+    let(:application) {Calabash::Application.new(application_path)}
     let(:options) {{my: :opts}}
 
     describe 'when running in a managed environment' do
@@ -41,7 +42,6 @@ describe Calabash::Device do
   end
 
   describe '#stop_app' do
-    let(:application) {:my_application}
     let(:options) {{my: :opts}}
 
     describe 'when running in a managed environment' do

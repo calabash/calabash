@@ -36,7 +36,9 @@ module Calabash
     #   This has to be and instance of Android::Application
     #   when testing on an Android device.
     # @param [Hash] options
-    def start_app(application, options={})
+    def start_app(path_or_application, options={})
+      application = parse_path_or_app_parameters(path_or_application)
+
       if Managed.managed?
         Managed.start_app(application, options, self)
       else
