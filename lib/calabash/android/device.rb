@@ -47,6 +47,18 @@ module Calabash
         end
       end
 
+      def installed_apps
+        adb.shell('pm list packages -f').lines.map do |line|
+          # line will be package:<path>=<package>
+          # e.g. "package:/system/app/GoogleEars.apk=com.google.android.ears"
+          info = line.sub("package:", "")
+
+          app_path, app_id = info.split('=').map(&:chomp)
+
+          {package: app_id, path: app_path}
+        end
+      end
+
       def test_server_responding?
         begin
           http_client.get(HTTP::Request.new('ping'), retries: 1).body == 'pong'
@@ -146,6 +158,17 @@ module Calabash
 
       def enter_text(text)
         perform_action('keyboard_enter_text', text)
+      end
+
+      def md5_checksum(file_path)
+        result = adb.shell("#{md5_binary} '#{file_path}'")
+        captures = result.match(/(\w+)/).captures
+
+        if captures.length != 1
+          raise "Invalid MD5 result '#{result}' using #{md5_binary}"
+        end
+
+        captures[0]
       end
 
       private
@@ -284,9 +307,16 @@ module Calabash
       def _ensure_app_installed(application)
         @logger.log "Ensuring #{application.path} is installed"
 
-        # @todo: Ensure it is the same app (checksum).
         if installed_packages.include?(application.identifier)
-          @logger.log 'Application is already installed. Will not install.'
+          @logger.log 'Application is already installed. Ensuring right checksum'
+
+          installed_app = installed_apps.find{|app| app[:package] == application.identifier}
+          installed_app_md5_checksum = md5_checksum(installed_app[:path])
+
+          if application.md5_checksum != installed_app_md5_checksum
+            @logger.log("The md5 checksum has changed (#{application.md5_checksum} != #{installed_app_md5_checksum}.", :info)
+            _install_app(application)
+          end
         else
           adb_install_app(application)
         end
@@ -458,6 +488,61 @@ module Calabash
       # @!visibility private
       def params_for_request(parameters)
         {json: parameters.to_json}
+      end
+
+      # @!visibility private
+      def md5_binary
+        if @md5_binary
+          @md5_binary
+        else
+          if adb.shell('md5', no_exit_code_check: true).chomp == 'md5 file ...'
+            @md5_binary = 'md5'
+          else
+            # The device does not have 'md5'
+            calmd5 = Calabash::Android.binary_location('calmd5', info[:cpu_architecture], can_handle_pie_binaries?)
+            adb.command('push', calmd5, '/data/local/tmp/calmd5')
+            @md5_binary = '/data/local/tmp/calmd5'
+          end
+        end
+      end
+
+      # @!visibility private
+      def can_handle_pie_binaries?
+        # Newer Androids requires PIE enabled executables, older Androids break on them
+        info[:sdk_version] >= 16
+      end
+
+      # @!visibility private
+      def detect_abi
+        abi = adb.shell('getprop ro.product.cpu.abi').chomp
+
+        if abi == 'armeabi-v7a'
+          # armeabi-v7a does not necessarily support NEON vector instructions,
+          # our binaries for this arch requires that, so if CPU does not support
+          # NEON fall back to regular armeabi
+          cpuinfo = adb.shell('cat /proc/cpuinfo')
+
+          if cpuinfo.match /Features.*neon.*/
+            abi
+          else
+            'armeabi'
+          end
+        else
+          abi
+        end
+      end
+
+      # @!visibility private
+      def info
+        @info ||=
+            {
+                os_version: adb.shell('getprop ro.build.version.release').chomp,
+                sdk_version: adb.shell('getprop ro.build.version.sdk').to_i,
+                product_name: adb.shell('getprop ro.product.name').chomp,
+                model: adb.shell('getprop ro.product.model').chomp,
+                cpu_architecture: detect_abi,
+                manufacturer: adb.shell('getprop ro.product.manufacturer').chomp
+            }
       end
     end
   end

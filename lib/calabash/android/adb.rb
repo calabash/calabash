@@ -60,6 +60,8 @@ module Calabash
       DAEMON_STARTED_MESSAGE = "* daemon not running. starting it now on port 5037 *\n* daemon started successfully *\n"
 
       def self.command(*cmd, **args)
+        Logger.debug("ADB Command: #{cmd.join(', ')}")
+        Logger.debug("ADB input: #{args[:input]}")
         stderr = nil
         stdout = nil
         exit_code = nil
@@ -129,16 +131,18 @@ module Calabash
         out = result.lines[4..-4].join
         exit_code_s = result.lines[-2]
 
-        unless exit_code_s.to_i.to_s == exit_code_s.chomp
-          raise ADBCallError,
-                "Unable to obtain exit code. Result: '#{exit_code_s}'"
-        end
+        unless options[:no_exit_code_check]
+          unless exit_code_s.to_i.to_s == exit_code_s.chomp
+            raise ADBCallError,
+                  "Unable to obtain exit code. Result: '#{exit_code_s}'"
+          end
 
-        exit_code = exit_code_s.to_i
+          exit_code = exit_code_s.to_i
 
-        if exit_code != 0
-          raise ADBCallError.new(
-                    "Adb shell command exited with #{exit_code}", out)
+          if exit_code != 0
+            raise ADBCallError.new(
+                      "Adb shell command exited with #{exit_code}", out)
+          end
         end
 
         out

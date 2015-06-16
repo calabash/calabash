@@ -34,5 +34,22 @@ module Calabash
     include Calabash::Android::Interactions
     include Calabash::Android::PhysicalButtons
     include Calabash::Android::Text
+
+    # @!visibility private
+    def self.binary_location(name, abi, using_pie)
+      binary_name = if using_pie
+                      "#{name}-pie"
+                    else
+                      name
+                    end
+
+      file = File.join(File.dirname(__FILE__), 'android', 'lib', name, abi, binary_name)
+
+      unless File.exist?(file)
+        raise "No such file '#{file}'"
+      end
+
+      file
+    end
   end
 end
