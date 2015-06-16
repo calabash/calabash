@@ -26,9 +26,11 @@ module Calabash
     require 'calabash/android/server'
     require 'calabash/android/adb'
     require 'calabash/android/gestures'
+    require 'calabash/android/physical_buttons'
     require 'calabash/android/text'
 
     include Calabash::Android::Gestures
+    include Calabash::Android::PhysicalButtons
     include Calabash::Android::Text
   end
 end
