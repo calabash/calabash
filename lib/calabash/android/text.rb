@@ -7,6 +7,10 @@ module Calabash
         sleep 0.5
         enter_text(text)
       end
+
+      def _tap_keyboard_action_key
+        Device.default.perform_action('press_user_action_button')
+      end
     end
   end
 end

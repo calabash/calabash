@@ -19,8 +19,17 @@ module Calabash
       _enter_text_in(query, text)
     end
 
+    def tap_keyboard_action_key
+      _tap_keyboard_action_key
+    end
+
     # @!visibility private
     def _enter_text_in(view, text)
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _tap_keyboard_action_key
       abstract_method!
     end
   end

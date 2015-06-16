@@ -26,11 +26,25 @@ describe Calabash::Text do
     end
   end
 
+  describe '#tap_keyboard_action_key' do
+    it 'should invoke the implementation method' do
+      expect(dummy).to receive(:_tap_keyboard_action_key)
+
+      dummy.tap_keyboard_action_key
+    end
+  end
+
   describe '#_enter_text_in' do
     it 'should have an abstract implementation' do
       args = ['my query', 'my text']
 
       expect{dummy._enter_text_in(*args)}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
+
+  describe '#_tap_keyboard_action_key' do
+    it 'should have an abstract implementation' do
+      expect{dummy._tap_keyboard_action_key}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 end

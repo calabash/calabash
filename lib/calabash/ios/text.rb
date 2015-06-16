@@ -99,7 +99,8 @@ module Calabash
       #
       # @raise [RuntimeError] If the text cannot be typed.
       # @todo Refactor uia_route to a public API call
-      def tap_keyboard_action_key
+      # @todo Move this documentation to the public method
+      def _tap_keyboard_action_key
         char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:action]
         Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
       end
