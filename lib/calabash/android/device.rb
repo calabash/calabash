@@ -194,6 +194,8 @@ module Calabash
           raise "The test-server '#{application.test_server.identifier}' is not installed"
         end
 
+        ensure_screen_on
+
         cmd_arguments = ['am instrument']
 
         env_options.each_pair do |key, val|
@@ -261,6 +263,49 @@ module Calabash
 
         # Return nil to avoid cluttering the console
         nil
+      end
+
+      # @!visibility private
+      def ensure_screen_on
+        unless screen_on?
+          # Tap the 'lock' button
+          Logger.info "Screen is off, turning screen on."
+          adb.shell('input keyevent 26')
+        end
+
+        time_start = Time.now
+
+        while Time.now - time_start < 5
+          return true if screen_on?
+        end
+
+        raise 'Could not turn screen on'
+      end
+
+      # @!visibility private
+      def screen_on?
+        # Lollipop removed this output
+        if info[:sdk_version] < 20
+          results = adb.shell('dumpsys input_method')
+          output = results.lines.grep(/mScreenOn=(\w+)/)
+
+          if output.empty?
+            raise "Could not find 'mScreenOn'"
+          end
+
+          parsed_result = output.first.match(/mScreenOn=(\w+)/)
+          parsed_result.captures.first == 'true'
+        else
+          results = adb.shell('dumpsys power')
+          output = results.lines.grep(/mInteractive=(\w+)/)
+
+          if output.empty?
+            raise "Could not find 'mInteractive'"
+          end
+
+          parsed_result = output.first.match(/mInteractive=(\w+)/)
+          parsed_result.captures.first == 'true'
+        end
       end
 
       # @!visibility private
