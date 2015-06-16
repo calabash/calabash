@@ -156,7 +156,7 @@ module Calabash
           touch = opt[:touch] || {}
           touch[:x] ||= (opt[:x] || 50)
           touch[:y] ||= (opt[:y] || 50)
-          touch[:time] ||= (opt[:time] || 0.2)
+          touch[:time] ||= (opt[:time] || 0.1)
           touch[:release] = touch[:release].nil? ? (opt[:release].nil? ? true : opt[:release]) : touch[:release]
           touch[:wait] ||= (opt[:wait] || 0)
           touch[:offset] ||= opt[:offset]
