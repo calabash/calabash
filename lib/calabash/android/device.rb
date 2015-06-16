@@ -1,3 +1,5 @@
+require 'json'
+
 module Calabash
   module Android
     # A representation of a Calabash Android device.
@@ -70,14 +72,57 @@ module Calabash
         end
       end
 
+      def make_map_parameters(query, map_method_name, *method_args)
+        converted_args = []
+
+        method_args.each do |arg|
+          if arg.is_a?(Hash)
+            if arg.keys.length > 1
+              raise "Cannot map '#{arg}'. More than one key (method name) is not allowed."
+            end
+
+            if arg.keys.length == 0
+              raise "Cannot map '#{arg}'. No key (method name) is given."
+            end
+
+            method_name = arg.keys.first.to_s
+            value = arg.values.first
+
+            if value.is_a?(Array)
+              arguments = value
+            else
+              arguments = [value]
+            end
+
+            converted =
+                {
+                    method_name: method_name,
+                    arguments: arguments
+                }
+
+            converted_args << converted
+          elsif arg.is_a?(Symbol)
+            method_name = arg.to_s
+            converted_args << method_name
+          else
+            raise "Invalid value for map: '#{arg}' (#{arg.class})"
+          end
+        end
+
+        {
+          query: query,
+          operation: {
+                  method_name: map_method_name,
+                  arguments: converted_args
+          }
+        }
+      end
+
       # @!visibility private
       def map_route(query, method_name, *method_args)
-        operation_map = {
-            :method_name => method_name,
-            :arguments => method_args
-        }
+        parameters = make_map_parameters(query, method_name, *method_args)
 
-        request = HTTP::Request.request('map', {query: query, operation: operation_map})
+        request = HTTP::Request.new('map', json: parameters.to_json)
 
         res = JSON.parse(http_client.get(request).body)
 

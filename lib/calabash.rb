@@ -22,6 +22,7 @@ module Calabash
   require 'calabash/orientation'
   require 'calabash/query'
   require 'calabash/text'
+  require 'calabash/interactions'
 
   require 'calabash/patch'
   Calabash::Patch.apply_patches!
@@ -33,6 +34,7 @@ module Calabash
   include Calabash::Gestures
   include Calabash::Orientation
   include Calabash::Text
+  include Calabash::Interactions
 
   def start_app(opt={})
     test_options = opt.dup
