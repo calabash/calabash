@@ -11,20 +11,14 @@ module Calabash
         Device.default.status_bar_orientation
       end
 
-      # Is the device in the portrait orientation?
-      #
-      # @return [Boolean] Returns true if the device is in the 'up' or 'down'
-      #  orientation.
-      def portrait?
+      # @!visibility private
+      def _portrait?
         orientation = status_bar_orientation
         orientation.eql?('up') || orientation.eql?('down')
       end
 
-      # Is the device in the landscape orientation?
-      #
-      # @return [Boolean] Returns true if the device is in the 'left' or 'right'
-      #  orientation.
-      def landscape?
+      # @!visibility private
+      def _landscape?
         orientation = status_bar_orientation
         orientation.eql?('right') || orientation.eql?('left')
       end

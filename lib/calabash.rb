@@ -19,6 +19,7 @@ module Calabash
   require 'calabash/query_result'
   require 'calabash/screenshot'
   require 'calabash/gestures'
+  require 'calabash/orientation'
   require 'calabash/query'
   require 'calabash/text'
 
@@ -30,6 +31,7 @@ module Calabash
   include Calabash::Wait
   include Calabash::Screenshot
   include Calabash::Gestures
+  include Calabash::Orientation
   include Calabash::Text
 
   def start_app(opt={})

@@ -24,55 +24,55 @@ describe Calabash::IOS::Orientation do
     expect(world.status_bar_orientation).to be == 'o'
   end
 
-  describe '#portrait?' do
+  describe '#_portrait?' do
     it 'down' do
       expect(world).to receive(:status_bar_orientation).and_return 'down'
 
-      expect(world.portrait?).to be == true
+      expect(world._portrait?).to be == true
     end
 
     it 'up' do
       expect(world).to receive(:status_bar_orientation).and_return 'up'
 
-      expect(world.portrait?).to be == true
+      expect(world._portrait?).to be == true
     end
 
     it 'left' do
       expect(world).to receive(:status_bar_orientation).and_return 'left'
 
-      expect(world.portrait?).to be == false
+      expect(world._portrait?).to be == false
     end
 
     it 'right' do
       expect(world).to receive(:status_bar_orientation).and_return 'right'
 
-      expect(world.portrait?).to be == false
+      expect(world._portrait?).to be == false
     end
   end
 
-  describe '#landscape?' do
+  describe '#_landscape?' do
     it 'down' do
       expect(world).to receive(:status_bar_orientation).and_return 'down'
 
-      expect(world.landscape?).to be == false
+      expect(world._landscape?).to be == false
     end
 
     it 'up' do
       expect(world).to receive(:status_bar_orientation).and_return 'up'
 
-      expect(world.landscape?).to be == false
+      expect(world._landscape?).to be == false
     end
 
     it 'left' do
       expect(world).to receive(:status_bar_orientation).and_return 'left'
 
-      expect(world.landscape?).to be == true
+      expect(world._landscape?).to be == true
     end
 
     it 'right' do
       expect(world).to receive(:status_bar_orientation).and_return 'right'
 
-      expect(world.landscape?).to be == true
+      expect(world._landscape?).to be == true
     end
   end
 end
