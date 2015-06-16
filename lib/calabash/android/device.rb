@@ -118,15 +118,30 @@ module Calabash
       def map_route(query, method_name, *method_args)
         parameters = make_map_parameters(query, method_name, *method_args)
 
-        request = HTTP::Request.new('map', json: parameters.to_json)
+        request = HTTP::Request.new('map', params_for_request(parameters))
 
-        res = JSON.parse(http_client.get(request).body)
+        result = JSON.parse(http_client.get(request).body)
 
-        if res['outcome'] != 'SUCCESS'
-          fail "map #{query}, #{method_name} failed because: #{res['reason']}\n#{res['details']}"
+        if result['outcome'] != 'SUCCESS'
+          fail "mapping \"#{query}\" with \"#{method_name}\" failed because: #{result['reason']}\n#{result['details']}"
         end
 
-        res['results']
+        result['results']
+      end
+
+      def perform_action(action, *arguments)
+        @logger.log "Action: #{action} - Arguments: #{arguments.join(', ')}"
+
+        parameters = {command: action, arguments: arguments}
+        request = HTTP::Request.new('/', params_for_request(parameters))
+
+        result = JSON.parse(http_client.get(request).body)
+
+        unless result['success']
+          fail result['message']
+        end
+
+        result
       end
 
       def enter_text(text)
@@ -438,6 +453,11 @@ module Calabash
         if result['outcome'] != 'SUCCESS'
           raise "Failed to perform gesture. #{result['reason']}"
         end
+      end
+
+      # @!visibility private
+      def params_for_request(parameters)
+        {json: parameters.to_json}
       end
     end
   end
