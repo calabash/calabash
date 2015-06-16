@@ -63,13 +63,9 @@ module Calabash
         end
       end
 
-      # Do not modify
       def port_forward(host_port)
-        if Managed.managed?
-          Managed.port_forward(host_port, self)
-        else
-          _port_forward(host_port)
-        end
+        adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{server.test_server_port}"]
+        ADB.command(*adb_forward_cmd)
       end
 
       def make_map_parameters(query, map_method_name, *method_args)
@@ -287,12 +283,6 @@ module Calabash
       # @!visibility private
       def _uninstall_app(application)
         adb_uninstall_app(application.identifier)
-      end
-
-      # @!visibility private
-      def _port_forward(host_port)
-        adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{server.test_server_port}"]
-        ADB.command(*adb_forward_cmd)
       end
 
       # @!visibility private

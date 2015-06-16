@@ -31,83 +31,46 @@ module Calabash
     end
 
     # Start the application and the test server
-    #
-    # @param [Application] application being tested.
-    #   This has to be and instance of Android::Application
-    #   when testing on an Android device.
-    # @param [Hash] options
     def start_app(path_or_application, options={})
       application = parse_path_or_app_parameters(path_or_application)
 
-      if Managed.managed?
-        Managed.start_app(application, options, self)
-      else
-        _start_app(application, options)
-      end
+      _start_app(application, options)
     end
 
     # Shutdown the application and the test server
     def stop_app
-      if Managed.managed?
-        Managed.stop_app(self)
-      else
-        _stop_app
-      end
+      _stop_app
     end
 
-    # Do not modify
     # @see Screenshot#screenshot
     def screenshot(name=nil)
-      if Managed.managed?
-        Managed.screenshot(name, self)
-      else
-        path = Screenshot.obtain_screenshot_path!(name)
-        _screenshot(path)
-      end
+      path = Screenshot.obtain_screenshot_path!(name)
+
+      _screenshot(path)
     end
 
-    # Do not modify
     def install_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
-      if Managed.managed?
-        Managed.install_app(application, self)
-      else
-        _install_app(application)
-      end
+      _install_app(application)
     end
 
-    # Do not modify
     def ensure_app_installed(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
-      if Managed.managed?
-        Managed.ensure_app_installed(application, self)
-      else
-        _ensure_app_installed(application)
-      end
+      _ensure_app_installed(application)
     end
 
-    # Do not modify
     def uninstall_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
-      if Managed.managed?
-        Managed.uninstall_app(application.identifier, self)
-      else
-        _uninstall_app(application)
-      end
+      _uninstall_app(application)
     end
 
-    # Do not modify
     def clear_app_data(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
-      if Managed.managed?
-        Managed.clear_app_data(application.identifier, self)
-      else
-        _clear_app_data(application)
-      end
+      _clear_app_data(application)
     end
 
     # @!visibility private

@@ -10,7 +10,6 @@ module Calabash
   require 'calabash/color'
   require 'calabash/utility'
   require 'calabash/application'
-  require 'calabash/managed'
   require 'calabash/device'
   require 'calabash/http'
   require 'calabash/server'
