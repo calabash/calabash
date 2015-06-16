@@ -4,7 +4,6 @@ module Calabash
   # @todo Query needs more documentation.
   # @todo Query needs some methods moved to private or doc'd private.
   class Query < String
-
     # @!visibility private
     def self.web_query?(query_string)
       # :no, :double or :single
@@ -73,8 +72,8 @@ module Calabash
     def self.query_hash_to_string(hash)
       result = hash.fetch(:class, '*')
 
-      if hash[:mark]
-        result = "#{result} marked:'#{hash[:mark]}'"
+      if hash[:marked]
+        result = "#{result} marked:'#{hash[:marked]}'"
       end
 
       if hash[:index]
