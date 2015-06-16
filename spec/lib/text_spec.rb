@@ -1,5 +1,5 @@
 describe Calabash::Text do
-  let(:dummy_class) {Class.new {include Calabash::Text}}
+  let(:dummy_class) {Class.new {include Calabash}}
   let(:dummy) {dummy_class.new}
 
   let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}

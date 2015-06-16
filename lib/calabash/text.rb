@@ -2,8 +2,6 @@ module Calabash
 
   # A public API for entering text.
   module Text
-    include Calabash::Utility
-
     # Enter `text` into the currently focused view.
     #
     # @param [String] text The text to type.
