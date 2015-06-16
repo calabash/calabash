@@ -39,7 +39,7 @@ module Calabash
       end
 
       def extract_identifier
-        package_line = aapt_dump(@path, 'package').first
+        package_line = aapt_dump('package').first
         raise "'package' not found in aapt output" unless package_line
         m = package_line.match(/name='([^']+)'/)
         raise "Unexpected output from aapt: #{package_line}" unless m
@@ -49,7 +49,7 @@ module Calabash
       def main_activity
         begin
           @logger.log("Trying to find launchable activity")
-          launchable_activity_line = aapt_dump(@path, "launchable-activity").first
+          launchable_activity_line = aapt_dump('launchable-activity').first
           raise "'launchable-activity' not found in aapt output" unless launchable_activity_line
           m = launchable_activity_line.match(/name='([^']+)'/)
           raise "Unexpected output from aapt: #{launchable_activity_line}" unless m
@@ -99,6 +99,11 @@ module Calabash
 
           raise 'Could not find launchable activity'
         end
+      end
+
+      def aapt_dump(key)
+        lines = `"#{Calabash::Android::Environment.tools_dir}/aapt" dump badging "#{path}"`.lines.collect(&:strip)
+        lines.select { |l| l.start_with?("#{key}:") }
       end
     end
   end

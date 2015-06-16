@@ -1,3 +1,5 @@
+require 'zip'
+
 module Calabash
   module Android
     module Build
@@ -44,6 +46,8 @@ module Calabash
             raise BuildError.new("#{@application_path} is not signed with any of the available keystores")
           end
 
+          application = Calabash::Application.from_path(@application_path)
+
           test_server_file_name = TestServer.new(@application_path).path
           FileUtils.mkdir_p File.dirname(test_server_file_name) unless File.exist? File.dirname(test_server_file_name)
 
@@ -55,8 +59,8 @@ module Calabash
               FileUtils.cp(File.join(TEST_SERVER_CODE_PATH, 'AndroidManifest.xml'), "AndroidManifest.xml")
 
               contents = File.read('AndroidManifest.xml')
-              contents.gsub!(/#targetPackage#/, package_name(@application_path))
-              contents.gsub!(/#testPackage#/, "#{package_name(@application_path)}.test")
+              contents.gsub!(/#targetPackage#/, application.identifier)
+              contents.gsub!(/#testPackage#/, "#{application.identifier}.test")
 
               File.open('AndroidManifest.xml_tmp', 'w') {|file| file.write(contents)}
               FileUtils.mv('AndroidManifest.xml_tmp', 'AndroidManifest.xml')
@@ -100,7 +104,7 @@ module Calabash
               cmd = "#{Calabash::Android::Environment.keytool_path} -v -printcert -J\"-Dfile.encoding=utf-8\" -file \"#{rsa_files.first}\""
               Logger.debug cmd
               fingerprints = `#{cmd}`
-              md5_fingerprint = extract_md5_fingerprint(fingerprints)
+              md5_fingerprint = JavaKeystore.extract_md5_fingerprint(fingerprints)
               Logger.debug "MD5 fingerprint for signing cert (#{application_path}): #{md5_fingerprint}"
               md5_fingerprint
             end

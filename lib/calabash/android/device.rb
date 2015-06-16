@@ -1,7 +1,7 @@
 module Calabash
   module Android
     # A representation of a Calabash Android device.
-    class Device < Calabash::Android::Operations::Device
+    class Device < ::Calabash::Device
       attr_reader :adb
 
       def initialize(identifier, server)
@@ -70,12 +70,31 @@ module Calabash
         end
       end
 
+      # @!visibility private
+      def map_route(query, method_name, *method_args)
+        operation_map = {
+            :method_name => method_name,
+            :arguments => method_args
+        }
+
+        request = HTTP::Request.request('map', {query: query, operation: operation_map})
+
+        res = JSON.parse(http_client.get(request).body)
+
+        if res['outcome'] != 'SUCCESS'
+          fail "map #{query}, #{method_name} failed because: #{res['reason']}\n#{res['details']}"
+        end
+
+        res['results']
+      end
+
       private
 
       def _start_app(application, options={})
         env_options = options.dup
 
-        env_options[:test_server_port] ||= server.test_server_port
+        env_options[:test_server_port] = server.test_server_port
+
         env_options[:class] ||= 'sh.calaba.instrumentationbackend.InstrumentationBackend'
         env_options[:target_package] ||= application.identifier
         env_options[:main_activity] ||= application.main_activity
@@ -112,6 +131,9 @@ module Calabash
 
           raise 'Failed to start the application'
         end
+
+        # Forward the port to the test-server
+        port_forward(server.endpoint.port)
 
         begin
           Retriable.retriable(tries: 30, interval: 1, timeout: 30) do

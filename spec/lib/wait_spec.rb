@@ -159,6 +159,9 @@ describe Calabash::Wait do
     end
 
     it 'should use defaults' do
+      wait_file = File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'wait.rb')
+      load wait_file
+
       my_error = Class.new(RuntimeError)
       stub_const('Calabash::Wait::Timeout', NeverRaiseTimeout)
       dummy.define_singleton_method(:test) do
@@ -177,6 +180,9 @@ describe Calabash::Wait do
       dummy.wait_for('msg', timeout: 10) do
         dummy.test
       end
+
+      wait_file = File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'wait.rb')
+      load wait_file
     end
 
     it 'should return the value of the block given' do

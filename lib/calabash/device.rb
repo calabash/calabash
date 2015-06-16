@@ -233,6 +233,11 @@ module Calabash
       _enter_text(text)
     end
 
+    # @!visibility private
+    def map_route(query, method_name, *method_args)
+      abstract_method!
+    end
+
     private
 
     # @!visibility private

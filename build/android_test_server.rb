@@ -3,6 +3,7 @@ module Calabash
     module AndroidTestServer
       require File.join(__dir__, '..', 'lib', 'calabash', 'environment')
       require File.join(__dir__, '..', 'lib', 'calabash', 'android', 'environment')
+      require File.join(__dir__, '..', 'lib', 'calabash', 'logger')
 
       module Messages
         TEST_SERVER_NOT_FOUND = 'The test-server was not found'
