@@ -129,6 +129,10 @@ module Calabash
         res['results']
       end
 
+      def enter_text(text)
+        perform_action('keyboard_enter_text', text)
+      end
+
       private
 
       def _start_app(application, options={})
@@ -434,10 +438,6 @@ module Calabash
         if result['outcome'] != 'SUCCESS'
           raise "Failed to perform gesture. #{result['reason']}"
         end
-      end
-
-      def _enter_text(text)
-        perform_action('keyboard_enter_text', text)
       end
     end
   end

@@ -423,12 +423,8 @@ describe Calabash::Device do
   end
 
   describe '#enter_text' do
-    it 'should invoke the implementation method' do
-      text = 'my text'
-
-      expect(device).to receive(:_enter_text).with(text)
-
-      device.enter_text(text)
+    it 'should have an abstract implementation' do
+      expect{device.enter_text('my text')}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 
@@ -465,12 +461,6 @@ describe Calabash::Device do
   describe '#_flick' do
     it 'should have an abstract implementation' do
       expect{device.send(:_flick, 'my query', {}, {})}.to raise_error(Calabash::AbstractMethodError)
-    end
-  end
-
-  describe '#_enter_text' do
-    it 'should have an abstract implementation' do
-      expect{device.send(:_enter_text, 'my text')}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 end

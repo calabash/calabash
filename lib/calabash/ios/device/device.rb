@@ -483,7 +483,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _enter_text(text)
+      def enter_text(text)
         # @todo implement this
         raise 'ni'
       end
