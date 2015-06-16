@@ -2,6 +2,9 @@ module Calabash
   # Methods for performing gestures.  Gestures are taps, flicks,
   # and pans.
   module Gestures
+    # How long do we wait for a view to appear by default when performing a
+    # gesture.
+    GESTURE_DEFAULT_WAIT_TIMEOUT = 5
 
     # Performs a `tap` on the (first) view that matches `query`.
     #
