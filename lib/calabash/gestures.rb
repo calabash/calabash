@@ -42,8 +42,6 @@ module Calabash
     #   Offset supports an `:x` and `:y` key and causes the touch to be
     #   offset with `(x,y)`.  This offset is always applied _after_ any
     #   translation performed by `:at`.
-    # @option options [Number] :wait_after (0) How many seconds to wait after
-    #   issuing the touch.
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def tap(query, options={})
@@ -105,8 +103,6 @@ module Calabash
     #   originates from.
     # @option options [Hash] :to ({:x, :y}) The point at which the gesture
     #   ends.
-    # @option options [Number] :wait_after (0) How many seconds to wait after
-    #   issuing the pan.
     # @option options [Number] :duration (0.5) How many seconds the swipe takes
     #   to complete.
     # @raise [ViewNotFoundError] If the `query` returns no results.
@@ -142,8 +138,6 @@ module Calabash
     #                 │           │
     #                 └───────────┘
     #
-    # @option options [Number] :wait_after (0) How many seconds to wait after
-    #   issuing the pan.
     # @option options [Number] :duration (0.5) How many seconds the swipe takes
     #   to complete.
     # @raise [ViewNotFoundError] If the `query_from` returns no results.

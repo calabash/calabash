@@ -108,12 +108,9 @@ module Calabash
       gesture_options[:offset] ||= {}
       gesture_options[:offset][:x] ||= 0
       gesture_options[:offset][:y] ||= 0
-      gesture_options[:wait_after] ||= 0
       gesture_options[:timeout] ||= 5
 
       _tap(query, gesture_options)
-
-      sleep(gesture_options[:wait_after])
     end
 
     # Performs a `double_tap` on the (first) view that matches `query`.
@@ -128,12 +125,9 @@ module Calabash
       gesture_options[:offset] ||= {}
       gesture_options[:offset][:x] ||= 0
       gesture_options[:offset][:y] ||= 0
-      gesture_options[:wait_after] ||= 0
       gesture_options[:timeout] ||= 5
 
       _double_tap(query, gesture_options)
-
-      sleep(gesture_options[:wait_after])
     end
 
     # Performs a `long_press` on the (first) view that matches `query`.
@@ -148,13 +142,10 @@ module Calabash
       gesture_options[:offset] ||= {}
       gesture_options[:offset][:x] ||= 0
       gesture_options[:offset][:y] ||= 0
-      gesture_options[:wait_after] ||= 0
       gesture_options[:timeout] ||= 5
       gesture_options[:duration] ||= 1
 
       _long_press(query, gesture_options)
-
-      sleep(gesture_options[:wait_after])
     end
 
     # Performs a `pan` on the (first) view that matches `query`.
