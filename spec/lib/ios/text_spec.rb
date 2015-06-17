@@ -120,14 +120,16 @@ describe Calabash::IOS::Text do
     it 'uses default time out if none is given' do
       options =
           {
-              timeout: 0.5,
               retry_frequency: 0.01,
               exception_class: Calabash::Wait::TimeoutError
           }
+
+      time = 22
+      stub_const('Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT', time)
       expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
       expect(world).to receive(:keyboard_visible?).and_return(false, true)
-      message = 'Timed out after 0.5 seconds waiting for the keyboard to appear'
-      expect(world).to receive(:wait_for).with(message, timeout: 0.5).and_call_original
+      message = "Timed out after #{time} seconds waiting for the keyboard to appear"
+      expect(world).to receive(:wait_for).with(message, timeout: time).and_call_original
 
       expect do
         world.wait_for_keyboard
@@ -139,7 +141,6 @@ describe Calabash::IOS::Text do
     it 'waits for no visible keyboard' do
       options =
           {
-              timeout: 0.5,
               retry_frequency: 0.01,
               exception_class: Calabash::Wait::TimeoutError
           }
@@ -162,14 +163,17 @@ describe Calabash::IOS::Text do
     it 'uses default time out if none is given' do
       options =
           {
-              timeout: 0.5,
               retry_frequency: 0.01,
               exception_class: Calabash::Wait::TimeoutError
           }
+
+      time = 22
+
       expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
+      stub_const('Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT', time)
       expect(world).to receive(:keyboard_visible?).and_return(true, false)
-      message = 'Timed out after 0.5 seconds waiting for the keyboard to disappear'
-      expect(world).to receive(:wait_for).with(message, timeout: 0.5).and_call_original
+      message = "Timed out after #{time} seconds waiting for the keyboard to disappear"
+      expect(world).to receive(:wait_for).with(message, timeout: time).and_call_original
 
       expect do
         world.wait_for_no_keyboard
@@ -188,10 +192,12 @@ describe Calabash::IOS::Text do
       expect(world.send(:keyboard_wait_timeout, 0.1)).to be == 0.1
     end
 
-    it 'returns the default Wait timeout otherwise' do
-      expect(Calabash::Wait).to receive(:default_options).and_return(timeout: 0.4)
+    it 'returns the default gesture w timeout otherwise' do
+      time = 22
 
-      expect(world.send(:keyboard_wait_timeout, nil)).to be == 0.4
+      stub_const('Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT', time)
+
+      expect(world.send(:keyboard_wait_timeout, nil)).to be == 22
     end
   end
 
