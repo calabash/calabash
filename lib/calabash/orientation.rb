@@ -16,6 +16,22 @@ module Calabash
       _landscape?
     end
 
+    # Set the device orientation to portrait.
+    #
+    # In portrait orientation, the display of the device has a bigger width
+    # than height.
+    def set_orientation_portrait
+      _set_orientation_portrait
+    end
+
+    # Set the device orientation to landscape.
+    #
+    # In landscape orientation, the display of the device has a bigger height
+    # than width.
+    def set_orientation_landscape
+      _set_orientation_landscape
+    end
+
     # @!visibility private
     def _portrait?
       abstract_method!
@@ -23,6 +39,16 @@ module Calabash
 
     # @!visibility private
     def _landscape?
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _set_orientation_portrait
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _set_orientation_landscape
       abstract_method!
     end
   end

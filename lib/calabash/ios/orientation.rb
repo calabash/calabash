@@ -12,6 +12,16 @@ module Calabash
       end
 
       # @!visibility private
+      def _set_orientation_landscape
+        Device.default.perform_action('set_activity_orientation', 'landscape')
+      end
+
+      # @!visibility private
+      def _set_orientation_portrait
+        Device.default.perform_action('set_activity_orientation', 'portrait')
+      end
+
+      # @!visibility private
       def _portrait?
         orientation = status_bar_orientation
         orientation.eql?('up') || orientation.eql?('down')
