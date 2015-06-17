@@ -13,12 +13,17 @@ module Calabash
 
       # @!visibility private
       def _portrait?
-        raise 'not implemented'
+        _orientation == 'portrait'
       end
 
       # @!visibility private
       def _landscape?
-        raise 'not implemented'
+        _orientation == 'landscape'
+      end
+
+      # @!visibility private
+      def _orientation
+        Device.default.perform_action('get_activity_orientation')['message']
       end
     end
   end
