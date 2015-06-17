@@ -19,6 +19,19 @@ module Calabash
       _enter_text_in(query, text)
     end
 
+    # Clears the text of the currently focused view.
+    def clear_text
+      _clear_text
+    end
+
+    # Clears the text `view`
+    # @see Calabash::Text#clear_text
+    #
+    # @param query A query describing the view to clear text in.
+    def clear_text_in(view)
+      _clear_text_in(view)
+    end
+
     # @todo add docs
     def tap_keyboard_action_key
       _tap_keyboard_action_key
@@ -37,6 +50,16 @@ module Calabash
 
     # @!visibility private
     def _enter_text_in(view, text)
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _clear_text
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _clear_text_in(view)
       abstract_method!
     end
 

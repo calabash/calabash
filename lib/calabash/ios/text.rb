@@ -10,9 +10,34 @@ module Calabash
       end
 
       # @!visibility private
-      def _enter_text_in(query, text)
-        tap(query)
+      def _enter_text_in(view, text)
+        tap(view)
         enter_text(text)
+      end
+
+      # @!visibility private
+      def _clear_text
+        unless view_exists?("* isFirstResponder:1")
+          raise 'Cannot clear text. No view has focus'
+        end
+
+        clear_text_in("* isFirstResponder:1")
+      end
+
+      # @!visibility private
+      def _clear_text_in(view)
+        unless keyboard_visible?
+          tap(view)
+          wait_for_keyboard
+        end
+
+        unless wait_for_view(view)['text'].empty?
+          tap(view)
+          tap("UICalloutBarButton marked:'Select All'")
+          tap_keyboard_delete_key
+        end
+
+        true
       end
 
       # Returns true if a docked keyboard is visible.

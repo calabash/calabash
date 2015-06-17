@@ -5,19 +5,20 @@ module Calabash
         Device.default.perform_action('hide_soft_keyboard')
       end
 
-      def clear_text
+      # @!visibility private
+      def _clear_text
         Device.default.perform_action('clear_text')
       end
 
-      def clear_text_in(query)
-        tap(query)
+      def _clear_text_in(view)
+        tap(view)
         sleep 0.5
         clear_text
       end
 
       # @!visibility private
-      def _enter_text_in(query, text)
-        tap(query)
+      def _enter_text_in(view, text)
+        tap(view)
         sleep 0.5
         enter_text(text)
       end
