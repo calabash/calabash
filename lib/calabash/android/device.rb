@@ -218,6 +218,20 @@ module Calabash
 
         ensure_screen_on
 
+        # For now, the test-server cannot rebind an existing socket.
+        # So we have to stop any running Calabash servers from the client
+        # for now.
+        if test_server_responding?
+          @logger.log("A test-server is already running on port #{server.test_server_port}")
+          @logger.log("Trying to stop it")
+
+          begin
+            _stop_app
+          rescue => _
+            raise 'Failed to stop old running test-server'
+          end
+        end
+
         cmd_arguments = ['am instrument']
 
         env_options.each_pair do |key, val|
