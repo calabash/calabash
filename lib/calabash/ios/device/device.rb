@@ -298,6 +298,31 @@ module Calabash
         run_loop_device.simulator?
       end
 
+      # @!visibility private
+      def backdoor(method, *arguments)
+        if arguments.length > 1
+          raise 'Backdoor in Calabash iOS does not support more than one argument'
+        end
+
+        parameters =
+            {
+                :selector => method,
+                :arg => arguments.first
+            }.to_json
+
+        request = request_factory('backdoor', parameters)
+
+        body = http_client.post(request).body
+
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          raise "backdoor #{parameters} failed because: #{result['reason']}\n#{result['details']}"
+        end
+
+        result['result']
+      end
+
       private
 
       attr_reader :runtime_attributes

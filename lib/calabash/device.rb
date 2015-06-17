@@ -194,6 +194,11 @@ module Calabash
       abstract_method!
     end
 
+    # @!visibility private
+    def backdoor(method, *arguments)
+      abstract_method!
+    end
+
     private
 
     # @!visibility private

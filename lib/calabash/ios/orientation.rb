@@ -13,12 +13,12 @@ module Calabash
 
       # @!visibility private
       def _set_orientation_landscape
-        Device.default.perform_action('set_activity_orientation', 'landscape')
+        raise 'ni'
       end
 
       # @!visibility private
       def _set_orientation_portrait
-        Device.default.perform_action('set_activity_orientation', 'portrait')
+        raise 'ni'
       end
 
       # @!visibility private

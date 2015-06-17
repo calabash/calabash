@@ -171,6 +171,28 @@ module Calabash
         captures[0]
       end
 
+      # @!visibility private
+      def backdoor(method, *arguments)
+        parameters = {method_name: method, arguments: arguments}
+        json = parameters.to_json
+        request = HTTP::Request.new('/backdoor', json: json)
+
+        body = http_client.get(request).body
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          details = if result['detail'].nil? || result['detail'].empty?
+                      ''
+                    else
+                      "\n#{result['detail']}"
+                    end
+
+          raise "backdoor #{parameters} failed because: #{result['result']}#{details}"
+        end
+
+        result['result']
+      end
+
       private
 
       def _start_app(application, options={})
