@@ -158,32 +158,22 @@ describe Calabash::IOS::Routes::UIARouteMixin do
   end
 
   describe 'Serializing UIA commands' do
-    describe '#escape_single_quotes' do
-      it 'does nothing if there are no single quotes to escape' do
-        string = 'I have no quotes.'
-        expect(device.send(:escape_single_quotes, string)).to be == string
-      end
-
-      it 'escapes all single quotes' do
-        string = "Let's get this done y'all."
-        expected = "Let\\'s get this done y\\'all."
-        expect(device.send(:escape_single_quotes, string)).to be == expected
-      end
-    end
-
     describe '#uia_escape_string' do
       it 'calls escape_single_quotes' do
-        expect(device).to receive(:escape_single_quotes).with('String').and_return 'String'
+        expected = 'string2'
+        expect(Calabash::Text).to receive(:escape_single_quotes).with('String').and_return expected
 
-        expect(device.send(:uia_escape_string, 'String')).to be == 'String'
+        expect(device.send(:uia_escape_string, 'String')).to be == expected
       end
 
       # I am not sure this correct.
       it 'can escape newlines' do
         string = "String with\na newline."
-        expect(device).to receive(:escape_single_quotes).with(string).and_return string
+        from_escape_single_quotes = "Expected \n string"
+        expected = "Expected \\n string"
+        expect(Calabash::Text).to receive(:escape_single_quotes).with(string).and_return from_escape_single_quotes
 
-        expect(device.send(:uia_escape_string, string)).to be == "String with\\na newline."
+        expect(device.send(:uia_escape_string, string)).to be == expected
       end
     end
 

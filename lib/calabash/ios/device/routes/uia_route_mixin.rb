@@ -63,21 +63,9 @@ module Calabash
           result.first
         end
 
-        # @todo Move this to somewhere public because it is useful to users.
-        # Escapes single quotes in `string`.
-        #
-        # @example
-        #   > escape_quotes("Let's get this done.")
-        #   => "Let\\'s get this done."
-        # @param [String] string The string to escape.
-        # @return [String] A string with its single quotes properly escaped.
-        def escape_single_quotes(string)
-          string.gsub("'", "\\\\'")
-        end
-
         # @todo Verify this is the correct way to escape '\n in string
         def uia_escape_string(string)
-          escape_single_quotes(string).gsub("\n", "\\\\n")
+          Calabash::Text.escape_single_quotes(string).gsub("\n", "\\\\n")
         end
 
         def uia_serialize_argument(part)

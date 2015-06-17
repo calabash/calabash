@@ -34,6 +34,30 @@ describe Calabash::Text do
     end
   end
 
+  describe '#escape_single_quotes' do
+    it 'calls self.escape_single_quotes' do
+      arg = 'my string'
+      expected = :expected
+
+      expect(Calabash::Text).to receive(:escape_single_quotes).with(arg).and_return(expected)
+
+      expect(dummy.escape_single_quotes(arg)).to eq(expected)
+    end
+  end
+
+  describe '#self.escape_single_quotes' do
+    it 'does nothing if there are no single quotes to escape' do
+      string = 'I have no quotes.'
+      expect(Calabash::Text.escape_single_quotes(string)).to be == string
+    end
+
+    it 'escapes all single quotes' do
+      string = "Let's get this done y'all."
+      expected = "Let\\'s get this done y\\'all."
+      expect(Calabash::Text.escape_single_quotes(string)).to be == expected
+    end
+  end
+
   describe '#_enter_text_in' do
     it 'should have an abstract implementation' do
       args = ['my query', 'my text']

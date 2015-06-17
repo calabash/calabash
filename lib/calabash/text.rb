@@ -19,8 +19,20 @@ module Calabash
       _enter_text_in(query, text)
     end
 
+    # @todo add docs
     def tap_keyboard_action_key
       _tap_keyboard_action_key
+    end
+
+    # Escapes single quotes in `string`.
+    #
+    # @example
+    #   > escape_quotes("Let's get this done.")
+    #   => "Let\\'s get this done."
+    # @param [String] string The string to escape.
+    # @return [String] A string with its single quotes properly escaped.
+    def escape_single_quotes(string)
+      Text.escape_single_quotes(string)
     end
 
     # @!visibility private
@@ -31,6 +43,11 @@ module Calabash
     # @!visibility private
     def _tap_keyboard_action_key
       abstract_method!
+    end
+
+    # @!visibility private
+    def self.escape_single_quotes(string)
+      string.gsub("'", "\\\\'")
     end
   end
 end

@@ -3,7 +3,7 @@ module Calabash
   # A representation of a Calabash query.
   # @todo Query needs more documentation.
   # @todo Query needs some methods moved to private or doc'd private.
-  class Query < String
+  class Query
     # @!visibility private
     def self.web_query?(query_string)
       # :no, :double or :single
@@ -73,7 +73,7 @@ module Calabash
       result = hash.fetch(:class, '*')
 
       if hash[:marked]
-        result = "#{result} marked:'#{hash[:marked]}'"
+        result = "#{result} marked:'#{Text.escape_single_quotes(hash[:marked])}'"
       end
 
       if hash[:index]
@@ -81,36 +81,42 @@ module Calabash
       end
 
       if hash[:css]
-        result = "#{result} css:'#{hash[:css]}'"
+        result = "#{result} css:'#{Text.escape_single_quotes(hash[:css])}'"
       end
 
       if hash[:xpath]
-        result = "#{result} xpath:'#{hash[:xpath]}'"
+        result = "#{result} xpath:'#{Text.escape_single_quotes(hash[:xpath])}'"
       end
 
       result
     end
 
-    def self.new(query='')
-      query_string = if query.is_a?(Hash)
-                       Query.query_hash_to_string(query)
-                     else
-                       query.dup
-                     end
+    def initialize(query)
+      unless query.is_a?(Query) || query.is_a?(Hash) || query.is_a?(String)
+        raise ArgumentError, "Invalid argument for query: '#{query}' (#{query.class})"
+      end
 
-      r = super(query_string)
-
-      r
-    end
-
-    def initialize(*args)
-      super
+      @query = query.dup
 
       freeze
     end
 
+    def to_s
+      if @query.is_a?(Query)
+        @query.to_s
+      elsif @query.is_a?(Hash)
+        Query.query_hash_to_string(@query)
+      else
+        @query.dup
+      end
+    end
+
+    def inspect
+      "<Calabash::Query #{@query.inspect}>"
+    end
+
     def web_query?
-      Query.web_query?(self)
+      Query.web_query?(to_s)
     end
 
     WEB_QUERY_INDICATORS =
@@ -129,7 +135,7 @@ module Calabash
 
     # @!visibility private
     def self.valid_query?(query)
-      query.is_a?(String)
+      query.is_a?(String) || query.is_a?(Hash) || query.is_a?(Query)
     end
 
     # @!visibility private

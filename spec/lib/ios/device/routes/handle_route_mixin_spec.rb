@@ -117,9 +117,9 @@ describe Calabash::IOS::Routes::HandleRouteMixin do
     let(:hash) { {'results' => []} }
 
     it 'returns a query result if query is not nil' do
-      actual = device.send(:route_success, hash, 'query')
+      actual = device.send(:route_success, hash, "my query")
       expect(actual).to be_a_kind_of Calabash::QueryResult
-      expect(actual.query).to be == 'query'
+      expect(actual.query.to_s).to be == 'my query'
       expect(actual).to be == []
     end
 
