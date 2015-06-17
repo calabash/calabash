@@ -218,6 +218,9 @@ module Calabash
 
         ensure_screen_on
 
+        # Forward the port to the test-server
+        port_forward(server.endpoint.port)
+
         # For now, the test-server cannot rebind an existing socket.
         # So we have to stop any running Calabash servers from the client
         # for now.
@@ -252,9 +255,6 @@ module Calabash
 
           raise 'Failed to start the application'
         end
-
-        # Forward the port to the test-server
-        port_forward(server.endpoint.port)
 
         begin
           Retriable.retriable(tries: 30, interval: 1, timeout: 30) do
