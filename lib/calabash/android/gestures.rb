@@ -13,7 +13,7 @@ module Calabash
           end
 
           @gestures = gestures
-          @timeout = Calabash::Gestures::GESTURE_DEFAULT_WAIT_TIMEOUT
+          @timeout = Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
         end
 
         def +(gesture_collection)

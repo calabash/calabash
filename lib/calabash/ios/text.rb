@@ -238,7 +238,7 @@ module Calabash
 
       def keyboard_wait_timeout(timeout)
         if timeout.nil?
-          Calabash::Gestures::GESTURE_DEFAULT_WAIT_TIMEOUT
+          Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
         else
           timeout
         end
