@@ -32,6 +32,20 @@ module Calabash
       _set_orientation_landscape
     end
 
+    # Changes the orientation of the device.
+    #
+    # If the orientation is currently landscape, it will be set to portrait.
+    # If the orientation is currently portrait, it will be set to landscape.
+    def change_orientation
+      if portrait?
+        set_orientation_landscape
+      elsif landscape?
+        set_orientation_portrait
+      else
+        raise 'Could not detect current orientation'
+      end
+    end
+
     # @!visibility private
     def _portrait?
       abstract_method!
