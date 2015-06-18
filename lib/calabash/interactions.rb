@@ -22,6 +22,12 @@ module Calabash
     # instance. If the method is not defined in the current activity, Calabash
     # tries to invoke the method on the current Application instance.
     #
+    # @note The Android implementation accepts any number of arguments, of any
+    #  type including null (Ruby nil). The iOS implementation does not accept
+    #  more than one argument, of the type NSString (Ruby String) or
+    #  NSDictionary (Ruby Hash).
+    #
+    #
     # For iOS
     # You must create a method on you app delegate of the form:
     #
