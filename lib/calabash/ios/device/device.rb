@@ -323,6 +323,18 @@ module Calabash
         result['result']
       end
 
+      def wait_for_condition(options = {})
+        request = request_factory('condition', options.to_json)
+        body = http_client.post(request).body
+        result = JSON.parse(body)
+
+        unless result['outcome'] == 'SUCCESS'
+          raise Calabash::Wait::WaitError.new(result['reason'])
+        end
+
+        true
+      end
+
       private
 
       attr_reader :runtime_attributes

@@ -17,10 +17,12 @@ module Calabash
     require 'calabash/ios/environment'
     require 'calabash/ios/application'
     require 'calabash/ios/device'
+    require 'calabash/ios/interactions'
     require 'calabash/ios/orientation'
     require 'calabash/ios/server'
     require 'calabash/ios/text'
 
+    include Calabash::IOS::Interactions
     include Calabash::IOS::Orientation
     include Calabash::IOS::Text
 
