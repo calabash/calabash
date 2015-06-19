@@ -13,8 +13,11 @@ describe Calabash::Android::Gestures do
     it 'should pan the screen up' do
       options = {my: :option}
       args = ["* id:'content'", {x: 50, y: 90}, {x: 50, y: 10}, options]
+      query = Calabash::Query.new(args[0])
+      allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
+      expected = [Calabash::Query.new(args[0]), {x: 50, y: 90}, {x: 50, y: 10}, options]
 
-      expect(Calabash::Device.default).to receive(:pan).with(*args)
+      expect(Calabash::Device.default).to receive(:pan).with(*expected)
 
       dummy.send(:_pan_screen_up, options)
     end
@@ -24,8 +27,11 @@ describe Calabash::Android::Gestures do
     it 'should pan the screen down' do
       options = {my: :option}
       args = ["* id:'content'", {x: 50, y: 10}, {x: 50, y: 90}, options]
+      query = Calabash::Query.new(args[0])
+      allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
+      expected = [Calabash::Query.new(args[0]), {x: 50, y: 10}, {x: 50, y: 90}, options]
 
-      expect(Calabash::Device.default).to receive(:pan).with(*args)
+      expect(Calabash::Device.default).to receive(:pan).with(*expected)
 
       dummy.send(:_pan_screen_down, options)
     end
@@ -35,8 +41,11 @@ describe Calabash::Android::Gestures do
     it 'should flick the screen up' do
       options = {my: :option}
       args = ["* id:'content'", {x: 50, y: 90}, {x: 50, y: 10}, options]
+      query = Calabash::Query.new(args[0])
+      allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
+      expected = [Calabash::Query.new(args[0]), {x: 50, y: 90}, {x: 50, y: 10}, options]
 
-      expect(Calabash::Device.default).to receive(:flick).with(*args)
+      expect(Calabash::Device.default).to receive(:flick).with(*expected)
 
       dummy.send(:_flick_screen_up, options)
     end
@@ -46,8 +55,11 @@ describe Calabash::Android::Gestures do
     it 'should flick the screen down' do
       options = {my: :option}
       args = ["* id:'content'", {x: 50, y: 10}, {x: 50, y: 90}, options]
+      query = Calabash::Query.new(args[0])
+      allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
+      expected = [Calabash::Query.new(args[0]), {x: 50, y: 10}, {x: 50, y: 90}, options]
 
-      expect(Calabash::Device.default).to receive(:flick).with(*args)
+      expect(Calabash::Device.default).to receive(:flick).with(*expected)
 
       dummy.send(:_flick_screen_down, options)
     end
