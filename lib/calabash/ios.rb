@@ -23,5 +23,7 @@ module Calabash
 
     include Calabash::IOS::Orientation
     include Calabash::IOS::Text
+
+    require 'calabash/ios/page'
   end
 end
