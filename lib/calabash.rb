@@ -24,7 +24,6 @@ module Calabash
   require 'calabash/text'
   require 'calabash/interactions'
 
-  require 'calabash/page'
 
   require 'calabash/patch'
   Calabash::Patch.apply_patches!
@@ -38,6 +37,8 @@ module Calabash
   include Calabash::Orientation
   include Calabash::Text
   include Calabash::Interactions
+
+  require 'calabash/page'
 
   def page(page_class)
     if defined?(page_class)
