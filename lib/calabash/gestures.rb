@@ -47,7 +47,7 @@ module Calabash
     def tap(query, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.tap(query, options)
+      Device.default.tap(Query.new(query), options)
     end
 
     # Performs a `double_tap` on the (first) view that matches `query`.
@@ -57,7 +57,7 @@ module Calabash
     def double_tap(query, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.double_tap(query, options)
+      Device.default.double_tap(Query.new(query), options)
     end
 
     # Performs a `long_press` on the (first) view that matches `query`.
@@ -73,7 +73,7 @@ module Calabash
     def long_press(query, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.long_press(query, options)
+      Device.default.long_press(Query.new(query), options)
     end
 
     # Performs a `pan` on the (first) view that matches `query`.
@@ -110,7 +110,7 @@ module Calabash
     def pan(query, from, to, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.pan(query, from, to, options)
+      Device.default.pan(Query.new(query), from, to, options)
     end
 
     # Performs a `pan` from the center of the first view that matches
@@ -148,7 +148,7 @@ module Calabash
       Query.ensure_valid_query(query_from)
       Query.ensure_valid_query(query_to)
 
-      Device.default.pan_between(query_from, query_to, options)
+      Device.default.pan_between(Query.new(query_from), Query.new(query_to), options)
     end
 
     # Performs a `pan` heading `left` on the (first) view that matches `query`.
@@ -222,7 +222,7 @@ module Calabash
     def flick(query, from, to, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.flick(query, from, to, options)
+      Device.default.flick(Query.new(query), from, to, options)
     end
 
     # Performs a `flick` heading `left` on the (first) view that matches `query`.
