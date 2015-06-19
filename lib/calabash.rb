@@ -24,6 +24,8 @@ module Calabash
   require 'calabash/text'
   require 'calabash/interactions'
 
+  require 'calabash/page'
+
   require 'calabash/patch'
   Calabash::Patch.apply_patches!
 
@@ -36,6 +38,18 @@ module Calabash
   include Calabash::Orientation
   include Calabash::Text
   include Calabash::Interactions
+
+  def page(page_class)
+    if defined?(page_class)
+      if page_class.is_a?(Class)
+        page_class.send(:new, self)
+      else
+        raise "Page '#{page_class}' is not a class"
+      end
+    else
+      raise "No such page defined '#{page_class}'"
+    end
+  end
 
   def self.new_embed_method!(method)
     EmbeddingContext.new_embed_method(method)

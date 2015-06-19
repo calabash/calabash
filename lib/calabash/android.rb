@@ -31,6 +31,8 @@ module Calabash
     require 'calabash/android/physical_buttons'
     require 'calabash/android/text'
 
+    require 'calabash/android/page'
+
     include Calabash::Android::Gestures
     include Calabash::Android::Interactions
     include Calabash::Android::Orientation
