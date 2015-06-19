@@ -63,7 +63,7 @@ module Calabash
         end
 
         if @platform == :android
-          cucumber_environment['CAL_APP'] = Environment::APP_PATH || application_path
+          cucumber_environment['CAL_APP'] = application_path
 
           if Environment::TEST_SERVER_PATH
             cucumber_environment['CAL_TEST_SERVER'] = Environment::TEST_SERVER_PATH
@@ -75,7 +75,7 @@ module Calabash
             cucumber_environment['CAL_TEST_SERVER'] = test_server.path
           end
         elsif @platform == :ios
-          cucumber_environment['CAL_APP'] = Environment::APP_PATH || application_path
+          cucumber_environment['CAL_APP'] = application_path
         else
           raise "Invalid platform '#{@platform}'"
         end
