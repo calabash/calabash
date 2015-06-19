@@ -8,31 +8,33 @@ case platform
 
     World(Calabash::Android)
 
+    # Setup the default application
+    Calabash::Application.default =
+        Calabash::Android::Application.default_from_environment
+
     identifier = Calabash::Android::Device.default_serial
     server = Calabash::Android::Server.default
 
     # Setup the default device
     Calabash::Device.default =
         Calabash::Android::Device.new(identifier, server)
-
-    # Setup the default application
-    Calabash::Application.default =
-        Calabash::Android::Application.default_from_environment
   when 'ios'
     require 'calabash/ios'
 
     World(Calabash::IOS)
 
-    #identifier = Calabash::IOS::Device.default_serial
+    # Setup the default application
+    Calabash::Application.default =
+        Calabash::IOS::Application.default_from_environment
+
+    identifier =
+        Calabash::IOS::Device.default_identifier_for_application(Calabash::Application.default)
+
     server = Calabash::IOS::Server.default
 
     # Setup the default device
     Calabash::Device.default =
-        Calabash::IOS::Device.new(nil, server)
-
-    # Setup the default application
-    Calabash::Application.default =
-        Calabash::IOS::Application.default_from_environment
+        Calabash::IOS::Device.new(identifier, server)
   else
     message = if platform.nil? || platform.empty?
                 'No platform given'
