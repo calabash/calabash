@@ -6,9 +6,11 @@ module Calabash
       def parse_run_arguments!
         first_argument = @arguments.first # Do not remove the entry from the arguments yet - it might be a cucumber arg
 
-        if first_argument.nil? || first_argument.start_with?('-')
+        if first_argument.nil? || first_argument.start_with?('-') || first_argument =~ /\.feature(\:\d*|\z)/
           # If the argument begins with a dash, we assume the user meant
           # to specify a cucumber argument, not an application
+          # If the argument ends with .feature, we assume the user meant
+          # to specify a cucumber argument, not an application.
           Logger.info("No application specified. Using default application specified by env variable CAL_APP")
           application = Environment::APP_PATH
           Logger.debug("New application: '#{application}'")
