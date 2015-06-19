@@ -58,7 +58,7 @@ module Calabash
         if @platform == :android
           irbrc_path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'android', 'lib', '.irbrc'))
 
-          console_environment['CAL_APP'] = Environment::APP_PATH || application_path
+          console_environment['CAL_APP'] = application_path
 
           if Environment::TEST_SERVER_PATH
             console_environment['CAL_TEST_SERVER'] = Environment::TEST_SERVER_PATH
@@ -72,7 +72,7 @@ module Calabash
         elsif @platform == :ios
           irbrc_path ||= File.expand_path(File.join(File.dirname(__FILE__), '..', 'ios', 'lib', '.irbrc'))
 
-          console_environment['CAL_APP'] = Environment::APP_PATH || application_path
+          console_environment['CAL_APP'] = application_path
         else
           raise "Invalid platform '#{@platform}'"
         end
