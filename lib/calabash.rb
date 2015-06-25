@@ -40,15 +40,55 @@ module Calabash
 
   require 'calabash/page'
 
+  # Instantiate a page object.
+  #
+  # @example
+  #  # android/pages/login_page.rb
+  #  class Android::LoginPage < Calabash::Page
+  #    include Calabash::Android
+  #
+  #    [...]
+  #  end
+  #
+  #  # step definition
+  #  Given([...]) do
+  #    # Calabash will determine your platform and pick the Android page.
+  #    page(LoginPage).method
+  #  end
+  #
+  # @param [Class] The page to instantiate
+  # @return [Calabash::Page] An instance of the page class
   def page(page_class)
-    if defined?(page_class)
+    platform_module = if Device.default.is_a?(Android::Device)
+                        Object.const_get(:Android)
+                      elsif Device.default.is_a?(IOS::Device)
+                        Object.const_get(:IOS)
+                      else
+                        raise 'Cannot detect running platform'
+                      end
+
+    unless page_class.is_a?(Class)
+      raise ArgumentError, "Expected a 'Class', got '#{page_class.class}'"
+    end
+
+    page_name = page_class.name.split('::').last
+
+    if platform_module.const_defined?(page_name, false)
+      page_class = platform_module.const_get(page_name, false)
+
       if page_class.is_a?(Class)
-        page_class.send(:new, self)
+        page = page_class.send(:new, self)
+
+        if page.is_a?(Calabash::Page)
+          page
+        else
+          raise "Page '#{page_class}' is not a Calabash::Page"
+        end
       else
         raise "Page '#{page_class}' is not a class"
       end
     else
-      raise "No such page defined '#{page_class}'"
+      raise "No such page defined '#{platform_module}::#{page_name}'"
     end
   end
 
@@ -128,4 +168,12 @@ module Calabash
       Logger.warn 'Embed is not available in this context. Will not embed.'
     end
   end
+end
+
+unless Object.const_defined?(:Android)
+  Object.const_set(:Android, Module.new)
+end
+
+unless Object.const_defined?(:IOS)
+  Object.const_set(:IOS, Module.new)
 end
