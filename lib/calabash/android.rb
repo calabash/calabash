@@ -37,8 +37,6 @@ module Calabash
     include Calabash::Android::PhysicalButtons
     include Calabash::Android::Text
 
-    require 'calabash/android/page'
-
     # @!visibility private
     def self.binary_location(name, abi, using_pie)
       binary_name = if using_pie
