@@ -333,14 +333,14 @@ module Calabash
           parsed_result.captures.first == 'true'
         else
           results = adb.shell('dumpsys power')
-          output = results.lines.grep(/mInteractive=(\w+)/)
+          output = results.lines.grep(/mWakefulness=(\w+)/)
 
           if output.empty?
-            raise "Could not find 'mInteractive'"
+            raise "Could not find 'mWakefulness'"
           end
 
-          parsed_result = output.first.match(/mInteractive=(\w+)/)
-          parsed_result.captures.first == 'true'
+          parsed_result = output.first.match(/mWakefulness=(\w+)/)
+          parsed_result.captures.first == 'Awake'
         end
       end
 
