@@ -1,5 +1,4 @@
 # Temporary git ignores. Remove these when changing repos
-lib/calabash/android/lib/screenshot_taker.jar
 android/test-server
 lib/calabash/android/environment.rb
 lib/calabash/android/build/java_keystore.rb
