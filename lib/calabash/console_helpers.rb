@@ -10,6 +10,10 @@ module Calabash
       query("*").map{|e| e['class']}.uniq
     end
 
+    def ids
+      query("*").map{|e| e['id']}.compact
+    end
+
     def self.dump(json_data)
       json_data['children'].each {|child| write_child(child)}
     end
