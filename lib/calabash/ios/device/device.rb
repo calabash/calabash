@@ -335,6 +335,21 @@ module Calabash
         true
       end
 
+      # @see Calabash::Location#set_location
+      def set_location(location)
+        if physical_device?
+          raise 'Setting the location is not supported on physical devices'
+        end
+
+        location_data =
+            {
+                'latitude' => location[:latitude],
+                'longitude' => location[:longitude]
+            }
+
+        uia_serialize_and_call(:setLocation, location_data)
+      end
+
       private
 
       attr_reader :runtime_attributes

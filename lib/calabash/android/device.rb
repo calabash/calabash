@@ -193,6 +193,11 @@ module Calabash
         result['result']
       end
 
+      def set_location(location)
+        perform_action('set_gps_coordinates',
+                       location[:latitude], location[:longitude])
+      end
+
       private
 
       def _start_app(application, options={})

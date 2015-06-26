@@ -73,6 +73,10 @@ module Calabash
       _clear_app_data(application)
     end
 
+    def set_location(location)
+      abstract_method!
+    end
+
     # @!visibility private
     class EnsureTestServerReadyTimeoutError < RuntimeError; end
 

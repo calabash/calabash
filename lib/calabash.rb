@@ -19,6 +19,7 @@ module Calabash
   require 'calabash/screenshot'
   require 'calabash/gestures'
   require 'calabash/life_cycle'
+  require 'calabash/location'
   require 'calabash/orientation'
   require 'calabash/query'
   require 'calabash/text'
@@ -34,6 +35,7 @@ module Calabash
   include Calabash::Screenshot
   include Calabash::Gestures
   include Calabash::LifeCycle
+  include Calabash::Location
   include Calabash::Orientation
   include Calabash::Text
   include Calabash::Interactions
