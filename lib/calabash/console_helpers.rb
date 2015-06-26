@@ -6,6 +6,10 @@ module Calabash
       nil
     end
 
+    def classes
+      query("*").map{|e| e['class']}.uniq
+    end
+
     def self.dump(json_data)
       json_data['children'].each {|child| write_child(child)}
     end
