@@ -135,7 +135,7 @@ module Calabash
         result = JSON.parse(http_client.get(request).body)
 
         if result['outcome'] != 'SUCCESS'
-          fail "mapping \"#{query}\" with \"#{method_name}\" failed because: #{result['reason']}\n#{result['details']}"
+          raise "mapping \"#{query}\" with \"#{method_name}\" failed because: #{result['reason']}\n#{result['details']}"
         end
 
         result['results']
@@ -150,7 +150,17 @@ module Calabash
         result = JSON.parse(http_client.get(request).body)
 
         unless result['success']
-          fail result['message']
+          message = result['message'] || result['bonusInformation']
+
+          if message.is_a?(Array)
+            message = message.join("\n")
+          end
+
+          if message.nil?
+            raise "Could not perform action '#{action}'"
+          else
+            raise message
+          end
         end
 
         result
