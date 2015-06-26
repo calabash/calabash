@@ -41,7 +41,7 @@ Public License.}
 
   spec.add_dependency 'cucumber', '>= 1.3', '< 3.0'
   spec.add_dependency 'edn', '>= 1.0.6', '< 2.0'
-  spec.add_dependency 'slowhandcuke','~> 0.0', '>= 0.0.3'
+  spec.add_dependency 'slowhandcuke', '>= 0.0.3', '< 1.0'
   spec.add_dependency 'geocoder', '~> 1.1', '>= 1.1.8'
   spec.add_dependency 'httpclient', '~> 2.6'
   spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
