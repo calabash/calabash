@@ -65,7 +65,7 @@ Public License.}
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-nav'
 
-  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'guard-bundler'
   spec.add_development_dependency 'growl'
