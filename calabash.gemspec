@@ -39,12 +39,12 @@ Public License.}
   spec.executables   = 'calabash'
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'cucumber', '~> 1.3', '< 3.0'
-  spec.add_dependency 'edn', '~> 1.0', '>= 1.0.6'
-  spec.add_dependency 'slowhandcuke','~> 0.0', '>= 0.0.3'
-  spec.add_dependency 'geocoder', '~> 1.1', '>= 1.1.8'
+  spec.add_dependency 'cucumber', '>= 1.3', '< 3.0'
+  spec.add_dependency 'edn', '>= 1.0.6', '< 2.0'
+  spec.add_dependency 'slowhandcuke', '>= 0.0.3', '< 1.0'
+  spec.add_dependency 'geocoder', '>= 1.1.8', '< 2.0'
   spec.add_dependency 'httpclient', '~> 2.6'
-  spec.add_dependency 'escape', '~> 0.0', '>= 0.0.4'
+  spec.add_dependency 'escape', '>= 0.0.4', '< 1.0'
   spec.add_dependency 'run_loop', '>= 1.3.3', '< 2.0'
 
   # These dependencies should match the xamarin-test-cloud dependencies.
@@ -65,7 +65,7 @@ Public License.}
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-nav'
 
-  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'guard-bundler'
   spec.add_development_dependency 'growl'
