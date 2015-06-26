@@ -21,6 +21,7 @@ module Calabash
     require 'calabash/ios/orientation'
     require 'calabash/ios/server'
     require 'calabash/ios/text'
+    require 'calabash/ios/console_helpers'
 
     include Calabash::IOS::Interactions
     include Calabash::IOS::Orientation

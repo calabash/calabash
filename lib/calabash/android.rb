@@ -30,6 +30,7 @@ module Calabash
     require 'calabash/android/orientation'
     require 'calabash/android/physical_buttons'
     require 'calabash/android/text'
+    require 'calabash/android/console_helpers'
 
     include Calabash::Android::Gestures
     include Calabash::Android::Interactions

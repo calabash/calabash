@@ -36,6 +36,7 @@ begin
     require 'calabash/android'
 
     extend Calabash::Android
+    extend Calabash::ConsoleHelpers
 
     identifier = Calabash::Android::Device.default_serial
     server = Calabash::Android::Server.default

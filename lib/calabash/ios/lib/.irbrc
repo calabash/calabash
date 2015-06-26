@@ -36,6 +36,7 @@ begin
     require 'calabash/ios'
 
     extend Calabash::IOS
+    extend Calabash::ConsoleHelpers
 
     Calabash::Application.default = Calabash::IOS::Application.default_from_environment
 

@@ -24,6 +24,7 @@ module Calabash
   require 'calabash/query'
   require 'calabash/text'
   require 'calabash/interactions'
+  require 'calabash/console_helpers'
 
 
   require 'calabash/patch'

@@ -77,6 +77,12 @@ module Calabash
       abstract_method!
     end
 
+    def dump
+      request = HTTP::Request.new('/dump')
+
+      JSON.parse(http_client.get(request).body)
+    end
+
     # @!visibility private
     class EnsureTestServerReadyTimeoutError < RuntimeError; end
 
