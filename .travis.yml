@@ -12,6 +12,7 @@ rvm:
 script:
   - script/ci/travis/install-gem-ci.rb
   - bundle exec rake unit
+  - rake install
 
 notifications:
   email:
