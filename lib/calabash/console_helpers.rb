@@ -3,7 +3,7 @@ module Calabash
     # Outputs all visible elements as a tree
     def tree
       ConsoleHelpers.dump(Device.default.dump)
-      nil
+      true
     end
 
     def classes

@@ -295,8 +295,8 @@ module Calabash
           raise 'Test-server was never ready'
         end
 
-        # Return nil to avoid cluttering the console
-        nil
+        # Return true to avoid cluttering the console
+        true
       end
 
       # @!visibility private
@@ -312,8 +312,8 @@ module Calabash
           end
         end
 
-        # Return nil to avoid cluttering the console
-        nil
+        # Return true to avoid cluttering the console
+        true
       end
 
       # @!visibility private
@@ -378,6 +378,9 @@ module Calabash
       # @!visibility private
       def _clear_app_data(application)
         adb_clear_app_data(application.identifier)
+
+        # Return true to avoid cluttering the console
+        true
       end
 
       # @!visibility private
@@ -397,6 +400,9 @@ module Calabash
             install_app(application.test_server)
           end
         end
+
+        # Return true to avoid cluttering the console
+        true
       end
 
       # @!visibility private
@@ -423,11 +429,17 @@ module Calabash
             ensure_app_installed(application.test_server)
           end
         end
+
+        # Return true to avoid cluttering the console
+        true
       end
 
       # @!visibility private
       def _uninstall_app(application)
         adb_uninstall_app(application.identifier)
+
+        # Return true to avoid cluttering the console
+        true
       end
 
       # @!visibility private
