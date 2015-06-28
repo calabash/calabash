@@ -72,8 +72,20 @@ module Calabash
     def self.query_hash_to_string(hash)
       result = hash.fetch(:class, '*')
 
+      if hash[:marked] && (hash[:id] || hash[:text])
+        raise 'Cannot use both marked and id/text'
+      end
+
       if hash[:marked]
         result = "#{result} marked:'#{Text.escape_single_quotes(hash[:marked])}'"
+      end
+
+      if hash[:id]
+        result = "#{result} id:'#{Text.escape_single_quotes(hash[:id])}'"
+      end
+
+      if hash[:text]
+        result = "#{result} text:'#{Text.escape_single_quotes(hash[:text])}'"
       end
 
       if hash[:index]
