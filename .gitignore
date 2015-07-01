@@ -1,6 +1,5 @@
 # Temporary git ignores. Remove these when changing repos
 android/test-server
-lib/calabash/android/build/java_keystore.rb
 playground/
 # End of temporary git ignores
 
