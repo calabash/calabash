@@ -51,7 +51,6 @@ module Calabash
           test_server_file_name = TestServer.new(@application_path).path
           FileUtils.mkdir_p File.dirname(test_server_file_name) unless File.exist? File.dirname(test_server_file_name)
 
-          android_platform = Environment.android_platform_path
           Dir.mktmpdir do |workspace_dir|
             Dir.chdir(workspace_dir) do
               FileUtils.cp(UNSIGNED_TEST_SERVER_APK, "TestServer.apk")
@@ -65,7 +64,7 @@ module Calabash
               File.open('AndroidManifest.xml_tmp', 'w') {|file| file.write(contents)}
               FileUtils.mv('AndroidManifest.xml_tmp', 'AndroidManifest.xml')
 
-              unless system %Q{"#{Environment.tools_dir}/aapt" package -M AndroidManifest.xml  -I "#{android_platform}/android.jar" -F dummy.apk}
+              unless system %Q{"#{Environment.aapt_path}" package -M AndroidManifest.xml  -I "#{Environment.android_jar_path}" -F dummy.apk}
                 raise "Could not create dummy.apk"
               end
 

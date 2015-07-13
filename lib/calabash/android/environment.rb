@@ -63,6 +63,10 @@ module Calabash
         android_dependencies(:aapt_path)
       end
 
+      def self.android_jar_path
+        android_dependencies(:android_jar_path)
+      end
+
       def self.java_path
         java_dependencies(:java_path)
       end
@@ -163,6 +167,15 @@ module Calabash
         build_tools_directories + ['platform-tools', 'tools']
       end
 
+      def self.platform_directory(android_sdk_location)
+        files = list_files(File.join(android_sdk_location, 'platforms'))
+                    .select {|file| File.directory?(file)}
+
+        sorted_files = files.sort_by {|item| '%08s' % item.split('-').last}.reverse
+
+        File.join('platforms', File.basename(sorted_files.first))
+      end
+
       def self.locate_android_dependencies(android_sdk_location)
         adb_path = scan_for_path(android_sdk_location, adb_executable, ['platform-tools'])
         aapt_path = scan_for_path(android_sdk_location, aapt_executable, tools_directories(android_sdk_location))
@@ -187,10 +200,20 @@ module Calabash
         Logger.debug("Set zipalign path to '#{zipalign_path}'")
         Logger.debug("Set adb path to '#{adb_path}'")
 
+        android_jar_path = scan_for_path(File.join(android_sdk_location, 'platforms'), 'android.jar', [File.basename(platform_directory(android_sdk_location))])
+
+        if android_jar_path.nil?
+          raise InvalidEnvironmentError,
+                "Could not find 'android.jar' in '#{File.join(android_sdk_location, 'platforms')}'"
+        end
+
+        Logger.debug("Set android jar path to '#{android_jar_path}'")
+
         {
             aapt_path: aapt_path,
             zipalign_path: zipalign_path,
-            adb_path: adb_path
+            adb_path: adb_path,
+            android_jar_path: android_jar_path
         }
       end
 
