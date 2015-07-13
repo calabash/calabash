@@ -63,6 +63,10 @@ module Calabash
         android_dependencies(:aapt_path)
       end
 
+      def self.zipalign_path
+        android_dependencies(:zipalign_path)
+      end
+
       def self.android_jar_path
         android_dependencies(:android_jar_path)
       end

@@ -27,16 +27,16 @@ module Calabash
         end
 
         def unsign(unsigned_path)
-          files_to_remove = `"#{Calabash::Android::Environment.tools_dir}/aapt" list "#{unsigned_path}"`.lines.collect(&:strip).grep(/^META-INF\//)
+          files_to_remove = `"#{Environment.aapt_path}" list "#{unsigned_path}"`.lines.collect(&:strip).grep(/^META-INF\//)
           if files_to_remove.empty?
             @logger.log "App wasn't signed. Will not try to unsign it.", :debug
           else
-            system("\"#{Calabash::Android::Environment.tools_dir}/aapt\" remove \"#{unsigned_path}\" #{files_to_remove.join(" ")}")
+            system("\"#{Environment.aapt_path}\" remove \"#{unsigned_path}\" #{files_to_remove.join(" ")}")
           end
         end
 
         def zipalign(unaligned_path, app_path)
-          cmd = %Q("#{Calabash::Android::Environment.zipalign_path}" -f 4 "#{unaligned_path}" "#{app_path}")
+          cmd = %Q("#{Environment.zipalign_path}" -f 4 "#{unaligned_path}" "#{app_path}")
           @logger.log "Zipaligning using: #{cmd}", :debug
           system(cmd)
         end
