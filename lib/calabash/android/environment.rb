@@ -38,7 +38,9 @@ module Calabash
       end
 
       def self.java_dependencies(key)
-        if @@java_dependencies.has_key?(key)
+        if key == :ant_path
+          ant_executable
+        elsif @@java_dependencies.has_key?(key)
           file = @@java_dependencies[key]
 
           unless File.exists?(file)
@@ -46,8 +48,6 @@ module Calabash
           end
 
           file
-        elsif key == :ant_path
-          ant_executable
         else
           raise "No such dependency '#{key}'"
         end
