@@ -598,6 +598,8 @@ module Calabash
         if result['outcome'] != 'SUCCESS'
           raise "Failed to perform gesture. #{result['reason']}"
         end
+
+        result['results'].first
       end
 
       # @!visibility private
