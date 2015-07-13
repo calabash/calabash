@@ -217,7 +217,10 @@ module Calabash
 
         env_options[:class] ||= 'sh.calaba.instrumentationbackend.InstrumentationBackend'
         env_options[:target_package] ||= application.identifier
-        env_options[:main_activity] ||= application.main_activity
+
+        if options[:activity]
+          env_options[:main_activity] = options[:activity]
+        end
 
         if application.test_server.nil?
           raise 'Invalid application. No test-server set.'
