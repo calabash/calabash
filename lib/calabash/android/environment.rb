@@ -226,10 +226,6 @@ module Calabash
           jarsigner_path = scan_for_path(java_sdk_location, jarsigner_executable, ['bin'])
         end
 
-        if jarsigner_path.nil?
-          raise 'Could '
-        end
-
         Logger.debug("Set jarsigner path to '#{jarsigner_path}'")
 
         if java_path.nil?
@@ -300,18 +296,20 @@ module Calabash
           return 'C:\\Android\\android-sdk'
         end
 
-        from_registry = read_registry(::Win32::Registry::HKEY_CURRENT_USER, "Software\\Novell\\Mono for Android", 'AndroidSdkDirectory')
+        if is_windows?
+          from_registry = read_registry(::Win32::Registry::HKEY_CURRENT_USER, "Software\\Novell\\Mono for Android", 'AndroidSdkDirectory')
 
-        if from_registry && File.exist?(from_registry)
-          Logger.debug("Setting Android SDK location from HKEY_CURRENT_USER Software\\Novell\\Mono for Android")
-          return from_registry
-        end
+          if from_registry && File.exist?(from_registry)
+            Logger.debug("Setting Android SDK location from HKEY_CURRENT_USER Software\\Novell\\Mono for Android")
+            return from_registry
+          end
 
-        from_registry = read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, 'Software\\Android SDK Tools', 'Path')
+          from_registry = read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, 'Software\\Android SDK Tools', 'Path')
 
-        if from_registry && File.exist?(from_registry)
-          Logger.debug("Setting Android SDK location from HKEY_LOCAL_MACHINE Software\\Android SDK Tools")
-          return from_registry
+          if from_registry && File.exist?(from_registry)
+            Logger.debug("Setting Android SDK location from HKEY_LOCAL_MACHINE Software\\Android SDK Tools")
+            return from_registry
+          end
         end
 
         nil
@@ -330,13 +328,15 @@ module Calabash
 
         java_versions = ['1.9', '1.8', '1.7', '1.6']
 
-        java_versions.each do |java_version|
-          key = "SOFTWARE\\JavaSoft\\Java Development Kit\\#{java_version}"
-          from_registry = read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, key, 'JavaHome')
+        if is_windows?
+          java_versions.each do |java_version|
+            key = "SOFTWARE\\JavaSoft\\Java Development Kit\\#{java_version}"
+            from_registry = read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, key, 'JavaHome')
 
-          if from_registry && File.exist?(from_registry)
-            Logger.debug("Setting Java SDK location from HKEY_LOCAL_MACHINE #{key}")
-            return from_registry
+            if from_registry && File.exist?(from_registry)
+              Logger.debug("Setting Java SDK location from HKEY_LOCAL_MACHINE #{key}")
+              return from_registry
+            end
           end
         end
 
