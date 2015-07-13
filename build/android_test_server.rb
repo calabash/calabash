@@ -5,6 +5,9 @@ module Calabash
       require File.join(__dir__, '..', 'lib', 'calabash', 'android', 'environment')
       require File.join(__dir__, '..', 'lib', 'calabash', 'logger')
 
+      # Setup environment
+      Calabash::Android::Environment.setup
+
       module Messages
         TEST_SERVER_NOT_FOUND = 'The test-server was not found'
         CALABASH_JS_NOT_FOUND = 'calabash-js not found'
@@ -27,11 +30,11 @@ module Calabash
 
           args =
             [
-              Calabash::Android::Environment.ant_path,
+              Android::Environment.ant_path,
               "clean",
               "package",
               "-debug",
-              "-Dtools.dir=\"#{Calabash::Android::Environment.tools_dir}\"",
+              "-Dtools.dir=\"#{Android::Environment.tools_directory}\"",
               "-Dandroid.api.level=19",
               "-Dversion=#{Calabash::VERSION}"
             ]

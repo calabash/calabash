@@ -1,103 +1,368 @@
+require 'rexml/document'
+require 'timeout'
+require 'luffa'
+require 'timeout'
+
+if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
+  require 'win32/registry'
+end
+
 module Calabash
   module Android
     class Environment < Calabash::Environment
-      require 'win32/registry' if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
-      
-      def self.exit_if_env_not_set_up
-        exit_unless_jdk_is_available
-        exit_unless_android_sdk_is_available
+      class InvalidEnvironmentError < RuntimeError; end
+      class InvalidJavaSDKHome < RuntimeError; end
+
+      private
+
+      def self.set_android_dependencies(android_dependencies)
+        @@android_dependencies = android_dependencies
       end
 
-      def self.exit_unless_android_sdk_is_available
-        if android_home_path
-          Logger.debug "Android SDK found at: #{android_home_path}"
-          return
+      def self.set_java_dependencies(java_dependencies)
+        @@java_dependencies = java_dependencies
+      end
+
+      def self.android_dependencies(key)
+        if @@android_dependencies.has_key?(key)
+          file = @@android_dependencies[key]
+
+          unless File.exists?(file)
+            raise "No such file '#{file}'"
+          end
+
+          file
+        else
+          raise "No such dependency '#{key}'"
         end
-        Logger.info "Could not find an Android SDK please make sure it is installed."
-        Logger.info "You can read about how Calabash-Android is searching for an Android SDK and how you can help here:"
-        Logger.info "https://github.com/calabash/calabash-android/blob/master/documentation/installation.md#prerequisites"
-        exit 1
+      end
+
+      def self.java_dependencies(key)
+        if @@java_dependencies.has_key?(key)
+          file = @@java_dependencies[key]
+
+          unless File.exists?(file)
+            raise "No such file '#{file}'"
+          end
+
+          file
+        elsif key == :ant_path
+          ant_executable
+        else
+          raise "No such dependency '#{key}'"
+        end
+      end
+
+      public
+
+      def self.adb_path
+        android_dependencies(:adb_path)
+      end
+
+      def self.aapt_path
+        android_dependencies(:aapt_path)
       end
 
       def self.keytool_path
-        find_executable_on_path(keytool_executable) ||
-            "\"#{jdk_path}/bin/#{keytool_executable}\""
-      end
-
-      def self.exit_unless_jdk_is_available
-        jdk = jdk_path
-        if find_executable_on_path(keytool_executable) || jdk
-          Logger.debug "JDK found on PATH." if find_executable_on_path(keytool_executable)
-          Logger.debug "JDK found at: #{jdk}" if jdk
-          return
-        end
-        Logger.info "Could not find Java Development Kit please make sure it is installed."
-        Logger.info "You can read about how Calabash-Android is searching for a JDK and how you can help here:"
-        Logger.info "https://github.com/calabash/calabash-android/blob/master/documentation/installation.md#prerequisites"
-        exit 1
-      end
-
-      def self.jarsigner_path
-        find_executable_on_path(jarsigner_executable) ||
-            "\"#{jdk_path}/bin/#{jarsigner_executable}\""
+        android_dependencies(:keytool_path)
       end
 
       def self.java_path
-        find_executable_on_path(java_executable) ||
-            "\"#{jdk_path}/bin/#{java_executable}\""
+        java_dependencies(:java_path)
       end
 
-      def self.jdk_path
-        path_if_jdk(Environment.variable('JAVA_HOME')) ||
-            if is_windows?
-              path_if_jdk(read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, 'SOFTWARE\\JavaSoft\\Java Development Kit\\1.7', 'JavaHome')) ||
-                  path_if_jdk(read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, 'SOFTWARE\\JavaSoft\\Java Development Kit\\1.6', 'JavaHome'))
-            else
-              path_if_jdk(read_attribute_from_monodroid_config('java-sdk', 'path'))
-            end
+      def self.jarsigner_path
+        java_dependencies(:jarsigner_path)
       end
 
-      def self.android_home_path
-        path_if_android_home(Environment.variable("ANDROID_HOME")) ||
-            if is_windows?
-              path_if_android_home(read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, 'SOFTWARE\\Android SDK Tools', 'Path')) ||
-                  path_if_android_home("C:\\Android\\android-sdk")
-            else
-              path_if_android_home(read_attribute_from_monodroid_config('android-sdk', 'path'))
-            end
+      def self.ant_path
+        java_dependencies(:ant_path)
+      end
+
+      def self.setup
+        if Environment.variable('ANDROID_HOME')
+          android_sdk_location = Environment.variable('ANDROID_HOME')
+          Logger.debug("Setting Android SDK location to $ANDROID_HOME")
+        else
+          android_sdk_location = detect_android_sdk_location
+        end
+
+        if android_sdk_location.nil?
+          Logger.error 'Could not find an Android SDK please make sure it is installed.'
+          Logger.error 'You can read about how Calabash is searching for an Android SDK and how you can help here:'
+          Logger.error 'https://github.com/calabash/calabash-android/blob/master/documentation/installation.md#prerequisites'
+
+          raise 'Could not find an Android SDK'
+        end
+
+        Logger.debug("Android SDK location set to '#{android_sdk_location}'")
+
+        begin
+          set_android_dependencies(locate_android_dependencies(android_sdk_location))
+        rescue InvalidEnvironmentError => e
+          Logger.error 'Could not locate Android dependency'
+          Logger.error 'You can read about how Calabash is searching for an Android SDK and how you can help here:'
+          Logger.error 'https://github.com/calabash/calabash-android/blob/master/documentation/installation.md#prerequisites'
+
+          raise e
+        end
+
+        if Environment.variable('JAVA_HOME')
+          java_sdk_home = Environment.variable('JAVA_HOME')
+          Logger.debug("Setting Java SDK location to $JAVA_HOME")
+        else
+          java_sdk_home = detect_java_sdk_location
+        end
+
+        Logger.debug("Java SDK location set to '#{java_sdk_home}'")
+
+        begin
+          set_java_dependencies(locate_java_dependencies(java_sdk_home))
+        rescue InvalidJavaSDKHome => e
+          Logger.error "Could not find Java Development Kit please make sure it is installed."
+          Logger.error "You can read about how Calabash is searching for a JDK and how you can help here:"
+          Logger.error "https://github.com/calabash/calabash-android/blob/master/documentation/installation.md#prerequisites"
+
+          raise e
+        rescue InvalidEnvironmentError => e
+          Logger.error "Could not find Java dependency"
+          Logger.error "You can read about how Calabash is searching for a JDK and how you can help here:"
+          Logger.error "https://github.com/calabash/calabash-android/blob/master/documentation/installation.md#prerequisites"
+
+          raise e
+        end
+      end
+
+      private
+
+      def self.tools_directory
+        tools_directories = tools_directories(Environment.variable('ANDROID_HOME'))
+
+        File.join(Environment.variable('ANDROID_HOME'), tools_directories.first)
+      end
+
+      def self.tools_directories(android_sdk_location)
+        build_tools_files = list_files(File.join(android_sdk_location, 'build-tools')).select {|file| File.directory?(file)}
+
+        build_tools_directories =
+            build_tools_files.select do |dir|
+              begin
+                Luffa::Version.new(File.basename(dir))
+                true
+              rescue ArgumentError
+                false
+              end
+            end.sort do |a, b|
+              Luffa::Version.compare(Luffa::Version.new(File.basename(a)), Luffa::Version.new(File.basename(b)))
+            end.reverse.map{|dir| File.join('build-tools', File.basename(dir))}
+
+        if build_tools_directories.empty?
+          build_tools_directories = [File.join('build-tools', File.basename(build_tools_files.reverse.first))]
+        end
+
+        build_tools_directories + ['platform-tools', 'tools']
+      end
+
+      def self.locate_android_dependencies(android_sdk_location)
+        adb_path = scan_for_path(android_sdk_location, adb_executable, ['platform-tools'])
+        aapt_path = scan_for_path(android_sdk_location, aapt_executable, tools_directories(android_sdk_location))
+        zipalign_path = scan_for_path(android_sdk_location, zipalign_executable, tools_directories(android_sdk_location))
+
+        if adb_path.nil?
+          raise InvalidEnvironmentError,
+                "Could not find '#{adb_executable}' in '#{android_sdk_location}'"
+        end
+
+        if aapt_path.nil?
+          raise InvalidEnvironmentError,
+                "Could not find '#{aapt_executable}' in '#{android_sdk_location}'"
+        end
+
+        if zipalign_path.nil?
+          raise InvalidEnvironmentError,
+                "Could not find '#{zipalign_executable}' in '#{android_sdk_location}'"
+        end
+
+        Logger.debug("Set aapt path to '#{aapt_path}'")
+        Logger.debug("Set zipalign path to '#{zipalign_path}'")
+        Logger.debug("Set adb path to '#{adb_path}'")
+
+        {
+            aapt_path: aapt_path,
+            zipalign_path: zipalign_path,
+            adb_path: adb_path
+        }
+      end
+
+      def self.locate_java_dependencies(java_sdk_location)
+        # For the Java dependencies, we will use the PATH elements of they exist
+        on_path = find_executable_on_path(java_executable)
+
+        if on_path
+          Logger.debug('Found java on PATH')
+          java_path = on_path
+        else
+          if java_sdk_location.nil? || java_sdk_location.empty?
+            raise InvalidJavaSDKHome,
+                  "Could not locate '#{java_executable}' on path, and Java SDK Home is invalid."
+          end
+
+          java_path = scan_for_path(java_sdk_location, java_executable, ['bin'])
+        end
+
+        Logger.debug("Set java path to '#{java_path}'")
+
+        on_path = find_executable_on_path(jarsigner_executable)
+
+        if on_path
+          Logger.debug('Found jarsigner on PATH')
+          jarsigner_path = on_path
+        else
+          if java_sdk_location.nil? || java_sdk_location.empty?
+            raise InvalidJavaSDKHome,
+                  "Could not locate '#{jarsigner_executable}' on path, and Java SDK Home is invalid."
+          end
+
+          jarsigner_path = scan_for_path(java_sdk_location, jarsigner_executable, ['bin'])
+        end
+
+        if jarsigner_path.nil?
+          raise 'Could '
+        end
+
+        Logger.debug("Set jarsigner path to '#{jarsigner_path}'")
+
+        if java_path.nil?
+          raise InvalidEnvironmentError,
+                "Could not find '#{java_executable}' on PATH or in '#{java_sdk_location}'"
+        end
+
+        if jarsigner_path.nil?
+          raise InvalidEnvironmentError,
+                "Could not find '#{jarsigner_executable}' on PATH or in '#{java_sdk_location}'"
+        end
+
+        {
+            java_path: java_path,
+            jarsigner_path: jarsigner_path
+        }
+      end
+
+      def self.scan_for_path(path, file_name, expected_sub_folders = nil)
+        # Optimization for expected folders
+        if expected_sub_folders && !expected_sub_folders.empty?
+          expected_sub_folders.each do |expected_sub_folder|
+            result = scan_for_path(File.join(path, expected_sub_folder), file_name)
+
+            return result if result
+          end
+
+          Logger.warn("Did not find '#{file_name}' in any standard directory of '#{path}'. Calabash will therefore take longer to load")
+          Logger.debug(" - Expected to find '#{file_name}' in any of:")
+
+          expected_sub_folders.each do |expected_sub_folder|
+            Logger.debug(" - #{File.join(path, expected_sub_folder)}")
+          end
+        end
+
+        files = list_files(path).sort.reverse
+
+        if files.reject{|file| File.directory?(file)}.
+            map{|file| File.basename(file)}.include?(file_name)
+          return File.join(path, file_name)
+        else
+          files.select{|file| File.directory?(file)}.each do |dir|
+            result = scan_for_path(dir, file_name)
+
+            return result if result
+          end
+        end
+
+        nil
+      end
+
+      def self.detect_android_sdk_location
+        if File.exist?(monodroid_config_file)
+          sdk_location = read_attribute_from_monodroid_config('android-sdk', 'path')
+
+          if sdk_location
+            Logger.debug("Setting Android SDK location from '#{monodroid_config_file}'")
+
+            return sdk_location
+          end
+        end
+
+        if File.exist?('~/Library/Developer/Xamarin/android-sdk-mac_x86/')
+          return '~/Library/Developer/Xamarin/android-sdk-mac_x86/'
+        end
+
+        if File.exist?('C:\\Android\\android-sdk')
+          return 'C:\\Android\\android-sdk'
+        end
+
+        from_registry = read_registry(::Win32::Registry::HKEY_CURRENT_USER, "Software\\Novell\\Mono for Android", 'AndroidSdkDirectory')
+
+        if from_registry && File.exist?(from_registry)
+          Logger.debug("Setting Android SDK location from HKEY_CURRENT_USER Software\\Novell\\Mono for Android")
+          return from_registry
+        end
+
+        from_registry = read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, 'Software\\Android SDK Tools', 'Path')
+
+        if from_registry && File.exist?(from_registry)
+          Logger.debug("Setting Android SDK location from HKEY_LOCAL_MACHINE Software\\Android SDK Tools")
+          return from_registry
+        end
+
+        nil
+      end
+
+      def self.detect_java_sdk_location
+        if File.exist?(monodroid_config_file)
+          sdk_location = read_attribute_from_monodroid_config('java-sdk', 'path')
+
+          if sdk_location
+            Logger.debug("Setting Java SDK location from '#{monodroid_config_file}'")
+
+            return sdk_location
+          end
+        end
+
+        java_versions = ['1.9', '1.8', '1.7', '1.6']
+
+        java_versions.each do |java_version|
+          key = "SOFTWARE\\JavaSoft\\Java Development Kit\\#{java_version}"
+          from_registry = read_registry(::Win32::Registry::HKEY_LOCAL_MACHINE, key, 'JavaHome')
+
+          if from_registry && File.exist?(from_registry)
+            Logger.debug("Setting Java SDK location from HKEY_LOCAL_MACHINE #{key}")
+            return from_registry
+          end
+        end
+
+        nil
+      end
+
+      def self.monodroid_config_file
+        File.expand_path('~/.config/xbuild/monodroid-config.xml')
+      end
+
+      def self.read_attribute_from_monodroid_config(element, attribute)
+        REXML::Document.new(IO.read(monodroid_config_file)).elements["//#{element}"].attributes[attribute]
       end
 
       def self.find_executable_on_path(executable)
         path_elements.each do |x|
           f = File.join(x, executable)
-          return "\"#{f}\"" if File.exists?(f)
+          return f if File.exists?(f)
         end
+
         nil
       end
 
-      def self.path_if_jdk(path)
-        path if path && File.exists?(File.join(path, 'bin', jarsigner_executable))
-      end
-
-      def self.zipalign_path
-        zipalign_path = File.join(android_home_path, 'tools', zipalign_executable)
-
-        unless File.exists?(zipalign_path)
-          Logger.debug "Did not find zipalign at '#{zipalign_path}'. Trying to find zipalign in tools directories."
-
-          tools_directories.each do |dir|
-            zipalign_path = File.join(dir, zipalign_executable)
-            break if File.exists?(zipalign_path)
-          end
-        end
-
-        if File.exists?(zipalign_path)
-          Logger.debug "Found zipalign at '#{zipalign_path}'"
-          zipalign_path
-        else
-          Logger.debug("Did not find zipalign in any of '#{tools_directories.join("','")}'.", true)
-          raise 'Could not find zipalign'
-        end
+      def self.path_elements
+        return [] unless Environment.variable('PATH')
+        Environment.variable('PATH').split (/[:;]/)
       end
 
       def self.zipalign_executable
@@ -120,58 +385,16 @@ module Calabash
         is_windows? ? 'adb.exe' : 'adb'
       end
 
-      def self.ant_path
-        is_windows? ? "ant.bat" : "ant"
+      def self.aapt_executable
+        is_windows? ? 'aapt.exe' : 'aapt'
+      end
+
+      def self.ant_executable
+        is_windows? ? 'ant.exe' : 'ant'
       end
 
       def self.is_windows?
         (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
-      end
-
-      def self.tools_dir
-        tools_dir = tools_directories.first
-        Logger.debug "Found tools directory at '#{tools_dir}'"
-        tools_dir
-      end
-
-      def self.tools_directories
-        Dir.chdir(android_home_path) do
-          dirs = Dir["build-tools/*"] + Dir["platform-tools"]
-          raise "Could not find tools directory in #{android_home_path}" if dirs.empty?
-          dirs.map {|dir| File.expand_path(dir)}
-        end
-      end
-
-      def self.adb_path
-        "#{android_home_path}/platform-tools/#{adb_executable}"
-      end
-
-      def self.path_if_android_home(path)
-        path if path && File.exists?(File.join(path, 'platform-tools', adb_executable))
-      end
-
-      def self.path_elements
-        return [] unless Environment.variable('PATH')
-        Environment.variable('PATH').split (/[:;]/)
-      end
-
-      def self.read_attribute_from_monodroid_config(element, attribute)
-        monodroid_config_file = File.expand_path("~/.config/xbuild/monodroid-config.xml")
-        if File.exists?(monodroid_config_file)
-          require 'rexml/document'
-          begin
-            return REXML::Document.new(IO.read(monodroid_config_file)).elements["//#{element}"].attributes[attribute]
-          rescue
-          end
-        end
-      end
-
-      def self.android_platform_path
-        Dir.chdir(android_home_path) do
-          platforms = Dir["platforms/android-*"].sort_by { |item| '%08s' % item.split('-').last }
-          raise "No Android SDK found in #{android_home_path}/platforms/" if platforms.empty?
-          File.expand_path(platforms.last)
-        end
       end
 
       def self.read_registry(root_key, key, value)
@@ -182,6 +405,17 @@ module Calabash
         end
       end
 
+      def self.list_files(path)
+        # Dir.glob does not accept backslashes, even on windows. We have to
+        # substitute all backwards slashes to forward.
+        # C:\foo becomes C:/foo
+
+        if is_windows?
+          Dir.glob(File.join(path, '*').gsub('\\', '/'))
+        else
+          Dir.glob(File.join(path, '*'))
+        end
+      end
     end
   end
 end

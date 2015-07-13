@@ -56,3 +56,6 @@ module Calabash
     end
   end
 end
+
+# Setup environment on load
+Calabash::Android::Environment.setup

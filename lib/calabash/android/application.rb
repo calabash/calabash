@@ -58,7 +58,7 @@ module Calabash
         rescue => e
           @logger.log("Could not find launchable activity, trying to parse raw AndroidManifest. #{e.message}")
 
-          manifest_data = `"#{Environment.tools_dir}/aapt" dump xmltree "#{@path}" AndroidManifest.xml`
+          manifest_data = `"#{Environment.aapt_path}/aapt" dump xmltree "#{@path}" AndroidManifest.xml`
           regex = /^\s*A:[\s*]android:name\(\w+\)\=\"android.intent.category.LAUNCHER\"/
           lines = manifest_data.lines.collect(&:strip)
           indicator_line = nil
@@ -102,7 +102,7 @@ module Calabash
       end
 
       def aapt_dump(key)
-        lines = `"#{Calabash::Android::Environment.tools_dir}/aapt" dump badging "#{path}"`.lines.collect(&:strip)
+        lines = `"#{Environment.aapt_path}" dump badging "#{path}"`.lines.collect(&:strip)
         lines.select { |l| l.start_with?("#{key}:") }
       end
     end
