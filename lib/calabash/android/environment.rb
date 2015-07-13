@@ -63,12 +63,12 @@ module Calabash
         android_dependencies(:aapt_path)
       end
 
-      def self.keytool_path
-        android_dependencies(:keytool_path)
-      end
-
       def self.java_path
         java_dependencies(:java_path)
+      end
+
+      def self.keytool_path
+        java_dependencies(:keytool_path)
       end
 
       def self.jarsigner_path
@@ -212,6 +212,22 @@ module Calabash
 
         Logger.debug("Set java path to '#{java_path}'")
 
+        on_path = find_executable_on_path(keytool_executable)
+
+        if on_path
+          Logger.debug('Found keytool on PATH')
+          keytool_path = on_path
+        else
+          if java_sdk_location.nil? || java_sdk_location.empty?
+            raise InvalidJavaSDKHome,
+                  "Could not locate '#{keytool_executable}' on path, and Java SDK Home is invalid."
+          end
+
+          keytool_path = scan_for_path(java_sdk_location, keytool_executable, ['bin'])
+        end
+
+        Logger.debug("Set keytool path to '#{keytool_path}'")
+
         on_path = find_executable_on_path(jarsigner_executable)
 
         if on_path
@@ -233,6 +249,11 @@ module Calabash
                 "Could not find '#{java_executable}' on PATH or in '#{java_sdk_location}'"
         end
 
+        if keytool_path.nil?
+          raise InvalidEnvironmentError,
+                "Could not find '#{keytool_executable}' on PATH or in '#{java_sdk_location}'"
+        end
+
         if jarsigner_path.nil?
           raise InvalidEnvironmentError,
                 "Could not find '#{jarsigner_executable}' on PATH or in '#{java_sdk_location}'"
@@ -240,6 +261,7 @@ module Calabash
 
         {
             java_path: java_path,
+            keytool_path: keytool_path,
             jarsigner_path: jarsigner_path
         }
       end
