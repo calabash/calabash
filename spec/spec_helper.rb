@@ -1,4 +1,14 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+
+require 'calabash/environment'
+require 'calabash/android/environment'
+
+class Calabash::Android::Environment
+  def self.setup
+    nil
+  end
+end
+
 require 'calabash/android'
 require 'calabash/ios'
 require 'awesome_print'
