@@ -211,12 +211,16 @@ module Calabash
       private
 
       def _start_app(application, options={})
-        env_options = options.dup
+        env_options = {}
+
+        options.fetch(:extras, {}).each do |k, v|
+          env_options[k] = v
+        end
 
         env_options[:test_server_port] = server.test_server_port
 
-        env_options[:class] ||= 'sh.calaba.instrumentationbackend.InstrumentationBackend'
-        env_options[:target_package] ||= application.identifier
+        env_options[:class] = options.fetch(:class, 'sh.calaba.instrumentationbackend.InstrumentationBackend')
+        env_options[:target_package] = options.fetch(:target_package, application.identifier)
 
         if options[:activity]
           env_options[:main_activity] = options[:activity]
