@@ -25,6 +25,9 @@ module Calabash
 
           Timeout.timeout(timeout, ProcessDidNotExitError) do
             i, o, e, t = Open3.popen3(*cmd)
+            i.sync = true
+            o.sync = true
+            e.sync = true
             pid = t.pid
             block.call(i, o, e)
 
@@ -75,17 +78,22 @@ module Calabash
                 begin
                   i.puts p_cmd
                 rescue Errno::EPIPE => err
+                  i.close
                   stderr = e.readlines.join
                   stdout = o.readlines.join
                   raise ADBCallError.new(err, stderr, stdout)
                 end
               end
+
+              i.close
             end
 
-            stderr = e.readlines.join
-            stdout = o.readlines.join
+            unless args.fetch(:no_read, false)
+              stderr = e.readlines.join
+              stdout = o.readlines.join
+            end
 
-            if stdout.start_with?(DAEMON_STARTED_MESSAGE)
+            if stdout && stdout.start_with?(DAEMON_STARTED_MESSAGE)
               stdout = stdout[DAEMON_STARTED_MESSAGE.length..-1]
             end
           end
@@ -94,6 +102,10 @@ module Calabash
         end
 
         if exit_code != 0
+          Logger.debug("Adb process exited with #{exit_code}")
+          Logger.debug("Error message from ADB: ")
+          Logger.debug(stderr)
+
           raise ADBCallError.new(
                 "Adb process exited with #{exit_code}", stderr, stdout)
         end
@@ -140,6 +152,10 @@ module Calabash
           exit_code = exit_code_s.to_i
 
           if exit_code != 0
+            Logger.debug("Adb shell command exited with #{exit_code}")
+            Logger.debug("Error message from ADB: ")
+            Logger.debug(out)
+
             raise ADBCallError.new(
                       "Adb shell command exited with #{exit_code}", out)
           end
