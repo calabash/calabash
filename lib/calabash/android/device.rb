@@ -14,15 +14,25 @@ module Calabash
       def self.default_serial
         serials = list_serials
 
-        if serials.length == 0
-          raise 'No devices visible on adb. Ensure a device is visible in `adb devices`'
-        end
+        if Environment::DEVICE_IDENTIFIER
+          index = serials.index(Environment::DEVICE_IDENTIFIER)
 
-        if serials.length > 1
-          raise 'More than one device connected. Use $CAL_IDENTIFIER to select serial'
-        end
+          if index
+            serials[index]
+          else
+            raise "A device with the serial '#{Environment::DEVICE_IDENTIFIER}' is not visible on adb"
+          end
+        else
+          if serials.length == 0
+            raise 'No devices visible on adb. Ensure a device is visible in `adb devices`'
+          end
 
-        serials.first
+          if serials.length > 1
+            raise 'More than one device connected. Use CAL_DEVICE_ID to select serial'
+          end
+
+          serials.first
+        end
       end
 
       def self.list_serials

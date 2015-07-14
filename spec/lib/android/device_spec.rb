@@ -22,7 +22,7 @@ describe Calabash::Android::Device do
     it 'should fail if more than one device are connected' do
       expect(dummy_device_class).to receive(:list_serials).and_return(['a', 'b'])
 
-      expect{dummy_device_class.default_serial}.to raise_error('More than one device connected. Use $CAL_IDENTIFIER to select serial')
+      expect{dummy_device_class.default_serial}.to raise_error('More than one device connected. Use CAL_DEVICE_ID to select serial')
     end
 
     it 'should return the serial if only one device is connected' do
