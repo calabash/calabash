@@ -171,12 +171,8 @@ module Calabash
     # @param [Array<String>, String] queries List of queries or a query.
     # @see Calabash::Wait#with_timeout for options
     # @return [void] The return value for this method is undefined.
-    def wait_for_views(queries, options={})
-      unless queries.is_a?(Array)
-        queries = [queries]
-      end
-
-      if queries.nil?
+    def wait_for_views(*queries, **options)
+      if queries.nil? || queries.any?(&:nil?)
         raise ArgumentError, 'Query cannot be nil'
       end
 
@@ -193,7 +189,7 @@ module Calabash
                {timeout: timeout_options[:timeout],
                 exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
-        views_exist?(queries)
+        views_exist?(*queries)
       end
 
       # Do not return the value of views_exist?(queries) as it clutters
@@ -231,12 +227,8 @@ module Calabash
     #
     # @param [Array<String>, String] queries List of queries or a query.
     # @see Calabash::Wait#with_timeout for options
-    def wait_for_no_views(queries, options={})
-      unless queries.is_a?(Array)
-        queries = [queries]
-      end
-
-      if queries.nil?
+    def wait_for_no_views(*queries, **options)
+      if queries.nil? || queries.any?(&:nil?)
         raise ArgumentError, 'Query cannot be nil'
       end
 
@@ -253,7 +245,7 @@ module Calabash
                {timeout: timeout_options[:timeout],
                 exception_class: timeout_options[:exception_class],
                 retry_frequency: timeout_options[:retry_frequency]}) do
-        !views_exist?(queries)
+        !views_exist?(*queries)
       end
     end
 
@@ -281,12 +273,8 @@ module Calabash
     # @param [Array<String>, String] queries List of queries or a query
     # @return Returns truthy if the `queries` all match at least one view
     # @raise [ArgumentError] If given an invalid list of queries
-    def views_exist?(queries)
-      unless queries.is_a?(Array)
-        queries = [queries]
-      end
-
-      if queries.nil?
+    def views_exist?(*queries)
+      if queries.nil? || queries.any?(&:nil?)
         raise ArgumentError, 'Query cannot be nil'
       end
 
@@ -321,20 +309,16 @@ module Calabash
     # Expect `queries` to each match at least one view. Raise an exception if
     # they do not.
     #
-    # @param [Array<String>, String] queries List of queries or a query
+    # @param [String] queries List of queries or a query
     # @raise [ArgumentError] If given an invalid list of queries
     # @raise [ViewNotFoundError] If `queries` do not all match at least one
     #   view.
-    def expect_views(queries)
-      unless queries.is_a?(Array)
-        queries = [queries]
-      end
-
-      if queries.nil?
+    def expect_views(*queries)
+      if queries.nil? || queries.any?(&:nil?)
         raise ArgumentError, 'Query cannot be nil'
       end
 
-      unless views_exist?(queries)
+      unless views_exist?(*queries)
         raise ViewNotFoundError,
               "Not all queries #{parse_query_list(queries)} matched a view"
       end
@@ -363,12 +347,8 @@ module Calabash
     # @param [Array<String>, String] queries List of queries or a query
     # @raise [ArgumentError] If given an invalid list of queries
     # @raise [ViewFoundError] If one of `queries` matched any views
-    def do_not_expect_views(queries)
-      unless queries.is_a?(Array)
-        queries = [queries]
-      end
-
-      if queries.nil?
+    def do_not_expect_views(*queries)
+      if queries.nil? || queries.any?(&:nil?)
         raise ArgumentError, 'Query cannot be nil'
       end
 
