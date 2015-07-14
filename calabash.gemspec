@@ -55,6 +55,7 @@ Public License.}
   # Run-loop should control the version.
   spec.add_dependency 'awesome_print'
   spec.add_dependency 'json'
+  spec.add_dependency 'luffa'
 
   # Development dependencies.
   spec.add_development_dependency 'yard', '~> 0.8'
@@ -70,7 +71,6 @@ Public License.}
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'guard-bundler'
   spec.add_development_dependency 'growl'
-  spec.add_development_dependency 'luffa'
 
 end
 
