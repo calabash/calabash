@@ -443,7 +443,9 @@ module Calabash
 
       # @!visibility private
       def _uninstall_app(application)
-        adb_uninstall_app(application.identifier)
+        if installed_packages.include?(application.identifier)
+          adb_uninstall_app(application.identifier)
+        end
 
         # Return true to avoid cluttering the console
         true
