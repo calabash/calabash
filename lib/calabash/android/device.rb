@@ -565,6 +565,15 @@ module Calabash
       end
 
       # @!visibility private
+      def _pinch(direction, query, options={})
+        gesture = Gestures::Gesture.pinch(direction)
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                          query_string: query.to_s,
+                                                          timeout: options[:timeout]))
+      end
+
+      # @!visibility private
       def adb_uninstall_app(package)
         @logger.log "Uninstalling #{package}"
         result = adb.command('uninstall', package, timeout: 60).lines.last

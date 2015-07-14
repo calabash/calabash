@@ -333,6 +333,27 @@ module Calabash
 
         flick("* id:'content'", from, to, options)
       end
+
+      # !@visibility private
+      def _pinch_screen(direction, options={})
+        Device.default.pinch(direction, "* id:'content'", options)
+      end
+
+      # !@visibility private
+      def _pinch_to_zoom(direction, query, options={})
+        if direction == :out
+          Device.default.pinch(:in, query, options)
+        elsif direction == :in
+          Device.default.pinch(:out, query, options)
+        else
+          raise "Invalid direction '#{direction}'"
+        end
+      end
+
+      # !@visibility private
+      def _pinch_screen_to_zoom(direction, options={})
+        _pinch_to_zoom(direction, "* id:'content'", options)
+      end
     end
   end
 end

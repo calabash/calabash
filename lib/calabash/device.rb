@@ -193,6 +193,19 @@ module Calabash
       _flick(query, from, to, gesture_options)
     end
 
+    # @see Calabash::Gestures#pinch
+    def pinch(direction, query, options={})
+      Query.ensure_valid_query(query)
+
+      unless direction == :out || direction == :in
+        raise ArgumentError, "Invalid direction '#{direction}'"
+      end
+
+      gesture_options = options.dup
+
+      _pinch(direction, query, gesture_options)
+    end
+
     # Enter `text` into the currently focused view.
     # @see Calabash::Text#enter_text
     def enter_text(text)
@@ -348,6 +361,11 @@ module Calabash
 
     # @!visibility private
     def _flick(query, from, to, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _pinch(direction, query, options={})
       abstract_method!
     end
   end

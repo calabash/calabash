@@ -274,6 +274,46 @@ module Calabash
       _flick_screen_down(options)
     end
 
+    # Performs a `pinch` outwards.
+    def pinch_out(query, options={})
+      Device.default.pinch(:out, query, options)
+    end
+
+    # Performs a `pinch` inwards.
+    def pinch_in(query, options={})
+      Device.default.pinch(:in, query, options)
+    end
+
+    # Performs a `pinch` outwards on the screen.
+    def pinch_screen_out(options={})
+      _pinch_screen(:out, options)
+    end
+
+    # Performs a `pinch` inwards on the screen.
+    def pinch_screen_in(options={})
+      _pinch_screen(:in, options)
+    end
+
+    # Performs a `pinch` to zoom out.
+    def pinch_to_zoom_out(query, options={})
+      _pinch_to_zoom(:out, query, options)
+    end
+
+    # Performs a `pinch` to zoom in.
+    def pinch_to_zoom_in(query, options={})
+      _pinch_to_zoom(:in, query, options)
+    end
+
+    # Performs a `pinch` to zoom in on the screen.
+    def pinch_screen_to_zoom_in(options={})
+      _pinch_screen_to_zoom(:in, options)
+    end
+
+    # Performs a `pinch` to zoom in on the screen.
+    def pinch_screen_to_zoom_out(options={})
+      _pinch_screen_to_zoom(:out, options)
+    end
+
     # !@visibility private
     def _pan_screen_up(options={})
       abstract_method!
@@ -291,6 +331,21 @@ module Calabash
 
     # !@visibility private
     def _flick_screen_down(options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _pinch_screen(direction, options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _pinch_to_zoom(direction, query, options={})
+      abstract_method!
+    end
+
+    # !@visibility private
+    def _pinch_screen_to_zoom(direction, options={})
       abstract_method!
     end
   end
