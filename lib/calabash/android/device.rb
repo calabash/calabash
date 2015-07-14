@@ -447,6 +447,13 @@ module Calabash
           adb_uninstall_app(application.identifier)
         end
 
+        if application.is_a?(Android::Application)
+          if application.test_server
+            @logger.log 'Uninstalling the test-server as well'
+            uninstall_app(application.test_server)
+          end
+        end
+
         # Return true to avoid cluttering the console
         true
       end
