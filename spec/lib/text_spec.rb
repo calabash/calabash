@@ -26,11 +26,11 @@ describe Calabash::Text do
     end
   end
 
-  describe '#tap_keyboard_action_key' do
+  describe '#tap_current_keyboard_action_key' do
     it 'should invoke the implementation method' do
-      expect(dummy).to receive(:_tap_keyboard_action_key)
+      expect(dummy).to receive(:_tap_current_keyboard_action_key)
 
-      dummy.tap_keyboard_action_key
+      dummy.tap_current_keyboard_action_key
     end
   end
 
@@ -66,9 +66,9 @@ describe Calabash::Text do
     end
   end
 
-  describe '#_tap_keyboard_action_key' do
+  describe '#_tap_current_keyboard_action_key' do
     it 'should have an abstract implementation' do
-      expect{dummy._tap_keyboard_action_key}.to raise_error(Calabash::AbstractMethodError)
+      expect{dummy._tap_current_keyboard_action_key}.to raise_error(Calabash::AbstractMethodError)
     end
   end
 end

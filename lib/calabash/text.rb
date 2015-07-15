@@ -33,8 +33,8 @@ module Calabash
     end
 
     # @todo add docs
-    def tap_keyboard_action_key
-      _tap_keyboard_action_key
+    def tap_current_keyboard_action_key
+      _tap_current_keyboard_action_key
     end
 
     # Escapes single quotes in `string`.
@@ -64,7 +64,7 @@ module Calabash
     end
 
     # @!visibility private
-    def _tap_keyboard_action_key
+    def _tap_current_keyboard_action_key
       abstract_method!
     end
 

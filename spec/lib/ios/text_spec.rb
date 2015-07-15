@@ -201,11 +201,11 @@ describe Calabash::IOS::Text do
     end
   end
 
-  it '#tap_keyboard_action_key' do
+  it '#tap_current_keyboard_action_key' do
     script = "uia.keyboard().typeString('\\n')"
     expect(device).to receive(:uia_route).with(script).and_return []
 
-    expect(world.tap_keyboard_action_key).to be_truthy
+    expect(world.tap_current_keyboard_action_key).to be_truthy
   end
 
   describe '#tap_keyboard_delete_key' do

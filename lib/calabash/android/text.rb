@@ -24,7 +24,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _tap_keyboard_action_key
+      def _tap_current_keyboard_action_key
         Device.default.perform_action('press_user_action_button')
       end
     end
