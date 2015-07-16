@@ -579,11 +579,11 @@ module Calabash
         result = adb.command('uninstall', package, timeout: 60).lines.last
 
         if result.downcase.chomp != 'success'
-          raise "Could not uninstall app: #{result.chomp}"
+          raise "Could not uninstall app '#{package}': #{result.chomp}"
         end
 
         if installed_packages.include?(package)
-          raise 'App was not uninstalled'
+          raise "App '#{package}' was not uninstalled"
         end
       end
 
@@ -593,11 +593,11 @@ module Calabash
         result = adb.command('install' , '-r', application.path, timeout: 60).lines.last
 
         if result.downcase.chomp != 'success'
-          raise "Could not install app: #{result.chomp}"
+          raise "Could not install app '#{application.identifier}': #{result.chomp}"
         end
 
         unless installed_packages.include?(application.identifier)
-          raise 'App was not installed'
+          raise "App '#{application.identifier}' was not installed"
         end
       end
 
@@ -612,7 +612,7 @@ module Calabash
         result = adb.shell("pm clear #{package}").lines.last
 
         if result.downcase.chomp != 'success'
-          raise "Could not clear app: #{result}"
+          raise "Could not clear app '#{package}': #{result.chomp}"
         end
       end
 
