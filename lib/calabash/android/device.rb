@@ -220,6 +220,25 @@ module Calabash
 
       private
 
+      def calabash_server_failure_file_path(application)
+        "/data/data/#{application.test_server.identifier}/files/calabash_failure.out"
+      end
+
+      def calabash_server_failure_exists?(application)
+        adb.shell("ls #{calabash_server_failure_file_path(application)}").chomp ==
+            calabash_server_failure_file_path(application)
+      end
+
+      def read_calabash_sever_failure(application)
+        adb.shell("cat #{calabash_server_failure_file_path(application)}")
+      end
+
+      def clear_calabash_server_failure(application)
+        if installed_packages.include?(application.test_server.identifier)
+          adb.shell("am start -e method clear -n #{application.test_server.identifier}/sh.calaba.instrumentationbackend.FailureReporterActivity")
+        end
+      end
+
       def _start_app(application, options={})
         env_options = {}
 
@@ -252,6 +271,9 @@ module Calabash
 
         # Forward the port to the test-server
         port_forward(server.endpoint.port)
+
+        # Clear any old error reports
+        clear_calabash_server_failure(application)
 
         # For now, the test-server cannot rebind an existing socket.
         # So we have to stop any running Calabash servers from the client
@@ -289,8 +311,15 @@ module Calabash
         end
 
         begin
-          Retriable.retriable(tries: 30, interval: 1, timeout: 30) do
+          Retriable.retriable(tries: 30, interval: 1, timeout: 30, on: RetryError) do
             unless test_server_responding?
+              # Read any message the test-server might have
+              if calabash_server_failure_exists?(application)
+                failure_message = read_calabash_sever_failure(application)
+
+                raise "Failed to start the application: #{parse_failure_message(failure_message)}"
+              end
+
               raise RetryError
             end
           end
@@ -331,6 +360,19 @@ module Calabash
 
         # Return true to avoid cluttering the console
         true
+      end
+
+      def parse_failure_message(message)
+        case message
+          when 'E_NO_LAUNCH_INTENT_FOR_PACKAGE'
+            'The application does not have an default launchable activity. Specify :activity in #start_app'
+          when 'E_COULD_NOT_DETECT_MAIN_ACTIVITY'
+            'Could not detect the main activity of the application. Specify :activity in #start_app'
+          when 'E_NO_INTERNET_PERMISSION'
+            'The application does not have internet permission. Add the internet permission to your manifest'
+          else
+            message
+        end
       end
 
       # @!visibility private
