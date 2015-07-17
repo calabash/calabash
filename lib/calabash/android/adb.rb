@@ -140,7 +140,14 @@ module Calabash
         args = options.merge(input: input)
 
         result = command('shell', args)
-        out = result.lines[4..-4].join
+
+        # Remove the commands
+        out = result.lines[4..-1].join
+
+        # Get the result from the command
+        command_result = out[0..-(shell_exit_length+1)]
+
+        # Get the exit code
         exit_code_s = result.lines[-2]
 
         unless options[:no_exit_code_check]
@@ -161,7 +168,25 @@ module Calabash
           end
         end
 
-        out
+        command_result
+      end
+
+      private
+
+      # @!visibility private
+      def shell_exit_length
+        if @shell_exit_length
+          @shell_exit_length
+        else
+          input =
+            [
+                'echo $?',
+                'exit 0',
+            ]
+
+          result = command('shell', input: input)
+          @shell_exit_length = result.lines[2..-1].join.length
+        end
       end
 
       # @!visibility private
