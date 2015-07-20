@@ -9,6 +9,7 @@ module Calabash
       include Calabash::IOS::Routes::MapRouteMixin
       include Calabash::IOS::Routes::UIARouteMixin
       include Calabash::IOS::Routes::ConditionRouteMixin
+      include Calabash::IOS::Routes::BackdoorRouteMixin
       include Calabash::IOS::StatusBarMixin
       include Calabash::IOS::KeyboardMixin
       include Calabash::IOS::UIAKeyboardMixin
@@ -297,31 +298,6 @@ module Calabash
         # Can also be obtained by asking the server after the app is launched
         # on the device which would be cheaper.
         run_loop_device.simulator?
-      end
-
-      # @!visibility private
-      def backdoor(method, *arguments)
-        if arguments.length > 1
-          raise 'Backdoor in Calabash iOS does not support more than one argument'
-        end
-
-        parameters =
-            {
-                :selector => method,
-                :arg => arguments.first
-            }.to_json
-
-        request = request_factory('backdoor', parameters)
-
-        body = http_client.post(request).body
-
-        result = JSON.parse(body)
-
-        if result['outcome'] != 'SUCCESS'
-          raise "backdoor #{parameters} failed because: #{result['reason']}\n#{result['details']}"
-        end
-
-        result['result']
       end
 
       # @see Calabash::Location#set_location
