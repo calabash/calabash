@@ -22,6 +22,7 @@ module Calabash
     require 'calabash/ios/server'
     require 'calabash/ios/text'
     require 'calabash/ios/console_helpers'
+    require 'calabash/ios/uiautomation'
 
     include Calabash::IOS::Conditions
     include Calabash::IOS::Orientation
