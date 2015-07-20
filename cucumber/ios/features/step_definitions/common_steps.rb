@@ -1,7 +1,15 @@
-Given(/^I see the (first|second) tab$/) do |tab|
+Given(/^I see the (first|second|third) tab$/) do |tab|
   wait_for_view('tabBarButton')
-  tap("tabBarButton index:#{tab.eql?('first') ? 0 : 1}")
-  expected_view = tab.eql?('first') ? 'first page' : 'second page'
+  case tab
+    when 'first'
+      index = 0
+    when 'second'
+      index = 1
+    when 'third'
+      index = 2
+  end
+  tap("tabBarButton index:#{index}")
+  expected_view = "#{tab} page"
   wait_for_view("view marked:'#{expected_view}'")
 end
 
