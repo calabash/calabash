@@ -28,7 +28,8 @@ module Calabash
     #  NSDictionary (Ruby Hash).
     #
     #
-    # For iOS
+    # ### For iOS
+    #
     # You must create a method on you app delegate of the form:
     #
     #     - (NSString *) calabashBackdoor:(NSString *)aIgnorable;
@@ -37,7 +38,8 @@ module Calabash
     #
     #     - (NSString *) calabashBackdoor:(NSDictionary *)params;
     #
-    # For Android
+    # ### For Android
+    #
     # You must create a public method in your current Activity or Application.
     #
     #     public <return type> calabashBackdoor(String param1, int param2)
@@ -54,7 +56,9 @@ module Calabash
     #   # Android
     #   backdoor('calabashBackdoor', 'first argument', 2)
     #
-    # @param [String] The selector/method name.
+    # @param [String] name The selector/method name.
+    # @param [Object] *arguments A comma separated list of arguments to be
+    #  passed to the backdoor selector/method.
     # @return [Object] the result of performing the selector/method with the
     #  arguments (serialized)
     def backdoor(name, *arguments)
