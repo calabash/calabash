@@ -29,7 +29,7 @@ module Calabash
           begin
             Calabash::HTTP::Request.request('map', parameters)
           rescue => e
-            raise RouteError, e
+            raise Calabash::IOS::RouteError, e
           end
         end
       end

@@ -20,7 +20,7 @@ describe Calabash::IOS::Routes::ResponseParser do
 
           expect {
             device.parse_response_body(response)
-          }.to raise_error Calabash::IOS::Routes::RouteError
+          }.to raise_error Calabash::IOS::RouteError
         end
 
         it 'ParseError' do
@@ -28,7 +28,7 @@ describe Calabash::IOS::Routes::ResponseParser do
 
           expect {
             device.parse_response_body(response)
-          }.to raise_error Calabash::IOS::Routes::RouteError
+          }.to raise_error Calabash::IOS::RouteError
         end
       end
     end
@@ -39,7 +39,7 @@ describe Calabash::IOS::Routes::ResponseParser do
 
       expect {
         device.parse_response_body(response)
-      }.to raise_error Calabash::IOS::Routes::RouteError
+      }.to raise_error Calabash::IOS::RouteError
     end
 
     it 'outcome was SUCCESS but there is no results key' do
@@ -48,7 +48,7 @@ describe Calabash::IOS::Routes::ResponseParser do
 
       expect {
         device.parse_response_body(response)
-      }.to raise_error Calabash::IOS::Routes::RouteError
+      }.to raise_error Calabash::IOS::RouteError
     end
 
     describe 'outcome was FAILURE' do

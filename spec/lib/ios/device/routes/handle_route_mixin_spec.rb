@@ -1,6 +1,6 @@
 describe Calabash::IOS::Routes::HandleRouteMixin do
 
-  let(:error_class) { Calabash::IOS::Routes::RouteError }
+  let(:error_class) { Calabash::IOS::RouteError }
 
   let(:device) do
     Class.new do

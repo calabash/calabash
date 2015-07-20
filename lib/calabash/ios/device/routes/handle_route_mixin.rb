@@ -11,7 +11,7 @@ module Calabash
           begin
             http_client.post(request)
           rescue => e
-            raise RouteError, e
+            raise Calabash::IOS::RouteError, e
           end
         end
 
@@ -20,7 +20,7 @@ module Calabash
           begin
             hash = JSON.parse(body)
           rescue TypeError, JSON::ParserError => e
-            raise RouteError, "Could not parse response '#{body}: #{e}'"
+            raise Calabash::IOS::RouteError, "Could not parse response '#{body}: #{e}'"
           end
 
           outcome = hash['outcome']
@@ -31,7 +31,7 @@ module Calabash
             when 'SUCCESS'
               route_success(hash, query)
             else
-              raise RouteError, "Server responded with an invalid outcome: '#{hash['outcome']}'"
+              raise Calabash::IOS::RouteError, "Server responded with an invalid outcome: '#{hash['outcome']}'"
           end
         end
 
@@ -48,7 +48,7 @@ module Calabash
 
           reason = fetch_value.call('reason')
           details = fetch_value.call('details')
-          raise RouteError, "Map failed reason: '#{reason}' details: '#{details}' for query '#{query}'"
+          raise Calabash::IOS::RouteError, "Map failed reason: '#{reason}' details: '#{details}' for query '#{query}'"
         end
 
         def route_success(hash, query)

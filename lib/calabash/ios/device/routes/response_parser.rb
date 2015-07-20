@@ -11,7 +11,7 @@ module Calabash
           begin
             hash = JSON.parse(body)
           rescue TypeError, JSON::ParserError => e
-            raise RouteError, "Could not parse response '#{body}: #{e}'"
+            raise Calabash::IOS::RouteError, "Could not parse response '#{body}: #{e}'"
           end
 
           outcome = hash['outcome']
@@ -30,11 +30,11 @@ module Calabash
 
             when 'SUCCESS'
               unless hash.has_key?('results')
-                raise RouteError, "Server responded with '#{outcome}'" \
+                raise Calabash::IOS::RouteError, "Server responded with '#{outcome}'" \
                   "but response #{hash} does not contain 'results' key"
               end
             else
-              raise RouteError, 'Server responded with an invalid outcome:' \
+              raise Calabash::IOS::RouteError, 'Server responded with an invalid outcome:' \
                 "'#{hash['outcome']}'"
           end
           hash
