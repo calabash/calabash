@@ -8,6 +8,7 @@ module Calabash
       include Calabash::IOS::Routes::HandleRouteMixin
       include Calabash::IOS::Routes::MapRouteMixin
       include Calabash::IOS::Routes::UIARouteMixin
+      include Calabash::IOS::Routes::ConditionRouteMixin
       include Calabash::IOS::StatusBarMixin
       include Calabash::IOS::KeyboardMixin
       include Calabash::IOS::UIAKeyboardMixin
@@ -321,18 +322,6 @@ module Calabash
         end
 
         result['result']
-      end
-
-      def wait_for_condition(options = {})
-        request = request_factory('condition', options.to_json)
-        body = http_client.post(request).body
-        result = JSON.parse(body)
-
-        unless result['outcome'] == 'SUCCESS'
-          raise Calabash::Wait::WaitError.new(result['reason'])
-        end
-
-        true
       end
 
       # @see Calabash::Location#set_location

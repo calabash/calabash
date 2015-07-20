@@ -6,6 +6,7 @@ module Calabash
     require 'calabash/ios/device/routes/handle_route_mixin'
     require 'calabash/ios/device/routes/map_route_mixin'
     require 'calabash/ios/device/routes/uia_route_mixin'
+    require 'calabash/ios/device/routes/condition_route_mixin'
     require 'calabash/ios/device/gestures_mixin'
     require 'calabash/ios/device/physical_device_mixin'
     require 'calabash/ios/device/status_bar_mixin'

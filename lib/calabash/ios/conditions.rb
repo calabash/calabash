@@ -1,6 +1,6 @@
 module Calabash
   module IOS
-    module Interactions
+    module Conditions
 
       # Waits for all elements to stop animating.
       #
@@ -23,7 +23,12 @@ module Calabash
       # @return [nil] When the condition is satisfied.
       # @raise [Calabash::Wait::TimeoutError] When the timeout is exceeded.
       def wait_for_animations(query, timeout=2)
-        message = "Timed out after #{timeout} waiting for views matching #{query} to stop animating."
+
+        if query.nil? || query == ''
+          raise ArgumentError, 'Query argument must not be nil or the empty string'
+        end
+
+        message = "Timed out after #{timeout} waiting for views matching '#{query}' to stop animating."
 
         wait_for_condition(CALABASH_CONDITIONS[:none_animating],
                            timeout,
@@ -54,8 +59,9 @@ module Calabash
       #
       # Waits for condition.
       #
+      # @param [String] condition The condition to wait for.
       # @param [Numeric] timeout How long to wait.
-      # @param [String] timout_message The message used when raising an error if
+      # @param [String] timeout_message The message used when raising an error if
       #  the condition is not satisfied.
       # @param [String] query Views matching this query will have the condition
       #  applied to them.  Will be ignored for some conditions e.g.
@@ -63,10 +69,10 @@ module Calabash
       # @return [nil] When the condition is satisfied.
       # @raise [Calabash::Wait::TimeoutError] When the timeout is exceeded.
       def wait_for_condition(condition, timeout, timeout_message, query=nil)
-
-        with_timeout(Calabash::Wait.default_options[:timeout]+CLIENT_TIMEOUT_ADDITION, "Timed out waiting for condition '#{condition}'") do
-          Device.default.wait_for_condition(query: '*', condition: condition)
+        unless Device.default.condition_route(condition, timeout, query)
+          raise Calabash::Wait::TimeoutError, timeout_message
         end
+        nil
       end
     end
   end
