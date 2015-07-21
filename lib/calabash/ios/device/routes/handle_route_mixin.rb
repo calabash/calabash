@@ -16,12 +16,7 @@ module Calabash
         end
 
         def route_handle_response(response, query)
-          body = response.body
-          begin
-            hash = JSON.parse(body)
-          rescue TypeError, JSON::ParserError => e
-            raise Calabash::IOS::RouteError, "Could not parse response '#{body}: #{e}'"
-          end
+          hash = parse_response_body(response)
 
           outcome = hash['outcome']
 
