@@ -17,8 +17,10 @@ module Calabash
           strategy = uia_strategy
 
           case strategy
-            when :preferences, :shared_element
-              uia_over_preferences(command)
+            when :preferences
+              uia_over_http(command, 'uia')
+            when :shared_element
+              uia_over_http(command, 'uia-shared')
             when :host
               uia_over_host(command)
             else
@@ -48,10 +50,10 @@ module Calabash
           }
         end
 
-        def make_uia_request(command)
+        def make_uia_request(command, route)
           parameters = make_uia_parameters(command)
           begin
-            Calabash::HTTP::Request.request('uia', parameters)
+            Calabash::HTTP::Request.request(route, parameters)
           rescue => e
             raise Calabash::IOS::RouteError, e
           end
