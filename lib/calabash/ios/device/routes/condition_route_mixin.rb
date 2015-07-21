@@ -38,17 +38,12 @@ module Calabash
           begin
             Calabash::HTTP::Request.request('condition', parameters)
           rescue => e
-            raise RouteError, e
+            raise Calabash::IOS::RouteError, e
           end
         end
 
         def handle_condition_response(response)
-          body = response.body
-          begin
-            hash = JSON.parse(body)
-          rescue TypeError, JSON::ParserError => e
-            raise RouteError, "Could not parse response '#{body}: #{e}'"
-          end
+          hash = parse_response_body(response)
 
           outcome = hash['outcome']
 
@@ -58,7 +53,7 @@ module Calabash
             when 'SUCCESS'
               true
             else
-              raise RouteError, "Server responded with an invalid outcome: '#{hash['outcome']}'"
+              nil
           end
         end
       end

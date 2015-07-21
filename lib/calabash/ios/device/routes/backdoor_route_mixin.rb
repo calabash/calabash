@@ -27,7 +27,7 @@ module Calabash
           end
 
           if arguments.length < 1
-            message = "Calabash iOS does not support backdoor selectors with no arguments."
+            message = 'Calabash iOS does not support backdoor selectors with no arguments.'
             raise ArgumentError, message
           end
 
@@ -59,12 +59,7 @@ module Calabash
         end
 
         def handle_backdoor_response(selector_name, arguments, response)
-          body = response.body
-          begin
-            hash = JSON.parse(body)
-          rescue TypeError, JSON::ParserError => e
-            raise RouteError, "Could not parse response '#{body}: #{e}'"
-          end
+          hash = parse_response_body(response)
 
           outcome = hash['outcome']
 
@@ -72,9 +67,14 @@ module Calabash
             when 'FAILURE'
               message = "Calling backdoor '#{selector_name}' with arguments '#{arguments}'" \
                 "failed because:\n\n#{hash['reason']}\n#{hash['details']}"
-              raise Calabash::IOS::BackdoorError, message
+              raise Calabash::IOS::RouteError, message
             when 'SUCCESS'
-              return hash['result']
+              # Legacy API: will be removed in iOS Server > 0.14.3
+              if hash.has_key?('results')
+                return hash['results']
+              else
+                return hash['result']
+              end
             else
               raise RouteError, "Server responded with an invalid outcome: '#{hash['outcome']}'"
           end

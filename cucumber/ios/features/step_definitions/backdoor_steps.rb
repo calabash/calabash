@@ -12,7 +12,7 @@ World(CalSmoke::Backdoor)
 And(/^I call backdoor with an unknown selector$/) do
   begin
     backdoor('unknownSelector:', '')
-  rescue RuntimeError => e
+  rescue Calabash::IOS::RouteError => e
     puts e
     @backdoor_raised_an_error = true
   end
@@ -29,7 +29,7 @@ end
 And(/^I call backdoor on a method whose return type is void$/) do
   begin
     backdoor('backdoorWithVoidReturn:', 'argument');
-  rescue Calabash::IOS::Routes::RouteError => _
+  rescue Calabash::IOS::RouteError => _
     log_app_crashed
     @app_crashed = true
   end
@@ -47,7 +47,7 @@ end
 And(/^I call backdoor on a method that returns a primitive$/) do
   begin
     backdoor('doesStateMatchStringArgument:', 'argument')
-  rescue Calabash::IOS::Routes::RouteError
+  rescue Calabash::IOS::RouteError
     log_app_crashed
     @app_crashed = true
   end

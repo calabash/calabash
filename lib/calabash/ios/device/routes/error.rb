@@ -1,9 +1,8 @@
 module Calabash
   module IOS
-    # @!visibility private
-    module Routes
-      # @!visibility private
-      class RouteError < StandardError;  end
-    end
+
+    # Raised when there is a problem handling an HTTP route.
+    class RouteError < StandardError; end
+
   end
 end

@@ -1,10 +1,11 @@
 describe Calabash::IOS::Routes::HandleRouteMixin do
 
-  let(:error_class) { Calabash::IOS::Routes::RouteError }
+  let(:error_class) { Calabash::IOS::RouteError }
 
   let(:device) do
     Class.new do
       include Calabash::IOS::Routes::HandleRouteMixin
+      include Calabash::IOS::Routes::ResponseParser
 
       attr_reader :http_client
 
@@ -44,34 +45,8 @@ describe Calabash::IOS::Routes::HandleRouteMixin do
 
     before { expect(response).to receive(:body).and_return(body) }
 
-    describe 'raises errors if' do
-      it 'parsing body raises TypeError' do
-        expect(JSON).to receive(:parse).with(body).and_raise TypeError
-
-        expect do
-          device.send(:route_handle_response, response, 'query')
-        end.to raise_error error_class
-      end
-
-      it 'parsing body raises JSON::ParseError' do
-        expect(JSON).to receive(:parse).with(body).and_raise JSON::ParserError
-
-        expect do
-          device.send(:route_handle_response, response, 'query')
-        end.to raise_error error_class
-      end
-
-      it 'parsed body outcome key value is not SUCCESS or FAILURE' do
-        expect(JSON).to receive(:parse).with(body).and_return({'outcome' =>
-                                                                     'invalid value'})
-        expect do
-          device.send(:route_handle_response, response, 'query')
-        end.to raise_error error_class
-      end
-    end
-
     it "calls 'success' when outcome is 'SUCCESS'" do
-      hash = {'outcome' => 'SUCCESS'}
+      hash = {'outcome' => 'SUCCESS', 'results' => [1]}
       expect(JSON).to receive(:parse).with(body).and_return(hash)
       expect(device).to receive(:route_success).with(hash, 'query').and_return 'query results'
 

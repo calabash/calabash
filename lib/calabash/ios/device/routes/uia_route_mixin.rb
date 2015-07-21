@@ -11,7 +11,7 @@ module Calabash
 
         def uia_route(command)
           unless run_loop
-            raise RouteError, 'This device does not have a connection to run-loop.  Call start_app first.'
+            raise Calabash::IOS::RouteError, 'This device does not have a connection to run-loop.  Call start_app first.'
           end
 
           strategy = uia_strategy
@@ -22,7 +22,7 @@ module Calabash
             when :host
               uia_over_host(command)
             else
-              raise RouteError, "Invalid :uia_strategy '#{strategy}'.  Valid strategies are: '#{UIA_STRATEGIES}"
+              raise Calabash::IOS::RouteError, "Invalid :uia_strategy '#{strategy}'.  Valid strategies are: '#{UIA_STRATEGIES}"
           end
         end
 
@@ -53,7 +53,7 @@ module Calabash
           begin
             Calabash::HTTP::Request.request('uia', parameters)
           rescue => e
-            raise RouteError, e
+            raise Calabash::IOS::RouteError, e
           end
         end
 
