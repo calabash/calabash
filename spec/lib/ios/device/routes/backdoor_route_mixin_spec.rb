@@ -82,7 +82,7 @@ describe Calabash::IOS::Routes::BackdoorRouteMixin do
 
       expect {
         device.send(:handle_backdoor_response, 'selector:', [], response)
-      }.to raise_error Calabash::IOS::BackdoorError
+      }.to raise_error Calabash::IOS::RouteError
     end
   end
 end

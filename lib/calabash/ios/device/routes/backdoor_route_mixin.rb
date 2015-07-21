@@ -67,7 +67,7 @@ module Calabash
             when 'FAILURE'
               message = "Calling backdoor '#{selector_name}' with arguments '#{arguments}'" \
                 "failed because:\n\n#{hash['reason']}\n#{hash['details']}"
-              raise Calabash::IOS::BackdoorError, message
+              raise Calabash::IOS::RouteError, message
             when 'SUCCESS'
               # Legacy API: will be removed in iOS Server > 0.14.3
               if hash.has_key?('results')
