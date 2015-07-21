@@ -31,15 +31,15 @@ module Calabash
         UIA_STRATEGIES = [:preferences, :host, :shared_element]
 
         # Careful.  The UIA route can return all manner of weird responses.
-        def uia_over_preferences(command)
-          request = make_uia_request(command)
+        def uia_over_http(command, route)
+          request = make_uia_request(command, route)
           response = route_post_request(request)
           route_handle_response(response, command)
         end
 
         # Careful.  The UIA route can return all manner of weird responses.
         def uia_over_host(command)
-          RunLoop.send_command(run_loop, command)
+          [RunLoop.send_command(run_loop, command)]
         end
 
         def make_uia_parameters(command)

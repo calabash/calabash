@@ -146,7 +146,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
     it 'returns the value of RunLoop.send_command' do
       expect(RunLoop).to receive(:send_command).and_return({})
 
-      expect(device.send(:uia_over_host, 'command')).to be == {}
+      expect(device.send(:uia_over_host, 'command')).to be == [{}]
     end
   end
 
