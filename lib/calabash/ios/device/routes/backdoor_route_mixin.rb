@@ -27,7 +27,7 @@ module Calabash
           end
 
           if arguments.length < 1
-            message = "Calabash iOS does not support backdoor selectors with no arguments."
+            message = 'Calabash iOS does not support backdoor selectors with no arguments.'
             raise ArgumentError, message
           end
 
@@ -69,7 +69,12 @@ module Calabash
                 "failed because:\n\n#{hash['reason']}\n#{hash['details']}"
               raise Calabash::IOS::BackdoorError, message
             when 'SUCCESS'
-              return hash['result']
+              # Legacy API: will be removed in iOS Server > 0.14.3
+              if hash.has_key?('results')
+                return hash['results']
+              else
+                return hash['result']
+              end
             else
               raise RouteError, "Server responded with an invalid outcome: '#{hash['outcome']}'"
           end

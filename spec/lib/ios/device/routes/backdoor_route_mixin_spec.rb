@@ -55,8 +55,22 @@ describe Calabash::IOS::Routes::BackdoorRouteMixin do
   describe '#handle_backdoor_response' do
     it 'returns true for SUCCESS outcome' do
       expect(JSON).to receive(:parse).and_return({'outcome' => 'SUCCESS',
+                                                  'results' => [1]})
+      expected = [1]
+      actual = device.send(:handle_backdoor_response, 'selector:', [], response)
+      expect(actual).to be == expected
+
+      # Legacy API: will be removed in iOS Server > 0.14.3
+      expect(JSON).to receive(:parse).and_return({'outcome' => 'SUCCESS',
                                                   'result' => [1]})
       expected = [1]
+      actual = device.send(:handle_backdoor_response, 'selector:', [], response)
+      expect(actual).to be == expected
+
+      expect(JSON).to receive(:parse).and_return({'outcome' => 'SUCCESS',
+                                                  'results' => 'results',
+                                                  'result' => 'result'})
+      expected = 'results'
       actual = device.send(:handle_backdoor_response, 'selector:', [], response)
       expect(actual).to be == expected
     end

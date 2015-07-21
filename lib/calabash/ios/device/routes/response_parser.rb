@@ -29,7 +29,9 @@ module Calabash
               end
 
             when 'SUCCESS'
-              unless hash.has_key?('results')
+              # Backdoor route returns a 'result' key.  Grr.
+              # Legacy API: will be removed in Calabash iOS Server > 0.14.3
+              if !(hash.has_key?('results') || hash.has_key?('result'))
                 raise Calabash::IOS::RouteError, "Server responded with '#{outcome}'" \
                   "but response #{hash} does not contain 'results' key"
               end
