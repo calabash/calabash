@@ -224,18 +224,35 @@ module Calabash
         "/data/data/#{application.test_server.identifier}/files/calabash_failure.out"
       end
 
+      def calabash_server_finished_file_path(application)
+        "/data/data/#{application.test_server.identifier}/files/calabash_finished.out"
+      end
+
       def calabash_server_failure_exists?(application)
-        adb.shell("ls #{calabash_server_failure_file_path(application)}").chomp ==
+        cmd = "ls #{calabash_server_failure_file_path(application)}"
+
+        adb.shell(cmd, no_exit_code_check: true).chomp ==
             calabash_server_failure_file_path(application)
+      end
+
+      def calabash_server_finished_exists?(application)
+        cmd = "ls #{calabash_server_finished_file_path(application)}"
+
+        adb.shell(cmd, no_exit_code_check: true).chomp ==
+            calabash_server_finished_file_path(application)
       end
 
       def read_calabash_sever_failure(application)
         adb.shell("cat #{calabash_server_failure_file_path(application)}")
       end
 
-      def clear_calabash_server_failure(application)
+      def read_calabash_sever_finished(application)
+        adb.shell("cat #{calabash_server_finished_file_path(application)}")
+      end
+
+      def clear_calabash_server_report(application)
         if installed_packages.include?(application.test_server.identifier)
-          adb.shell("am start -e method clear -n #{application.test_server.identifier}/sh.calaba.instrumentationbackend.FailureReporterActivity")
+          adb.shell("am start -e method clear -n #{application.test_server.identifier}/sh.calaba.instrumentationbackend.StatusReporterActivity")
         end
       end
 
@@ -269,11 +286,11 @@ module Calabash
 
         ensure_screen_on
 
+        # Clear any old error reports
+        clear_calabash_server_report(application)
+
         # Forward the port to the test-server
         port_forward(server.endpoint.port)
-
-        # Clear any old error reports
-        clear_calabash_server_failure(application)
 
         # For now, the test-server cannot rebind an existing socket.
         # So we have to stop any running Calabash servers from the client
@@ -289,26 +306,15 @@ module Calabash
           end
         end
 
-        cmd_arguments = ['am instrument']
+        extras = ''
 
         env_options.each_pair do |key, val|
-          cmd_arguments << ["-e \"#{key.to_s}\" \"#{val.to_s}\""]
+          extras = "#{extras} -e \"#{key.to_s}\" \"#{val.to_s}\""
         end
 
-        cmd_arguments << "#{application.test_server.identifier}/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner"
-
-        cmd = cmd_arguments.join(" ")
-
-        @logger.log "Starting test server using: '#{cmd}'"
-
-        begin
-          adb.shell(cmd)
-        rescue ADB::ADBCallError => e
-          @logger.log('ERROR: Could not start the application. adb shell output: ', :error)
-          @logger.log(e.stderr, :error)
-
-          raise 'Failed to start the application'
-        end
+        instrument(application,
+                   'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
+                   extras)
 
         begin
           Retriable.retriable(tries: 30, interval: 1, timeout: 30, on: RetryError) do
@@ -393,6 +399,71 @@ module Calabash
       end
 
       # @!visibility private
+      def instrument(application, test_server_activity, extras = '')
+        unless application.is_a?(Android::Application)
+          raise ArgumentError, "Invalid application type '#{application.class}'"
+        end
+
+        if application.test_server.nil?
+          raise ArgumentError, "No test server set for '#{application}'"
+        end
+
+        cmd = adb.shell("am instrument #{extras} #{application.test_server.identifier}/#{test_server_activity}")
+
+        @logger.log "Starting '#{test_server_activity}' using: '#{cmd}'"
+
+        begin
+          adb.shell(cmd)
+        rescue ADB::ADBCallError => e
+          @logger.log('ERROR: Could not start the application. adb shell output: ', :error)
+          @logger.log(e.stderr, :error)
+
+          raise 'Failed to start the application'
+        end
+      end
+
+      # @!visibility private
+      class EnsureInstrumentActionError < RuntimeError; end
+
+      # @!visibility private
+      def ensure_instrument_action(application, test_server_activity, extras = '')
+        clear_calabash_server_report(application)
+
+        instrument(application, test_server_activity, extras)
+
+        begin
+          Timeout.timeout(10) do
+            loop do
+              if calabash_server_failure_exists?(application)
+                failure_message = read_calabash_sever_failure(application)
+
+                raise EnsureInstrumentActionError, parse_failure_message(failure_message)
+              end
+
+              if calabash_server_finished_exists?(application)
+                output = read_calabash_sever_finished(application)
+
+                if output == 'SUCCESSFUL'
+                  break
+                end
+              end
+            end
+          end
+        rescue Timeout::Error => _
+          raise EnsureInstrumentActionError, 'Timed out waiting for status'
+        end
+      end
+
+      # @!visibility private
+      def ts_clear_app_data(application)
+        begin
+          ensure_instrument_action(application, 'sh.calaba.instrumentationbackend.ClearAppData2')
+        rescue EnsureInstrumentActionError => e
+          raise "Failed to clear app data: #{e.message}"
+        end
+      end
+
+      # @!visibility private
       def screen_on?
         # Lollipop removed this output
         if info[:sdk_version] < 20
@@ -436,7 +507,7 @@ module Calabash
 
       # @!visibility private
       def _clear_app_data(application)
-        adb_clear_app_data(application.identifier)
+        ts_clear_app_data(application)
 
         # Return true to avoid cluttering the console
         true
