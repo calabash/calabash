@@ -118,7 +118,7 @@ describe Calabash::IOS::UIAKeyboardMixin::UIATypeStringHandler do
 
       expect do
         expect(handler.handle_error)
-      end.to raise_error
+      end.to raise_error RuntimeError
     end
 
     it "raises error and reports entire result if no 'error' in result hash" do
@@ -128,7 +128,7 @@ describe Calabash::IOS::UIAKeyboardMixin::UIATypeStringHandler do
 
       expect do
         expect(handler.handle_error)
-      end.to raise_error
+      end.to raise_error RuntimeError
     end
   end
 
