@@ -312,9 +312,13 @@ module Calabash
           extras = "#{extras} -e \"#{key.to_s}\" \"#{val.to_s}\""
         end
 
-        instrument(application,
-                   'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
-                   extras)
+        begin
+          instrument(application,
+                     'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
+                     extras)
+        rescue ADB::ADBCallError => e
+          raise "Failed to start the application: '#{e.stderr.lines.first.chomp}'"
+        end
 
         begin
           Retriable.retriable(tries: 30, interval: 1, timeout: 30, on: RetryError) do
