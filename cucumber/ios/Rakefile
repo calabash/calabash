@@ -1,0 +1,21 @@
+desc 'Run Scenarios with :host strategy'
+task :host do
+  sh "CAL_UIA_STRATEGY=host bundle exec cucumber"
+end
+
+desc 'Run Scenarios with :shared_element strategy'
+task :shared_element do
+  sh "CAL_UIA_STRATEGY=shared_element bundle exec cucumber"
+end
+
+desc 'Run Scenarios with :preferences strategy'
+task :preferences do
+  sh "CAL_UIA_STRATEGY=shared_element bundle exec cucumber"
+end
+
+desc 'Run Scenarios with all strategies'
+task :strategies do
+  [:host, :shared_element, :preferences].each do |task|
+    Rake::Task[task].invoke
+  end
+end
