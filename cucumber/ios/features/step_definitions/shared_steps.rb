@@ -13,6 +13,10 @@ Given(/^I see the (first|second|third) tab$/) do |tab|
   wait_for_view("view marked:'#{expected_view}'")
 end
 
+Given(/^the app has launched$/) do
+  wait_for_view
+end
+
 And(/^I touch the text field$/) do
   tap('textField')
 end
