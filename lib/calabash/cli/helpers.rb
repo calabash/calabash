@@ -9,20 +9,22 @@ module Calabash
           run: 'run [application] [cucumber options]',
           console: 'console [application]',
           version: 'version',
-          setup: 'setup',
+          setup_keystore: 'setup-keystore',
           resign: 'resign <apk>',
           build: 'build <apk>'
       }
 
       def print_usage_for(command, output=STDOUT)
-        if HELP[command].nil?
+        key = HELP.key('setup-keystore')
+
+        if key.nil?
           output.write <<EOF
 No such command '#{command}'
 EOF
         else
           output.write <<EOF
 Usage:
-  calabash [options] #{HELP[command]}
+  calabash [options] #{HELP[key]}
 EOF
         end
       end
@@ -48,7 +50,7 @@ EOF
       prints the gem version
 
     Android specific commands
-      #{HELP[:setup]}
+      #{HELP[:setup_keystore]}
         sets up a non-default keystore to use with this test project.
 
       #{HELP[:resign]}

@@ -12,6 +12,7 @@ module Calabash
       include Calabash::CLI::Generate
       include Calabash::CLI::Resign
       include Calabash::CLI::Run
+      include Calabash::CLI::SetupKeystore
 
       def initialize(arguments)
         @arguments = arguments.dup
@@ -71,13 +72,15 @@ module Calabash
             parse_generate_arguments!
           when 'run'
             parse_run_arguments!
+          when 'setup-keystore'
+            parse_setup_keystore_arguments!
           when 'help'
             argument = @arguments.shift
 
             if argument.nil?
               print_usage
             else
-              print_usage_for(argument.to_sym)
+              print_usage_for(argument)
             end
           when nil
             print_usage

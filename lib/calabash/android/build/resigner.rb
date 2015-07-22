@@ -45,7 +45,7 @@ module Calabash
           java_keystore = JavaKeystore.get_keystores.first
 
           if java_keystore.nil?
-            raise 'No keystores found. You can specify the keystore location and credentials using calabash setup'
+            raise 'No keystores found. You can specify the keystore location and credentials using calabash setup-keystore'
           end
 
           java_keystore.sign_apk(app_path, dest_path)

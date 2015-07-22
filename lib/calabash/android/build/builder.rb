@@ -22,8 +22,8 @@ module Calabash
 
           keystores = JavaKeystore.get_keystores
           if keystores.empty?
-            @logger.log "No keystores found."
-            @logger.log "Please create one or run calabash-android setup to configure calabash-android to use an existing keystore."
+            @logger.log "No default keystores found."
+            @logger.log "Please create one or run calabash setup-keystore to configure calabash to use an existing keystore."
 
             raise BuildError.new('No keystores found')
           end
@@ -76,7 +76,7 @@ module Calabash
             keystore.sign_apk("#{workspace_dir}/TestServer.apk", test_server_file_name)
             begin
 
-            rescue Exception => e
+            rescue => e
               @logger.log e, :debug
               raise BuildError.new("Could not sign test server")
             end
@@ -86,21 +86,26 @@ module Calabash
 
         def fingerprint_from_apk
           application_path = File.expand_path(@application_path)
+
           Dir.mktmpdir do |tmp_dir|
             Dir.chdir(tmp_dir) do
               FileUtils.cp(application_path, "app.apk")
               FileUtils.mkdir("META-INF")
-
               Zip::File.foreach("app.apk") do |z|
-                z.extract if /^META-INF\/\w+.(RSA|rsa)/ =~ z.name
+                z.extract if /^META-INF\/\w+.(rsa|dsa)/i =~ z.name
+              end
+              signature_files = Dir["#{tmp_dir}/META-INF/*"]
+
+              Logger.debug 'Signature files:'
+
+              signature_files.each do |signature_file|
+                Logger.debug signature_file
               end
 
-              rsa_files = Dir["#{tmp_dir}/META-INF/*"]
+              raise "No signature files found in META-INF. Cannot proceed." if signature_files.empty?
+              raise "More than one signature file (DSA or RSA) found in META-INF. Cannot proceed." if signature_files.length > 1
 
-              raise "No RSA file found in META-INF. Cannot proceed." if rsa_files.empty?
-              raise "More than one RSA file found in META-INF. Cannot proceed." if rsa_files.length > 1
-
-              cmd = "#{Calabash::Android::Environment.keytool_path} -v -printcert -J\"-Dfile.encoding=utf-8\" -file \"#{rsa_files.first}\""
+              cmd = "#{Calabash::Android::Environment.keytool_path} -v -printcert -J\"-Dfile.encoding=utf-8\" -file \"#{signature_files.first}\""
               Logger.debug cmd
               fingerprints = `#{cmd}`
               md5_fingerprint = JavaKeystore.extract_md5_fingerprint(fingerprints)
