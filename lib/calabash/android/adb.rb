@@ -107,7 +107,7 @@ module Calabash
           Logger.debug(stderr)
 
           raise ADBCallError.new(
-                "Adb process exited with #{exit_code}", stderr, stdout)
+                "Adb process exited with #{exit_code}: #{dot_string(stderr.lines.first, 100)}", stderr, stdout)
         end
 
         stdout
@@ -132,23 +132,49 @@ module Calabash
       def shell(shell_cmd, options={})
         input =
             [
-                shell_cmd,
-                'echo $?',
-                'exit 0',
+                "#{shell_cmd}; echo \"\n$?\"; exit 0"
             ]
 
         args = options.merge(input: input)
 
         result = command('shell', args)
 
+        # We get a result like this:
+        #
+        # [0] "getprop ro.build.version.release; echo \"\r\n",
+        # [1] "$?\"; exit 0\r\n",
+        # [2] "shell@hammerhead:/ $ getprop ro.build.version.release; echo \"\r\r\n",
+        # [3] "> $?\"; exit 0\r\r\n",
+        # [4] "4.4\r\n",
+        # [5] "\r\n",
+        # [6] "0\r\n"
+        #
+        # out =
+        # [4] "4.4\r\n"
+        # [5] "\r\n",
+        # [6] "0\r\n"
+        #
+        # command_result =
+        # [4] "4.4\r\n"
+        # [5] "\r\n",
+        #
+        # exit_code_s =
+        # [6] "0\r\n"
+
+        index = result.lines.index {|line| line.end_with?("; exit 0\r\r\n")}
+
+        if index.nil?
+          raise ADBCallError.new('Could not parse output', result)
+        end
+
         # Remove the commands
-        out = result.lines[4..-1].join
+        out = result.lines[index+1..-1]
 
         # Get the result from the command
-        command_result = out[0..-(shell_exit_length+1)]
+        command_result = out[0..-2].join
 
         # Get the exit code
-        exit_code_s = result.lines[-2]
+        exit_code_s = out[-1]
 
         unless options[:no_exit_code_check]
           unless exit_code_s.to_i.to_s == exit_code_s.chomp
@@ -161,10 +187,10 @@ module Calabash
           if exit_code != 0
             Logger.debug("Adb shell command exited with #{exit_code}")
             Logger.debug("Error message from ADB: ")
-            Logger.debug(out)
+            Logger.debug(command_result)
 
             raise ADBCallError.new(
-                      "Adb shell command exited with #{exit_code}", out)
+                      "Adb shell command exited with #{exit_code}: #{ADB.dot_string(command_result.lines.first, 100)}", command_result)
           end
         end
 
@@ -173,19 +199,11 @@ module Calabash
 
       private
 
-      # @!visibility private
-      def shell_exit_length
-        if @shell_exit_length
-          @shell_exit_length
+      def self.dot_string(string, length)
+        if string.length > length
+          "#{string[0, length-3]}..."
         else
-          input =
-            [
-                'echo $?',
-                'exit 0',
-            ]
-
-          result = command('shell', input: input)
-          @shell_exit_length = result.lines[2..-1].join.length
+          string
         end
       end
 
