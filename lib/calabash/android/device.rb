@@ -87,7 +87,7 @@ module Calabash
 
       def port_forward(host_port)
         adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{server.test_server_port}"]
-        ADB.command(*adb_forward_cmd)
+        adb.command(*adb_forward_cmd)
       end
 
       def make_map_parameters(query, map_method_name, *method_args)

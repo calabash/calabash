@@ -107,7 +107,7 @@ eos
 
       allow(dummy_device).to receive(:server).and_return(dummy_server)
 
-      expect(Calabash::Android::ADB).to receive(:command).with('forward', "tcp:#{host_port}", 'tcp:67890')
+      expect(dummy_device.adb).to receive(:command).with('forward', "tcp:#{host_port}", 'tcp:67890')
 
       dummy_device.port_forward(host_port)
     end
