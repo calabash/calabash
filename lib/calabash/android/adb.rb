@@ -129,10 +129,12 @@ module Calabash
         ADB.command(*cmd, args)
       end
 
+      END_STRING = '__CAL_END__'
+
       def shell(shell_cmd, options={})
         input =
             [
-                "#{shell_cmd}; echo \"\n$?\"; exit 0"
+                "#{shell_cmd}; echo \"#{END_STRING}$?\"; exit 0"
             ]
 
         args = options.merge(input: input)
@@ -161,20 +163,34 @@ module Calabash
         # exit_code_s =
         # [6] "0\r\n"
 
-        index = result.lines.index {|line| line.end_with?("; exit 0\r\r\n")}
+        index = result.lines.index {|line| line =~/; exit 0\s*/}
 
         if index.nil?
-          raise ADBCallError.new('Could not parse output', result)
+          raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
         end
 
         # Remove the commands
         out = result.lines[index+1..-1]
 
+        last_line = out.last
+        end_index = nil
+
+        15.times do |i|
+          if last_line[-(END_STRING.length+i-1)..-i] == END_STRING
+            end_index = -i
+            break
+          end
+        end
+
+        if end_index.nil?
+          raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
+        end
+
         # Get the result from the command
-        command_result = out[0..-2].join
+        command_result = out[0..-2].join + last_line[0..(end_index - END_STRING.length)]
 
         # Get the exit code
-        exit_code_s = out[-1]
+        exit_code_s = out[-1][end_index+1..-1]
 
         unless options[:no_exit_code_check]
           unless exit_code_s.to_i.to_s == exit_code_s.chomp
