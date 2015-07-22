@@ -16,6 +16,7 @@ require 'pry'
 require 'tmpdir'
 require 'luffa'
 require 'resources/ios/ios_resources'
+require 'stub_env'
 
 module AlwaysRaiseTimeout
   def self.timeout(timeout, error_type, &block)
@@ -105,4 +106,8 @@ RSpec.configure do |config|
     # a real object. This is generally recommended.
     mocks.verify_partial_doubles = true
   end
+
+  # stub_env('key', 'value')  <== typical usage
+  # stub_env({'key' => nil})  <== setting an env to nil
+  config.include StubEnv::Helpers
 end
