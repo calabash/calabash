@@ -102,7 +102,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
 
       expect do
         device.uia_route('command')
-      end.to raise_error route_error
+      end.to raise_error RuntimeError
     end
   end
 

@@ -15,6 +15,7 @@ module Calabash
       include Calabash::IOS::KeyboardMixin
       include Calabash::IOS::UIAKeyboardMixin
       include Calabash::IOS::TextMixin
+      include Calabash::IOS::UIAMixin
 
       include Calabash::IOS::GesturesMixin
 
@@ -330,6 +331,11 @@ module Calabash
         else
           raise "Invalid application #{application} for iOS platform."
         end
+        {
+           :device => self,
+           :application => application,
+           :uia_strategy => uia_strategy
+        }
       end
 
       # @!visibility private

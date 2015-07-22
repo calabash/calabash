@@ -11,7 +11,28 @@ module Calabash
 
         def uia_route(command)
           unless run_loop
-            raise Calabash::IOS::RouteError, 'This device does not have a connection to run-loop.  Call start_app first.'
+            if defined?(IRB)
+              logger.log('', :info)
+              logger.log(Color.red('This console is not attached to a run-loop.'), :info)
+              logger.log('', :info)
+              logger.log(Color.green('If your have not launched your app yet, launch it with:'), :info)
+              logger.log('', :info)
+              logger.log(Color.cyan('> start_app'), :info)
+              logger.log('', :info)
+              logger.log('', :info)
+              logger.log(Color.green('If your Calabash app is already running, ' \
+                                     "you can attach to it's run-loop:"), :info)
+              logger.log('', :info)
+              logger.log(Color.cyan('> console_attach                # Attaches with the default strategy.'),
+                         :info)
+              logger.log(Color.cyan('> console_attach(uia_strategy) # Attaches with a specific strategy.'),
+                         :info)
+              logger.log('', :info)
+              logger.log('', :info)
+              raise 'This console is not attached a run-loop.'
+            else
+              raise 'This device does not have a connection to run-loop.  Call start_app first.'
+            end
           end
 
           strategy = uia_strategy

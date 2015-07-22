@@ -15,6 +15,7 @@ module Calabash
     require 'calabash/ios/device/keyboard_mixin'
     require 'calabash/ios/device/uia_keyboard_mixin'
     require 'calabash/ios/device/text_mixin'
+    require 'calabash/ios/device/uia_mixin'
     require 'calabash/ios/device/device'
 
   end
