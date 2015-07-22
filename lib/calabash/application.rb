@@ -43,6 +43,14 @@ module Calabash
       ensure_application_path
     end
 
+    def to_s
+      "#<Application #{path}>"
+    end
+
+    def inspect
+      to_s
+    end
+
     def extract_identifier
       abstract_method!
     end
