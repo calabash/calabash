@@ -38,7 +38,8 @@ module Calabash
       end
 
       run_loop_device = device.send(:run_loop_device)
-      Calabash::Device.default.send(:attach_to_run_loop, run_loop_device, uia_strategy)
+      result = Calabash::Device.default.send(:attach_to_run_loop, run_loop_device, uia_strategy)
+      result[:application] = Calabash::Application.default
     end
   end
 end
