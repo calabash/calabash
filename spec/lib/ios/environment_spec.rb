@@ -40,6 +40,9 @@ describe Calabash::IOS::Environment do
       uri = Calabash::IOS::Environment::DEVICE_ENDPOINT
       expect(uri).to be_a_kind_of(URI)
       expect(uri.to_s).to be == 'http://localhost:37265'
+
+      strategy = Calabash::IOS::Environment::UIA_STRATEGY
+      expect(strategy).to be == nil
     end
 
     it 'returns the correct values if the env is set' do
@@ -48,6 +51,10 @@ describe Calabash::IOS::Environment do
       uri = Calabash::IOS::Environment::DEVICE_ENDPOINT
       expect(uri).to be_a_kind_of(URI)
       expect(uri.to_s).to be == 'http://denis.local:37265'
+
+      _set_env('CAL_UIA_STRATEGY' => 'prefixed')
+      strategy = Calabash::IOS::Environment::UIA_STRATEGY
+      expect(strategy).to be == :prefixed
     end
 
   end
