@@ -31,31 +31,17 @@ module Calabash
   end
 end
 
+
+IRB.conf[:SAVE_HISTORY] = 100
+IRB.conf[:HISTORY_FILE] = '.irb-history'
+
+ARGV.concat [ '--readline',
+              '--prompt-mode',
+              'simple']
+
 has_skipped_requires = false
 
 Calabash::IRBRC.with_warn_suppressed do
-  begin
-    require 'calabash/ios'
-    extend Calabash::IOS
-
-    abp = File.join(File.dirname(__FILE__), '..', '..', 'spec', 'resources', 'ios', 'CalSmoke-cal.app')
-    Calabash::Application.default = Calabash::IOS::Application.new(abp)
-
-    identifier = Calabash::IOS::Device.default_identifier_for_application(Calabash::Application.default)
-    server = Calabash::IOS::Server.default
-
-    Calabash::Device.default = Calabash::IOS::Device.new(identifier, server)
-
-    embed_lambda = lambda do |*_|
-      Calabash::Logger.info 'Embed is not available in the console.'
-    end
-
-    Calabash.new_embed_method!(embed_lambda)
-  rescue LoadError => _
-    puts 'INFO: Skipping calabash dependency'
-    has_skipped_requires = true
-  end
-
   begin
     require 'awesome_print'
     AwesomePrint.irb!
@@ -77,6 +63,33 @@ Calabash::IRBRC.with_warn_suppressed do
     puts 'INFO: Skipping pry-nav dependency'
     has_skipped_requires = true
   end
+
+  begin
+    abp = File.expand_path(File.join(File.dirname(__FILE__), '..', '..',
+                                     'spec', 'resources', 'ios',
+                                     'CalSmoke-cal.app'))
+    ENV['CAL_APP'] = abp
+    require 'calabash/ios'
+    extend Calabash::IOS
+    extend Calabash::ConsoleHelpers
+
+    Calabash::Application.default = Calabash::IOS::Application.new(abp)
+
+    identifier = Calabash::IOS::Device.default_identifier_for_application(Calabash::Application.default)
+    server = Calabash::IOS::Server.default
+
+    Calabash::Device.default = Calabash::IOS::Device.new(identifier, server)
+
+    embed_lambda = lambda do |*_|
+      Calabash::Logger.info 'Embed is not available in the console.'
+    end
+
+    Calabash.new_embed_method!(embed_lambda)
+  rescue LoadError => _
+    puts 'INFO: Skipping calabash dependency'
+    has_skipped_requires = true
+  end
+
 end
 
 
@@ -85,12 +98,6 @@ if has_skipped_requires
   puts 'INFO: Run with bundle exec if you need these dependencies'
 end
 
-IRB.conf[:SAVE_HISTORY] = 100
-IRB.conf[:HISTORY_FILE] = '.irb-history'
-
-ARGV.concat [ '--readline',
-              '--prompt-mode',
-              'simple']
 
 def start_host(options={})
   start_app(options.merge({:uia_strategy => :host}))

@@ -661,9 +661,14 @@ module Calabash
       end
 
       # @!visibility private
+      def uia_strategy_from_environment(run_loop_device)
+        Environment::UIA_STRATEGY || default_uia_strategy(run_loop_device)
+      end
+
+      # @!visibility private
       # @todo Needs a bunch of work; see the argument munging in Calabash 0.x Launcher.
       def merge_start_options!(application, run_loop_device, options_from_user)
-        strategy = Environment::UIA_STRATEGY || default_uia_strategy(run_loop_device)
+        strategy = uia_strategy_from_environment(run_loop_device)
 
         default_options =
               {
@@ -711,6 +716,39 @@ module Calabash
           raise "The method '#{method_name}' can only be called after the app has been launched"
         end
         true
+      end
+
+      def instruments_pid
+        pids = RunLoop::Instruments.new.instruments_pids
+        if pids
+          pids.first
+        else
+          nil
+        end
+      end
+
+      # Assumes the app is already running and the server can be reached.
+      def attach_to_run_loop(run_loop_device, uia_strategy)
+        if uia_strategy
+          strategy = uia_strategy
+        else
+          strategy = uia_strategy_from_environment(run_loop_device)
+        end
+
+        if strategy == :host
+          @run_loop = RunLoop::HostCache.default.read
+          @uia_strategy = :host
+        else
+          pid = instruments_pid
+          @run_loop = {}
+          @run_loop[:uia_strategy] = strategy
+          @run_loop[:pid] = pid
+          @uia_strategy = strategy
+        end
+        {
+              :device => self,
+              :uia_strategy => strategy
+        }
       end
     end
   end
