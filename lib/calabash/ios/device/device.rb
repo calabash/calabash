@@ -15,6 +15,7 @@ module Calabash
       include Calabash::IOS::KeyboardMixin
       include Calabash::IOS::UIAKeyboardMixin
       include Calabash::IOS::TextMixin
+      include Calabash::IOS::UIAMixin
 
       include Calabash::IOS::GesturesMixin
 
