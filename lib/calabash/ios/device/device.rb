@@ -517,7 +517,7 @@ module Calabash
         begin
           bridge.reset_app_sandbox
           true
-        rescue e
+        rescue StandardError => e
           raise "Could not clear app data for #{application.identifier} on #{run_loop_device}: #{e}"
         end
       end
@@ -599,7 +599,7 @@ module Calabash
 
           bridge.uninstall
           bridge.install
-        rescue e
+        rescue StandardError => e
           raise "Could not install #{application} on #{run_loop_device}: #{e}"
         end
       end
