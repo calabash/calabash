@@ -92,4 +92,16 @@ ARGV.concat [ '--readline',
               '--prompt-mode',
               'simple']
 
+def start_host(options={})
+  start_app(options.merge({:uia_strategy => :host}))
+end
+
+def start_shared(options={})
+  start_app(options.merge({:uia_strategy => :shared_element}))
+end
+
+def start_prefs(options={})
+  start_app(options.merge({:uia_strategy => :preferences}))
+end
+
 Calabash::IRBRC.message_of_the_day

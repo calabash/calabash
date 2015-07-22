@@ -38,7 +38,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
     describe ':preferences' do
       it 'raises error if uia_over_preferences raises an error' do
         expect(device).to receive(:uia_strategy).and_return(:preferences)
-        expect(device).to receive(:uia_over_preferences).and_raise StandardError
+        expect(device).to receive(:uia_over_http).and_raise StandardError
 
         expect do
           device.uia_route('command')
@@ -47,7 +47,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
 
       it 'returns the value of uia_over_host' do
         expect(device).to receive(:uia_strategy).and_return(:preferences)
-        expect(device).to receive(:uia_over_preferences).and_return({})
+        expect(device).to receive(:uia_over_http).and_return({})
 
         expect(device.uia_route('command')).to be == {}
       end
@@ -56,7 +56,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
     describe ':shared element' do
       it 'raises error if uia_over_preferences raises an error' do
         expect(device).to receive(:uia_strategy).and_return(:shared_element)
-        expect(device).to receive(:uia_over_preferences).and_raise StandardError
+        expect(device).to receive(:uia_over_http).and_raise StandardError
 
         expect do
           device.uia_route('command')
@@ -65,7 +65,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
 
       it 'returns the value of uia_over_host' do
         expect(device).to receive(:uia_strategy).and_return(:shared_element)
-        expect(device).to receive(:uia_over_preferences).and_return({})
+        expect(device).to receive(:uia_over_http).and_return({})
 
         expect(device.uia_route('command')).to be == {}
       end
@@ -112,7 +112,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
       expect(Calabash::HTTP::Request).to receive(:request).with('uia', 'parameters').and_raise ArgumentError
 
       expect do
-        device.send(:make_uia_request, 'command')
+        device.send(:make_uia_request, 'command', 'uia')
       end.to raise_error route_error
     end
 
@@ -120,17 +120,17 @@ describe Calabash::IOS::Routes::UIARouteMixin do
       expect(device).to receive(:make_uia_parameters).with('command').and_return 'parameters'
       expect(Calabash::HTTP::Request).to receive(:request).with('uia', 'parameters').and_return 'request'
 
-      expect(device.send(:make_uia_request, 'command')).to be == 'request'
+      expect(device.send(:make_uia_request, 'command', 'uia')).to be == 'request'
     end
   end
 
-  describe '#uia_over_preferences' do
+  describe '#uia_over_http' do
     it "makes an http request on the 'uia' route" do
-      expect(device).to receive(:make_uia_request).with('command').and_return 'request'
+      expect(device).to receive(:make_uia_request).with('command', 'uia').and_return 'request'
       expect(device).to receive(:route_post_request).with('request').and_return response
       expect(device).to receive(:route_handle_response).with(response, 'command').and_return({})
 
-      expect(device.send(:uia_over_preferences, 'command')).to be == {}
+      expect(device.send(:uia_over_http, 'command', 'uia')).to be == {}
     end
   end
 
@@ -146,7 +146,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
     it 'returns the value of RunLoop.send_command' do
       expect(RunLoop).to receive(:send_command).and_return({})
 
-      expect(device.send(:uia_over_host, 'command')).to be == {}
+      expect(device.send(:uia_over_host, 'command')).to be == [{}]
     end
   end
 
