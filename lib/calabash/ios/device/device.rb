@@ -663,12 +663,14 @@ module Calabash
       # @!visibility private
       # @todo Needs a bunch of work; see the argument munging in Calabash 0.x Launcher.
       def merge_start_options!(application, run_loop_device, options_from_user)
+        strategy = Environment::UIA_STRATEGY || default_uia_strategy(run_loop_device)
+
         default_options =
               {
                     :app => application.path,
                     :bundle_id => application.identifier,
                     :device_target => run_loop_device.instruments_identifier,
-                    :uia_strategy => default_uia_strategy(run_loop_device)
+                    :uia_strategy => strategy
               }
         @start_options = default_options.merge(options_from_user)
       end
