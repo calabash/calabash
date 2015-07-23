@@ -412,7 +412,9 @@ module Calabash
           raise ArgumentError, "No test server set for '#{application}'"
         end
 
-        cmd = adb.shell("am instrument #{extras} #{application.test_server.identifier}/#{test_server_activity}")
+        unless app_installed?(application.test_server.identifier)
+          raise "The test-server '#{application.test_server.identifier}' is not installed"
+        end
 
         @logger.log "Starting '#{test_server_activity}' using: '#{cmd}'"
 
