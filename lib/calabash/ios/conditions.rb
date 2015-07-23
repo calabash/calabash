@@ -72,7 +72,7 @@ module Calabash
         unless Device.default.condition_route(condition, timeout, query)
           raise Calabash::Wait::TimeoutError, timeout_message
         end
-        nil
+        true
       end
     end
   end
