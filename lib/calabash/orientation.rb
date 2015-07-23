@@ -1,4 +1,7 @@
 module Calabash
+
+  # Methods for querying an app's orientation and for rotating the app into
+  # different orientations.
   module Orientation
     # Is the device in the portrait orientation?
     #
