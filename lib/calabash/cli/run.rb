@@ -84,10 +84,6 @@ module Calabash
           require 'cucumber'
         rescue LoadError => _
           $stderr.puts "Warning! Could not load cucumber. Make sure it is installed."
-
-          if Object.const_defined?(:Bundler)
-            $stderr.puts "Is cucumber added to your Gemfile?"
-          end
         end
 
         arguments = ['-S', 'cucumber', '-p', @platform.to_s, *cucumber_arguments]
