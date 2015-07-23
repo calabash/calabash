@@ -1,7 +1,7 @@
 Then(/^I wait for all animations to stop$/) do
   # Test for:  https://github.com/calabash/calabash-ios-server/pull/142
   # When checking for no animation, ignore animations with trivially short durations
-  wait_for_none_animating(4)
+  wait_for_animations(4)
 end
 
 And(/^I have started an animation that lasts (\d+) seconds$/) do |duration|
@@ -15,7 +15,7 @@ end
 Then(/^I can wait for the animation to stop$/) do
   timeout = @last_animation_duration + 1
 
-  wait_for_animations(@last_animation_query, timeout)
+  wait_for_animations_in(@last_animation_query, timeout)
 end
 
 And(/^I start the network indicator for (\d+) seconds$/) do |duration|
@@ -30,7 +30,7 @@ end
 
 When(/^I pass an empty query to wait_for_animations$/) do
   begin
-    wait_for_animations('')
+    wait_for_animations_in('')
   rescue ArgumentError => _
     @runtime_error_raised = true
   end

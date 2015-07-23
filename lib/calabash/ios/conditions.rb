@@ -7,7 +7,7 @@ module Calabash
       # @param [Numeric] timeout How long to wait for the animations to stop.
       # @return [nil] when the condition is satisfied
       # @raise [Calabash::Cucumber::WaitHelpers::WaitError] when the timeout is exceeded
-      def wait_for_none_animating(timeout=2)
+      def wait_for_animations(timeout=2)
         message = "Timed out after #{timeout} seconds wait for all views to stop animating."
 
         wait_for_condition(CALABASH_CONDITIONS[:none_animating],
@@ -22,7 +22,7 @@ module Calabash
       # @param [Numeric] timeout How long to wait for the animations to stop.
       # @return [nil] When the condition is satisfied.
       # @raise [Calabash::Wait::TimeoutError] When the timeout is exceeded.
-      def wait_for_animations(query, timeout=2)
+      def wait_for_animations_in(query, timeout=2)
 
         if query.nil? || query == ''
           raise ArgumentError, 'Query argument must not be nil or the empty string'
