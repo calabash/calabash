@@ -12,7 +12,13 @@ describe Calabash::IOS::Device do
   let(:dummy_http_class) {Class.new(Calabash::HTTP::RetriableClient) {def initialize; end}}
   let(:dummy_http) {dummy_http_class.new}
 
-  let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
+  let(:run_loop_device) do
+    Class.new(RunLoop::Device) do
+      def to_s ; '#< Mock RunLoop::Device>' ; end
+      def inspect; to_s; end
+    end.new('denis', '8.3', 'udid')
+  end
+
   let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
 
   # Mock RunLoop::Simctl::Bridge
