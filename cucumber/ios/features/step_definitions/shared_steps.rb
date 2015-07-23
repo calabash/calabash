@@ -1,4 +1,4 @@
-Given(/^I see the (first|second|third) tab$/) do |tab|
+Given(/^I see the (first|second|third|gestures) tab$/) do |tab|
   wait_for_view('tabBarButton')
   case tab
     when 'first'
@@ -7,6 +7,8 @@ Given(/^I see the (first|second|third) tab$/) do |tab|
       index = 1
     when 'third'
       index = 2
+    when 'gestures'
+      index = 3
   end
   tap("tabBarButton index:#{index}")
   expected_view = "#{tab} page"
