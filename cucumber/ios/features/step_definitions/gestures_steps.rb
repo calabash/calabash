@@ -43,3 +43,9 @@ Then(/^the gesture description changes to (double tap|long press)$/) do |type|
 
   wait_for_gesture(expected)
 end
+
+When(/^I long press the box for (\d+) seconds?$/) do |duration|
+  query = "view marked:'gestures box'"
+  long_press(query, {:duration => duration.to_i})
+  @last_long_press_duration = duration.to_i
+end
