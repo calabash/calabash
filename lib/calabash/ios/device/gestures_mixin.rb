@@ -20,6 +20,17 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      def _double_tap(query, options={})
+        # 1. Find the view to touch
+        view_to_touch = gesture_waiter.wait_for_view(query, options)
+
+        offset = uia_center_of_view(view_to_touch)
+
+        uia_serialize_and_call(:doubleTapOffset, offset)
+
+        Calabash::QueryResult.create([view_to_touch], query)
+      end
+
       private
 
       # Unlike the Calabash Android server, the iOS server does not wait
