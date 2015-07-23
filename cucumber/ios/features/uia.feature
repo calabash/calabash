@@ -4,7 +4,6 @@ Feature: UIA Automation Javascript API
   As a developer and tester
   I want to interact with the UIAutomation Javascript API
 
-@wip
   Scenario: Tapping
     Given I see the first tab
     Then I use UIA to touch the text field
