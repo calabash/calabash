@@ -22,7 +22,6 @@ When(/^I tap a view that does not exist$/) do
     tap("view marked:'does not exist'")
   rescue Calabash::Wait::ViewNotFoundError => e
     @wait_view_not_found_error = e
-    ap e
   end
 end
 
