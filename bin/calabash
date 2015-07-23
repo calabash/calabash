@@ -80,7 +80,7 @@ module Calabash
             if argument.nil?
               print_usage
             else
-              print_usage_for(argument)
+              print_usage_for(key_for_command(argument))
             end
           when nil
             print_usage

@@ -14,10 +14,18 @@ module Calabash
           build: 'build <apk>'
       }
 
-      def print_usage_for(command, output=STDOUT)
-        key = HELP.key('setup-keystore')
+      def key_for_command(command)
+        HELP.each do |key, value|
+          if value.split(' ').first == command
+            return key
+          end
+        end
 
-        if key.nil?
+        nil
+      end
+
+      def print_usage_for(key, output=STDOUT)
+        if key.nil? || HELP[key].nil?
           output.write <<EOF
 No such command '#{command}'
 EOF
