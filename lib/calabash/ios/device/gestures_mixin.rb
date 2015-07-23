@@ -28,7 +28,7 @@ module Calabash
       def gesture_waiter
         @gesture_waiter ||= lambda do |reference_to_self|
           Class.new do
-            include Calabash::Wait
+            include Calabash::IOS
             define_method(:query) do |query, *args|
               reference_to_self.map_route(query, :query, *args)
             end
