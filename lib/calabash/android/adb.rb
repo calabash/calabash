@@ -106,8 +106,14 @@ module Calabash
           Logger.debug("Error message from ADB: ")
           Logger.debug(stderr)
 
+          stderr_output = if stderr && !stderr.empty?
+                            ": #{dot_string(stderr.lines.first, 100)}"
+                          else
+                            ''
+                          end
+
           raise ADBCallError.new(
-                "Adb process exited with #{exit_code}: #{dot_string(stderr.lines.first, 100)}", stderr, stdout)
+                "Adb process exited with #{exit_code}#{stderr_output}", stderr, stdout)
         end
 
         stdout
@@ -205,8 +211,14 @@ module Calabash
             Logger.debug("Error message from ADB: ")
             Logger.debug(command_result)
 
+            stderr_output = if command_result && !command_result.empty?
+                              ": #{ADB.dot_string(command_result.lines.first, 100)}"
+                            else
+                              ''
+                            end
+
             raise ADBCallError.new(
-                      "Adb shell command exited with #{exit_code}: #{ADB.dot_string(command_result.lines.first, 100)}", command_result)
+                      "Adb shell command exited with #{exit_code}#{stderr_output}", command_result)
           end
         end
 
