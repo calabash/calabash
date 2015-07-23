@@ -83,7 +83,9 @@ module Calabash
         begin
           require 'cucumber'
         rescue LoadError => _
-          $stderr.puts "Warning! Could not load cucumber. Make sure it is installed."
+          unless Object.const_defined?(:Bundler)
+            $stderr.puts "Warning! Could not load cucumber. Make sure it is installed."
+          end
         end
 
         arguments = ['-S', 'cucumber', '-p', @platform.to_s, *cucumber_arguments]
