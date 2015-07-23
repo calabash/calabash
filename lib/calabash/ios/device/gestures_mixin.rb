@@ -32,6 +32,14 @@ module Calabash
             define_method(:query) do |query, *args|
               reference_to_self.map_route(query, :query, *args)
             end
+
+            def to_s
+              '#<Calabash::IOS::GestureWaiter>'
+            end
+
+            def inspect
+              to_s
+            end
           end.new
         end.call(self)
       end
