@@ -68,11 +68,11 @@ module Calabash
       #  NO_NETWORK_INDICATOR
       # @return [nil] When the condition is satisfied.
       # @raise [Calabash::Wait::TimeoutError] When the timeout is exceeded.
-      def wait_for_condition(condition, timeout, timeout_message, query=nil)
+      def wait_for_condition(condition, timeout, timeout_message, query='*')
         unless Device.default.condition_route(condition, timeout, query)
           raise Calabash::Wait::TimeoutError, timeout_message
         end
-        nil
+        true
       end
     end
   end
