@@ -28,7 +28,7 @@ Then(/^I can wait for the indicator to stop$/) do
   wait_for_no_network_indicator(timeout)
 end
 
-When(/^I pass an empty query to wait_for_animations$/) do
+When(/^I pass an empty query to wait_for_animations_in$/) do
   begin
     wait_for_animations_in('')
   rescue ArgumentError => _
