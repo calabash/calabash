@@ -416,16 +416,11 @@ module Calabash
           raise "The test-server '#{application.test_server.identifier}' is not installed"
         end
 
+        cmd = "am instrument #{extras} #{application.test_server.identifier}/#{test_server_activity}"
+
         @logger.log "Starting '#{test_server_activity}' using: '#{cmd}'"
 
-        begin
-          adb.shell(cmd)
-        rescue ADB::ADBCallError => e
-          @logger.log('ERROR: Could not start the application. adb shell output: ', :error)
-          @logger.log(e.stderr, :error)
-
-          raise 'Failed to start the application'
-        end
+        adb.shell(cmd)
       end
 
       # @!visibility private
