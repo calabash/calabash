@@ -34,7 +34,7 @@ module Calabash
             t.value.exitstatus
           end
         rescue ProcessDidNotExitError => _
-          raise ADBCallError, 'Process did not exit'
+          raise ADBCallError, 'ADB process did not exit'
         ensure
           i.close unless i.nil? || i.closed?
           o.close unless o.nil? || o.closed?
