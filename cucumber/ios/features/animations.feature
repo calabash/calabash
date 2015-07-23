@@ -19,6 +19,6 @@ Feature:  Animations
     Then I can wait for the indicator to stop
 
   Scenario: Call wait_for_animation with a nil query
-    When I pass an empty query to wait_for_animations
+    When I pass an empty query to wait_for_animations_in
     Then the app should not crash
     And an error should be raised
