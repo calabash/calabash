@@ -874,6 +874,7 @@ describe Calabash::IOS::Device do
             def read; {:uia_strategy => :host}; end
           end.new
           expect(RunLoop::HostCache).to receive(:default).and_return(host_cache)
+          expect(device).to receive(:wait_for_server_to_start).and_return true
 
           result = device.send(:attach_to_run_loop, run_loop_device, :host)
           expect(device.run_loop).to be == {:uia_strategy => :host}
@@ -883,6 +884,7 @@ describe Calabash::IOS::Device do
 
         it 'not :host' do
           expect(device).to receive(:instruments_pid).and_return(1)
+          expect(device).to receive(:wait_for_server_to_start).and_return true
 
           result = device.send(:attach_to_run_loop, run_loop_device, :not_host)
           expect(device.run_loop).to be == {:uia_strategy => :not_host, :pid => 1}
@@ -898,6 +900,7 @@ describe Calabash::IOS::Device do
           end.new
           expect(RunLoop::HostCache).to receive(:default).and_return(host_cache)
           expect(device).to receive(:uia_strategy_from_environment).and_return :host
+          expect(device).to receive(:wait_for_server_to_start).and_return true
 
           result = device.send(:attach_to_run_loop, run_loop_device, nil)
           expect(device.run_loop).to be == {:uia_strategy => :host}
@@ -908,6 +911,7 @@ describe Calabash::IOS::Device do
         it 'not :host' do
           expect(device).to receive(:instruments_pid).and_return(1)
           expect(device).to receive(:uia_strategy_from_environment).and_return :not_host
+          expect(device).to receive(:wait_for_server_to_start).and_return true
 
           result = device.send(:attach_to_run_loop, run_loop_device, nil)
           expect(device.run_loop).to be == {:uia_strategy => :not_host, :pid => 1}
