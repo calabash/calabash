@@ -88,7 +88,6 @@ module Calabash
           if Object.const_defined?(:Bundler)
             $stderr.puts "Is cucumber added to your Gemfile?"
           end
-        rescue Exception => _
         end
 
         arguments = ['-S', 'cucumber', '-p', @platform.to_s, *cucumber_arguments]
