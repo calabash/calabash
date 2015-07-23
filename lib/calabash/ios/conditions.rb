@@ -12,8 +12,8 @@ module Calabash
 
         wait_for_condition(CALABASH_CONDITIONS[:none_animating],
                            timeout,
-                           message,
-                           query)
+                           message)
+
       end
 
       # Waits for all elements matching `query` to stop animating.
