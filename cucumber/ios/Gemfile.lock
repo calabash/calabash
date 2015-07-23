@@ -5,7 +5,6 @@ PATH
       awesome_print
       bundler (>= 1.3.0, < 2.0)
       clipboard
-      cucumber (>= 1.3, < 3.0)
       edn (>= 1.0.6, < 2.0)
       escape (>= 0.0.4, < 1.0)
       geocoder (>= 1.1.8, < 2.0)
@@ -14,7 +13,6 @@ PATH
       luffa
       rubyzip (~> 1.1)
       run_loop (>= 1.3.3, < 2.0)
-      slowhandcuke (>= 0.0.3, < 1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -86,6 +84,8 @@ PLATFORMS
 
 DEPENDENCIES
   calabash!
+  cucumber (~> 2.0)
   pry
   pry-nav
   rspec (~> 3.0)
+  slowhandcuke (>= 0.0.3, < 1.0)
