@@ -132,6 +132,10 @@ module Calabash
       END_STRING = '__CAL_END__'
 
       def shell(shell_cmd, options={})
+        if shell_cmd.nil? || shell_cmd.empty?
+          raise ArgumentError, "Invalid shell command '#{shell_cmd}'"
+        end
+
         input =
             [
                 "#{shell_cmd}; echo \"#{END_STRING}$?\"; exit 0"
