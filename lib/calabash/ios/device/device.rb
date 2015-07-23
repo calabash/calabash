@@ -386,8 +386,8 @@ module Calabash
       end
 
       # @!visibility private
-      def wait_for_server_to_start
-        ensure_test_server_ready
+      def wait_for_server_to_start(options={})
+        ensure_test_server_ready(options)
         device_info = fetch_runtime_attributes
         @runtime_attributes = new_device_runtime_info(device_info)
       end
