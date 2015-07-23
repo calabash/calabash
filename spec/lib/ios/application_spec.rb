@@ -25,7 +25,7 @@ describe Calabash::IOS::Application do
 
       expect {
         Calabash::IOS::Application.new(path)
-      }.to raise_error
+      }.to raise_error RuntimeError
     end
 
     it 'sets its instance variables' do
@@ -75,7 +75,7 @@ describe Calabash::IOS::Application do
 
         expect {
           app.send(:extract_identifier)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
     end
 

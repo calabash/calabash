@@ -12,7 +12,13 @@ describe Calabash::IOS::Device do
   let(:dummy_http_class) {Class.new(Calabash::HTTP::RetriableClient) {def initialize; end}}
   let(:dummy_http) {dummy_http_class.new}
 
-  let(:run_loop_device) { RunLoop::Device.new('denis', '8.3', 'udid') }
+  let(:run_loop_device) do
+    Class.new(RunLoop::Device) do
+      def to_s ; '#< Mock RunLoop::Device>' ; end
+      def inspect; to_s; end
+    end.new('denis', '8.3', 'udid')
+  end
+
   let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
 
   # Mock RunLoop::Simctl::Bridge
@@ -48,7 +54,7 @@ describe Calabash::IOS::Device do
         expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(nil)
         expect {
           Calabash::IOS::Device.default_simulator_identifier
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'returns the instruments identifier of the simulator' do
@@ -74,7 +80,7 @@ describe Calabash::IOS::Device do
         expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return(nil)
         expect {
           Calabash::IOS::Device.default_physical_device_identifier
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'returns the instruments identifier of the device' do
@@ -93,7 +99,7 @@ describe Calabash::IOS::Device do
           allow_any_instance_of(RunLoop::XCTools).to receive(:instruments).with(:devices).and_return([])
           expect {
             Calabash::IOS::Device.default_physical_device_identifier
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'there is more than one connected device' do
@@ -101,7 +107,7 @@ describe Calabash::IOS::Device do
           allow_any_instance_of(RunLoop::XCTools).to receive(:instruments).with(:devices).and_return([1, 2])
           expect {
             Calabash::IOS::Device.default_physical_device_identifier
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
       end
 
@@ -134,7 +140,7 @@ describe Calabash::IOS::Device do
       expect(app).to receive(:device_binary?).and_return(false)
       expect {
         Calabash::IOS::Device.default_identifier_for_application(app)
-      }.to raise_error
+      }.to raise_error RuntimeError
     end
   end
 
@@ -152,7 +158,7 @@ describe Calabash::IOS::Device do
         expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(nil)
         expect {
           Calabash::IOS::Device.send(:expect_compatible_server_endpoint, 'my id', server)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'does nothing if the identifier resolves to a simulator' do
@@ -232,7 +238,7 @@ describe Calabash::IOS::Device do
         expect(app).to receive(:device_binary?).and_return false
         expect {
           device.start_app(app)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'calls start_app_on_simulator when app is a simulator bundle' do
@@ -299,7 +305,7 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:test_server_responding?).and_return(true)
         expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
 
-        expect { device.stop_app }.to raise_error
+        expect { device.stop_app }.to raise_error RuntimeError
         expect(device.send(:runtime_attributes)).to be == nil
       end
     end
@@ -308,7 +314,7 @@ describe Calabash::IOS::Device do
       it 'raise an exception if the server cannot be reached' do
         expect(device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
 
-        expect { device.screenshot('path') }.to raise_error
+        expect { device.screenshot('path') }.to raise_error RuntimeError
       end
 
       it 'writes screenshot to a file' do
@@ -331,7 +337,7 @@ describe Calabash::IOS::Device do
 
         expect {
           device.install_app(app)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       describe 'on a simulator' do
@@ -341,7 +347,7 @@ describe Calabash::IOS::Device do
 
           expect {
             device.install_app(app)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls install_app_on_simulator' do
@@ -362,7 +368,7 @@ describe Calabash::IOS::Device do
 
           expect {
             device.install_app(app)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls install_app_on_device' do
@@ -384,7 +390,7 @@ describe Calabash::IOS::Device do
 
         expect {
           device.ensure_app_installed(app)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       describe 'on a simulator' do
@@ -394,7 +400,7 @@ describe Calabash::IOS::Device do
 
           expect {
             device.ensure_app_installed(app)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'does nothing if app is already installed' do
@@ -426,7 +432,7 @@ describe Calabash::IOS::Device do
 
             expect {
               device.ensure_app_installed(app)
-            }.to raise_error
+            }.to raise_error RuntimeError
           end
 
           it 'calls install_app_on_device' do
@@ -464,7 +470,7 @@ describe Calabash::IOS::Device do
 
           expect {
             device.send(:install_app_on_simulator, app, run_loop_device)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls bridge.uninstall and an exception is raised' do
@@ -472,7 +478,7 @@ describe Calabash::IOS::Device do
 
           expect {
             device.send(:install_app_on_simulator, app, run_loop_device, mock_bridge)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls bridge.install and an exception is raised' do
@@ -481,7 +487,7 @@ describe Calabash::IOS::Device do
 
           expect {
             device.send(:install_app_on_simulator, app, run_loop_device, mock_bridge)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
       end
     end
@@ -492,7 +498,7 @@ describe Calabash::IOS::Device do
 
         expect {
           device.send(:start_app_on_simulator, app, {})
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'starts the app' do
@@ -511,7 +517,7 @@ describe Calabash::IOS::Device do
 
         expect {
           device.send(:start_app_on_physical_device, app, {})
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'starts the app' do
@@ -549,7 +555,7 @@ describe Calabash::IOS::Device do
         expect(mock_bridge).to receive(:app_is_installed?).and_return(false)
         expect {
           device.send(:expect_app_installed_on_simulator, mock_bridge)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'returns true if app is installed' do
@@ -566,7 +572,7 @@ describe Calabash::IOS::Device do
         expect(app).to receive(:sha1).at_least(:once).and_return('fghij')
         expect {
           device.send(:expect_matching_sha1s, installed_app, app)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'returns true if the sha1s match' do
@@ -595,7 +601,7 @@ describe Calabash::IOS::Device do
     it '#clear_app_data_on_physical_device' do
       expect {
         device.clear_app_data_on_physical_device(nil, nil)
-      }.to raise_error
+      }.to raise_error Calabash::AbstractMethodError
     end
 
     describe '#clear_app_on_simulator' do
@@ -603,7 +609,7 @@ describe Calabash::IOS::Device do
         expect(mock_bridge).to receive(:reset_app_sandbox).and_raise
         expect {
           device.send(:clear_app_data_on_simulator, app, run_loop_device, mock_bridge)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'resets the app sandbox' do
@@ -619,7 +625,7 @@ describe Calabash::IOS::Device do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return nil
           expect {
             device.send(:clear_app_data, app)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls clear_app_on_simulator when the app is installed' do
@@ -649,7 +655,7 @@ describe Calabash::IOS::Device do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return nil
           expect {
             device.send(:clear_app_data, app)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls clear_app_on_physical_device' do
@@ -670,7 +676,7 @@ describe Calabash::IOS::Device do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return nil
           expect {
             device.send(:uninstall_app, app)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls uninstall_app_on_simulator when the app is installed' do
@@ -700,7 +706,7 @@ describe Calabash::IOS::Device do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return nil
           expect {
             device.send(:uninstall_app, app)
-          }.to raise_error
+          }.to raise_error RuntimeError
         end
 
         it 'calls clear_app_on_physical_device' do
@@ -727,7 +733,7 @@ describe Calabash::IOS::Device do
         expect(JSON).to receive(:parse).with('[]').and_raise
         expect {
           device.send(:fetch_runtime_attributes)
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'parses the body of the response to a ruby object' do
@@ -740,7 +746,7 @@ describe Calabash::IOS::Device do
         device.instance_variable_set(:@runtime_attributes, nil)
         expect {
           device.send(:expect_runtime_attributes_available, 'foo')
-        }.to raise_error
+        }.to raise_error RuntimeError
       end
 
       it 'returns true if runtime_attributes are available' do
@@ -754,7 +760,7 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:expect_runtime_attributes_available).and_raise
         expect do
           device.device_family
-        end.to raise_error
+        end.to raise_error RuntimeError
       end
 
       it 'asks runtime_attributes for the value' do
@@ -770,7 +776,7 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:expect_runtime_attributes_available).and_raise
         expect do
           device.form_factor
-        end.to raise_error
+        end.to raise_error RuntimeError
       end
 
       it 'asks runtime_attributes for the value' do
@@ -791,7 +797,7 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:expect_runtime_attributes_available).and_raise
         expect do
           device.iphone_app_emulated_on_ipad?
-        end.to raise_error
+        end.to raise_error RuntimeError
       end
 
       it 'asks runtime_attributes for the value' do
@@ -813,7 +819,7 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:expect_runtime_attributes_available).and_raise
         expect do
           device.screen_dimensions
-        end.to raise_error
+        end.to raise_error RuntimeError
       end
 
       it 'asks runtime_attributes for the value' do
@@ -829,7 +835,7 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:expect_runtime_attributes_available).and_raise
         expect do
           device.server_version
-        end.to raise_error
+        end.to raise_error RuntimeError
       end
 
       it 'asks runtime_attributes for the value' do

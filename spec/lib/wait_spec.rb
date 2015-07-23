@@ -206,13 +206,13 @@ describe Calabash::Wait do
     it 'should take a screenshot if screenshot_on_error is true' do
       Calabash::Wait.default_options[:screenshot_on_error] = true
       expect(dummy).to receive(:screenshot_embed).once
-      expect{dummy.fail('Message')}.to raise_error
+      expect{dummy.fail('Message')}.to raise_error RuntimeError
     end
 
     it 'should not take a screenshot if screenshot_on_error is false' do
       Calabash::Wait.default_options[:screenshot_on_error] = false
       expect(dummy).not_to receive(:screenshot_embed)
-      expect{dummy.fail('Message')}.to raise_error
+      expect{dummy.fail('Message')}.to raise_error RuntimeError
     end
   end
 
@@ -320,7 +320,7 @@ describe Calabash::Wait do
                                                       "Not all queries #{dummy.parse_query_list(query)} matched a view")
     end
 
-    it 'should not fail a view is matched' do
+    it 'should not fail if a view is matched' do
       query = 'my query'
 
       expect(dummy).to receive(:views_exist?).with(query).and_return([{}])
@@ -444,7 +444,7 @@ describe Calabash::Wait do
       allow(dummy).to receive(:view_exists?).with(query).and_return(false)
       expect(dummy).to receive(:fail).with(Calabash::Wait::ViewNotFoundError, "Waited 30 seconds for #{dummy.parse_query_list(query)} to match a view").and_call_original
 
-      expect{dummy.wait_for_view(query)}.to raise_error
+      expect{dummy.wait_for_view(query)}.to raise_error Calabash::Wait::ViewNotFoundError
     end
 
     it 'should use defaults' do
@@ -524,7 +524,7 @@ describe Calabash::Wait do
                                            "Waited 30 seconds for #{dummy.parse_query_list(query)} to each match a view")
                            .and_call_original
 
-      expect{dummy.wait_for_views(query)}.to raise_error
+      expect{dummy.wait_for_views(query)}.to raise_error Calabash::Wait::ViewNotFoundError
     end
 
     it 'should fail if the views do not appear' do
@@ -536,7 +536,7 @@ describe Calabash::Wait do
                                            "Waited 30 seconds for #{dummy.parse_query_list(query)} to each match a view")
                            .and_call_original
 
-      expect{dummy.wait_for_views(*query)}.to raise_error
+      expect{dummy.wait_for_views(*query)}.to raise_error Calabash::Wait::ViewNotFoundError
     end
 
     it 'should use defaults' do
@@ -595,7 +595,7 @@ describe Calabash::Wait do
                                            "Waited 30 seconds for #{dummy.parse_query_list(query)} to not match any view")
                            .and_call_original
 
-      expect{dummy.wait_for_no_view(query)}.to raise_error
+      expect{dummy.wait_for_no_view(query)}.to raise_error Calabash::Wait::ViewFoundError
     end
 
     it 'should use defaults' do
@@ -665,7 +665,7 @@ describe Calabash::Wait do
                                            "Waited 30 seconds for #{dummy.parse_query_list(query)} to each not match any view")
                            .and_call_original
 
-      expect{dummy.wait_for_no_views(query)}.to raise_error
+      expect{dummy.wait_for_no_views(query)}.to raise_error Calabash::Wait::ViewFoundError
     end
 
     it 'should fail if the views do not disappear' do
@@ -677,7 +677,7 @@ describe Calabash::Wait do
                                            "Waited 30 seconds for #{dummy.parse_query_list(query)} to each not match any view")
                            .and_call_original
 
-      expect{dummy.wait_for_no_views(*query)}.to raise_error
+      expect{dummy.wait_for_no_views(*query)}.to raise_error Calabash::Wait::ViewFoundError
     end
 
     it 'should use defaults' do
