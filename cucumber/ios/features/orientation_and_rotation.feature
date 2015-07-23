@@ -9,3 +9,10 @@ Feature: Orientation and Rotation
     Given that the app has launched
     Then I check status bar orientation
     And I can tell if the app is in portrait or landscape
+
+  @wip
+  Scenario: Can rotate to landscape or portrait
+    Given I see the gestures tab
+    Then I can rotate to landscape
+    And I can rotate to portrait
+

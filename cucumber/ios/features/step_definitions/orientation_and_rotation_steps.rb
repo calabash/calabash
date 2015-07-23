@@ -1,3 +1,4 @@
+
 Given(/^that the app has launched$/) do
   wait_for_view('tabBarButton')
 end
@@ -9,4 +10,12 @@ end
 And(/^I can tell if the app is in portrait or landscape$/) do
   expect(portrait?).to be_truthy
   expect(landscape?).to be_falsey
+end
+
+Then(/^I can rotate to landscape$/) do
+
+end
+
+And(/^I can rotate to portrait$/) do
+
 end
