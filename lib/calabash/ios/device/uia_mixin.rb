@@ -5,7 +5,7 @@ module Calabash
     module UIAMixin
 
       def evaluate_uia(script)
-        uia_serialize_and_call(script)
+        uia_route(script)
       end
     end
   end

@@ -57,12 +57,91 @@ module Calabash
         def uia_over_http(command, route)
           request = make_uia_request(command, route)
           response = route_post_request(request)
-          route_handle_response(response, command)
+          results = route_handle_response(response, command)
+          handle_uia_results(results, command)
         end
 
         # Careful.  The UIA route can return all manner of weird responses.
         def uia_over_host(command)
           [RunLoop.send_command(run_loop, command)]
+        end
+
+        # Called _after_ route_handle_response or _after_ RunLoop.send_command
+        def handle_uia_results(response, command)
+          expect_uia_results_is_array(response)
+
+          expect_uia_results_has_one_element(response)
+
+          hash = response.first
+
+          expect_uia_result_has_valid_status_key(hash, response, command)
+
+          expect_uia_result_has_value_key(hash, response, command)
+
+          status = hash['status']
+          value = hash['value']
+
+          if status == 'error'
+            raise "Executing command '#{command}'\n" \
+                    "resulted in an error: '#{value}'"
+          else
+            handle_uia_result_with_success(value)
+          end
+        end
+
+        def expect_uia_results_is_array(response)
+          if !response.is_a? Array
+            raise "Expected '#{response}' to be an array."
+          end
+          response
+        end
+
+        def expect_uia_results_has_one_element(response)
+          if response.length != 1
+            raise "Expected '#{response}' to have exactly one element"
+          end
+          response
+        end
+
+        def expect_uia_response_element_is_hash(hash)
+          if !hash.is_a? Hash
+            raise "Expected first result of '#{hash}' to be a Hash"
+          end
+          hash
+        end
+
+        def expect_uia_result_has_valid_status_key(hash, response, command)
+          status = hash['status']
+
+          case status
+            when 'error', 'success'
+              hash
+            else
+              raise "Executing command '#{command}'\n" \
+                    "returned an invalid status key: '#{status}'.\n" \
+                    "Expected 'error' or 'success'.\n" \
+                    "The raw response was '#{response}'"
+          end
+          hash
+        end
+
+        def expect_uia_result_has_value_key(hash, response, command)
+          if !hash.has_key? 'value'
+            raise "Executing command '#{command}'\n" \
+                  "returned a value with no 'value' key.\n" \
+                  "Then raw response was '#{response}'"
+          end
+          hash
+        end
+
+        def handle_uia_result_with_success(value)
+          if value.is_a? Array
+            value
+          elsif value == ':nil'
+            [nil]
+          else
+            [value]
+          end
         end
 
         def make_uia_parameters(command)

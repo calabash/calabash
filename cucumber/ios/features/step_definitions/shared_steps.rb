@@ -14,7 +14,7 @@ Given(/^I see the (first|second|third) tab$/) do |tab|
 end
 
 Given(/^the app has launched$/) do
-  wait_for_view
+  wait_for_view('UITabBarButton')
 end
 
 And(/^I touch the text field$/) do
