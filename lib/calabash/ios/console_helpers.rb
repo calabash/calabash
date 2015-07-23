@@ -18,6 +18,28 @@ module Calabash
       end
     end
 
+    # Attach the current Calabash run-loop to a console.
+    #
+    # @example
+    #  You have encountered a failing cucumber Scenario.
+    #  You open the console and want to start investigating the cause of the failure.
+    #
+    #  Use
+    #
+    #  > console_attach
+    #
+    #  to connect to the current run-loop so you can perform gestures.
+    #
+    # @param [Symbol] uia_strategy Optionally specify the uia strategy, which
+    #   can be one of :shared_element, :preferences, :host.  If you don't
+    #   know which to choose, don't specify one and calabash will try deduce
+    #   the correct strategy to use based on the environment variables used
+    #   when starting the console.
+    #
+    # @return [Hash] The hash will contain the current device, the path to the
+    #   current application, and the run-loop strategy.
+    #
+    # @raise [RuntimeError] If the app is not running.
     def console_attach(uia_strategy=nil)
       Calabash::Application.default = Calabash::IOS::Application.default_from_environment
 
