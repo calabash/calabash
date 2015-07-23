@@ -430,7 +430,11 @@ module Calabash
       def ensure_instrument_action(application, test_server_activity, extras = '')
         clear_calabash_server_report(application)
 
-        instrument(application, test_server_activity, extras)
+        begin
+          instrument(application, test_server_activity, extras)
+        rescue ADB::ADBCallError => e
+          raise EnsureInstrumentActionError, e
+        end
 
         begin
           Timeout.timeout(10) do
