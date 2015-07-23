@@ -264,9 +264,9 @@ module Calabash
         end
 
         env_options[:test_server_port] = server.test_server_port
+        env_options[:target_package] = application.identifier
 
         env_options[:class] = options.fetch(:class, 'sh.calaba.instrumentationbackend.InstrumentationBackend')
-        env_options[:target_package] = options.fetch(:target_package, application.identifier)
 
         if options[:activity]
           env_options[:main_activity] = options[:activity]
@@ -276,8 +276,8 @@ module Calabash
           raise 'Invalid application. No test-server set.'
         end
 
-        unless app_installed?(env_options[:target_package])
-          raise "The application '#{env_options[:target_package]}' is not installed"
+        unless app_installed?(application.identifier)
+          raise "The application '#{application.identifier}' is not installed"
         end
 
         unless app_installed?(application.test_server.identifier)
