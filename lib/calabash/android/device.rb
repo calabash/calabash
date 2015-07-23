@@ -87,7 +87,7 @@ module Calabash
 
       def port_forward(host_port)
         adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{server.test_server_port}"]
-        ADB.command(*adb_forward_cmd)
+        adb.command(*adb_forward_cmd)
       end
 
       def make_map_parameters(query, map_method_name, *method_args)
@@ -312,9 +312,13 @@ module Calabash
           extras = "#{extras} -e \"#{key.to_s}\" \"#{val.to_s}\""
         end
 
-        instrument(application,
-                   'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
-                   extras)
+        begin
+          instrument(application,
+                     'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
+                     extras)
+        rescue ADB::ADBCallError => e
+          raise "Failed to start the application: '#{e.stderr.lines.first.chomp}'"
+        end
 
         begin
           Retriable.retriable(tries: 30, interval: 1, timeout: 30, on: RetryError) do

@@ -53,7 +53,7 @@ module Calabash
       end
 
       def self.open_adb_pipe(*cmd, **options, &block)
-        timeout = options.fetch(:timeout, 10)
+        timeout = options.fetch(:timeout, PROCESS_WAIT_TIME)
 
         open_pipe_with_timeout(timeout, Environment.adb_path, *cmd) do |i, o, e|
           block.call(i, o, e) if block
@@ -107,7 +107,7 @@ module Calabash
           Logger.debug(stderr)
 
           raise ADBCallError.new(
-                "Adb process exited with #{exit_code}", stderr, stdout)
+                "Adb process exited with #{exit_code}: #{dot_string(stderr.lines.first, 100)}", stderr, stdout)
         end
 
         stdout
@@ -129,26 +129,68 @@ module Calabash
         ADB.command(*cmd, args)
       end
 
+      END_STRING = '__CAL_END__'
+
       def shell(shell_cmd, options={})
         input =
             [
-                shell_cmd,
-                'echo $?',
-                'exit 0',
+                "#{shell_cmd}; echo \"#{END_STRING}$?\"; exit 0"
             ]
 
         args = options.merge(input: input)
 
         result = command('shell', args)
 
+        # We get a result like this:
+        #
+        # [0] "getprop ro.build.version.release; echo \"\r\n",
+        # [1] "$?\"; exit 0\r\n",
+        # [2] "shell@hammerhead:/ $ getprop ro.build.version.release; echo \"\r\r\n",
+        # [3] "> $?\"; exit 0\r\r\n",
+        # [4] "4.4\r\n",
+        # [5] "\r\n",
+        # [6] "0\r\n"
+        #
+        # out =
+        # [4] "4.4\r\n"
+        # [5] "\r\n",
+        # [6] "0\r\n"
+        #
+        # command_result =
+        # [4] "4.4\r\n"
+        # [5] "\r\n",
+        #
+        # exit_code_s =
+        # [6] "0\r\n"
+
+        index = result.lines.index {|line| line.start_with?(shell_name)}
+
+        if index.nil?
+          raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
+        end
+
         # Remove the commands
-        out = result.lines[4..-1].join
+        out = result.lines[index+1..-1]
+
+        last_line = out.last
+        end_index = nil
+
+        15.times do |i|
+          if last_line[-(END_STRING.length+i-1)..-i] == END_STRING
+            end_index = -i
+            break
+          end
+        end
+
+        if end_index.nil?
+          raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
+        end
 
         # Get the result from the command
-        command_result = out[0..-(shell_exit_length+1)]
+        command_result = out[0..-2].join + last_line[0..(end_index - END_STRING.length)]
 
         # Get the exit code
-        exit_code_s = result.lines[-2]
+        exit_code_s = out[-1][end_index+1..-1]
 
         unless options[:no_exit_code_check]
           unless exit_code_s.to_i.to_s == exit_code_s.chomp
@@ -161,10 +203,10 @@ module Calabash
           if exit_code != 0
             Logger.debug("Adb shell command exited with #{exit_code}")
             Logger.debug("Error message from ADB: ")
-            Logger.debug(out)
+            Logger.debug(command_result)
 
             raise ADBCallError.new(
-                      "Adb shell command exited with #{exit_code}", out)
+                      "Adb shell command exited with #{exit_code}: #{ADB.dot_string(command_result.lines.first, 100)}", command_result)
           end
         end
 
@@ -173,19 +215,42 @@ module Calabash
 
       private
 
-      # @!visibility private
-      def shell_exit_length
-        if @shell_exit_length
-          @shell_exit_length
+      def self.dot_string(string, length)
+        if string.length > length
+          "#{string[0, length-3]}..."
         else
-          input =
-            [
-                'echo $?',
-                'exit 0',
-            ]
+          string
+        end
+      end
 
-          result = command('shell', input: input)
-          @shell_exit_length = result.lines[2..-1].join.length
+      def shell_name
+        if @shell_name
+          @shell_name
+        else
+          result = command('shell', input: ['echo "test"; exit 0'])
+
+          # result.lines =
+          # [
+          #     [0] "echo \"foo\"; exit 0\r\n",
+          #     [1] "shell@hammerhead:/ $ echo \"foo\"; exit 0\r\r\n",
+          #     [2] "foo\r\n"
+          # ]
+          #
+          # OR
+          #
+          # result.lines =
+          # [
+          #     [1] "shell@hammerhead:/ $ echo \"foo\"; exit 0\r\r\n",
+          #     [2] "foo\r\n"
+          # ]
+
+          #result.lines.index {|line| !line.start_with?('echo')}
+
+          # "shell@hammerhead:/ $ echo \"foo\"; exit 0\r\r\n"
+          shell_name_line = result.lines[-2]
+
+          # "shell@hammerhead:/ $ "
+          @shell_name = shell_name_line.split('echo').first
         end
       end
 
