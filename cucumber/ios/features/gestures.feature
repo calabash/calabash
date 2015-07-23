@@ -13,3 +13,10 @@ Feature:  Gestures
     Given I see the gestures tab
     When I double tap the box
     Then the gesture description changes to double tap
+
+  Scenario:  Long press
+    Given I see the gestures tab
+    When I long press the box for 1 second
+    Then the gesture description changes to long press
+    When I long press the box for 2 seconds
+    Then the gesture description changes to long press

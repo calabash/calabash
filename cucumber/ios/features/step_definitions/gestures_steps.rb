@@ -22,7 +22,6 @@ When(/^I tap a view that does not exist$/) do
     tap("view marked:'does not exist'")
   rescue Calabash::Wait::ViewNotFoundError => e
     @wait_view_not_found_error = e
-    ap e
   end
 end
 
@@ -42,4 +41,10 @@ Then(/^the gesture description changes to (double tap|long press)$/) do |type|
   end
 
   wait_for_gesture(expected)
+end
+
+When(/^I long press the box for (\d+) seconds?$/) do |duration|
+  query = "view marked:'gestures box'"
+  long_press(query, {:duration => duration.to_i})
+  @last_long_press_duration = duration.to_i
 end
