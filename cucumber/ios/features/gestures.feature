@@ -14,7 +14,6 @@ Feature:  Gestures
     When I double tap the box
     Then the gesture description changes to double tap
 
-  @wip
   Scenario:  Long press
     Given I see the gestures tab
     When I long press the box for 1 second
