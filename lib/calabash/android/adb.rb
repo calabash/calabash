@@ -53,7 +53,7 @@ module Calabash
       end
 
       def self.open_adb_pipe(*cmd, **options, &block)
-        timeout = options.fetch(:timeout, 10)
+        timeout = options.fetch(:timeout, PROCESS_WAIT_TIME)
 
         open_pipe_with_timeout(timeout, Environment.adb_path, *cmd) do |i, o, e|
           block.call(i, o, e) if block
@@ -163,7 +163,7 @@ module Calabash
         # exit_code_s =
         # [6] "0\r\n"
 
-        index = result.lines.index {|line| line =~/; exit 0\s*/}
+        index = result.lines.index {|line| line.start_with?(shell_name)}
 
         if index.nil?
           raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
@@ -220,6 +220,37 @@ module Calabash
           "#{string[0, length-3]}..."
         else
           string
+        end
+      end
+
+      def shell_name
+        if @shell_name
+          @shell_name
+        else
+          result = command('shell', input: ['echo "test"; exit 0'])
+
+          # result.lines =
+          # [
+          #     [0] "echo \"foo\"; exit 0\r\n",
+          #     [1] "shell@hammerhead:/ $ echo \"foo\"; exit 0\r\r\n",
+          #     [2] "foo\r\n"
+          # ]
+          #
+          # OR
+          #
+          # result.lines =
+          # [
+          #     [1] "shell@hammerhead:/ $ echo \"foo\"; exit 0\r\r\n",
+          #     [2] "foo\r\n"
+          # ]
+
+          #result.lines.index {|line| !line.start_with?('echo')}
+
+          # "shell@hammerhead:/ $ echo \"foo\"; exit 0\r\r\n"
+          shell_name_line = result.lines[-2]
+
+          # "shell@hammerhead:/ $ "
+          @shell_name = shell_name_line.split('echo').first
         end
       end
 
