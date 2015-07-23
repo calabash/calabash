@@ -734,6 +734,8 @@ module Calabash
       end
 
       # Assumes the app is already running and the server can be reached.
+      # @todo It might make sense to cache the uia_strategy on the _server_
+      #  to avoid having to guess.
       def attach_to_run_loop(run_loop_device, uia_strategy)
         if uia_strategy
           strategy = uia_strategy
@@ -751,6 +753,9 @@ module Calabash
           @run_loop[:pid] = pid
           @uia_strategy = strategy
         end
+
+        # populate the @runtime_attributes
+        wait_for_server_to_start({:timeout => 2})
         {
               :device => self,
               :uia_strategy => strategy
