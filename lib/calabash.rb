@@ -41,7 +41,7 @@ module Calabash
   include Calabash::Orientation
   include Calabash::Text
   include Calabash::Interactions
-  include Calabash::Defaults
+  extend Calabash::Defaults
 
   require 'calabash/page'
 
