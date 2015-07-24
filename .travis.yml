@@ -10,9 +10,8 @@ rvm:
   - 2.2.1
 
 script:
-  - gem install cucumber
   - script/ci/travis/install-gem-ci.rb
-  - rake unit
+  - bundle exec rake unit
   - rake install
 
 notifications:
@@ -20,5 +19,5 @@ notifications:
     recipients:
       - joshua.moody@xamarin.com
       - tobias.roikjer@xamarin.com
-    on_success: change
+    on_success: never
     on_failure: always
