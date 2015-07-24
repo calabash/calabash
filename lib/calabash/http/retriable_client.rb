@@ -53,6 +53,11 @@ module Calabash
         @timeout = options.fetch(:timeout, 5)
         @interval = options.fetch(:interval, 0.5)
         @logger = options[:logger] || Calabash::Logger.new
+        @on_error = {}
+      end
+
+      def on_error(type, &block)
+        @on_error[type] = block
       end
 
       # Make an HTTP get request.
@@ -105,7 +110,9 @@ module Calabash
         client = @client.dup
         client.receive_timeout = timeout
 
-        retries.times do
+        retries.times do |i|
+          first_try = i == 0
+
           # Subtract the aggregate time we've spent thus far to make sure we're
           # not exceeding the request timeout across retries.
           time_diff = start_time + timeout - Time.now
@@ -121,6 +128,13 @@ module Calabash
                                request.params, header)
           rescue *RETRY_ON => e
             @logger.log "Http error: #{e}"
+
+            if first_try
+              if @on_error[e.class]
+                @on_error[e.class].call(@server)
+              end
+            end
+
             last_error = e
             sleep interval
           end
