@@ -221,6 +221,10 @@ module Calabash
         result['result']
       end
 
+      def go_home
+        adb.shell("input keyevent 3")
+      end
+
       def set_location(location)
         perform_action('set_gps_coordinates',
                        location[:latitude], location[:longitude])
