@@ -26,3 +26,11 @@ Feature: Orientation and Rotation
     And the view controller does support rotation
     When I rotate right
     Then a rotation occurred
+
+  Scenario: Rotating to a specific home button position
+    Given I see the gestures tab
+    And the view controller does support rotation
+    Then I rotate so the home button is on the right
+    Then I rotate so the home button is on the left
+    Then I rotate so the home button is on the top
+    Then I rotate so the home button is on the bottom

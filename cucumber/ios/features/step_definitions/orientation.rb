@@ -36,3 +36,13 @@ end
 Then(/^a rotation occurred$/) do
   expect(status_bar_orientation).not_to be == @orientation_before_rotation
 end
+
+Then(/^I rotate so the home button is on the (right|left|top|bottom)$/) do |position|
+  actual = rotate_home_button_to(position)
+
+  expected = position
+  expected = 'up' if position == 'top'
+  expected = 'down' if position == 'bottom'
+
+  expect(actual).to be == expected
+end
