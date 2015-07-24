@@ -32,5 +32,25 @@ module Calabash
     def default_application=(application)
       Application.default = application
     end
+
+    # Get the default server. The default server is the test-server
+    # of the `#default_device`.
+    #
+    # @raise [RuntimeError] If default device is not set
+    def default_server
+      if default_device.nil?
+        raise 'No default device set'
+      end
+
+      default_device.server
+    end
+
+    # Set the default server.
+    #
+    # @see #Calabash::Defaults.default_server
+    # @raise [RuntimeError] If default device is not set
+    def default_server=(server)
+      default_device.change_server(server)
+    end
   end
 end

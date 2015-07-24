@@ -55,6 +55,10 @@ module Calabash
         @logger = options[:logger] || Calabash::Logger.new
       end
 
+      def change_server(new_server)
+        @server = new_server
+      end
+
       # Make an HTTP get request.
       #
       # This method takes multiple options.  If the option is not documented,
