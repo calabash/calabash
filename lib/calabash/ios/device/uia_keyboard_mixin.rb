@@ -107,6 +107,8 @@ module Calabash
         end
 
         def log_epilogue
+          log("       result: #{result}")
+          log('')
           log('Please report this!')
           log('https://github.com/calabash/calabash-ios/issues/374')
         end
