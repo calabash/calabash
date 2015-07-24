@@ -9,6 +9,10 @@ module Calabash
       def initialize(identifier, server)
         super
         @adb = ADB.new(identifier)
+
+        http_client.on_error(Errno::ECONNREFUSED) do |server|
+          port_forward(server.endpoint.port, server.test_server_port)
+        end
       end
 
       def self.default_serial
@@ -85,8 +89,12 @@ module Calabash
         end
       end
 
-      def port_forward(host_port)
-        adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{server.test_server_port}"]
+      def port_forward(host_port, test_server_port = nil)
+        if test_server_port.nil?
+          test_server_port = server.test_server_port
+        end
+
+        adb_forward_cmd = ['forward', "tcp:#{host_port}", "tcp:#{test_server_port}"]
         adb.command(*adb_forward_cmd)
       end
 
@@ -289,8 +297,10 @@ module Calabash
         # Clear any old error reports
         clear_calabash_server_report(application)
 
-        # Forward the port to the test-server
-        port_forward(server.endpoint.port)
+        # We have to forward the port ourselves, as an old test-server could be
+        # running on the old port. If the retriable client was able to
+        # determine if the port had been forwarded, we would not need this.
+        port_forward(server.endpoint.port, server.test_server_port)
 
         # For now, the test-server cannot rebind an existing socket.
         # So we have to stop any running Calabash servers from the client
