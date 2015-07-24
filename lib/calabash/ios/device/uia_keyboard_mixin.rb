@@ -96,7 +96,7 @@ module Calabash
         end
 
         def log(message)
-          logger.log(message, :info)
+          logger.log(Color.blue(message), :info)
         end
 
         def log_preamble
