@@ -30,6 +30,11 @@ module Calabash
       @http_client = HTTP::RetriableClient.new(server, options.fetch(:http_options, {}))
     end
 
+    def change_server(new_server)
+      @server = new_server
+      @http_client.change_server(new_server)
+    end
+
     # Start the application and the test server
     def start_app(path_or_application, options={})
       application = parse_path_or_app_parameters(path_or_application)

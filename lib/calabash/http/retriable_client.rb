@@ -60,6 +60,10 @@ module Calabash
         @on_error[type] = block
       end
 
+      def change_server(new_server)
+        @server = new_server
+      end
+
       # Make an HTTP get request.
       #
       # This method takes multiple options.  If the option is not documented,

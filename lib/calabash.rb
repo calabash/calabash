@@ -24,6 +24,7 @@ module Calabash
   require 'calabash/query'
   require 'calabash/text'
   require 'calabash/interactions'
+  require 'calabash/defaults'
   require 'calabash/console_helpers'
 
 
@@ -40,6 +41,7 @@ module Calabash
   include Calabash::Orientation
   include Calabash::Text
   include Calabash::Interactions
+  extend Calabash::Defaults
 
   require 'calabash/page'
 
