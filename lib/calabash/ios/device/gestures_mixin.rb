@@ -40,6 +40,21 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      def _pan_between(query_from, query_to, options={})
+        from_view = gesture_waiter.wait_for_view(query_from)
+        to_view = gesture_waiter.wait_for_view(query_to)
+
+        from_offset = uia_center_of_view(from_view)
+        to_offset = uia_center_of_view(to_view)
+
+        uia_serialize_and_call(:panOffset, from_offset, to_offset)
+
+        {
+          :from => Calabash::QueryResult.create([from_view], query_from),
+          :to => Calabash::QueryResult.create([to_view], query_to)
+        }
+      end
+
       private
 
       # Unlike the Calabash Android server, the iOS server does not wait
