@@ -19,3 +19,20 @@ end
 And(/^I can rotate to portrait$/) do
 
 end
+
+And(/^the view controller (?:does|does not) support rotation$/) do
+  # documentation step
+end
+
+When(/^I rotate (left|right)$/) do |direction|
+  @orientation_before_rotation = status_bar_orientation
+  rotate direction
+end
+
+Then(/^no rotation occurred$/) do
+  expect(status_bar_orientation).to be == @orientation_before_rotation
+end
+
+Then(/^a rotation occurred$/) do
+  expect(status_bar_orientation).not_to be == @orientation_before_rotation
+end
