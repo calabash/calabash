@@ -230,7 +230,41 @@ module Calabash
                        location[:latitude], location[:longitude])
       end
 
+      def resume_app(path_or_application)
+        application = parse_path_or_app_parameters(path_or_application)
+
+        if app_running?(application)
+          main_activity = nil
+
+          begin
+            main_activity = application.main_activity
+          rescue
+            raise 'Could not detect a launchable activity. This is needed to resume the app'
+          end
+
+          adb.shell("am start -n '#{application.identifier}/#{main_activity}'")
+        else
+          raise "The app '#{application.identifier}' is not running"
+        end
+
+        true
+      end
+
+      def app_running?(path_or_application)
+        application = parse_path_or_app_parameters(path_or_application)
+
+        running_packages.include?(application.identifier)
+      end
+
       private
+
+      def running_packages
+        ps.lines.map(&:split).map(&:last)
+      end
+
+      def ps
+        adb.shell('ps')
+      end
 
       def calabash_server_failure_file_path(application)
         "/data/data/#{application.test_server.identifier}/files/calabash_failure.out"

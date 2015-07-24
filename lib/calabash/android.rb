@@ -31,9 +31,11 @@ module Calabash
     require 'calabash/android/physical_buttons'
     require 'calabash/android/text'
     require 'calabash/android/console_helpers'
+    require 'calabash/android/life_cycle'
 
     include Calabash::Android::Gestures
     include Calabash::Android::Interactions
+    include Calabash::Android::LifeCycle
     include Calabash::Android::Orientation
     include Calabash::Android::PhysicalButtons
     include Calabash::Android::Text
