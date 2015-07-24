@@ -19,5 +19,5 @@ notifications:
     recipients:
       - joshua.moody@xamarin.com
       - tobias.roikjer@xamarin.com
-    on_success: change
+    on_success: never
     on_failure: always
