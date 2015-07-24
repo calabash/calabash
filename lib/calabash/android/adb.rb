@@ -34,7 +34,7 @@ module Calabash
             t.value.exitstatus
           end
         rescue ProcessDidNotExitError => _
-          raise ADBCallError, 'Process did not exit'
+          raise ADBCallError, 'ADB process did not exit'
         ensure
           i.close unless i.nil? || i.closed?
           o.close unless o.nil? || o.closed?
@@ -138,6 +138,10 @@ module Calabash
       END_STRING = '__CAL_END__'
 
       def shell(shell_cmd, options={})
+        if shell_cmd.nil? || shell_cmd.empty?
+          raise ArgumentError, "Invalid shell command '#{shell_cmd}'"
+        end
+
         input =
             [
                 "#{shell_cmd}; echo \"#{END_STRING}$?\"; exit 0"

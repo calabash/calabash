@@ -264,9 +264,9 @@ module Calabash
         end
 
         env_options[:test_server_port] = server.test_server_port
+        env_options[:target_package] = application.identifier
 
         env_options[:class] = options.fetch(:class, 'sh.calaba.instrumentationbackend.InstrumentationBackend')
-        env_options[:target_package] = options.fetch(:target_package, application.identifier)
 
         if options[:activity]
           env_options[:main_activity] = options[:activity]
@@ -276,8 +276,8 @@ module Calabash
           raise 'Invalid application. No test-server set.'
         end
 
-        unless app_installed?(env_options[:target_package])
-          raise "The application '#{env_options[:target_package]}' is not installed"
+        unless app_installed?(application.identifier)
+          raise "The application '#{application.identifier}' is not installed"
         end
 
         unless app_installed?(application.test_server.identifier)
@@ -412,18 +412,15 @@ module Calabash
           raise ArgumentError, "No test server set for '#{application}'"
         end
 
-        cmd = adb.shell("am instrument #{extras} #{application.test_server.identifier}/#{test_server_activity}")
+        unless app_installed?(application.test_server.identifier)
+          raise "The test-server '#{application.test_server.identifier}' is not installed"
+        end
+
+        cmd = "am instrument #{extras} #{application.test_server.identifier}/#{test_server_activity}"
 
         @logger.log "Starting '#{test_server_activity}' using: '#{cmd}'"
 
-        begin
-          adb.shell(cmd)
-        rescue ADB::ADBCallError => e
-          @logger.log('ERROR: Could not start the application. adb shell output: ', :error)
-          @logger.log(e.stderr, :error)
-
-          raise 'Failed to start the application'
-        end
+        adb.shell(cmd)
       end
 
       # @!visibility private
@@ -433,7 +430,11 @@ module Calabash
       def ensure_instrument_action(application, test_server_activity, extras = '')
         clear_calabash_server_report(application)
 
-        instrument(application, test_server_activity, extras)
+        begin
+          instrument(application, test_server_activity, extras)
+        rescue ADB::ADBCallError => e
+          raise EnsureInstrumentActionError, e
+        end
 
         begin
           Timeout.timeout(10) do
