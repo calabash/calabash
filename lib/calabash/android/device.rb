@@ -297,6 +297,11 @@ module Calabash
         # Clear any old error reports
         clear_calabash_server_report(application)
 
+        # We have to forward the port ourselves, as an old test-server could be
+        # running on the old port. If the retriable client was able to
+        # determine if the port had been forwarded, we would not need this.
+        port_forward(server.endpoint.port, server.test_server_port)
+
         # For now, the test-server cannot rebind an existing socket.
         # So we have to stop any running Calabash servers from the client
         # for now.
