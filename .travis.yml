@@ -10,7 +10,6 @@ rvm:
   - 2.2.1
 
 script:
-  - gem install cucumber
   - script/ci/travis/install-gem-ci.rb
   - bundle exec rake unit
   - rake install
