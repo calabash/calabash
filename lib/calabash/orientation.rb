@@ -23,6 +23,10 @@ module Calabash
     #
     # In portrait orientation, the display of the device has a bigger width
     # than height.
+    #
+    # On iOS, the presenting view controller must respond to rotation events.
+    # If the presenting view controller does not respond to rotation events,
+    # then no rotation will be performed.
     def set_orientation_portrait
       _set_orientation_portrait
     end
@@ -31,6 +35,10 @@ module Calabash
     #
     # In landscape orientation, the display of the device has a bigger height
     # than width.
+    #
+    # On iOS, the presenting view controller must respond to rotation events.
+    # If the presenting view controller does not respond to rotation events,
+    # then no rotation will be performed.
     def set_orientation_landscape
       _set_orientation_landscape
     end
@@ -39,6 +47,10 @@ module Calabash
     #
     # If the orientation is currently landscape, it will be set to portrait.
     # If the orientation is currently portrait, it will be set to landscape.
+    #
+    # On iOS, the presenting view controller must respond to rotation events.
+    # If the presenting view controller does not respond to rotation events,
+    # then no rotation will be performed.
     def change_orientation
       if portrait?
         set_orientation_landscape
