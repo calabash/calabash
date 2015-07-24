@@ -16,7 +16,6 @@ module Calabash
         Device.default.status_bar_orientation
       end
 
-
       # Rotates the device in the direction indicated by `direction`.
       #
       # @example
@@ -88,12 +87,18 @@ module Calabash
 
       # @!visibility private
       def _set_orientation_landscape
-        raise 'ni'
+        orientation = status_bar_orientation
+        return orientation if landscape?
+
+        rotate_home_button_to 'right'
       end
 
       # @!visibility private
       def _set_orientation_portrait
-        raise 'ni'
+        orientation = status_bar_orientation
+        return orientation if portrait?
+
+        rotate_home_button_to 'down'
       end
 
       # @!visibility private

@@ -13,11 +13,11 @@ And(/^I can tell if the app is in portrait or landscape$/) do
 end
 
 Then(/^I can rotate to landscape$/) do
-
+  expect(set_orientation_landscape).to be == 'right'
 end
 
 And(/^I can rotate to portrait$/) do
-
+  expect(set_orientation_portrait).to be == 'down'
 end
 
 And(/^the view controller (?:does|does not) support rotation$/) do

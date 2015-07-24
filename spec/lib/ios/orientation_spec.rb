@@ -29,6 +29,40 @@ describe Calabash::IOS::Orientation do
     expect(world.status_bar_orientation).to be == 'o'
   end
 
+  describe '#_set_orientation_landscape' do
+    it 'already in landscape' do
+      expect(world).to receive(:status_bar_orientation).and_return :orientation
+      expect(world).to receive(:_landscape?).and_return true
+      expect(world).not_to receive(:rotate_home_button_to)
+
+      expect(world._set_orientation_landscape).to be == :orientation
+    end
+
+    it "rotates to 'right'" do
+      expect(world).to receive(:_landscape?).and_return false
+      expect(world).to receive(:rotate_home_button_to).with('right').and_return :orientation
+
+      expect(world._set_orientation_landscape).to be == :orientation
+    end
+  end
+
+  describe '#_set_orientation_portrait' do
+    it 'already in portrait' do
+      expect(world).to receive(:status_bar_orientation).and_return :orientation
+      expect(world).to receive(:_portrait?).and_return true
+      expect(world).not_to receive(:rotate_home_button_to)
+
+      expect(world._set_orientation_portrait).to be == :orientation
+    end
+
+    it "rotates to 'down'" do
+      expect(world).to receive(:_portrait?).and_return false
+      expect(world).to receive(:rotate_home_button_to).with('down').and_return :orientation
+
+      expect(world._set_orientation_portrait).to be == :orientation
+    end
+  end
+
   describe '#_portrait?' do
     it 'down' do
       expect(world).to receive(:status_bar_orientation).and_return 'down'
