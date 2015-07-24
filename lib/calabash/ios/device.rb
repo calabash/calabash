@@ -13,6 +13,7 @@ module Calabash
     require 'calabash/ios/device/gestures_mixin'
     require 'calabash/ios/device/physical_device_mixin'
     require 'calabash/ios/device/status_bar_mixin'
+    require 'calabash/ios/device/rotation_mixin'
     require 'calabash/ios/device/keyboard_mixin'
     require 'calabash/ios/device/uia_keyboard_mixin'
     require 'calabash/ios/device/text_mixin'

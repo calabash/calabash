@@ -44,10 +44,10 @@ describe Calabash::IOS::Routes::PlaybackRouteMixin do
     expect(actual).to be == '/tmp/basename_S5.base64'
   end
 
-  it '#make_playback_post_data' do
+  it '#make_playback_parameters' do
     data = 'ABCEDF0123456789'
-    expected = "{\"events\":\"#{data}\"}"
-    actual = device.send(:make_playback_post_data, data)
+    expected = "{\"events\":\"ABCEDF0123456789\"}" #{'events' => data}
+    actual = device.send(:make_playback_parameters, data)
 
     expect(actual).to be == expected
   end
@@ -56,7 +56,7 @@ describe Calabash::IOS::Routes::PlaybackRouteMixin do
     path = '/tmp/file.txt'
     expect(device).to receive(:path_to_recording).with('name', 'S5').and_return(path)
     expect(device).to receive(:read_recording).with(path).and_return 'data'
-    expect(device).to receive(:make_playback_post_data).with('data').and_return 'json'
+    expect(device).to receive(:make_playback_parameters).with('data').and_return 'json'
 
     actual = device.send(:make_playback_request, 'name', 'S5')
     expect(actual).to be_a_kind_of Calabash::HTTP::Request

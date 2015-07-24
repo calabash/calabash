@@ -32,14 +32,14 @@ module Calabash
           File.read(path)
         end
 
-        def make_playback_post_data(data)
-          "{\"events\":\"#{data}\"}"
+        def make_playback_parameters(data)
+          %Q|{"events":"#{data}"}|
         end
 
         def make_playback_request(recording_basename, form_factor)
           path = path_to_recording(recording_basename, form_factor)
           data = read_recording(path)
-          to_post = make_playback_post_data(data)
+          to_post = make_playback_parameters(data)
           Calabash::HTTP::Request.new('play', to_post)
         end
 
