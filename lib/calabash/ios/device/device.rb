@@ -11,7 +11,9 @@ module Calabash
       include Calabash::IOS::Routes::UIARouteMixin
       include Calabash::IOS::Routes::ConditionRouteMixin
       include Calabash::IOS::Routes::BackdoorRouteMixin
+      include Calabash::IOS::Routes::PlaybackRouteMixin
       include Calabash::IOS::StatusBarMixin
+      include Calabash::IOS::RotationMixin
       include Calabash::IOS::KeyboardMixin
       include Calabash::IOS::UIAKeyboardMixin
       include Calabash::IOS::TextMixin
