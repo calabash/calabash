@@ -12,7 +12,7 @@ rvm:
 script:
   - gem install cucumber
   - script/ci/travis/install-gem-ci.rb
-  - rake unit
+  - bundle exec rake unit
   - rake install
 
 notifications:
