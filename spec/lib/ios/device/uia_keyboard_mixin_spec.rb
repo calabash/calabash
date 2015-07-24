@@ -93,7 +93,7 @@ describe Calabash::IOS::UIAKeyboardMixin::UIATypeStringHandler do
   end
 
   it '#log' do
-    expect(logger).to receive(:log).with('message', :info).and_call_original
+    expect(logger).to receive(:log).and_call_original
 
     expect(handler.log('message')).to be == nil
   end
@@ -108,6 +108,50 @@ describe Calabash::IOS::UIAKeyboardMixin::UIATypeStringHandler do
     expect(logger).to receive(:log).at_least(:once).and_call_original
 
     expect(handler.log_epilogue).to be == nil
+  end
+
+  describe '#handle_result' do
+    it "calls handle_error if status is 'error'" do
+      expect(handler).to receive(:status).and_return('error')
+      expect(handler).to receive(:handle_error).and_return(:handled)
+
+      expect(handler.handle_result).to be == :handled
+    end
+
+    it "calls handle_success if status is 'success'" do
+      expect(handler).to receive(:status).and_return('success')
+      expect(handler).to receive(:handle_success).and_return(:handled)
+
+      expect(handler.handle_result).to be == :handled
+    end
+
+    it "results the result if result is a Hash with reasonable keys" do
+      hash = {'label' => 'label',
+              'hit-point' => 'hit point',
+              'el' => 'element',
+              'rect' => 'rect'}
+      expect(handler).to receive(:result).at_least(:once).and_return(hash)
+      expect(handler).not_to receive(:handle_success)
+
+      expect(handler.handle_result).to be == hash
+    end
+
+    it "calls handle_unknown_status if is a Hash with unreasonable keys" do
+       hash = {}
+       expect(handler).to receive(:result).at_least(:once).and_return(hash)
+       expect(handler).to receive(:handle_unknown_status).and_return(:handled)
+
+       expect(handler.handle_result).to be == :handled
+    end
+
+    it 'calls handle_unknown_status if all else fails' do
+      result = 'bad result'
+      expect(handler).to receive(:result).at_least(:once).and_return result
+      expect(handler).to receive(:status).and_return result
+      expect(handler).to receive(:handle_unknown_status).and_return :handled
+
+      expect(handler.handle_result).to be == :handled
+    end
   end
 
   describe '#handle_error' do
@@ -174,13 +218,13 @@ describe Calabash::IOS::UIAKeyboardMixin::UIATypeStringHandler do
 
   describe '#handle_success' do
     it "result 'value' key => Hash" do
-      expect(handler).to receive(:value).and_return({}, {})
+      expect(handler).to receive(:value).and_return({})
 
       expect(handler.handle_success).to be == {}
     end
 
     it "result 'value' key => ':nil'" do
-      expect(handler).to receive(:value).and_return(':nil', ':nil')
+      expect(handler).to receive(:value).and_return(':nil')
 
       actual = handler.handle_success
       expect(actual).to be_truthy
@@ -188,7 +232,7 @@ describe Calabash::IOS::UIAKeyboardMixin::UIATypeStringHandler do
     end
 
     it "result 'value' key is missing or has an unexpected value" do
-      expect(handler).to receive(:value).and_return('unexpected', 'unexpected')
+      expect(handler).to receive(:value).and_return('unexpected')
       expect(handler).to receive(:handle_success_with_incident)
 
       expect(handler.handle_success).to be_falsey
