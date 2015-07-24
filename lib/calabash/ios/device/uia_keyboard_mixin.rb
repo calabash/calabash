@@ -114,10 +114,17 @@ module Calabash
         end
 
         def handle_result
-          if status == 'error'
+          the_status = status
+          if the_status == 'error'
             handle_error
-          elsif status == 'success'
+          elsif the_status == 'success'
             handle_success
+          elsif result.is_a? Hash
+            if ['label', 'hit-point', 'el', 'rect'].all? { |key| result.has_key?(key) }
+              result
+            else
+              handle_unknown_status
+            end
           else
             handle_unknown_status
           end
@@ -134,16 +141,20 @@ module Calabash
 
         # When 'status' == 'success', we can get a variety of valid 'values'
         #
+        # For example, typing on UIWebViews returns['value'] => ':nil'.
+        #
         # The expected value is a Hash representation of the view that was
         # typed in.
         #
-        # 1. Typing on UIWebViews returns result['value'] => ':nil'.
-        # 2. The 'value' key is not present in the result.
-        # 3. The 'value' key has a nil value.
+        # We are interested in loggin situations where:
+        #
+        # 1. The 'value' key is not present in the result.
+        # 2. The 'value' key has a nil value.
         def handle_success
-          if value.is_a? Hash
-            value
-          elsif value == ':nil'
+          the_value = value
+          if the_value.is_a? Hash
+            the_value
+          elsif the_value == ':nil'
             true
           else
             handle_success_with_incident
