@@ -179,13 +179,13 @@ module Calabash
     # Performs a `pan` heading `left` on the screen.
     # @see pan_left
     def pan_screen_left(options={})
-      pan_left("*", options)
+      pan_left('*', options)
     end
 
     # Performs a `pan` heading `right` on the screen.
     # @see pan_right
     def pan_screen_right(options={})
-      pan_right("*", options)
+      pan_right('*', options)
     end
 
     # Performs a `pan` heading `up` on the screen.
@@ -253,13 +253,13 @@ module Calabash
     # Performs a `flick` heading `left` on the screen.
     # @see flick_left
     def flick_screen_left(options={})
-      flick_left("*", options)
+      flick_left('*', options)
     end
 
     # Performs a `flick` heading `right` on the screen.
     # @see flick_right
     def flick_screen_right(options={})
-      flick_right("*", options)
+      flick_right('*', options)
     end
 
     # Performs a `flick` heading `up` on the screen.
