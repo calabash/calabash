@@ -5,6 +5,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
   let(:device) do
     Class.new do
       include Calabash::IOS::Routes::HandleRouteMixin
+      include Calabash::IOS::Routes::ResponseParser
       include Calabash::IOS::Routes::UIARouteMixin
 
       attr_reader :run_loop, :http_client, :uia_strategy
@@ -127,7 +128,7 @@ describe Calabash::IOS::Routes::UIARouteMixin do
     it "makes an http request on the 'uia' route" do
       expect(device).to receive(:make_uia_request).with('command', 'uia').and_return 'request'
       expect(device).to receive(:route_post_request).with('request').and_return response
-      expect(device).to receive(:route_handle_response).with(response, 'command').and_return([])
+      expect(device).to receive(:parse_response_body).with(response).and_return({'results' => []})
       expect(device).to receive(:handle_uia_results).with([], 'command').and_return({})
 
       expect(device.send(:uia_over_http, 'command', 'uia')).to be == {}

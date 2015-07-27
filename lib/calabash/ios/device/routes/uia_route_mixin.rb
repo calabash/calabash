@@ -57,8 +57,8 @@ module Calabash
         def uia_over_http(command, route)
           request = make_uia_request(command, route)
           response = route_post_request(request)
-          results = route_handle_response(response, command)
-          handle_uia_results(results, command)
+          parsed = parse_response_body(response)
+          handle_uia_results(parsed['results'], command)
         end
 
         # Careful.  The UIA route can return all manner of weird responses.
