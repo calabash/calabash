@@ -55,6 +55,33 @@ module Calabash
         }
       end
 
+      def _pan(query, from, to, options={})
+        if Device.default.simulator?
+          message = [
+                "Apple's UIAutomation `dragInsideWithOptions` API is broken for iOS > 7",
+                'If you are trying to scroll on a UITableView or UICollectionView, try using the scroll_* methods'
+          ]
+
+          raise message.join("\n")
+        end
+
+        view_to_pan = gesture_waiter.wait_for_view(query, options)
+
+        rect = view_to_pan['rect']
+
+        from_x = rect['width'] * (from[:x]/100.0)
+        from_y = rect['height'] * (from[:y]/100.0)
+        from_offset = percent(from_x, from_y)
+
+        to_x = rect['width'] * (to[:x]/100.0)
+        to_y = rect['height'] * (to[:y]/100.0)
+        to_offset = percent(to_x, to_y)
+
+        uia_serialize_and_call(:panOffset, from_offset, to_offset)
+
+        Calabash::QueryResult.create([view_to_pan], query)
+      end
+
       private
 
       # Unlike the Calabash Android server, the iOS server does not wait
