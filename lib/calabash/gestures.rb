@@ -99,9 +99,9 @@ module Calabash
     # @param [String] query A query describing the view to pan inside.
     # @param [Hash] options Options for modifying the details of the pan.
     #
-    # @option options [Hash] :from ({:x, :y}) The point at which the gesture
+    # @param [Hash] from ({:x, :y}) The point at which the gesture
     #   originates from.
-    # @option options [Hash] :to ({:x, :y}) The point at which the gesture
+    # @param [Hash] to ({:x, :y}) The point at which the gesture
     #   ends.
     # @option options [Number] :duration (0.5) How many seconds the swipe takes
     #   to complete.
@@ -179,13 +179,13 @@ module Calabash
     # Performs a `pan` heading `left` on the screen.
     # @see pan_left
     def pan_screen_left(options={})
-      pan_left("*", options)
+      pan_left('*', options)
     end
 
     # Performs a `pan` heading `right` on the screen.
     # @see pan_right
     def pan_screen_right(options={})
-      pan_right("*", options)
+      pan_right('*', options)
     end
 
     # Performs a `pan` heading `up` on the screen.
@@ -253,13 +253,13 @@ module Calabash
     # Performs a `flick` heading `left` on the screen.
     # @see flick_left
     def flick_screen_left(options={})
-      flick_left("*", options)
+      flick_left('*', options)
     end
 
     # Performs a `flick` heading `right` on the screen.
     # @see flick_right
     def flick_screen_right(options={})
-      flick_right("*", options)
+      flick_right('*', options)
     end
 
     # Performs a `flick` heading `up` on the screen.
