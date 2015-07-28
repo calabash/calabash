@@ -7,7 +7,7 @@ module Calabash
       # @todo Needs unit tests.
       def _tap(query, options={})
         # 1. Find the view to touch
-        view_to_touch = gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
         # 2. Find the center of view.
         offset = uia_center_of_view(view_to_touch)
@@ -21,7 +21,7 @@ module Calabash
       end
 
       def _double_tap(query, options={})
-        view_to_touch = gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
         offset = uia_center_of_view(view_to_touch)
 
@@ -31,7 +31,7 @@ module Calabash
       end
 
       def _long_press(query, options={})
-        view_to_touch = gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
         offset = uia_center_of_view(view_to_touch)
 
@@ -41,8 +41,8 @@ module Calabash
       end
 
       def _pan_between(query_from, query_to, options={})
-        from_view = gesture_waiter.wait_for_view(query_from)
-        to_view = gesture_waiter.wait_for_view(query_to)
+        from_view = _gesture_waiter.wait_for_view(query_from)
+        to_view = _gesture_waiter.wait_for_view(query_to)
 
         from_offset = uia_center_of_view(from_view)
         to_offset = uia_center_of_view(to_view)
@@ -65,7 +65,7 @@ module Calabash
           raise message.join("\n")
         end
 
-        view_to_pan = gesture_waiter.wait_for_view(query, options)
+        view_to_pan = _gesture_waiter.wait_for_view(query, options)
 
         rect = view_to_pan['rect']
 
@@ -84,11 +84,12 @@ module Calabash
 
       private
 
+      # !@visibility private
       # Unlike the Calabash Android server, the iOS server does not wait
-      # before gestures.  We need to do this in the client for now.
+      # before gestures.
       # @todo Replace with waiting on the iOS Server
-      def gesture_waiter
-        @gesture_waiter ||= lambda do |reference_to_self|
+      def _gesture_waiter
+        @_gesture_waiter ||= lambda do |reference_to_self|
           Class.new do
             include Calabash::IOS
             define_method(:query) do |query, *args|
