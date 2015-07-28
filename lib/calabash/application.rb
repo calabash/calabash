@@ -67,7 +67,7 @@ module Calabash
 
     def ensure_application_path
       unless File.exist?(path)
-        raise "'#{path}' does not exist."
+        raise "The app '#{path}' does not exist."
       end
     end
   end
