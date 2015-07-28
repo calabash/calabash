@@ -46,6 +46,49 @@ module Calabash
           raise Calabash::IOS::RouteError, "Map failed reason: '#{reason}' details: '#{details}' for query '#{query}'"
         end
 
+        # TODO: handle invalid results
+        #
+        # So far, cases like this have been handled individually.
+        #
+        # Briar tests the 0.x behavior for every map call.
+        #
+        # These are the docs from 0.x assert_map_results
+        #
+        #  # Asserts the result of a calabash `map` call and raises an error with
+        #  # `msg` if no valid results are found.
+        #  #
+        #  # Casual gem users should never need to call this method; this is a
+        #  # convenience method for gem maintainers.
+        #  #
+        #  # Raises an error if `map_results`:
+        #  #
+        #  #              is an empty list #=> []
+        #  #    contains a '<VOID>' string #=> [ "<VOID>" ]
+        #  #       contains '*****' string #=> [ "*****"  ]
+        #  #         contains a single nil #=> [ nil ]
+        #  #
+        #  # When evaluating whether a `map` call is successful it is important to
+        #  # note that sometimes a <tt>[ nil ]</tt> or <tt>[nil, <val>, nil]</tt> is
+        #  # a valid result.
+        #  #
+        #  # Consider a controller with 3 labels:
+        #  #
+        #  #    label @ index 0 has text "foo"
+        #  #    label @ index 1 has text nil (the [label text] => nil)
+        #  #    label @ index 2 has text "bar"
+        #  #
+        #  #    map('label', :text) => ['foo', nil, 'bar']
+        #  #    map('label index:1', :text) => [nil]
+        #  #
+        #  # In other cases, <tt>[ nil ]</tt> should be treated as an invalid result
+        #  #
+        #  #    # invalid
+        #  #    > mark = 'mark does not exist'
+        #  #    > map('tableView', :scrollToRowWithMark, mark, args) => [ nil ]
+        #  #
+        #  # Here a <tt>[ nil ]</tt> should be considered invalid because the
+        #  # the operation could not be performed because there is not row that
+        #  # matches `mark`
         def route_success(hash, query)
           if query.nil?
             hash['results']
