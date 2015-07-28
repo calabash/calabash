@@ -88,5 +88,22 @@ module Calabash
 
       Device.default.clear_app_data(path_or_application)
     end
+
+    # Sends the current app to the background and resumes it after
+    # `for_seconds`. This should not exceed 60 seconds for iOS.
+    #
+    # On Android you can control the app lifecycle more granularly using
+    # #{Calabash::Android::Interactions#go_home} and
+    # #{Calabash::Android::LifeCycle#resume_app}.
+    def send_current_app_to_background(for_seconds = 10)
+      _send_current_app_to_background(for_seconds)
+
+      true
+    end
+
+    # !@visibility private
+    def _send_current_app_to_background(for_seconds)
+      abstract_method!
+    end
   end
 end
