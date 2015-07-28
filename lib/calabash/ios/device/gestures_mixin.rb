@@ -18,7 +18,7 @@ module Calabash
 
         offset = uia_center_of_view(view_to_touch)
 
-        uia_serialize_and_call(:tapOffset, offset)
+        uia_serialize_and_call(:tapOffset, offset, options)
 
         Calabash::QueryResult.create([view_to_touch], query)
       end
@@ -28,7 +28,7 @@ module Calabash
 
         offset = uia_center_of_view(view_to_touch)
 
-        uia_serialize_and_call(:doubleTapOffset, offset)
+        uia_serialize_and_call(:doubleTapOffset, offset, options)
 
         Calabash::QueryResult.create([view_to_touch], query)
       end
@@ -44,8 +44,8 @@ module Calabash
       end
 
       def _pan_between(query_from, query_to, options={})
-        from_view = _gesture_waiter.wait_for_view(query_from)
-        to_view = _gesture_waiter.wait_for_view(query_to)
+        from_view = _gesture_waiter.wait_for_view(query_from, options)
+        to_view = _gesture_waiter.wait_for_view(query_to, options)
 
         from_offset = uia_center_of_view(from_view)
         to_offset = uia_center_of_view(to_view)
