@@ -4,8 +4,8 @@ Feature:  Animations
   As a Calabash maintainer
   I want some Scenarios with views that animate
 
-  Background: Get me to the third tab
-    Given I see the third tab
+  Background: Navigate to the special tab
+    Given I see the special tab
 
   @backdoor
   Scenario: Start an animation and wait for it to finish
