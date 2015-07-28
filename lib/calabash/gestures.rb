@@ -96,6 +96,16 @@ module Calabash
     #   │ <───────┤ │  |  │           │
     #   └───────────┘  |  └───────────┘
     #
+    # Apple's UIAutomation 'dragInsideWithOptions' is broken on iOS Simulators.
+    # Call `pan` on iOS Simulators >= iOS 7.0 will raise an error.  See the
+    # iOS Scroll API for alternatives.
+    #
+    # @see Calabash::IOS::Scroll#scroll
+    # @see Calabash::IOS::Scroll#scroll_to_row
+    # @see Calabash::IOS::Scroll#scroll_to_row_with_mark
+    # @see Calabash::IOS::Scroll#scroll_to_item
+    # @see Calabash::IOS::Scroll#scroll_to_item_with_mark
+    #
     # @param [String] query A query describing the view to pan inside.
     # @param [Hash] options Options for modifying the details of the pan.
     #
@@ -107,6 +117,7 @@ module Calabash
     #   to complete.
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
+    # @raise [RuntimeError] If called on an iOS Simulator > iOS 7.
     def pan(query, from, to, options={})
       Query.ensure_valid_query(query)
 
