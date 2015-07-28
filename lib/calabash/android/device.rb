@@ -221,12 +221,99 @@ module Calabash
         result['result']
       end
 
+      def go_home
+        adb.shell("input keyevent 3")
+      end
+
       def set_location(location)
         perform_action('set_gps_coordinates',
                        location[:latitude], location[:longitude])
       end
 
+      def resume_app(path_or_application)
+        application = parse_path_or_app_parameters(path_or_application)
+
+        if app_running?(application)
+          main_activity = nil
+
+          begin
+            main_activity = application.main_activity
+          rescue
+            raise 'Could not detect a launchable activity. This is needed to resume the app'
+          end
+
+          resume_activity(application.identifier, main_activity)
+        else
+          raise "The app '#{application.identifier}' is not running"
+        end
+
+        true
+      end
+
+      def resume_activity(package, activity)
+        if package_running?(package)
+          if info[:sdk_version] >= 11
+            begin
+              perform_action('resume_application', package)
+            rescue EnsureInstrumentActionError => e
+              raise "Failed to resume app: #{e.message}"
+            end
+          else
+            adb.shell("am start -n '#{package}/#{activity}'")
+          end
+        else
+          raise "The app '#{package}' is not running"
+        end
+      end
+
+      def app_running?(path_or_application)
+        application = parse_path_or_app_parameters(path_or_application)
+
+        package_running?(application.identifier)
+      end
+
+      def current_focus
+        # Example: mFocusedApp=AppWindowToken{42c52610 token=Token{42b5d048 ActivityRecord{42a7bcc8 u0 com.example/.MainActivity t3}}}
+        result = adb.shell('dumpsys window windows')
+
+        grep_words = ['mCurrentFocus', 'mFocusedApp']
+
+        grep_words.each do |grep_word|
+          result.lines.reverse.each do |line|
+            match = line.match(/#{grep_word}=.*\{[\w]+\s*([\w\.\:\!]+\s*)*\/*([\w\.]+)*/)
+
+            if match && match.captures.length == 2 && !match.captures.any?(&:nil?)
+              captures = match.captures
+              package = captures[0]
+              activity_simple_name = captures[1]
+
+              activity = if activity_simple_name.start_with?('.')
+                           "#{package}#{activity_simple_name}"
+                         else
+                           activity_simple_name
+                         end
+
+              return {activity: activity, package: package}
+            end
+          end
+        end
+
+        raise "Unexpected output from `dumpsys window windows`"
+      end
+
       private
+
+      def package_running?(package)
+        running_packages.include?(package)
+      end
+
+      def running_packages
+        ps.lines.map(&:split).map(&:last)
+      end
+
+      def ps
+        adb.shell('ps')
+      end
 
       def calabash_server_failure_file_path(application)
         "/data/data/#{application.test_server.identifier}/files/calabash_failure.out"

@@ -89,8 +89,8 @@ module Calabash
             end
 
             unless args.fetch(:no_read, false)
-              stderr = e.readlines.join
               stdout = o.readlines.join
+              stderr = e.readlines.join
             end
 
             if stdout && stdout.start_with?(DAEMON_STARTED_MESSAGE)
