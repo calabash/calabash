@@ -34,6 +34,13 @@ module Calabash
       end
 
       def _long_press(query, options={})
+
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError e
+        end
+
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
         offset = uia_center_of_view(view_to_touch)
@@ -44,6 +51,13 @@ module Calabash
       end
 
       def _pan_between(query_from, query_to, options={})
+
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError e
+        end
+
         from_view = _gesture_waiter.wait_for_view(query_from, options)
         to_view = _gesture_waiter.wait_for_view(query_to, options)
 
@@ -77,6 +91,12 @@ module Calabash
           ].join("\n")
 
           raise message
+        end
+
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError e
         end
 
         view_to_pan = _gesture_waiter.wait_for_view(query, options)
@@ -123,6 +143,18 @@ module Calabash
             end
           end.new
         end.call(self)
+      end
+
+      def _expect_valid_duration(options)
+        duration = options[:duration].to_f
+        if duration < 0.5 || duration > 60
+          message = [
+                "Expected :duration 0.5 <= '#{duration}' <= 60",
+                'On iOS, gesture durations must be between 0.5 and 60 seconds.',
+                'This is a limitation enforced by the UIAutomation API.'
+          ].join("\n")
+          raise ArgumentError, message
+        end
       end
     end
   end
