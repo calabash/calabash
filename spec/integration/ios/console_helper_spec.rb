@@ -60,8 +60,6 @@ describe Calabash::ConsoleHelpers do
       device.start_app(app, {:uia_strategy => :host})
 
       calabash_console_with_strategy(app_bundle_path, :host) do |stdout, stderr|
-        puts "stdout: #{stdout.read}"
-        puts "stderr: #{stderr.read}"
         expect(stdout.read.strip[/Error/,0]).to be == nil
         expect(stderr.read.strip).to be == ''
       end
