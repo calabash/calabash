@@ -47,7 +47,7 @@ module Calabash
         from_offset = uia_center_of_view(from_view)
         to_offset = uia_center_of_view(to_view)
 
-        uia_serialize_and_call(:panOffset, from_offset, to_offset)
+        uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
 
         {
           :from => Calabash::QueryResult.create([from_view], query_from),
