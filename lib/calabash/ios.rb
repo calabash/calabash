@@ -14,6 +14,9 @@ module Calabash
       Calabash.send(:included, base)
     end
 
+    require 'calabash/ios/defaults'
+    extend Calabash::IOS::Defaults
+
     require 'calabash/ios/environment'
     require 'calabash/ios/application'
     require 'calabash/ios/device'
