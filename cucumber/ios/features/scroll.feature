@@ -23,3 +23,13 @@ Feature: Testing scrolling
     Then I scroll the logos table to the github row by index
     Then I scroll up on the logos table to the android row
 
+  Scenario: Scroll views
+    When I touch the scroll views row
+    Then I see the scroll views page
+    Then I center the cayenne box to the middle
+    Then I scroll up to the purple box
+    Then I scroll left to the light blue box
+    Then I center the cayenne box to the middle
+    Then I scroll down to the gray box
+    Then I scroll right to the dark gray box
+
