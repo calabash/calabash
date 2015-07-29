@@ -68,7 +68,7 @@ module Calabash
             parse_resign_arguments!
           when 'console'
             parse_console_arguments!
-          when 'gen'
+          when 'generate'
             parse_generate_arguments!
           when 'run'
             parse_run_arguments!
@@ -80,12 +80,16 @@ module Calabash
             if argument.nil?
               print_usage
             else
-              print_usage_for(key_for_command(argument))
+              if key_for_command(argument)
+                print_usage_for(key_for_command(argument))
+              else
+                fail("No such command '#{argument}'")
+              end
             end
           when nil
             print_usage
           else
-            fail("Invalid argument #{argument}.\n  For help use 'calabash help'")
+            fail("Invalid command #{argument}.\n  For help use 'calabash help'")
         end
       end
     end

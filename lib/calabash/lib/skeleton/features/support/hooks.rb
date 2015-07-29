@@ -23,8 +23,8 @@ module AppLifeCycle
     include Calabash
   end
 
-  DEFAULT_RESET_BETWEEN = #!DEFAULT_RESET_BETWEEN#! # Filled in by calabash gen
-  DEFAULT_RESET_METHOD = #!DEFAULT_RESET_METHOD#! # Filled in by calabash gen
+  DEFAULT_RESET_BETWEEN = #!DEFAULT_RESET_BETWEEN#! # Filled in by calabash generate
+  DEFAULT_RESET_METHOD = #!DEFAULT_RESET_METHOD#! # Filled in by calabash generate
 
   RESET_BETWEEN = if Calabash::Environment.variable('RESET_BETWEEN')
                     Calabash::Environment.variable('RESET_BETWEEN').downcase.to_sym

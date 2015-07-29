@@ -5,7 +5,7 @@ module Calabash
     module Helpers
       HELP = {
           help: 'help',
-          gen: 'gen',
+          generate: 'generate',
           run: 'run [application] [cucumber options]',
           console: 'console [application]',
           version: 'version',
@@ -27,7 +27,7 @@ module Calabash
       def print_usage_for(key, output=STDOUT)
         if key.nil? || HELP[key].nil?
           output.write <<EOF
-No such command '#{command}'
+No such command '#{key}'
 EOF
         else
           output.write <<EOF
@@ -44,8 +44,8 @@ EOF
     #{HELP[:help]} [command]
       print help information.
 
-    #{HELP[:gen]}
-      generate a features folder structure.
+    #{HELP[:generate]}
+      generate a Cucumber project folder structure.
 
     #{HELP[:run]}
       runs Cucumber in the current folder with the environment needed.
