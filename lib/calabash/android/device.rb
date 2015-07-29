@@ -301,6 +301,33 @@ module Calabash
         raise "Unexpected output from `dumpsys window windows`"
       end
 
+      def evaluate_javascript_in(query, javascript)
+        parameters =
+            {
+                query: Query.new(query),
+                operation: {method_name: 'execute-javascript'},
+                javascript: javascript
+            }
+
+        json = parameters.to_json
+        request = HTTP::Request.new('/map', json: json)
+
+        body = http_client.get(request).body
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          if result['results']
+            parsed_result = result['results'].map {|r| "\"#{r}\","}.join("\n")
+
+            raise "Could not evaluate javascript: \n#{parsed_result}"
+          else
+            raise "Could not evaluate javascript: \n#{result['detail']}"
+          end
+        end
+
+        Calabash::QueryResult.create(result['results'], query)
+      end
+
       private
 
       def package_running?(package)
