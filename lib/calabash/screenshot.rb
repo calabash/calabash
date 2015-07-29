@@ -6,7 +6,22 @@ module Calabash
   # A public API for taking screenshots.
   module Screenshot
     # @!visibility private
-    SCREENSHOT_DIRECTORY_PREFIX = 'test_run_'
+    def self.screenshot_directory_prefix
+      @@screenshot_directory_prefix
+    end
+
+    # Set the screenshot directory prefix.
+    def self.screenshot_directory_prefix=(value)
+      if class_variable_defined?(:@@screenshots_taken) &&
+          @@screenshots_taken != 0
+        raise 'Cannot change the screenshot directory prefix after a screenshot has been taken'
+      end
+
+      @@screenshot_directory_prefix = value
+    end
+
+    # @!visibility private
+    self.screenshot_directory_prefix = 'test_run_'
 
     # Takes a screenshot and saves it. The file is stored in the directory
     # given by the ENV variable $CAL_SCREENSHOT_DIR, or by default in
@@ -58,7 +73,7 @@ module Calabash
     def self.new_screenshot_sub_directory
       count = screenshot_directory_test_run_directories.count
       File.join(Environment::SCREENSHOT_DIRECTORY,
-                "#{SCREENSHOT_DIRECTORY_PREFIX}#{count+1}")
+                "#{screenshot_directory_prefix}#{count+1}")
     end
 
     # @!visibility private
@@ -67,7 +82,7 @@ module Calabash
 
       Dir.glob(dir).select do |file|
         File.directory?(file) &&
-        File.basename(file) =~ /^#{SCREENSHOT_DIRECTORY_PREFIX}\d+$/
+        File.basename(file) =~ /^#{screenshot_directory_prefix}\d+$/
       end
     end
   end
