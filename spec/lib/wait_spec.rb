@@ -20,7 +20,7 @@ describe Calabash::Wait do
 
       expect(default_options[:timeout]).to eq(Calabash::Environment::WAIT_TIMEOUT)
       expect(default_options[:message].call({timeout: 10})).to eq("Timed out after waiting for 10 seconds...")
-      expect(default_options[:retry_frequency]).to eq(0.3)
+      expect(default_options[:retry_frequency]).to eq(0.1)
       expect(default_options[:exception_class]).to eq(Calabash::Wait::TimeoutError)
       expect(default_options[:screenshot_on_error]).to eq(true)
 

@@ -18,7 +18,7 @@ module Calabash
             end,
 
             # default polling frequency for waiting
-            retry_frequency: 0.3,
+            retry_frequency: 0.1,
 
             # default exception type to raise when the timeout is exceeded
             exception_class: Calabash::Wait::TimeoutError,
