@@ -322,11 +322,17 @@ describe Calabash::IOS::Device do
         expect(Calabash::Screenshot).to receive(:obtain_screenshot_path!).and_return(path)
         request = Calabash::HTTP::Request.new('exit', {path: path})
         expect(device).to receive(:request_factory).and_return(request)
-        data = 'I am the screenshot!'
+
+        data = Class.new do
+          def body
+            'I am the screenshot!'
+          end
+        end.new
+
         expect(device.http_client).to receive(:get).with(request).and_return(data)
 
         expect(device.screenshot(path)).to be == path
-        expect(File.read(path)).to be == data
+        expect(File.read(path)).to be == data.body
       end
     end
 

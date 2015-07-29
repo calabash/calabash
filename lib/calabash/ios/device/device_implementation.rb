@@ -421,7 +421,7 @@ module Calabash
         request = request_factory('screenshot', {:path => path})
         begin
           screenshot = http_client.get(request)
-          File.open(path, 'wb') { |file| file.write screenshot }
+          File.open(path, 'wb') { |file| file.write screenshot.body }
         rescue Calabash::HTTP::Error => e
           raise "Could not send 'screenshot' to the app: #{e}"
         end
