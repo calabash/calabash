@@ -45,7 +45,7 @@ module Calabash
     # **default** for {Calabash::Wait} and that the actual default wait timeout
     # can be changed at any time during the test.
     WAIT_TIMEOUT = (variable('CAL_WAIT_TIMEOUT') &&
-        variable('CAL_WAIT_TIMEOUT').to_i) || 30
+        variable('CAL_WAIT_TIMEOUT').to_i) || 15
 
     # The directory to save screenshots in. The directory can be absolute or
     # relative. Defaults to 'screenshots'.

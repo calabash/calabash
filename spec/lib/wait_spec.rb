@@ -442,7 +442,7 @@ describe Calabash::Wait do
       query = 'my query'
 
       allow(dummy).to receive(:view_exists?).with(query).and_return(false)
-      expect(dummy).to receive(:fail).with(Calabash::Wait::ViewNotFoundError, "Waited 30 seconds for #{dummy.parse_query_list(query)} to match a view").and_call_original
+      expect(dummy).to receive(:fail).with(Calabash::Wait::ViewNotFoundError, "Waited 15 seconds for #{dummy.parse_query_list(query)} to match a view").and_call_original
 
       expect{dummy.wait_for_view(query)}.to raise_error Calabash::Wait::ViewNotFoundError
     end
@@ -521,7 +521,7 @@ describe Calabash::Wait do
 
       allow(dummy).to receive(:views_exist?).with([query]).and_return(false)
       expect(dummy).to receive(:fail).with(Calabash::Wait::ViewNotFoundError,
-                                           "Waited 30 seconds for #{dummy.parse_query_list(query)} to each match a view")
+                                           "Waited 15 seconds for #{dummy.parse_query_list(query)} to each match a view")
                            .and_call_original
 
       expect{dummy.wait_for_views(query)}.to raise_error Calabash::Wait::ViewNotFoundError
@@ -533,7 +533,7 @@ describe Calabash::Wait do
 
       allow(dummy).to receive(:views_exist?).with(query).and_return(false)
       expect(dummy).to receive(:fail).with(Calabash::Wait::ViewNotFoundError,
-                                           "Waited 30 seconds for #{dummy.parse_query_list(query)} to each match a view")
+                                           "Waited 15 seconds for #{dummy.parse_query_list(query)} to each match a view")
                            .and_call_original
 
       expect{dummy.wait_for_views(*query)}.to raise_error Calabash::Wait::ViewNotFoundError
@@ -592,7 +592,7 @@ describe Calabash::Wait do
 
       allow(dummy).to receive(:view_exists?).with(query).and_return([{}])
       expect(dummy).to receive(:fail).with(Calabash::Wait::ViewFoundError,
-                                           "Waited 30 seconds for #{dummy.parse_query_list(query)} to not match any view")
+                                           "Waited 15 seconds for #{dummy.parse_query_list(query)} to not match any view")
                            .and_call_original
 
       expect{dummy.wait_for_no_view(query)}.to raise_error Calabash::Wait::ViewFoundError
@@ -662,7 +662,7 @@ describe Calabash::Wait do
 
       allow(dummy).to receive(:views_exist?).with([query]).and_return([{}])
       expect(dummy).to receive(:fail).with(Calabash::Wait::ViewFoundError,
-                                           "Waited 30 seconds for #{dummy.parse_query_list(query)} to each not match any view")
+                                           "Waited 15 seconds for #{dummy.parse_query_list(query)} to each not match any view")
                            .and_call_original
 
       expect{dummy.wait_for_no_views(query)}.to raise_error Calabash::Wait::ViewFoundError
@@ -674,7 +674,7 @@ describe Calabash::Wait do
 
       allow(dummy).to receive(:views_exist?).with(query).and_return([{}])
       expect(dummy).to receive(:fail).with(Calabash::Wait::ViewFoundError,
-                                           "Waited 30 seconds for #{dummy.parse_query_list(query)} to each not match any view")
+                                           "Waited 15 seconds for #{dummy.parse_query_list(query)} to each not match any view")
                            .and_call_original
 
       expect{dummy.wait_for_no_views(*query)}.to raise_error Calabash::Wait::ViewFoundError

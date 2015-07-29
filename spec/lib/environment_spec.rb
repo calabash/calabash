@@ -69,7 +69,7 @@ describe Calabash::Environment do
 
       expect(Calabash::Environment::DEBUG).to eq(false)
       expect(Calabash::Environment::APP_PATH).to eq(nil)
-      expect(Calabash::Environment::WAIT_TIMEOUT).to eq(30)
+      expect(Calabash::Environment::WAIT_TIMEOUT).to eq(15)
       expect(Calabash::Environment::SCREENSHOT_DIRECTORY).to eq('screenshots')
       expect(Calabash::Environment::DEVICE_IDENTIFIER).to be == nil
     end
