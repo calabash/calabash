@@ -123,7 +123,7 @@ module Calabash
       gesture_options[:offset] ||= {}
       gesture_options[:offset][:x] ||= 0
       gesture_options[:offset][:y] ||= 0
-      gesture_options[:timeout] ||= 5
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _tap(query, gesture_options)
     end
@@ -140,7 +140,7 @@ module Calabash
       gesture_options[:offset] ||= {}
       gesture_options[:offset][:x] ||= 0
       gesture_options[:offset][:y] ||= 0
-      gesture_options[:timeout] ||= 5
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _double_tap(query, gesture_options)
     end
@@ -157,7 +157,7 @@ module Calabash
       gesture_options[:offset] ||= {}
       gesture_options[:offset][:x] ||= 0
       gesture_options[:offset][:y] ||= 0
-      gesture_options[:timeout] ||= 5
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
       gesture_options[:duration] ||= 1
 
       _long_press(query, gesture_options)
@@ -172,6 +172,7 @@ module Calabash
 
       gesture_options = options.dup
       gesture_options[:duration] ||= 0.5
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _pan(query, from, to, gesture_options)
     end
@@ -182,7 +183,10 @@ module Calabash
       Query.ensure_valid_query(query_from)
       Query.ensure_valid_query(query_to)
 
-      _pan_between(query_from, query_to, options.dup)
+      gesture_options = options.dup
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
+
+      _pan_between(query_from, query_to, gesture_options)
     end
 
     # Performs a `flick` on the (first) view that matches `query`.
@@ -194,6 +198,7 @@ module Calabash
 
       gesture_options = options.dup
       gesture_options[:duration] ||= 0.5
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _flick(query, from, to, gesture_options)
     end
@@ -207,6 +212,7 @@ module Calabash
       end
 
       gesture_options = options.dup
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _pinch(direction, query, gesture_options)
     end
