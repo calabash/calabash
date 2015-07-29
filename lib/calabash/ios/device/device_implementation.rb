@@ -462,7 +462,14 @@ module Calabash
           bridge = run_loop_bridge(@run_loop_device, application)
 
           if bridge.app_is_installed?
-            true
+            installed_app = Calabash::IOS::Application.new(bridge.fetch_app_dir)
+
+            if installed_app.same_sha1_as?(application)
+              true
+            else
+              @logger.log("The sha1 checksum has changed (#{installed_app.sha1} != #{application.sha1}.", :info)
+              install_app_on_simulator(application, @run_loop_device, bridge)
+            end
           else
             install_app_on_simulator(application, @run_loop_device, bridge)
           end
