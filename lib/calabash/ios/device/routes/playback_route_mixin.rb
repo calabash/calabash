@@ -8,10 +8,19 @@ module Calabash
         # This is a Legacy API and is only used to support rotations.
         #
         # form_factor is iphone | ipad
+        #
+        # **NOTE** If we revive this API, move the call to
+        # recalibrate_after_rotation closer to the actually implementation of
+        # rotate; it is (probably?) not necessary for all recordings.
         def playback_route(recording_name, form_factor)
           request = make_playback_request(recording_name, form_factor)
           response = route_post_request(request)
-          playback_route_handle_response(response)
+          result = playback_route_handle_response(response)
+
+          # The first query after a rotation will have incorrect coordinates!
+          # We have to make a uia query to force an update.
+          recalibrate_after_rotation
+          result
         end
 
         private
@@ -50,6 +59,10 @@ module Calabash
           else
             raise "Playback failed because:\n#{hash['reason']}\n#{hash['details']}"
           end
+        end
+
+        def recalibrate_after_rotation
+          uia_serialize_and_call(:query, 'window')
         end
       end
     end
