@@ -378,7 +378,10 @@ module Calabash
     end
 
     # Raises an exception. Embeds a screenshot if
-    # Calabash::Wait#default_options[:screenshot_on_error] is true
+    # Calabash::Wait#default_options[:screenshot_on_error] is true. The fail
+    # method should be used when the test should fail and stop executing. Do
+    # not use fail if you intent on rescuing the error raised without
+    # re-raising.
     #
     # @example
     #  unless view_exists?("* marked:'login'")
@@ -386,7 +389,6 @@ module Calabash
     #  end
     #
     # @example
-    #  wait_for_view("* marked:'entries'")
     #  entries = query("ListEntry").length
     #
     #  if entries < 5
