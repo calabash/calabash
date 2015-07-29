@@ -4,6 +4,7 @@ describe Calabash::IOS::Routes::PlaybackRouteMixin do
     Class.new do
       include Calabash::IOS::Routes::PlaybackRouteMixin
       include Calabash::IOS::Routes::ResponseParser
+      include Calabash::IOS::Routes::HandleRouteMixin
     end.new
   end
 
@@ -86,5 +87,18 @@ describe Calabash::IOS::Routes::PlaybackRouteMixin do
       actual = device.send(:playback_route_handle_response, response)
       expect(actual).to be == [1]
     end
+  end
+
+  it '#playback_route' do
+    name = 'recording'
+    form = 'good'
+    request = 'request'
+
+    expect(device).to receive(:make_playback_request).with(name, form).and_return(request)
+    expect(device).to receive(:route_post_request).with(request).and_return(response)
+    expect(device).to receive(:playback_route_handle_response).with(response).and_return('result')
+    expect(device).to receive(:recalibrate_after_rotation)
+
+    expect(device.playback_route(name, form)).to be == 'result'
   end
 end
