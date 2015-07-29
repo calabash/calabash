@@ -28,6 +28,7 @@ describe Calabash::IOS::Device do
       def reset_app_sandbox; ; end
       def uninstall; ; end
       def install; ; end
+      def fetch_app_dir; ; end
     end.new
   end
 
@@ -409,11 +410,34 @@ describe Calabash::IOS::Device do
           }.to raise_error RuntimeError
         end
 
-        it 'does nothing if app is already installed' do
+        it 'does nothing if app is already installed and has the same sha1' do
+          preinstalled_app = Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path)
+
+          allow(Calabash::Application).to receive(:new).and_return(preinstalled_app)
+
           expect(app).to receive(:simulator_bundle?).at_least(:once).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
           expect(device).to receive(:run_loop_bridge).and_return(mock_bridge)
           expect(mock_bridge).to receive(:app_is_installed?).and_return true
+          expect(mock_bridge).to receive(:fetch_app_dir).and_return(:preinstalled)
+          expect(app).to receive(:same_sha1_as?).with(preinstalled_app).and_return(true)
+
+          expect(device.ensure_app_installed(app)).to be_truthy
+          expect(device.instance_variable_get(:@run_loop_device)).to be == run_loop_device
+        end
+
+        it 'calls install_app_on_simulator if app is already installed and does not have the same sha1' do
+          preinstalled_app = Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path)
+
+          allow(Calabash::Application).to receive(:new).and_return(preinstalled_app)
+
+          expect(app).to receive(:simulator_bundle?).at_least(:once).and_return true
+          expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
+          expect(device).to receive(:run_loop_bridge).and_return(mock_bridge)
+          expect(mock_bridge).to receive(:app_is_installed?).and_return true
+          expect(mock_bridge).to receive(:fetch_app_dir).and_return(:preinstalled)
+          expect(app).to receive(:same_sha1_as?).with(preinstalled_app).and_return(false)
+          expect(device).to receive(:install_app_on_simulator).with(app, run_loop_device, mock_bridge).and_return true
 
           expect(device.ensure_app_installed(app)).to be_truthy
           expect(device.instance_variable_get(:@run_loop_device)).to be == run_loop_device

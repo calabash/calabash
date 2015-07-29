@@ -37,6 +37,8 @@ module Calabash
 
     # Installs the given application *if it is not already installed*. If no
     # application is given, it will ensure `Application.default` is installed.
+    # If the application has changed, it will be installed using the same
+    # approach as #{Calabash::LifeCycle#install_app}.
     #
     # If the given application is an instance of
     # `Calabash::Android::Application`, the same procedure is executed for the
