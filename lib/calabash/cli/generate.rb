@@ -6,16 +6,6 @@ module Calabash
     # @!visibility private
     module Generate
       def parse_generate_arguments!
-        msg("Question") do
-          puts "Calabash is about to create a subdirectory called features and config,"
-          puts "features will contain all your calabash tests."
-          puts "Please hit return to confirm that's what you want."
-        end
-
-        unless STDIN.gets.chomp == ''
-          exit 2
-        end
-
         if File.exist?('features')
           puts "A features directory already exists. Please remove this to continue."
           exit 1
@@ -26,38 +16,8 @@ module Calabash
           exit 1
         end
 
-        reset_between = nil
-        reset_method = nil
-
-        puts "Do you want to reset the app by default? ((n)ever/between (s)cenarios/between (f)eatures) "
-        input = STDIN.gets.chomp.downcase
-
-        case input
-          when 'n'
-            reset_between = :never
-          when 's'
-            reset_between = :scenarios
-          when 'f'
-            reset_between = :features
-          else
-            puts "Invalid input '#{input}'"
-            exit(3)
-        end
-
-        unless reset_between == :never
-          puts "How would you like to reset the app by default? ((c)learing/(r)einstalling) "
-          input = STDIN.gets.chomp.downcase
-
-          case input
-            when 'c'
-              reset_method = :clear
-            when 'r'
-              reset_method = :reinstall
-            else
-              puts "Invalid input '#{input}'"
-              exit(4)
-          end
-        end
+        reset_between = :features
+        reset_method = :clear
 
         cucumber_config = File.read(file(File.join('config', 'cucumber.yml')))
 
