@@ -5,6 +5,7 @@
 # Public License.
 module Calabash
   require 'calabash/patch/run_loop'
+  require 'calabash/version'
   require 'calabash/environment'
   require 'calabash/logger'
   require 'calabash/color'
