@@ -373,5 +373,22 @@ module Calabash
     def _pinch(direction, query, options={})
       abstract_method!
     end
+
+    # Do not keep a reference to this module
+    def world_for_device
+      @new_module = world_module.clone
+
+      device = self
+
+      @new_module.send(:define_singleton_method, :default_device) do
+        device
+      end
+
+      @new_module
+    end
+
+    def world_module
+      abstract_method!
+    end
   end
 end

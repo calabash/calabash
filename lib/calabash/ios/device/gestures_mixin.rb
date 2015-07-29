@@ -127,9 +127,15 @@ module Calabash
       #
       # @todo Replace with waiting on the iOS Server
       def _gesture_waiter
-        @_gesture_waiter ||= lambda do |reference_to_self|
+        lambda do |reference_to_self|
           Class.new do
-            include Calabash::IOS
+            # world_for_device will return a copy of the module Calabash::IOS,
+            # which has redefined Calabash.default_device to reference this
+            # device. We should not keep a reference to gesture_waiter
+            # because of this, as the user might change a constant or class
+            # variable in Calabash.
+            include reference_to_self.send(:world_for_device)
+
             define_method(:query) do |query, *args|
               reference_to_self.map_route(query, :query, *args)
             end

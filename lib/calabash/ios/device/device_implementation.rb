@@ -763,6 +763,10 @@ module Calabash
               :uia_strategy => strategy
         }
       end
+
+      def world_module
+        Calabash::IOS
+      end
     end
   end
 end
