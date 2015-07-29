@@ -84,7 +84,7 @@ module Calabash
     end
 
     def self.visible?(data)
-      data['visible'] || data['children'].map{|child| visible?(child)}.any?
+      raise AbstractMethodError
     end
   end
 end

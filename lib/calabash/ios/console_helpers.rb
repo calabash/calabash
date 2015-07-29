@@ -18,6 +18,10 @@ module Calabash
       end
     end
 
+    def self.visible?(data)
+      (data['visible'] == 1) || data['children'].map{|child| visible?(child)}.any?
+    end
+
     # Attach the current Calabash run-loop to a console.
     #
     # @example
