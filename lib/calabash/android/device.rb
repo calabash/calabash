@@ -880,7 +880,21 @@ module Calabash
           raise "Failed to perform gesture. #{result['reason']}"
         end
 
-        result['results'].first
+        result = result['results'].first
+
+        results = []
+        queries = multi_touch_gesture.queries
+
+        result.each do |key, value|
+          query = queries.find{|query| query.to_s == key}
+          results << QueryResult.create([value], query)
+        end
+
+        if results.length == 1
+          results.first
+        else
+          results
+        end
       end
 
       # @!visibility private

@@ -71,7 +71,7 @@ module Calabash
         end
 
         def queries
-          gestures.map(&:queries).uniq.reject(&:nil?)
+          gestures.map(&:queries).flatten.uniq.reject(&:nil?)
         end
       end
 
