@@ -18,8 +18,10 @@ module Calabash
       Calabash.send(:included, base)
     end
 
-    require 'calabash/android/environment'
+    require 'calabash/android/defaults'
+    extend Calabash::Android::Defaults
 
+    require 'calabash/android/environment'
     require 'calabash/android/application'
     require 'calabash/android/build'
     require 'calabash/android/device'
