@@ -184,6 +184,7 @@ module Calabash
       Query.ensure_valid_query(query_to)
 
       gesture_options = options.dup
+      gesture_options[:duration] ||= 1
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _pan_between(query_from, query_to, gesture_options)

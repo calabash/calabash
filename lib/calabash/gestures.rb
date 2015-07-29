@@ -157,7 +157,7 @@ module Calabash
     #                 │           │
     #                 └───────────┘
     #
-    # @option options [Number] :duration (0.5) How many seconds the swipe takes
+    # @option options [Number] :duration (1.0) How many seconds the swipe takes
     #   to complete.
     # @raise [ViewNotFoundError] If the `query_from` returns no results.
     # @raise [ViewNotFoundError] If the `query_to` returns no results.
