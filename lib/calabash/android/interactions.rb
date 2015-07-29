@@ -35,6 +35,11 @@ module Calabash
       def focused_package
         Device.default.current_focus[:package]
       end
+
+      # @!visibility private
+      def _evaluate_javascript_in(query, javascript)
+        Device.default.evaluate_javascript_in(query, javascript)
+      end
     end
   end
 end
