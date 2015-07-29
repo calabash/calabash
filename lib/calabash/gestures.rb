@@ -1,7 +1,11 @@
 module Calabash
   # Methods for performing gestures.  Gestures are taps, flicks,
   # and pans.
+  #
+  # Many gestures take an optional :duration. On iOS, the duration must be
+  # between 0.5 and 60 (seconds).  This is a limitation of the UIAutomation API.
   module Gestures
+
     # How long do we wait for a view to appear by default when performing a
     # gesture.
     DEFAULT_GESTURE_WAIT_TIMEOUT = 5
@@ -65,11 +69,13 @@ module Calabash
     # is known variously as _press_, _long-push_, _press-and-hold_, or _hold_.
     #
     # @see tap
+    #
     # @param [Hash] options Options for modifying the details of the touch.
     # @option options [Number] :duration (1.0) The amount of time in seconds to
-    #  press.
+    #  press.  On iOS, the duration must be between 0.5 and 60.
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def long_press(query, options={})
       Query.ensure_valid_query(query)
 
@@ -96,17 +102,30 @@ module Calabash
     #   │ <───────┤ │  |  │           │
     #   └───────────┘  |  └───────────┘
     #
-    # @param [String] query A query describing the view to pan inside.
-    # @param [Hash] options Options for modifying the details of the pan.
+    # Apple's UIAutomation 'dragInsideWithOptions' is broken on iOS Simulators.
+    # Call `pan` on iOS Simulators >= iOS 7.0 will raise an error.  See the
+    # iOS Scroll API for alternatives.
     #
+    # @see Calabash::IOS::Scroll#scroll
+    # @see Calabash::IOS::Scroll#scroll_to_row
+    # @see Calabash::IOS::Scroll#scroll_to_row_with_mark
+    # @see Calabash::IOS::Scroll#scroll_to_item
+    # @see Calabash::IOS::Scroll#scroll_to_item_with_mark
+    #
+    # @param [String] query A query describing the view to pan inside.
     # @param [Hash] from ({:x, :y}) The point at which the gesture
     #   originates from.
     # @param [Hash] to ({:x, :y}) The point at which the gesture
     #   ends.
-    # @option options [Number] :duration (0.5) How many seconds the swipe takes
-    #   to complete.
+    #
+    # @param [Hash] options Options for modifying the details of the pan.
+    # @option options [Number] :duration (0.5) How many seconds the pan takes
+    #   to complete. On iOS, the duration must be between 0.5 and 60.
+    #
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
+    # @raise [RuntimeError] If called on an iOS Simulator > iOS 7.
     def pan(query, from, to, options={})
       Query.ensure_valid_query(query)
 
@@ -144,6 +163,7 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query_to` returns no results.
     # @raise [ArgumentError] If `query_from` is invalid.
     # @raise [ArgumentError] If `query_to` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pan_between(query_from, query_to, options={})
       Query.ensure_valid_query(query_from)
       Query.ensure_valid_query(query_to)
@@ -217,8 +237,20 @@ module Calabash
     #  <·····──────┤ │  |  │           │
     #    └───────────┘  |  └───────────┘
     #
+    # @param [String,Hash,Query] query A query describing the view to flick
+    #  inside of.
+    # @param [Hash] from ({:x, :y}) The point at which the gesture
+    #   originates from.
+    # @param [Hash] to ({:x, :y}) The point at which the gesture
+    #   ends.
+    #
+    # @param [Hash] options Options for controlling the flick.
+    # @options options [Numeric] :duration The duration of the flick. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def flick(query, from, to, options={})
       Query.ensure_valid_query(query)
 

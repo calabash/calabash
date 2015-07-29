@@ -5,8 +5,8 @@ Feature: Drag and Drop
   As a Calabash developer
   I want to drag a view onto another view
 
-  Background:  Get me to the third tab
-   Given I see the third tab
+  Background: Navigate to the special tab
+   Given I see the special tab
 
   Scenario: Drag the red box to the left well
     When I drag the red box to the left well

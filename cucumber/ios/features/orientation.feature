@@ -11,7 +11,7 @@ Feature: Orientation and Rotation
     And I can tell if the app is in portrait or landscape
 
   Scenario: Can rotate to landscape or portrait
-    Given I see the gestures tab
+    Given I see the tapping tab
     Then I can rotate to landscape
     And I can rotate to portrait
 
@@ -22,13 +22,13 @@ Feature: Orientation and Rotation
     Then no rotation occurred
 
   Scenario: View controller supports rotation
-    Given I see the gestures tab
+    Given I see the tapping tab
     And the view controller does support rotation
     When I rotate right
     Then a rotation occurred
 
   Scenario: Rotating to a specific home button position
-    Given I see the gestures tab
+    Given I see the tapping tab
     And the view controller does support rotation
     Then I rotate so the home button is on the right
     Then I rotate so the home button is on the left

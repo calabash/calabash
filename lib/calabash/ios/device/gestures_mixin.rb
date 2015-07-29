@@ -1,37 +1,47 @@
 module Calabash
   module IOS
     # @!visibility private
+    #
+    # Gestures should wait for the views involved before performing the
+    # gesture.
+    #
+    # 1. Wait for the view or views.
+    # 2. Find the absolute coordinates of the gesture.
+    # 3. Pass the coordinates to the Calabash UIA offset API.
+    # 4. Return the views involved in the gesture as QueryResults.
+    #
+    # @todo Needs unit tests.
     module GesturesMixin
 
-      # @todo Extract offset from options
-      # @todo Needs unit tests.
       def _tap(query, options={})
-        # 1. Find the view to touch
-        view_to_touch = gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
-        # 2. Find the center of view.
         offset = uia_center_of_view(view_to_touch)
 
-        # 3. Serialize the command and call the uia route.
-        uia_serialize_and_call(:tapOffset, offset)
+        uia_serialize_and_call(:tapOffset, offset, options)
 
-        # 4. Return the view found by query - the view that was touched.
-        # @todo For review:  Should gestures return views?
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
       def _double_tap(query, options={})
-        view_to_touch = gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
         offset = uia_center_of_view(view_to_touch)
 
-        uia_serialize_and_call(:doubleTapOffset, offset)
+        uia_serialize_and_call(:doubleTapOffset, offset, options)
 
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
       def _long_press(query, options={})
-        view_to_touch = gesture_waiter.wait_for_view(query, options)
+
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError e
+        end
+
+        view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
         offset = uia_center_of_view(view_to_touch)
 
@@ -41,13 +51,20 @@ module Calabash
       end
 
       def _pan_between(query_from, query_to, options={})
-        from_view = gesture_waiter.wait_for_view(query_from)
-        to_view = gesture_waiter.wait_for_view(query_to)
+
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError e
+        end
+
+        from_view = _gesture_waiter.wait_for_view(query_from, options)
+        to_view = _gesture_waiter.wait_for_view(query_to, options)
 
         from_offset = uia_center_of_view(from_view)
         to_offset = uia_center_of_view(to_view)
 
-        uia_serialize_and_call(:panOffset, from_offset, to_offset)
+        uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
 
         {
           :from => Calabash::QueryResult.create([from_view], query_from),
@@ -55,13 +72,62 @@ module Calabash
         }
       end
 
+      # The default to and from for the pan_* methods are not good for iOS.
+      #
+      # * from: {x: 90, y: 50}
+      # *   to: {x: 10, y: 50}
+      #
+      # If the view has a UINavigationBar or UITabBar, the defaults will
+      # cause vertical gestures to start and/or end on one of these bars.
+      #
+      # dragInsideWithOptions broke in iOS 7, so the condition should really be
+      # `Device.default.simulator? && !Device.ios6?`, but I haven't checked on
+      # iOS 9 yet, so I will leave the condition out.
+      def _pan(query, from, to, options={})
+        if Device.default.simulator?
+          message = [
+                "Apple's UIAutomation `dragInsideWithOptions` API is broken for iOS > 7",
+                'If you are trying to scroll on a UITableView or UICollectionView, try using the scroll_* methods'
+          ].join("\n")
+
+          raise message
+        end
+
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError e
+        end
+
+        view_to_pan = _gesture_waiter.wait_for_view(query, options)
+
+        rect = view_to_pan['rect']
+
+        from_x = rect['width'] * (from[:x]/100.0)
+        from_y = rect['height'] * (from[:y]/100.0)
+        from_offset = percent(from_x, from_y)
+
+        to_x = rect['width'] * (to[:x]/100.0)
+        to_y = rect['height'] * (to[:y]/100.0)
+        to_offset = percent(to_x, to_y)
+
+        uia_serialize_and_call(:panOffset, from_offset, to_offset)
+
+        Calabash::QueryResult.create([view_to_pan], query)
+      end
+
       private
 
+      # !@visibility private
+      #
       # Unlike the Calabash Android server, the iOS server does not wait
-      # before gestures.  We need to do this in the client for now.
+      # before gestures, so the client must do the waiting.  The _gesture_waiter
+      # allows access to query, wait, etc. without having to include all of
+      # Calabash in this module.
+      #
       # @todo Replace with waiting on the iOS Server
-      def gesture_waiter
-        @gesture_waiter ||= lambda do |reference_to_self|
+      def _gesture_waiter
+        @_gesture_waiter ||= lambda do |reference_to_self|
           Class.new do
             include Calabash::IOS
             define_method(:query) do |query, *args|
@@ -77,6 +143,18 @@ module Calabash
             end
           end.new
         end.call(self)
+      end
+
+      def _expect_valid_duration(options)
+        duration = options[:duration].to_f
+        if duration < 0.5 || duration > 60
+          message = [
+                "Expected :duration 0.5 <= '#{duration}' <= 60",
+                'On iOS, gesture durations must be between 0.5 and 60 seconds.',
+                'This is a limitation enforced by the UIAutomation API.'
+          ].join("\n")
+          raise ArgumentError, message
+        end
       end
     end
   end
