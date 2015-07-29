@@ -54,12 +54,12 @@ module Calabash
           }.to_json(*object)
         end
 
-        def query_string=(query_string)
-          @gestures.each {|gesture| gesture.query_string=query_string}
+        def query=(query)
+          @gestures.each {|gesture| gesture.query=query}
         end
 
-        def reset_query_string
-          @gestures.each {|gesture| gesture.reset_query_string}
+        def reset_query
+          @gestures.each {|gesture| gesture.reset_query}
         end
 
         def offset=(offset)
@@ -69,12 +69,16 @@ module Calabash
         def max_execution_time
           (@gestures.map {|gesture| gesture.max_execution_time}).max
         end
+
+        def queries
+          gestures.map(&:queries).uniq.reject(&:nil?)
+        end
       end
 
       class Gesture
         attr_reader :touches
 
-        def initialize(touches = [], query_string = nil)
+        def initialize(touches = [], query = nil)
           unless touches.is_a?(Array)
             touches = [touches]
           end
@@ -85,7 +89,7 @@ module Calabash
             @touches << Touch.new(touch)
           end
 
-          @query_string = query_string
+          @query = query
         end
 
         def from(touch)
@@ -102,16 +106,16 @@ module Calabash
             touch.y ||= last_touch.y
           end
 
-          Gesture.new(@touches << touch, @query_string)
+          Gesture.new(@touches << touch, @query)
         end
 
         def +(gesture)
-          Gesture.new(@touches + gesture.touches, @query_string)
+          Gesture.new(@touches + gesture.touches, @query)
         end
 
         def add_touch(touch)
           touches = @touches
-          Gesture.new(touches << touch, @query_string)
+          Gesture.new(touches << touch, @query)
         end
 
         def <<(touch)
@@ -120,17 +124,17 @@ module Calabash
 
         def to_json(*object)
           {
-              query_string: @query_string,
+              query_string: @query && @query.to_s,
               touches: @touches
           }.to_json(*object)
         end
 
-        def query_string=(query_string)
-          @query_string = query_string
+        def query=(query)
+          @query = query
         end
 
-        def reset_query_string
-          touches.each {|touch| touch.query_string=nil}
+        def reset_query
+          touches.each {|touch| touch.query=nil}
         end
 
         def offset=(offset)
@@ -141,8 +145,12 @@ module Calabash
           (@touches.map {|touch| touch.wait + touch.time}).reduce(:+)
         end
 
+        def queries
+          (@touches.map(&:query).uniq + [@query]).reject(&:nil?)
+        end
+
         def self.with_parameters(multi_touch_gesture, params={})
-          multi_touch_gesture.query_string = params[:query_string] if params[:query_string]
+          multi_touch_gesture.query = params[:query] if params[:query]
           multi_touch_gesture.timeout = params[:timeout] if params[:timeout]
 
           multi_touch_gesture
@@ -236,7 +244,7 @@ module Calabash
       end
 
       class Touch
-        attr_accessor :x, :y, :offset_x, :offset_y, :wait, :time, :release, :query_string
+        attr_accessor :x, :y, :offset_x, :offset_y, :wait, :time, :release, :query
 
         def initialize(touch)
           if touch.is_a?(Touch)
@@ -254,7 +262,7 @@ module Calabash
           @wait = touch[:wait] || 0
           @time = touch[:time] || 0
           @release = touch[:release].nil? ? false : touch[:release]
-          @query_string = touch[:query_string]
+          @query = touch[:query]
         end
 
         def merge(touch)
@@ -270,12 +278,14 @@ module Calabash
               wait: @wait.to_f,
               time: @time.to_f,
               release: @release,
-              query_string: @query_string
+              query: @query && @query
           }
         end
 
         def to_json(object = Hash)
-          to_hash.to_json(object)
+          hash = to_hash
+          hash[:query_string] = hash[:query] && hash[:query].to_s
+          hash.to_json(object)
         end
 
         def +(touch)

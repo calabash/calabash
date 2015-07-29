@@ -726,7 +726,7 @@ module Calabash
         gesture = Gestures::Gesture.tap(gesture_options)
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
-                                                 query_string: query.to_s,
+                                                 query: query,
                                                  timeout: options[:timeout]))
       end
 
@@ -768,7 +768,7 @@ module Calabash
         gesture = Gestures::Gesture.tap(gesture_options)
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
-                                                 query_string: query.to_s,
+                                                 query: query,
                                                  timeout: options[:timeout]))
       end
 
@@ -786,6 +786,17 @@ module Calabash
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
                                                           query_string: query.to_s,
+                                                          timeout: options[:timeout]))
+      end
+
+      # @!visibility private
+      def _pan_between(query_from, query_to, options={})
+        gesture = Gestures::Gesture.generate_swipe({x: 50, y: 50}, {x: 50, y: 50}, time: options[:duration])
+        gesture.gestures.first.touches[0].query = query_from
+        gesture.gestures.first.touches[1].query = query_to
+
+        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+                                                          query_string: query_to,
                                                           timeout: options[:timeout]))
       end
 
