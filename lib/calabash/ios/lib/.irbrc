@@ -38,12 +38,7 @@ begin
     extend Calabash::IOS
     extend Calabash::ConsoleHelpers
 
-    Calabash::Application.default = Calabash::IOS::Application.default_from_environment
-
-    identifier = Calabash::IOS::Device.default_identifier_for_application(Calabash::Application.default)
-    server = Calabash::IOS::Server.default
-
-    Calabash::Device.default = Calabash::IOS::Device.new(identifier, server)
+    Calabash::IOS.setup_defaults!
 
     Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
     Calabash::Screenshot.screenshot_directory_prefix = 'console_'

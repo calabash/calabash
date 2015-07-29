@@ -38,12 +38,7 @@ begin
     extend Calabash::Android
     extend Calabash::ConsoleHelpers
 
-    identifier = Calabash::Android::Device.default_serial
-    server = Calabash::Android::Server.default
-
-    Calabash::Android::Device.default = Calabash::Android::Device.new(identifier, server)
-
-    Calabash::Application.default = Calabash::Android::Application.default_from_environment
+    Calabash::Android.setup_defaults!
 
     Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
     Calabash::Screenshot.screenshot_directory_prefix = 'console_'
