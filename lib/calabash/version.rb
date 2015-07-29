@@ -1,5 +1,5 @@
 module Calabash
 
   # @!visibility private
-  VERSION = '2.0.0.pre1'
+  VERSION = '1.9.9.pre1'
 end
