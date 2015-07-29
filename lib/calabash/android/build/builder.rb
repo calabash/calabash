@@ -54,8 +54,7 @@ module Calabash
           Dir.mktmpdir do |workspace_dir|
             Dir.chdir(workspace_dir) do
               FileUtils.cp(UNSIGNED_TEST_SERVER_APK, "TestServer.apk")
-
-              FileUtils.cp(File.join(TEST_SERVER_CODE_PATH, 'AndroidManifest.xml'), "AndroidManifest.xml")
+              FileUtils.cp(ANDROID_MANIFEST_PATH, "AndroidManifest.xml")
 
               contents = File.read('AndroidManifest.xml')
               contents.gsub!(/#targetPackage#/, application.identifier)

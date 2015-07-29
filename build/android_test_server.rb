@@ -21,6 +21,8 @@ module Calabash
       end
 
       def self.build_test_server
+        FileUtils.cp(File.join(test_server_directory, 'AndroidManifest.xml'), android_manifest_location)
+
         Dir.mktmpdir do |workspace_dir|
           test_server_dir = File.join(workspace_dir, 'test-server')
           FileUtils.cp_r(test_server_directory, workspace_dir)
@@ -64,6 +66,10 @@ module Calabash
 
       def self.test_server_location
         File.join(ROOT, 'lib', 'calabash', 'android', 'lib', 'TestServer.apk')
+      end
+
+      def self.android_manifest_location
+        File.join(ROOT, 'lib', 'calabash', 'android', 'lib', 'AndroidManifest.xml')
       end
 
       def self.fail(exit_code, reason = '')

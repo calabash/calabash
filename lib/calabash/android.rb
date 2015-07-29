@@ -3,6 +3,7 @@ module Calabash
   module Android
     TEST_SERVER_CODE_PATH = File.join(File.dirname(__FILE__), '..', '..', 'android', 'test-server')
     UNSIGNED_TEST_SERVER_APK = File.join(File.dirname(__FILE__), 'android', 'lib', 'TestServer.apk')
+    ANDROID_MANIFEST_PATH = File.join(File.dirname(__FILE__), 'android', 'lib', 'AndroidManifest.xml')
 
     require 'calabash'
     include Calabash

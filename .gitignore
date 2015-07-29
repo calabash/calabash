@@ -41,6 +41,7 @@ tags
 
 # Android test server
 lib/calabash/android/lib/TestServer.apk
+lib/calabash/android/lib/AndroidManifest.xml
 
 # irb
 .irb-history
