@@ -931,6 +931,10 @@ module Calabash
                 manufacturer: adb.shell('getprop ro.product.manufacturer').chomp
             }
       end
+
+      def world_module
+        Calabash::Android
+      end
     end
   end
 end
