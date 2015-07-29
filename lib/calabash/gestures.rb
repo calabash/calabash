@@ -4,7 +4,7 @@ module Calabash
   module Gestures
     # How long do we wait for a view to appear by default when performing a
     # gesture.
-    DEFAULT_GESTURE_WAIT_TIMEOUT = 5
+    DEFAULT_GESTURE_WAIT_TIMEOUT = 3
 
     # Performs a `tap` on the (first) view that matches `query`.
     #
