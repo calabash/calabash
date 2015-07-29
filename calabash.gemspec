@@ -6,9 +6,10 @@ lib_files = Dir.glob('{lib,bin}/**/{.irbrc,*.{rb,feature,yml}}')
 doc_files =  ['README.md', 'LICENSE', 'CONTRIBUTING.md', 'VERSIONING.md']
 jar_files =  ['lib/calabash/android/lib/screenshot_taker.jar']
 calmd5_exe = Dir.glob('lib/calabash/android/lib/calmd5/**/{calmd5,calmd5-pie}')
+test_server_apk = Dir.glob('lib/calabash/android/lib/TestServer.apk')
 playback_files = Dir.glob('lib/calabash/ios/lib/recordings/**/*.base64')
 
-gem_files = lib_files + doc_files + jar_files + calmd5_exe + playback_files
+gem_files = lib_files + doc_files + jar_files + calmd5_exe + playback_files + test_server_apk
 
 Gem::Specification.new do |spec|
   spec.name          = 'calabash'
