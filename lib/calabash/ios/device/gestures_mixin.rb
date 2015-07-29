@@ -86,8 +86,8 @@ module Calabash
       def _pan(query, from, to, options={})
         if Device.default.simulator?
           message = [
-                "Apple's UIAutomation `dragInsideWithOptions` API is broken for iOS > 7",
-                'If you are trying to scroll on a UITableView or UICollectionView, try using the scroll_* methods'
+                "Apple's public UIAutomation API `dragInsideWithOptions` is broken for iOS Simulators >= 7",
+                'Try using the scroll_* methods or test on a device.'
           ].join("\n")
 
           raise message
