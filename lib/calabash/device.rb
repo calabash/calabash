@@ -85,7 +85,7 @@ module Calabash
     def dump
       request = HTTP::Request.new('/dump')
 
-      JSON.parse(http_client.get(request).body)
+      JSON.parse(http_client.get(request, timeout: 60).body)
     end
 
     # @!visibility private
