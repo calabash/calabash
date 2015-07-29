@@ -36,5 +36,9 @@ module Calabash
         output("\n", indentation)
       end
     end
+
+    def self.visible?(data)
+      data['visible'] || data['children'].map{|child| visible?(child)}.any?
+    end
   end
 end
