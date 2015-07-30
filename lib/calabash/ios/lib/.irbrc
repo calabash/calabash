@@ -54,6 +54,7 @@ begin
 
   Calabash::Screenshot.screenshot_directory_prefix = 'console_'
 
+  puts_console_details
   message_of_the_day
 rescue Exception => e
   puts 'Unable to start console:'

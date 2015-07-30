@@ -54,6 +54,7 @@ begin
 
   Calabash::Screenshot.screenshot_directory_prefix = 'console_'
 
+  puts_console_details
   message_of_the_day
 rescue Exception => e
   puts 'Unable to start console:'
@@ -72,5 +73,4 @@ end
 
 def start_prefs(options={})
     start_app(options.merge({:uia_strategy => :preferences}))
-end
 end

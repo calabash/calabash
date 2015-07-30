@@ -62,6 +62,19 @@ module Calabash
     end
 
     # !@visibility private
+    def puts_console_details
+      puts ''
+      puts Color.blue('#             =>  Useful functions.  <=             #')
+      puts Color.cyan('>     ids => List all the visible ids.')
+      puts Color.cyan('> classes => List all the visible classes.')
+      puts Color.cyan(">    tree => The app's visible view hierarchy.")
+      puts Color.cyan('>    copy => Copy console commands to the Clipboard.')
+      puts Color.cyan('> verbose => Turn debug logging on.')
+      puts Color.cyan('>   quiet => Turn debug logging off.')
+      puts ''
+    end
+
+    # !@visibility private
     def self.save_old_readline_history
       file_name = IRB.conf[:HISTORY_FILE]
 
