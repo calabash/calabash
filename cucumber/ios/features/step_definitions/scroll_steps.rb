@@ -22,6 +22,7 @@ When(/^I touch the (collection|table|scroll) views row$/) do |row_name|
   query = "UITableViewCell marked:'#{row_name} views row'"
 
   tap(query)
+  wait_for_animations
 end
 
 Then(/^I see the (collection|table|scroll) views page$/) do |page_name|
