@@ -19,3 +19,68 @@ task :strategies do
     Rake::Task[task].invoke
   end
 end
+
+desc 'Install a CalSmoke-cal.app for Cucumber testing.'
+task :ensure_app do
+
+  this_dir = File.dirname(__FILE__)
+  app_path = File.join(this_dir, 'CalSmoke-cal.app')
+
+  if File.exist?(app_path)
+    puts "INFO: App exists at #{app_path}"
+  else
+
+    puts "INFO: App does not exist at #{app_path}"
+    puts "INFO: Will install from sources."
+
+    unless File.exist?('./binaries')
+      sh 'git clone git@github.com:calabash/ios-smoke-test-app.git binaries'
+    end
+
+    working_dir = File.expand_path(File.join(this_dir, 'binaries', 'CalSmokeApp'))
+
+    Dir.chdir(working_dir) do
+      sh 'git checkout master'
+      sh 'git pull origin master'
+      sh 'make app-cal'
+      sh "mv CalSmoke-cal.app #{this_dir}"
+    end
+
+    puts "Installed: #{app_path}"
+  end
+end
+
+# If you have multiple Developer accounts, you might
+# need to set the CODE_SIGN_IDENTITY variable.
+#
+# $ CODE_SIGN_IDENTITY="iPhone Developer: Joshua Moody (8QXXXXX9F)" rake ensure_ipa
+desc 'Install a CalSmoke-cal.ipa for Cucumber testing.'
+task :ensure_ipa do
+  this_dir = File.dirname(__FILE__)
+  ipa_path = File.join(this_dir, 'CalSmoke-cal.ipa')
+
+  if File.exist?(ipa_path)
+    puts "INFO: .ipa exists at #{ipa_path}"
+  else
+
+    puts "INFO: .ipa does not exist at #{ipa_path}"
+    puts "INFO: Will install from sources."
+
+    unless File.exist?('./binaries')
+      sh 'git clone git@github.com:calabash/ios-smoke-test-app.git binaries'
+    end
+
+    working_dir = File.expand_path(File.join(this_dir, 'binaries', 'CalSmokeApp'))
+
+    Dir.chdir(working_dir) do
+      sh 'git checkout master'
+      sh 'git pull origin master'
+      sh 'make ipa-cal'
+      sh "mv xtc-staging/CalSmoke-cal.ipa #{this_dir}"
+    end
+
+    puts "Installed: #{ipa_path}"
+  end
+  true
+end
+

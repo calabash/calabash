@@ -28,10 +28,30 @@ $ be rake spec # All tests.  Launches iOS Simulators, etc.
 $ be guard     # Run unit tests as you develop.
 ```
 
-### cucumber
+### Cucumber iOS
 
 ```
 $ cd cucumber/ios
 $ bundle update
+$ rake ensure_app  # Optional. See note below.
 $ be cucumber
 ```
+
+The rake task `ensure_app` checks the `cucumber/ios` directory for
+CalSmoke-cal.app. If it exists, it will do nothing.  If it does not exist,
+it will pull the latest sources from the CalSmoke repo, build the
+CalSmoke-cal.app from the master branch, and install it in the
+`cucumber/ios` directory.
+
+If you want to use a different CalSmoke-cal.app, drop it into `cucumber/ios`
+or call cucumber with `CAL\_APP` set.
+
+```
+$ CAL_APP=/path/to/your/CalSmoke-cal.app be cucumber
+```
+
+The rake task `ensure_ipa` does the same thing, but for the CalSmoke-cal.ipa.
+
+Testing against physical devices requires that you have ideviceinstaller
+installed in /usr/local/bin/ideviceinstaller.
+
