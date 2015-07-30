@@ -33,6 +33,34 @@ module Calabash
       true
     end
 
+    # Puts a message of the day.
+    def message_of_the_day
+      messages = [
+            "Let's get this done!",
+            'Ready to rumble.',
+            'Enjoy.',
+            'Remember to breathe.',
+            'Take a deep breath.',
+            "Isn't it time for a break?",
+            'Can I get you a coffee?',
+            'What is a calabash anyway?',
+            'Smile! You are on camera!',
+            'Let op! Wild Rooster!',
+            "Don't touch that button!",
+            "I'm gonna take this to 11.",
+            'Console. Engaged.',
+            'Your wish is my command.',
+            'This console session was created just for you.',
+            'Den som jager to harer, får ingen.',
+            'Uti, non abuti.',
+            'Non Satis Scire',
+            'Nullius in verba',
+            'Det ka æn jå væer ei jált'
+      ]
+
+      puts Color.green("Calabash #{Calabash::VERSION} says: '#{messages.shuffle.first}'")
+    end
+
     # !@visibility private
     def self.save_old_readline_history
       file_name = IRB.conf[:HISTORY_FILE]

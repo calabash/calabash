@@ -42,6 +42,7 @@ begin
 
     Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
     Calabash::Screenshot.screenshot_directory_prefix = 'console_'
+    message_of_the_day
 rescue Exception => e
     puts 'Unable to start console:'
     puts "#{e.class}: #{e.message}"
