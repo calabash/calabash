@@ -40,7 +40,12 @@ begin
 
     Calabash::IOS.setup_defaults!
 
-    Calabash.new_embed_method!(lambda {|*_| Calabash::Logger.info 'Embed is not available in the console.'})
+    embed_lambda = lambda do |*_|
+      Calabash::Logger.info 'Embed is not available in the console.'
+    end
+
+    Calabash.new_embed_method!(embed_lambda)
+
     Calabash::Screenshot.screenshot_directory_prefix = 'console_'
 
     message_of_the_day
