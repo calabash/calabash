@@ -9,6 +9,19 @@ ARGV.concat [ '--readline',
               'simple']
 
 begin
+  require 'pry'
+  Pry.config.history.file = '.pry_history'
+rescue LoadError => _
+
+end
+
+begin
+  require 'pry-nav'
+rescue LoadError => _
+
+end
+
+begin
 
     begin
         require 'awesome_print'
