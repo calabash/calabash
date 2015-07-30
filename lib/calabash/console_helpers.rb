@@ -61,6 +61,28 @@ module Calabash
       puts Color.green("Calabash #{Calabash::VERSION} says: '#{messages.shuffle.first}'")
     end
 
+    # Turn on debug logging.
+    def verbose
+      if Calabash::Environment.const_defined?('DEBUG')
+        Calabash::Environment.send(:remove_const, 'DEBUG')
+      end
+
+      Calabash::Environment.const_set('DEBUG', '1')
+      puts Color.blue('Turned on debug logging.')
+      true
+    end
+
+    # Turn off debug logging.
+    def quiet
+      if Calabash::Environment.const_defined?('DEBUG')
+        Calabash::Environment.send(:remove_const, 'DEBUG')
+      end
+
+      Calabash::Environment.const_set('DEBUG', '0')
+      puts Color.blue('Turned off debug logging.')
+      true
+    end
+
     # !@visibility private
     def puts_console_details
       puts ''
