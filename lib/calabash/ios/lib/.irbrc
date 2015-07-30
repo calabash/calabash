@@ -1,6 +1,14 @@
+require 'irb/completion'
+require 'irb/ext/save-history'
+
+IRB.conf[:SAVE_HISTORY] = 100
+IRB.conf[:HISTORY_FILE] = '.irb-history'
+
+ARGV.concat [ '--readline',
+              '--prompt-mode',
+              'simple']
+
 begin
-    require 'irb/completion'
-    require 'irb/ext/save-history'
 
     begin
         require 'awesome_print'
@@ -22,16 +30,6 @@ begin
     end
 
     AwesomePrint.irb!
-
-    ARGV.concat [ '--readline',
-                  '--prompt-mode',
-                  'simple']
-
-    # 50 entries in the list
-    IRB.conf[:SAVE_HISTORY] = 50
-
-    # Store results in home directory with specified file name
-    IRB.conf[:HISTORY_FILE] = '.irb-history'
 
     require 'calabash/ios'
 
