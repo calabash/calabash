@@ -11,11 +11,6 @@ ARGV.concat [ '--readline',
 begin
   require 'pry'
   Pry.config.history.file = '.pry_history'
-rescue LoadError => _
-
-end
-
-begin
   require 'pry-nav'
 rescue LoadError => _
 
