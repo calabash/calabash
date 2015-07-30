@@ -42,6 +42,7 @@ begin
 
     embed_lambda = lambda do |*_|
       Calabash::Logger.info 'Embed is not available in the console.'
+      true
     end
 
     Calabash.new_embed_method!(embed_lambda)
