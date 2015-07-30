@@ -11,4 +11,6 @@ Calabash::Application.default = Calabash::Android::Application.default_from_envi
 
 unless Calabash::Environment.xamarin_test_cloud?
   require 'pry'
+  Pry.config.history.file = '.pry-history'
+  require 'pry-nav'
 end

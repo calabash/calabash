@@ -45,6 +45,7 @@ lib/calabash/android/lib/AndroidManifest.xml
 
 # irb
 .irb-history
+.pry-history
 
 # screenshots that might be produced during testing
 *screenshots*
