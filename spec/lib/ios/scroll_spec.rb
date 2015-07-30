@@ -16,6 +16,7 @@ describe Calabash::IOS::Scroll do
       def to_s; '#<Cucumber World>'; end
       def inspect; to_s; end
       def screenshot_embed; ; end
+      def wait_for_animations; ; end
     end.new
   end
 
