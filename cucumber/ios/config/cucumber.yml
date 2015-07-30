@@ -1,6 +1,7 @@
 <%
 
-APP = File.join(File.dirname(__FILE__), "..", "..", "spec", "resources", "ios", "CalSmoke-cal.app")
+APP = ENV['CAL_APP'] || File.expand_path("./CalSmoke-cal.app")
+IPA = ENV['CAL_APP'] || File.expand_path("./CalSmoke-cal.ipa")
 
 if ENV["USER"] == "jenkins"
   formatter = "progress"
@@ -13,9 +14,8 @@ end
 verbose: CAL_DEBUG=1
 formatter: -f <%= formatter %>
 
-app:           CAL_APP="<%= APP %>"
+# Launch on default simulator.
+default: CAL_APP=<%= APP %> -p formatter
 
-simulator:     -p app -p formatter
-default:       -p simulator
-
-device:        -p formatter CAL_APP=./CalSmoke-cal.ipa
+# Launch on device.
+device:  CAL_APP=<%= IPA %> -p formatter
