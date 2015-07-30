@@ -11,20 +11,6 @@ module Calabash
       true
     end
 
-    # !@visibility private
-    def self.save_old_readline_history
-      file_name = IRB.conf[:HISTORY_FILE]
-
-      if File.exist?(file_name)
-        @@start_readline_history = File.readlines(file_name).map(&:chomp)
-      end
-    end
-
-    # !@visibility private
-    def self.extended(base)
-      save_old_readline_history
-    end
-
     # List the visible element classes.
     def classes
       query("*").map{|e| e['class']}.uniq
@@ -45,6 +31,20 @@ module Calabash
     def clear
       ConsoleHelpers.clear
       true
+    end
+
+    # !@visibility private
+    def self.save_old_readline_history
+      file_name = IRB.conf[:HISTORY_FILE]
+
+      if File.exist?(file_name)
+        @@start_readline_history = File.readlines(file_name).map(&:chomp)
+      end
+    end
+
+    # !@visibility private
+    def self.extended(base)
+      save_old_readline_history
     end
 
     # !@visibility private
