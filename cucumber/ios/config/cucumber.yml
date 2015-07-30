@@ -17,3 +17,5 @@ app:           CAL_APP="<%= APP %>"
 
 simulator:     -p app -p formatter
 default:       -p simulator
+
+device:        -p formatter CAL_APP=./CalSmoke-cal.ipa

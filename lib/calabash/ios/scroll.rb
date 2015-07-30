@@ -77,6 +77,8 @@ module Calabash
           fail("Expected '#{query}' to match a UIScrollView or a subclass")
         end
 
+        wait_for_animations_in(query)
+
         Calabash::QueryResult.create([view_to_scroll], query)
       end
 
@@ -163,6 +165,8 @@ module Calabash
           fail(message)
         end
 
+        wait_for_animations_in(query)
+
         Calabash::QueryResult.create([view_to_scroll], query)
       end
 
@@ -247,6 +251,8 @@ module Calabash
           ].join("\n")
           fail(message)
         end
+
+        wait_for_animations_in(query)
 
         Calabash::QueryResult.create([view_to_scroll], query)
       end
@@ -340,6 +346,8 @@ module Calabash
           fail(message)
         end
 
+        wait_for_animations_in(query)
+
         Calabash::QueryResult.create([view_to_scroll], query)
       end
 
@@ -431,6 +439,8 @@ module Calabash
           ].join("\n")
           fail(message)
         end
+
+        wait_for_animations_in(query)
 
         Calabash::QueryResult.create([view_to_scroll], query)
       end

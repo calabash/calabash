@@ -28,6 +28,7 @@ module Calabash
     require 'calabash/ios/console_helpers'
     require 'calabash/ios/uia'
     require 'calabash/ios/scroll'
+    require 'calabash/ios/runtime'
 
     include Calabash::IOS::Conditions
     include Calabash::IOS::Orientation
@@ -35,6 +36,7 @@ module Calabash
     include Calabash::IOS::Text
     include Calabash::IOS::UIA
     include Calabash::IOS::Scroll
+    include Calabash::IOS::Runtime
 
   end
 end

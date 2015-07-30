@@ -5,7 +5,6 @@ module CalSmokeApp
       loop do
         break if visible_block.call || count == 3
         scroll(query, direction)
-        wait_for_animations
         count = count + 1;
       end
     end
@@ -39,7 +38,6 @@ Then(/^I scroll the logos collection to the steam icon by mark$/) do
   }
 
   scroll_to_item(query, 'steam', options)
-  wait_for_animations
 end
 
 Then(/^I scroll the logos collection to the github icon by index$/) do
@@ -51,7 +49,6 @@ Then(/^I scroll the logos collection to the github icon by index$/) do
   }
 
   scroll_to_item(query, 13, 0, options)
-  wait_for_animations
 end
 
 Then(/^I scroll up on the logos collection to the android icon$/) do
@@ -74,7 +71,6 @@ Then(/^I scroll the colors collection to the middle of the purple boxes$/) do
   }
 
   scroll_to_item(query, 12, 4, options)
-  wait_for_animations
 end
 
 Then(/^I scroll the logos table to the steam row by mark$/) do
@@ -85,7 +81,6 @@ Then(/^I scroll the logos table to the steam row by mark$/) do
   }
 
   scroll_to_row_with_mark(query, 'steam', options)
-  wait_for_animations
 end
 
 Then(/^I scroll the logos table to the github row by index$/) do
@@ -96,7 +91,6 @@ Then(/^I scroll the logos table to the github row by index$/) do
   }
 
   scroll_to_row(query, 13, options)
-  wait_for_animations
 end
 
 Then(/^I scroll up on the logos table to the android row$/) do
@@ -116,7 +110,6 @@ Then(/^I center the cayenne box to the middle$/) do
   wait_for_view(query)
 
   query(query, :centerContentToBounds)
-  wait_for_animations
 
   query = "view marked:'cayenne'"
   wait_for_view(query)

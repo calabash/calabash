@@ -84,14 +84,6 @@ module Calabash
       # `Device.default.simulator? && !Device.ios6?`, but I haven't checked on
       # iOS 9 yet, so I will leave the condition out.
       def _pan(query, from, to, options={})
-        if Device.default.simulator?
-          message = [
-                "Apple's UIAutomation `dragInsideWithOptions` API is broken for iOS > 7",
-                'If you are trying to scroll on a UITableView or UICollectionView, try using the scroll_* methods'
-          ].join("\n")
-
-          raise message
-        end
 
         begin
           _expect_valid_duration(options)
@@ -99,7 +91,33 @@ module Calabash
           raise ArgumentError e
         end
 
-        view_to_pan = _gesture_waiter.wait_for_view(query, options)
+        gesture_waiter = _gesture_waiter
+        view_to_pan = gesture_waiter.wait_for_view(query, options)
+
+        if Device.default.simulator?
+
+          should_raise = false
+
+          content_offset = gesture_waiter.query(query, :contentOffset).first
+
+          if content_offset != '*****'
+            # Panning on anything with a content offset is broken.
+            should_raise = true
+          else
+            # TODO: Identify other conditions
+            # TODO: Can we detect UITableViewCells?
+            # The gist is that if the view is a UIScrollView or in a UIScrollView
+            # dragInsideWithOptions does not work
+          end
+
+          if should_raise
+            message = [
+                  "Apple's public UIAutomation API `dragInsideWithOptions` is broken for iOS Simulators >= 7",
+                  'Try using the scroll_* methods or test on a device.'
+            ].join("\n")
+            raise message
+          end
+        end
 
         rect = view_to_pan['rect']
 
