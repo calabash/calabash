@@ -1,6 +1,6 @@
 require 'calabash'
 
-platform = Calabash::Environment.variable('PLATFORM')
+platform = ENV['PLATFORM']
 
 case platform
   when 'android'
