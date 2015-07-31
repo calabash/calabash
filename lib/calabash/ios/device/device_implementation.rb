@@ -467,7 +467,10 @@ module Calabash
             if installed_app.same_sha1_as?(application)
               true
             else
-              @logger.log("The sha1 checksum has changed (#{installed_app.sha1} != #{application.sha1}.", :info)
+              @logger.log("The installed app and the target app are different.", :info)
+              @logger.log("   The target app has SHA: #{application.sha1}", :info)
+              @logger.log("The installed app has SHA: #{installed_app.sha1}", :info)
+              @logger.log("Installing the target app.", :info)
               install_app_on_simulator(application, @run_loop_device, bridge)
             end
           else
