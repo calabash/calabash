@@ -397,7 +397,13 @@ module Calabash
       end
 
       def self.read_attribute_from_monodroid_config(element, attribute)
-        REXML::Document.new(IO.read(monodroid_config_file)).elements["//#{element}"].attributes[attribute]
+        element = REXML::Document.new(IO.read(monodroid_config_file)).elements["//#{element}"]
+
+        if element
+          element.attributes[attribute]
+        else
+          nil
+        end
       end
 
       def self.find_executable_on_path(executable)
