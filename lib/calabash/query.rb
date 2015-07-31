@@ -163,5 +163,16 @@ module Calabash
         raise ArgumentError, "invalid query '#{query}' (#{query.class})"
       end
     end
+
+    private
+
+    # @!visibility private
+    def formatted_as_string
+      if @query.is_a?(Query)
+        @query.send(:formatted_as_string)
+      else
+        @query.to_s
+      end
+    end
   end
 end

@@ -440,8 +440,11 @@ module Calabash
 
     # @!visibility private
     def parse_query_list(queries)
-      queries = [queries] unless queries.is_a?(Array)
-      queries_dup = queries.map{|query| "\"#{query}\""}
+      unless queries.is_a?(Array)
+        queries = [queries]
+      end
+
+      queries_dup = queries.map{|query| "\"#{Query.new(query).send(:formatted_as_string)}\""}
 
       if queries_dup.length == 0
         ''
