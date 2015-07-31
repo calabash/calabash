@@ -24,8 +24,8 @@ module Calabash
       raise 'Implement your own trait'
     end
 
-    def await(timeout = nil)
-      wait_for_view(trait, timeout: timeout)
+    def await(options={})
+      wait_for_view(trait, options)
     end
 
     class StubPage
