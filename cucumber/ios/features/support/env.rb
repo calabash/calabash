@@ -11,4 +11,6 @@ Calabash::Device.default = Calabash::IOS::Device.new(identifier, server)
 
 unless Calabash::Environment.xamarin_test_cloud?
   require 'pry'
+  Pry.config.history.file = '.pry-history'
+  require 'pry-nav'
 end
