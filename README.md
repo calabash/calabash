@@ -47,6 +47,15 @@ $ be rake spec # All tests.  Launches iOS Simulators, etc.
 $ be guard     # Run unit tests as you develop.
 ```
 
+### Cucumber Android
+
+```
+$ bundle update
+$ rake android:build
+$ cd cucumber/android
+$ be cucumber
+```
+
 ### Cucumber iOS
 
 ```
