@@ -2,7 +2,8 @@ require 'clipboard'
 
 module Calabash
 
-  # Helper methods for the Calabash console.
+  # Methods you can use in the Calabash console to help you
+  # interact with your app.
   module ConsoleHelpers
 
     # Outputs all visible elements as a tree.
@@ -28,6 +29,7 @@ module Calabash
       true
     end
 
+    # Clear the console.
     def clear
       ConsoleHelpers.clear
       true
@@ -86,11 +88,12 @@ module Calabash
     # !@visibility private
     def puts_console_details
       puts ''
-      puts Color.blue('#             =>  Useful functions.  <=             #')
+      puts Color.blue('#             =>  Useful Methods  <=              #')
       puts Color.cyan('>     ids => List all the visible ids.')
       puts Color.cyan('> classes => List all the visible classes.')
       puts Color.cyan(">    tree => The app's visible view hierarchy.")
       puts Color.cyan('>    copy => Copy console commands to the Clipboard.')
+      puts Color.cyan('>   clear => Clear the console.')
       puts Color.cyan('> verbose => Turn debug logging on.')
       puts Color.cyan('>   quiet => Turn debug logging off.')
       puts ''
