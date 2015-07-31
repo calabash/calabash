@@ -46,6 +46,18 @@ module Calabash
         File.open(File.join('features', 'step_definitions', 'calabash_steps.rb'), 'w') {|file| file.write(calabash_steps) }
         File.open(File.join('features', 'support', 'hooks.rb'), 'w') {|file| file.write(hooks) }
         File.open(File.join('features', 'support', 'env.rb'), 'w') {|file| file.write(env) }
+
+        gemfile = File.read(file(File.join('Gemfile')))
+
+        unless File.exist?('Gemfile')
+          File.open('Gemfile', 'w') {|file| file.write(gemfile) }
+        end
+
+        gitignore = File.read(file(File.join('.gitignore')))
+
+        unless File.exist?('.gitignore')
+          File.open('.gitignore', 'w') {|file| file.write(gitignore) }
+        end
       end
 
       def file(file)

@@ -76,6 +76,13 @@ module Calabash
         raise 'Cannot use both marked and id/text'
       end
 
+      unknown = hash.keys - [:class, :marked, :id, :text, :index, :css, :xpath]
+
+      if unknown.length > 0
+        raise ArgumentError,
+              "Unknown query keys: #{unknown.join(', ')}"
+      end
+
       if hash[:marked]
         result = "#{result} marked:'#{Text.escape_single_quotes(hash[:marked])}'"
       end
@@ -154,6 +161,17 @@ module Calabash
     def self.ensure_valid_query(query)
       unless valid_query?(query)
         raise ArgumentError, "invalid query '#{query}' (#{query.class})"
+      end
+    end
+
+    private
+
+    # @!visibility private
+    def formatted_as_string
+      if @query.is_a?(Query)
+        @query.send(:formatted_as_string)
+      else
+        @query.to_s
       end
     end
   end

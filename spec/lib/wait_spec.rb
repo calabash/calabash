@@ -509,10 +509,10 @@ describe Calabash::Wait do
       query = ['my query 1', 'my query 2']
       returned = [false, false, false, false, false, false, false, false, false, [[{}]]]
 
-      expect(dummy).to receive(:views_exist?).with(query).exactly(10).times.and_return(*returned)
+      expect(dummy).to receive(:views_exist?).with(*query).exactly(10).times.and_return(*returned)
       expect(dummy).to receive(:sleep).with(Calabash::Wait.default_options[:retry_frequency]).exactly(9).times
 
-      dummy.wait_for_views(query)
+      dummy.wait_for_views(*query)
     end
 
     it 'should fail if the view does not appear' do

@@ -2,7 +2,7 @@ module Calabash
   module IOS
     module Text
       # @!visibility private
-      def enter_text(text)
+      def _enter_text(text)
         wait_for_keyboard
         existing_text = text_from_keyboard_first_responder
         options = { existing_text: existing_text }

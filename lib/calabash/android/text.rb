@@ -32,10 +32,16 @@ module Calabash
         Device.default.perform_action('clear_text')
       end
 
+      # @!visibility private
       def _clear_text_in(view)
         tap(view)
         sleep 0.5
         clear_text
+      end
+
+      # @!visibility private
+      def _enter_text(text)
+        Device.default.enter_text(text)
       end
 
       # @!visibility private

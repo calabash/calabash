@@ -65,13 +65,13 @@ module Calabash
   # @param [Class] The page to instantiate
   # @return [Calabash::Page] An instance of the page class
   def page(page_class)
-    platform_module = if Device.default.is_a?(Android::Device)
-                        Object.const_get(:Android)
-                      elsif Device.default.is_a?(IOS::Device)
-                        Object.const_get(:IOS)
-                      else
-                        raise 'Cannot detect running platform'
-                      end
+    if android?
+      platform_module = Object.const_get(:Android)
+    elsif ios?
+      platform_module = Object.const_get(:IOS)
+    else
+      raise 'Cannot detect running platform'
+    end
 
     unless page_class.is_a?(Class)
       raise ArgumentError, "Expected a 'Class', got '#{page_class.class}'"
@@ -96,6 +96,14 @@ module Calabash
     else
       raise "No such page defined '#{platform_module}::#{page_name}'"
     end
+  end
+
+  def android?
+    Android.const_defined?(:Device) && Device.default.is_a?(Android::Device)
+  end
+
+  def ios?
+    IOS.const_defined?(:Device) && Device.default.is_a?(IOS::Device)
   end
 
   def self.new_embed_method!(method)
