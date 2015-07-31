@@ -2,5 +2,5 @@
 ##YAML Template
 ---
 # Platform
-android: PLATFORM=android -r features/support -r features/android -r features/step_definitions
-ios: PLATFORM=ios -r features/support -r features/ios -r features/step_definitions
+android: PLATFORM=android -r features
+ios: PLATFORM=ios -r features
