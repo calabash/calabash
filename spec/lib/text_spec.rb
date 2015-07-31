@@ -6,11 +6,10 @@ describe Calabash::Text do
   let(:dummy_device) {dummy_device_class.new}
 
   describe '#enter_text' do
-    it 'should delegate to the default device' do
+    it 'should invoke the implementation method' do
       args = ['my-text']
 
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:enter_text).with(*args)
+      expect(dummy).to receive(:_enter_text).with(*args)
 
       dummy.enter_text(*args)
     end

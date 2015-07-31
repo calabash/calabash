@@ -7,7 +7,7 @@ module Calabash
     # @param [String] text The text to type.
     # @raise [RuntimeError] if the text cannot be typed.
     def enter_text(text)
-      Device.default.enter_text(text)
+      _enter_text(text.to_s)
     end
 
     # Enter `text` into `query`.
@@ -46,6 +46,11 @@ module Calabash
     # @return [String] A string with its single quotes properly escaped.
     def escape_single_quotes(string)
       Text.escape_single_quotes(string)
+    end
+
+    # @!visibility private
+    def _enter_text(text)
+      abstract_method!
     end
 
     # @!visibility private
