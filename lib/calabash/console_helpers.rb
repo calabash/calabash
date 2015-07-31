@@ -33,10 +33,25 @@ module Calabash
       true
     end
 
+    def clear
+      ConsoleHelpers.clear
+      true
+    end
+
     def self.copy
       commands = filter_commands(current_console_history)
       string = commands.join($INPUT_RECORD_SEPARATOR)
       Clipboard.copy(string)
+    end
+
+    def self.clear
+      if Gem.win_platform?
+        system('cls')
+      else
+        system('clear')
+      end
+
+      @@start_readline_history = readline_history
     end
 
     def self.current_console_history
