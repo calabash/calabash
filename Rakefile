@@ -56,12 +56,14 @@ task :ctags do
 end
 
 namespace :cucumber do
+  desc 'Run iOS cucumber tests.'
   task :ios do
     Dir.chdir('cucumber/ios/') do
       sh 'bundle exec cucumber'
     end
   end
 
+  desc 'Run Android cucumber tests.'
   task :android do
     Dir.chdir('cucumber/android') do
       sh 'bundle exec cucumber'
@@ -85,6 +87,7 @@ namespace :android do
     `mv android/calmd5/libs lib/calabash/android/lib/calmd5`
   end
 
+  desc 'Build the Android test server.'
   task :build => [:ensure_files_exist, :build_test_server] do
   end
 end
