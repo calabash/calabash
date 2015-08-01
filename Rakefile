@@ -19,9 +19,40 @@ begin
 rescue LoadError => _
 end
 
-# Generating tags for vim
+desc 'Generate ctags in ./git/tags.'
 task :ctags do
-  sh 'ctags --tag-relative -R --exclude=.git --languages=-sql lib/ spec/ cucumber/'
+  sh 'rm -f .git/tags'
+  excluded = [
+    '--exclude=*.png',
+    '--exclude=.screenshots',
+    '--exclude=*screenshots*',
+    '--exclude=reports',
+    '--exclude=*.app',
+    '--exclude=*.dSYM',
+    '--exclude=*.ipa',
+    '--exclude=*.zip',
+    '--exclude=*.framework',
+    '--exclude=.irb-history',
+    '--exclude=.pry-history',
+    '--exclude=.idea',
+    '--exclude=*.plist',
+    '--exclude=.gitignore',
+    '--exclude=Gemfile.lock',
+    '--exclude=Gemfile',
+    '--exclude=docs',
+    '--exclude=*.md',
+    '--exclude=*.java',
+    '--exclude=*.xml',
+    '--exclude=cucumber/android/test_servers',
+    '--exclude=android/test-server',
+    '--exclude=lib/calabash/android/lib/calmd5',
+    '--exclude=lib/calabash/ios/lib/recordings',
+    '--exclude=cucumber/ios/binaries',
+    '--exclude=.irbrc',
+    '--exclude=.DS_Store'
+  ]
+  cmd = "ctags --tag-relative -V -f .git/tags -R #{excluded.join(' ')} --languages=ruby lib/ spec/ cucumber/"
+  sh cmd
 end
 
 namespace :cucumber do
