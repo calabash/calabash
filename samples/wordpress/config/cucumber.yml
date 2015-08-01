@@ -1,6 +1,10 @@
-# config/cucumber.yml
-##YAML Template
----
+<%
+
+APP = ENV['CAL_APP'] || File.expand_path("features/prebuilt/wordpress_ios.app")
+APK = ENV['CAL_APP'] || File.expand_path("features/prebuilt/wordpress_android.apk")
+
+%>
+
 # Platform
-android: PLATFORM=android -r features
-ios: PLATFORM=ios -r features
+android: CAL_APP=<%= APK %> PLATFORM=android -r features
+ios:     CAL_APP=<%= APP %> PLATFORM=ios -r features
