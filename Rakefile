@@ -19,18 +19,59 @@ begin
 rescue LoadError => _
 end
 
-# Generating tags for vim
+desc 'Generate and publish docs'
+namespace :yard do
+  task :publish do
+    # Obtain the publish script from a maintainer.
+    sh 'script/docs/publish-calabash-docs.sh'
+  end
+end
+
+desc 'Generate ctags in ./git/tags.'
 task :ctags do
-  sh 'ctags --tag-relative -R --exclude=.git --languages=-sql lib/ spec/ cucumber/'
+  sh 'rm -f .git/tags'
+  excluded = [
+    '--exclude=*.png',
+    '--exclude=.screenshots',
+    '--exclude=*screenshots*',
+    '--exclude=reports',
+    '--exclude=*.app',
+    '--exclude=*.dSYM',
+    '--exclude=*.ipa',
+    '--exclude=*.zip',
+    '--exclude=*.framework',
+    '--exclude=.irb-history',
+    '--exclude=.pry-history',
+    '--exclude=.idea',
+    '--exclude=*.plist',
+    '--exclude=.gitignore',
+    '--exclude=Gemfile.lock',
+    '--exclude=Gemfile',
+    '--exclude=docs',
+    '--exclude=*.md',
+    '--exclude=*.java',
+    '--exclude=*.xml',
+    '--exclude=cucumber/android/test_servers',
+    '--exclude=android/test-server',
+    '--exclude=lib/calabash/android/lib/calmd5',
+    '--exclude=lib/calabash/ios/lib/recordings',
+    '--exclude=cucumber/ios/binaries',
+    '--exclude=.irbrc',
+    '--exclude=.DS_Store'
+  ]
+  cmd = "ctags --tag-relative -V -f .git/tags -R #{excluded.join(' ')} --languages=ruby lib/ spec/ cucumber/"
+  sh cmd
 end
 
 namespace :cucumber do
+  desc 'Run iOS cucumber tests.'
   task :ios do
     Dir.chdir('cucumber/ios/') do
       sh 'bundle exec cucumber'
     end
   end
 
+  desc 'Run Android cucumber tests.'
   task :android do
     Dir.chdir('cucumber/android') do
       sh 'bundle exec cucumber'
@@ -54,6 +95,7 @@ namespace :android do
     `mv android/calmd5/libs lib/calabash/android/lib/calmd5`
   end
 
+  desc 'Build the Android test server.'
   task :build => [:ensure_files_exist, :build_test_server] do
   end
 end
