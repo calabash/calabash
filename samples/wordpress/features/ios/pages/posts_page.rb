@@ -10,6 +10,7 @@ class IOS::PostsPage < Calabash::Page
     tap({marked: 'Me'})
     tap({marked: 'Edit'})
     tap("UITableViewCellEditControl {accessibilityLabel BEGINSWITH 'Delete'}")
+    wait_for_animations
     tap("UIButtonLabel marked:'Remove'")
   end
 
