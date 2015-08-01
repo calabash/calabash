@@ -34,6 +34,7 @@ rake release           # Create tag v1.9.9.pre2 and build and push calabash-1.9.
 rake spec              # Run RSpec code examples
 rake unit              # Run RSpec code examples
 rake yard              # Generate YARD Documentation
+rake yard:publish      # Generate and publish docs
 ```
 
 ## Testing

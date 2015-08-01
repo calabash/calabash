@@ -50,3 +50,5 @@ lib/calabash/android/lib/AndroidManifest.xml
 # screenshots that might be produced during testing
 *screenshots*
 
+# Publish docs script; ask a maintainer for the script.
+script/docs/publish-calabash-docs.sh

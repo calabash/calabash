@@ -19,6 +19,14 @@ begin
 rescue LoadError => _
 end
 
+desc 'Generate and publish docs'
+namespace :yard do
+  task :publish do
+    # Obtain the publish script from a maintainer.
+    sh 'script/docs/publish-calabash-docs.sh'
+  end
+end
+
 desc 'Generate ctags in ./git/tags.'
 task :ctags do
   sh 'rm -f .git/tags'
