@@ -10,7 +10,7 @@ as your computer.
 
 ```
 $ bundle
-$ bundle exec resign features/prebuild/wordpress_android.apk
+$ bundle exec calabash resign features/prebuilt/wordpress_android.apk
 
 # Run the cucumbers.
 $ bundle exec calabash run features/prebuilt/wordpress_android.apk
@@ -51,7 +51,7 @@ $ bundle exec cucumber -p ios
 To start a console:
 
 ```
-$ bundle exec calabash console features/prebuilt/wordpress_ios.apk
+$ bundle exec calabash console features/prebuilt/wordpress_ios.app
 ```
 
 To choose a different simulator to run the tests on, use the
@@ -62,9 +62,9 @@ To choose a different simulator to run the tests on, use the
 $ xcrun instruments -s devices
 
 # Use either the marketing name.
-$ CAL_DEVICE="iPhone 6 Plus (8.4 Simulator)" bundle exec calabash run ...
+$ CAL_DEVICE_ID="iPhone 6 Plus (8.4 Simulator)" bundle exec calabash run ...
 
 # Or the simulator UDID.  Your UDIDs will be different!
-$ CAL_DEVICE=AFD41B4D-AAB8-4FFD-A80D-7B32DE8EC01C bundle exec calabash run ...
+$ CAL_DEVICE_ID=AFD41B4D-AAB8-4FFD-A80D-7B32DE8EC01C bundle exec calabash run ...
 ```
 
