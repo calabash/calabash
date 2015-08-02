@@ -405,6 +405,20 @@ module Calabash
           raise "The test-server '#{application.test_server.identifier}' is not installed"
         end
 
+        installed_app = installed_apps.find{|app| app[:package] == application.identifier}
+        installed_app_md5_checksum = md5_checksum(installed_app[:path])
+
+        if application.md5_checksum != installed_app_md5_checksum
+          raise "The specified app is not the same as the installed app (#{application.md5_checksum} != #{installed_app_md5_checksum})."
+        end
+
+        installed_test_server = installed_apps.find{|app| app[:package] == application.test_server.identifier}
+        installed_test_server_md5_checksum = md5_checksum(installed_test_server[:path])
+
+        if application.test_server.md5_checksum != installed_test_server_md5_checksum
+          raise "The specified test-server is not the same as the installed test-server (#{application.test_server.md5_checksum} != #{installed_test_server_md5_checksum})."
+        end
+
         ensure_screen_on
 
         # Clear any old error reports
@@ -749,7 +763,7 @@ module Calabash
         gesture = Gestures::Gesture.double_tap(gesture_options)
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
-                                                          query_string: query.to_s,
+                                                          query: query,
                                                           timeout: options[:timeout]))
       end
 
@@ -788,7 +802,7 @@ module Calabash
         gesture = Gestures::Gesture.generate_swipe(from, to, time: duration)
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
-                                                          query_string: query.to_s,
+                                                          query: query,
                                                           timeout: options[:timeout]))
       end
 
@@ -799,7 +813,7 @@ module Calabash
         gesture.gestures.first.touches[1].query = query_to
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
-                                                          query_string: query_to,
+                                                          query: query_to,
                                                           timeout: options[:timeout]))
       end
 
@@ -816,7 +830,7 @@ module Calabash
         gesture = Gestures::Gesture.generate_swipe(from, to, time: duration, flick: true)
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
-                                                          query_string: query.to_s,
+                                                          query: query,
                                                           timeout: options[:timeout]))
       end
 
@@ -825,7 +839,7 @@ module Calabash
         gesture = Gestures::Gesture.pinch(direction)
 
         execute_gesture(Gestures::Gesture.with_parameters(gesture,
-                                                          query_string: query.to_s,
+                                                          query: query,
                                                           timeout: options[:timeout]))
       end
 
