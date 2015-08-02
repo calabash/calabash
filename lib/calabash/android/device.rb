@@ -350,18 +350,17 @@ module Calabash
         "/data/data/#{application.test_server.identifier}/files/calabash_finished.out"
       end
 
-      def calabash_server_failure_exists?(application)
-        cmd = "ls #{calabash_server_failure_file_path(application)}"
+      def adb_file_exists?(file)
+        cmd = "ls #{file}"
+        adb.shell(cmd, no_exit_code_check: true).chomp == file
+      end
 
-        adb.shell(cmd, no_exit_code_check: true).chomp ==
-            calabash_server_failure_file_path(application)
+      def calabash_server_failure_exists?(application)
+        adb_file_exists?(calabash_server_failure_file_path(application))
       end
 
       def calabash_server_finished_exists?(application)
-        cmd = "ls #{calabash_server_finished_file_path(application)}"
-
-        adb.shell(cmd, no_exit_code_check: true).chomp ==
-            calabash_server_finished_file_path(application)
+        adb_file_exists?(calabash_server_finished_file_path(application))
       end
 
       def read_calabash_sever_failure(application)
@@ -842,15 +841,56 @@ module Calabash
 
       # @!visibility private
       def adb_install_app(application)
+        # Because of a bug in the latest version of ADB
+        # https://github.com/android/platform_system_core/blob/0f91887868e51de67bdf9aedc97fbcb044dc1969/adb/commandline.cpp#L1466
+        # ADB now uses rm -f ... to remove the temporary application on the
+        # device, but not all devices (below a certain OS) supports this flag.
+        # The user will be unable to install the app and instead receive:
+        # RuntimeError: Could not install app 'com.xamarin.xtcandroidsample.test': rm failed for -f, No such file or directory
+        # We have rewritten the way adb handles app installation. It's a 3-step
+        # procedure:
+        #  - Push the app binary to /data/local/tmp
+        #  - Install the app binary using pm
+        #  - Remove the temporary apk.
         @logger.log "Installing #{application.path}"
-        result = adb.command('install' , '-r', application.path, timeout: 60).lines.last
 
-        if result.downcase.chomp != 'success'
-          raise "Could not install app '#{application.identifier}': #{result.chomp}"
+        tmp_path = "/data/local/tmp/#{File.basename(application.path)}"
+
+        begin
+          adb.command('push', application.path, tmp_path, timeout: 60)
+        rescue ADB::ADBCallError => e
+          raise "Failed to push the application to the device storage: '#{e.message}'"
         end
 
-        unless installed_packages.include?(application.identifier)
-          raise "App '#{application.identifier}' was not installed"
+        begin
+          result = nil
+
+          begin
+            result = adb.shell("pm install -r #{tmp_path}", timeout: 60)
+          rescue ADB::ADBCallError => e
+            raise "Failed to install the application on device: '#{e.message}'"
+          end
+
+          if result.lines.last.downcase.chomp != 'success'
+            raise "Could not install app '#{application.identifier}': #{result.chomp}"
+          end
+
+          unless installed_packages.include?(application.identifier)
+            raise "App '#{application.identifier}' was not installed"
+          end
+        rescue => e
+          begin
+            adb.shell("rm #{tmp_path}")
+          rescue ADB::ADBCallError => _
+          end
+
+          raise e
+        end
+
+        begin
+          adb.shell("rm #{tmp_path}")
+        rescue ADB::ADBCallError => e
+          raise "Failed to remove the tmp apk from device: #{e.message}"
         end
       end
 
