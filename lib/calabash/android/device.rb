@@ -535,6 +535,10 @@ module Calabash
           raise ArgumentError, "No test server set for '#{application}'"
         end
 
+        unless app_installed?(application.identifier)
+          raise "The application #{application.identifier}' is not installed"
+        end
+
         unless app_installed?(application.test_server.identifier)
           raise "The test-server '#{application.test_server.identifier}' is not installed"
         end
