@@ -32,8 +32,8 @@ module Posts
 
   def self.generate_random_post_data
     letters = ('a'..'z').to_a
-    title = (0..30).map{letters[rand(letters.length)]}.join
-    content = (0..50).map{letters[rand(letters.length)]}.join
+    title = (0..20).map{letters[rand(letters.length)]}.join
+    content = (0..30).map{letters[rand(letters.length)]}.join
 
     {title: title, content: content}
   end
