@@ -15,7 +15,7 @@ $ bundle install
 $ bundle exec calabash run features/prebuilt/wordpress_android.apk
 
 # You can also use cucumber directly.
-$ CAL_APP=features/prebuilt/wordpress_android.apk bundle exec cucumber -p android
+$ bundle exec cucumber -p android
 ```
 
 To start a console:
@@ -44,7 +44,7 @@ $ bundle install
 $ bundle exec calabash run features/prebuilt/wordpress_ios.app
 
 # You can also use cucumber directly.
-$ CAL_APP=features/prebuilt/wordpress_ios.app bundle exec cucumber -p ios
+$ bundle exec cucumber -p ios
 ```
 
 To start a console:
