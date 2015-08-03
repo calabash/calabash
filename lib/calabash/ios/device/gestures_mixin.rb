@@ -88,7 +88,7 @@ module Calabash
         begin
           _expect_valid_duration(options)
         rescue ArgumentError => e
-          raise ArgumentError e
+          raise ArgumentError, e
         end
 
         gesture_waiter = _gesture_waiter
