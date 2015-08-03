@@ -40,7 +40,7 @@ class IOS::PostsPage < Calabash::Page
 
     wait_for_animations
 
-    tap("UITableViewWrapperView UITableViewCellContentView UILabel index:1")
+    tap("view marked:'#{title}' parent UITableViewCell index:0")
   end
 
   def delete_post_with_title(title)
