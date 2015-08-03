@@ -10,7 +10,6 @@ as your computer.
 
 ```
 $ bundle
-$ bundle exec calabash resign features/prebuilt/wordpress_android.apk
 
 # Run the cucumbers.
 $ bundle exec calabash run features/prebuilt/wordpress_android.apk
