@@ -15,3 +15,5 @@ screenshots
 .DS_Store
 __MACOSX
 
+# Emacs
+(.*/)?\#[^/]*\#$
