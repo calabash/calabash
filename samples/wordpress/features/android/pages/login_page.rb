@@ -22,6 +22,7 @@ class Android::LoginPage < Calabash::Page
     enter_password(password)
     dismiss_keyboard
     add_self_hosted_site(CREDENTIALS[:site])
+    dismiss_keyboard
     tap(LOGIN_BUTTON)
     wait_for_no_views('android.widget.ProgressBar')
   end
