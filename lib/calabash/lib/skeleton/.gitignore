@@ -8,4 +8,5 @@ screenshots
 .irb-history
 .pry-history
 
+# RubyMine project directory.
 .idea
