@@ -9,8 +9,10 @@ calmd5_exe = Dir.glob('lib/calabash/android/lib/calmd5/**/{calmd5,calmd5-pie}')
 test_server_apk = Dir.glob('lib/calabash/android/lib/TestServer.apk')
 android_manifest = Dir.glob('lib/calabash/android/lib/AndroidManifest.xml')
 playback_files = Dir.glob('lib/calabash/ios/lib/recordings/**/*.base64')
+skeleton_dir = 'lib/calabash/lib/skeleton'
+skeleton_files = Dir.glob(File.join(skeleton_dir,'**/*')) << (File.join(skeleton_dir,'.gitignore'))
 
-gem_files = lib_files + doc_files + jar_files + calmd5_exe + playback_files + test_server_apk + android_manifest
+gem_files = lib_files + doc_files + jar_files + calmd5_exe + playback_files + test_server_apk + android_manifest + skeleton_files
 
 Gem::Specification.new do |spec|
   spec.name          = 'calabash'
@@ -76,4 +78,3 @@ Public License.}
 
   spec.add_development_dependency 'stub_env'
 end
-
