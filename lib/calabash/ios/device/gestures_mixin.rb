@@ -116,9 +116,20 @@ module Calabash
 
           if should_raise
             message = [
+                  '',
                   "Apple's public UIAutomation API `dragInsideWithOptions` is broken for iOS Simulators >= 7",
-                  'Try using the scroll_* methods or test on a device.'
-            ].join("\n")
+                  '',
+                  'If you are trying to swipe-to-delete on a simulator, it will only work on a device.',
+                  '',
+                  'If you are trying to manipulate a table, collection or scroll view, try using the Scroll API.',
+                  '  * scroll                    # Scroll in a direction.',
+                  '  * scroll_to_row             # Scroll to a row with row / section indexes.',
+                  '  * scroll_to_row_with_mark   # Scroll to table row with a mark.',
+                  '  * scroll_to_item            # Scroll to collection item with item / section indexes.',
+                  '  * scroll_to_item_with_mark  # Scroll to collection item with a mark.',
+                  '',
+                  'All gestures work on physical devices.'
+            ].map { |msg| Color.red(msg) }.join("\n")
             raise message
           end
         end
