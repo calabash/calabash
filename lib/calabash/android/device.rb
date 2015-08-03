@@ -157,7 +157,7 @@ module Calabash
           raise "mapping \"#{query}\" with \"#{method_name}\" failed because: #{result['reason']}\n#{result['details']}"
         end
 
-        result['results']
+        Calabash::QueryResult.create(result['results'], query)
       end
 
       def perform_action(action, *arguments)
