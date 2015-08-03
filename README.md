@@ -56,6 +56,8 @@ $ be guard     # Run unit tests as you develop.
 $ bundle update
 $ rake android:build
 $ cd cucumber/android
+$ be calabash resign ../../spec/resources/android/xtc-android-sample.apk
+$ be calabash build ../../spec/resources/android/xtc-android-sample.apk
 $ be cucumber
 ```
 
