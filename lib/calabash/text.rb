@@ -1,6 +1,7 @@
 module Calabash
 
   # A public API for entering text.
+  # @!visibility private
   module Text
     # Enter `text` into the currently focused view.
     #

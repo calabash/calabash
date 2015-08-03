@@ -3,6 +3,7 @@ require 'escape'
 module Calabash
   module Android
     module Build
+      # @!visibility private
       class JavaKeystore
         CALABASH_KEYSTORE_SETTINGS_FILENAME = 'calabash_keystore_settings.json'
 

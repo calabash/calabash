@@ -1,4 +1,5 @@
 module Calabash
+  # @!visibility private
   class Device
     include Utility
 

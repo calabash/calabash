@@ -2,6 +2,7 @@ require 'digest'
 
 module Calabash
   # A representation of the application that is under test.
+  # @!visibility private
   class Application
     include Calabash::Utility
 

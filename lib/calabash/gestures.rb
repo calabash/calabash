@@ -4,6 +4,7 @@ module Calabash
   #
   # Many gestures take an optional :duration. On iOS, the duration must be
   # between 0.5 and 60 (seconds).  This is a limitation of the UIAutomation API.
+  # @!visibility private
   module Gestures
 
     # How long do we wait for a view to appear by default when performing a
@@ -346,37 +347,37 @@ module Calabash
       _pinch_screen_to_zoom(:out, options)
     end
 
-    # !@visibility private
+    # @!visibility private
     def _pan_screen_up(options={})
       abstract_method!
     end
 
-    # !@visibility private
+    # @!visibility private
     def _pan_screen_down(options={})
       abstract_method!
     end
 
-    # !@visibility private
+    # @!visibility private
     def _flick_screen_up(options={})
       abstract_method!
     end
 
-    # !@visibility private
+    # @!visibility private
     def _flick_screen_down(options={})
       abstract_method!
     end
 
-    # !@visibility private
+    # @!visibility private
     def _pinch_screen(direction, options={})
       abstract_method!
     end
 
-    # !@visibility private
+    # @!visibility private
     def _pinch_to_zoom(direction, query, options={})
       abstract_method!
     end
 
-    # !@visibility private
+    # @!visibility private
     def _pinch_screen_to_zoom(direction, options={})
       abstract_method!
     end

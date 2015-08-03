@@ -1,7 +1,7 @@
 module Calabash
   module IOS
 
-    # !@visibility private
+    # @!visibility private
     module RotationMixin
 
       def rotate(direction)
@@ -58,7 +58,7 @@ module Calabash
         playback_route(recording_name, form_factor)
       end
 
-      # !@visibility private
+      # @!visibility private
       # Caller must pass position one of these positions down, left, right, up
       def rotate_home_button_to(position)
 

@@ -28,6 +28,7 @@ module Calabash
       wait_for_view(trait, options)
     end
 
+    # @!visibility private
     class StubPage
 
     end

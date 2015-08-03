@@ -10,7 +10,9 @@ end
 module Calabash
   module Android
     class Environment < Calabash::Environment
+      # @!visibility private
       class InvalidEnvironmentError < RuntimeError; end
+      # @!visibility private
       class InvalidJavaSDKHome < RuntimeError; end
 
       private

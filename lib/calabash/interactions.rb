@@ -1,4 +1,5 @@
 module Calabash
+  # @!visibility private
   module Interactions
     # @todo Needs docs!
     def query(query, *args)
