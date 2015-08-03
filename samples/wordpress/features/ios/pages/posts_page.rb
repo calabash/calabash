@@ -43,6 +43,38 @@ class IOS::PostsPage < Calabash::Page
     tap("UITableViewWrapperView UITableViewCellContentView UILabel index:1")
   end
 
+  def delete_post_with_title(title)
+    query = "view marked:'#{title}' parent UITableViewCell"
+
+    wait_for_view(query)
+
+    if physical_device?
+      # swipe-do-delete works on physical devices.
+      pan(query, percent(80, 50), percent(20, 50))
+
+      wait_for_animations
+      query = "UIButtonLabel marked:'Remove'"
+      wait_for_view(query)
+
+      tap(query)
+      wait_for_animations
+    else
+      # but not on simulators
+      begin
+        pan(query, percent(80, 50), percent(20, 50))
+      rescue RuntimeError => e
+        unless e.message[/Apple's public UIAutomation API `dragInsideWithOptions`/][0]
+          message = [
+            "When trying to swipe-to-delete a post on an iOS Simulator.",
+            "Expected: error about a broken UIAutomation API.",
+            "     Got: #{e}",
+          ].join("\n")
+          raise message
+        end
+      end
+    end
+  end
+
   private
 
   def posts

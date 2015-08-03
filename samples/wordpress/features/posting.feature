@@ -16,11 +16,20 @@ Feature: Managing posts
     Then I should show the title and content I gave it
 
   @log_in
+  @android
   Scenario: Deleting a post
     Given I have added a post
     When I view that post
     Then I should be able to delete it
     And it should not appear in the list of posts
+
+  @log_in
+  @ios
+  Scenario: Deleting a post
+   Given I have added a post
+   When I try to swipe-to-delete that post on a simulator
+   Then I expect an error about a broken Apple API
+   But I can delete that post on a device
 
   @log_in
   Scenario: Editing a post

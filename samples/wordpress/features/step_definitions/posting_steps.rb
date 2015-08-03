@@ -87,3 +87,15 @@ Then(/^it should appear with the changes in my list of posts$/) do
     page(PostsPage).first_post_title == @last_title
   end
 end
+
+When(/^I try to swipe-to-delete that post on a simulator$/) do
+  page(PostsPage).delete_post_with_title(@last_title)
+end
+
+Then(/^I expect an error about a broken Apple API$/) do
+  # See the Step above.
+end
+
+But(/^I can delete that post on a device$/) do
+  page(PostsPage).delete_post_with_title(@last_title)
+end
