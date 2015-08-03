@@ -65,23 +65,25 @@ module Calabash
 
     # Turn on debug logging.
     def verbose
-      if Calabash::Environment.const_defined?('DEBUG')
-        Calabash::Environment.send(:remove_const, 'DEBUG')
+      if Calabash::Logger.log_levels.include?(:debug)
+        puts Color.blue('Debug logging is already turned on.')
+      else
+        Calabash::Logger.log_levels << :debug
+        puts Color.blue('Turned on debug logging.')
       end
 
-      Calabash::Environment.const_set('DEBUG', '1')
-      puts Color.blue('Turned on debug logging.')
       true
     end
 
     # Turn off debug logging.
     def quiet
-      if Calabash::Environment.const_defined?('DEBUG')
-        Calabash::Environment.send(:remove_const, 'DEBUG')
+      if Calabash::Logger.log_levels.include?(:debug)
+        puts Color.blue('Turned off debug logging.')
+        Calabash::Logger.log_levels.delete(:debug)
+      else
+        puts Color.blue('Debug logging is already turned off.')
       end
 
-      Calabash::Environment.const_set('DEBUG', '0')
-      puts Color.blue('Turned off debug logging.')
       true
     end
 
