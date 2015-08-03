@@ -30,7 +30,7 @@ class IOS::PostsPage < Calabash::Page
   end
 
   def first_post_title
-    posts[1]['text']
+    posts[0]
   end
 
   def view_first_post_with_title(title)
@@ -78,8 +78,23 @@ class IOS::PostsPage < Calabash::Page
   private
 
   def posts
-    wait_for_view("UITableViewWrapperView")
+    wait_for_view("UITableView")
     wait_for_animations
-    query("UITableViewWrapperView UITableViewCellContentView UILabel")
+
+    # Some versions of iOS will return nil for empty text property;
+    # some versions will return ''
+    text = query("UITableViewCell descendant label", :text).compact
+    no_empties = text.map do |string|
+      if string == ''
+        nil
+      else
+        string
+      end
+    end.compact
+
+    # Collect only the titles.
+    no_empties.select.each_with_index { |elm, index| index.even? }
   end
+
 end
+
