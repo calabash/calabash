@@ -4,7 +4,8 @@ test_servers
 # Screenshots
 screenshots
 
-# irb history
+# Console artifacts.
 .irb-history
+.pry-history
 
 .idea
