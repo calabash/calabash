@@ -25,7 +25,7 @@ module Calabash
               logger.log('', :info)
               logger.log(Color.cyan('> console_attach                # Attaches with the default strategy.'),
                          :info)
-              logger.log(Color.cyan('> console_attach(uia_strategy) # Attaches with a specific strategy.'),
+              logger.log(Color.cyan('> console_attach(uia_strategy)  # Attaches with a specific strategy.'),
                          :info)
               logger.log('', :info)
               logger.log('', :info)
