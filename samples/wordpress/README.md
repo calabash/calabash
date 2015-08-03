@@ -9,13 +9,13 @@ Connect an Android device via USB.  Make sure it is on the same network
 as your computer.
 
 ```
-$ bundle
+$ bundle install
 
 # Run the cucumbers.
 $ bundle exec calabash run features/prebuilt/wordpress_android.apk
 
 # You can also use cucumber directly.
-$ bundle exec cucumber -p android
+$ CAL_APP=features/prebuilt/wordpress_android.apk bundle exec cucumber -p android
 ```
 
 To start a console:
@@ -32,19 +32,19 @@ device you want to test on.
 $ adb devices
 
 # The device serial number.
-$ CAL_DEVICE_ID=4<snip>9 bundle exec calabash run ...
+$ CAL_DEVICE_ID=0373707d093b bundle exec calabash run ...
 ```
 
 ### Calabash iOS
 
 ```
-$ bundle
+$ bundle install
 
 # Run the cucumbers.
 $ bundle exec calabash run features/prebuilt/wordpress_ios.app
 
 # You can also use cucumber directly.
-$ bundle exec cucumber -p ios
+$ CAL_APP=features/prebuilt/wordpress_ios.app bundle exec cucumber -p ios
 ```
 
 To start a console:
