@@ -4,6 +4,7 @@ module Calabash
   module HTTP
 
     # An HTTP client that retries its connection on errors and can time out.
+    # @!visibility private
     class RetriableClient
       attr_reader :client
 

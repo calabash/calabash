@@ -1,6 +1,7 @@
 # @todo: Add not about this class being easily abused
 module Calabash
   module Android
+    # @!visibility private
     module PhysicalButtons
       def press_button(key)
         Device.default.perform_action('press_key', key)

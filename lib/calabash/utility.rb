@@ -5,6 +5,7 @@ module Calabash
 
   end
 
+  # @!visibility private
   module Utility
 
     # @!visibility private
@@ -18,7 +19,7 @@ module Calabash
       raise AbstractMethodError.new("Abstract method '#{method_name}'")
     end
 
-    # @! visibility private
+    # @!visibility private
     class RetryError < RuntimeError; end
 
     # A convenience method for creating a percentage hash that that can be

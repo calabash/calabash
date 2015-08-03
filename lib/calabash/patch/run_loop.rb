@@ -8,6 +8,7 @@ else
   # @!visibility private
   module RunLoop
     # A model of the an .ipa - a application binary for iOS devices.
+    # @!visibility privater
     class Ipa
 
 

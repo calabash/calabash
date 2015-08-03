@@ -4,6 +4,7 @@ require 'pathname'
 module Calabash
 
   # A public API for taking screenshots.
+  # @!visibility private
   module Screenshot
     # @!visibility private
     def self.screenshot_directory_prefix

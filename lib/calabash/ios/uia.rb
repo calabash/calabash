@@ -1,5 +1,6 @@
 module Calabash
   module IOS
+    # @!visibility private
     module UIA
 
       # Evaluates `script` with Apple's UIAutomation API.

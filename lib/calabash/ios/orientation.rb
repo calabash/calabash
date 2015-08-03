@@ -4,6 +4,7 @@ module Calabash
     # On iOS, the presenting view controller must respond to rotation events.
     # If the presenting view controller does not respond to rotation events,
     # then no rotation will be performed.
+    # @!visibility private
     module Orientation
 
       # Returns the home button position relative to the status bar.

@@ -136,7 +136,7 @@ module Calabash
 
       private
 
-      # !@visibility private
+      # @!visibility private
       #
       # Unlike the Calabash Android server, the iOS server does not wait
       # before gestures, so the client must do the waiting.  The _gesture_waiter

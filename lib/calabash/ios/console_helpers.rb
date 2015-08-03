@@ -1,4 +1,5 @@
 module Calabash
+  # @!visibility private
   module ConsoleHelpers
     def self.render(data, indentation)
       if visible?(data)

@@ -1,3 +1,8 @@
 --markup=markdown
- --no-private
-lib/**/*.rb - README.md LICENSE VERSIONING.md
+--no-private
+--exclude lib/calabash/lib
+lib/**/*.rb
+-
+README.md
+LICENSE
+VERSIONING.md

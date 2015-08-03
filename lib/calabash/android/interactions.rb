@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # @!visibility private
     module Interactions
       # Go back.
       def go_back

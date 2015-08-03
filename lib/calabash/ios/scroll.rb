@@ -447,14 +447,14 @@ module Calabash
 
       private
 
-      # !@visibility private
+      # @!visibility private
       VALID_TABLE_SCROLL_POSITIONS = [:top, :middle, :bottom]
 
-      # !@visibility private
+      # @!visibility private
       VALID_COLLECTION_SCROLL_POSITIONS = [:top, :center_vertical, :bottom,
                                            :left, :center_horizontal, :right]
 
-      # !@visibility private
+      # @!visibility private
       def _wait_for_exactly_one_scroll_view(query)
 
         results = []
@@ -476,7 +476,7 @@ module Calabash
         results.first
       end
 
-      # !@visibility private
+      # @!visibility private
       def _expect_valid_scroll_positions(valid_positions, position)
         unless valid_positions.include?(position.to_sym)
           raise ArgumentError,
@@ -484,7 +484,7 @@ module Calabash
         end
       end
 
-      # !@visibility private
+      # @!visibility private
       def _expect_valid_scroll_animate(animate)
         unless [true, false].include?(animate)
           raise ArgumentError,
@@ -492,13 +492,13 @@ module Calabash
         end
       end
 
-      # !@visibility private
+      # @!visibility private
       def _expect_valid_scroll_options(valid_positions, options)
         _expect_valid_scroll_positions(valid_positions, options[:scroll_position])
         _expect_valid_scroll_animate(options[:animate])
       end
 
-      # !@visibility private
+      # @!visibility private
       def _expect_valid_scroll_mark(mark)
         if mark.nil? || mark == ''
           raise ArgumentError,

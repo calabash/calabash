@@ -2,7 +2,7 @@ module Calabash
   module IOS
     module Routes
 
-      # !@visibility private
+      # @!visibility private
       module PlaybackRouteMixin
 
         # This is a Legacy API and is only used to support rotations.

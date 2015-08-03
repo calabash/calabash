@@ -2,6 +2,7 @@ module Calabash
   module IOS
 
     # An iOS Device is an iOS Simulator or physical device.
+    # @!visibility private
     class Device < ::Calabash::Device
 
       include Calabash::IOS::PhysicalDeviceMixin

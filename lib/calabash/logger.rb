@@ -1,6 +1,7 @@
 module Calabash
 
   # A logger for Calabash.
+  # @!visibility private
   class Logger
     attr_accessor :default_log_level
 

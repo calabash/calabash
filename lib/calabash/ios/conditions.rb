@@ -1,5 +1,6 @@
 module Calabash
   module IOS
+    # @!visibility private
     module Conditions
 
       # Waits for all elements to stop animating.

@@ -1,6 +1,7 @@
 module Calabash
 
   # A representation of the Calabash test server.
+  # @!visibility private
   class Server
     attr_reader :endpoint
     attr_reader :test_server_port

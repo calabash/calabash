@@ -3,6 +3,7 @@ module Calabash
 
     # A representation of an HTTP request that can be passed passed to the HTTP
     # client as an argument for `get` or `post`.
+    # @!visibility private
     class Request
       attr_reader :route, :params
 

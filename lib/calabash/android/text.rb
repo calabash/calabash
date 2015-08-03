@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # @!visibility private
     module Text
       def dismiss_keyboard
         Device.default.perform_action('hide_soft_keyboard')

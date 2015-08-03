@@ -2,6 +2,7 @@ require 'json'
 
 module Calabash
   module Android
+    # @!visibility private
     module Gestures
       class MultiTouchGesture
         attr_reader :gestures
@@ -344,12 +345,12 @@ module Calabash
         flick("* id:'content'", from, to, options)
       end
 
-      # !@visibility private
+      # @!visibility private
       def _pinch_screen(direction, options={})
         Device.default.pinch(direction, "* id:'content'", options)
       end
 
-      # !@visibility private
+      # @!visibility private
       def _pinch_to_zoom(direction, query, options={})
         if direction == :out
           Device.default.pinch(:in, query, options)
@@ -360,7 +361,7 @@ module Calabash
         end
       end
 
-      # !@visibility private
+      # @!visibility private
       def _pinch_screen_to_zoom(direction, options={})
         _pinch_to_zoom(direction, "* id:'content'", options)
       end

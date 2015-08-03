@@ -1,4 +1,3 @@
-# @!visibility private
 module Calabash
   module Android
     # @!visibility private

@@ -3,6 +3,7 @@ require 'json'
 module Calabash
   module Android
     # A representation of a Calabash Android device.
+    # @!visibility private
     class Device < ::Calabash::Device
       attr_reader :adb
 
