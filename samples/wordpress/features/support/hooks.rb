@@ -11,7 +11,7 @@ Before do |scenario|
 end
 
 After do
-  stop_app
+
 end
 
 Before('@log_in') do
