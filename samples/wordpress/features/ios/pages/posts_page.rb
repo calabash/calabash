@@ -25,7 +25,7 @@ class IOS::PostsPage < Calabash::Page
     wait_for_animations
     tap({marked: 'Me'})
     wait_for_animations
-    tap("WPBlogTableViewCell UITableViewLabel")
+    tap("view marked:'Calabash Blog'")
     tap({id: 'icon-menu-posts'})
   end
 
