@@ -1,6 +1,5 @@
 Feature: Managing posts
-  As a user I should be able to add, manage,
-  and delete my posts.
+   As a user I should be able to add, manage, and delete my posts.
 
   Scenario: Adding a new post
     Given I am signed in
