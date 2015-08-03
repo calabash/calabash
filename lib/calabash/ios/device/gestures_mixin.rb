@@ -103,7 +103,11 @@ module Calabash
           if content_offset != '*****'
             # Panning on anything with a content offset is broken.
             should_raise = true
+          elsif view_to_pan['class'][/TableViewCell/, 0]
+            should_raise = true
           else
+            new_query = "#{query} parent UITableViewCell"
+            should_raise = !gesture_waiter.query(new_query).empty?
             # TODO: Identify other conditions
             # TODO: Can we detect UITableViewCells?
             # The gist is that if the view is a UIScrollView or in a UIScrollView
