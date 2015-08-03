@@ -1,12 +1,12 @@
 module Calabash
   module IOS
     module Defaults
-      def self.setup_defaults!
+      def setup_defaults!
         setup_default_application!
         setup_default_device!
       end
 
-      def self.setup_default_device!
+      def setup_default_device!
         if Calabash.default_application.nil?
           raise 'Cannot setup default device for iOS, as no default Application has been set'
         end
@@ -20,7 +20,7 @@ module Calabash
         Calabash.default_device = Device.new(identifier, server)
       end
 
-      def self.setup_default_application!
+      def setup_default_application!
         # Setup the default application
         Calabash.default_application = Application.default_from_environment
       end
