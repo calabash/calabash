@@ -10,3 +10,8 @@ screenshots
 
 # RubyMine project directory.
 .idea
+
+# MacOS
+.DS_Store
+__MACOSX
+
