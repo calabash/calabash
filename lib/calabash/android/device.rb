@@ -819,9 +819,14 @@ module Calabash
         gesture.gestures.first.touches[0].query = query_from
         gesture.gestures.first.touches[1].query = query_to
 
-        execute_gesture(Gestures::Gesture.with_parameters(gesture,
+        result = execute_gesture(Gestures::Gesture.with_parameters(gesture,
                                                           query: query_to,
                                                           timeout: options[:timeout]))
+
+        {
+            :from => Calabash::QueryResult.create(result[0], query_from),
+            :to => Calabash::QueryResult.create(result[1], query_to)
+        }
       end
 
       # @!visibility private
