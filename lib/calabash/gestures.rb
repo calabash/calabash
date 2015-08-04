@@ -19,33 +19,24 @@ module Calabash
     #
     #      ┬    ┌─────────────────────────────────────┐
     #      |    │2                                   3│
-    #      |    │                 4                   │
+    #      |    │                                     │
     #      |    │                                     │
     #   200 px  │                 1                   │
     #      |    │                                     │
-    #      |    │             7     5                 │   6
     #      |    │                                     │
+    #      |    │                 4                   │
     #      ┴    └─────────────────────────────────────┘
     #
     #   1. tap("* marked:'email'")
     #   2. tap("* marked:'email'", at:  {x: 0, y: 0})
     #   3. tap("* marked:'email'", at:  {x: 100, y: 0})
-    #   4. tap("* marked:'email'", offset: {y: -40})
-    #   5. tap("* marked:'email'", offset: {x: 20, y: 40})
-    #   6. tap("* marked:'email'", at: {x: 100, y: 75}, offset: {x: 80})
-    #   7. tap("* marked:'email'", at: {x: 50, y: 100},
-    #                              offset: {x: -80, y: -40})
+    #   4. tap("* marked:'email'", at:  {x: 50, y: 100})
     #
     # @param [String] query A query describing the view to tap.
     # @param [Hash] options Options for modifying the details of the touch.
     # @option options [Hash] :at ({x: 50, y: 50}) The point at which the
     #   gesture originates from.  It is a percentage-based translation using
-    #   top-left `(0,0)` as the reference point. This translation is always
-    #   applied before any `:offset`.
-    # @option options [Hash] :offset ({x: 0, y: 0}) Offset to touch point.
-    #   Offset supports an `:x` and `:y` key and causes the touch to be
-    #   offset with `(x,y)`.  This offset is always applied _after_ any
-    #   translation performed by `:at`.
+    #   top-left `(0,0)` as the reference point.
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def tap(query, options={})
