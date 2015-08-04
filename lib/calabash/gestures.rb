@@ -246,7 +246,7 @@ module Calabash
     #   ends.
     #
     # @param [Hash] options Options for controlling the flick.
-    # @options options [Numeric] :duration The duration of the flick. On iOS,
+    # @option options [Numeric] :duration The duration of the flick. On iOS,
     #   the duration must be between 0.5 and 60.
     #
     # @raise [ViewNotFoundError] If the `query` returns no results.
