@@ -4,7 +4,6 @@
 # It is developed and maintained by Xamarin and is released under the Eclipse
 # Public License.
 module Calabash
-  require 'calabash/patch/run_loop'
   require 'calabash/version'
   require 'calabash/environment'
   require 'calabash/logger'
