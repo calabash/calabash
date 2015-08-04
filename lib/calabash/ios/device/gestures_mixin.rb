@@ -88,22 +88,25 @@ module Calabash
         begin
           _expect_valid_duration(options)
         rescue ArgumentError => e
-          raise ArgumentError e
+          raise ArgumentError, e
         end
 
         gesture_waiter = _gesture_waiter
         view_to_pan = gesture_waiter.wait_for_view(query, options)
 
-        if Device.default.simulator?
-
+        # * will never match a UIScrollView or subclass.
+        if Device.default.simulator? && query.to_s != '*'
           should_raise = false
 
           content_offset = gesture_waiter.query(query, :contentOffset).first
-
           if content_offset != '*****'
             # Panning on anything with a content offset is broken.
             should_raise = true
+          elsif view_to_pan['class'][/TableViewCell/, 0]
+            should_raise = true
           else
+            new_query = "#{query} parent UITableViewCell"
+            should_raise = !gesture_waiter.query(new_query).empty?
             # TODO: Identify other conditions
             # TODO: Can we detect UITableViewCells?
             # The gist is that if the view is a UIScrollView or in a UIScrollView
@@ -112,9 +115,20 @@ module Calabash
 
           if should_raise
             message = [
+                  '',
                   "Apple's public UIAutomation API `dragInsideWithOptions` is broken for iOS Simulators >= 7",
-                  'Try using the scroll_* methods or test on a device.'
-            ].join("\n")
+                  '',
+                  'If you are trying to swipe-to-delete on a simulator, it will only work on a device.',
+                  '',
+                  'If you are trying to manipulate a table, collection or scroll view, try using the Scroll API.',
+                  '  * scroll                    # Scroll in a direction.',
+                  '  * scroll_to_row             # Scroll to a row with row / section indexes.',
+                  '  * scroll_to_row_with_mark   # Scroll to table row with a mark.',
+                  '  * scroll_to_item            # Scroll to collection item with item / section indexes.',
+                  '  * scroll_to_item_with_mark  # Scroll to collection item with a mark.',
+                  '',
+                  'All gestures work on physical devices.'
+            ].map { |msg| Color.red(msg) }.join("\n")
             raise message
           end
         end
@@ -132,6 +146,12 @@ module Calabash
         uia_serialize_and_call(:panOffset, from_offset, to_offset)
 
         Calabash::QueryResult.create([view_to_pan], query)
+      end
+
+      def pan_screen(view_to_pan, from_offset, to_offset, options)
+        uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
+
+        Calabash::QueryResult.create([view_to_pan], '*')
       end
 
       private

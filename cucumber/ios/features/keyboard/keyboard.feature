@@ -4,8 +4,8 @@ Feature: Keyboard
   As a developer and tester
   I want a Calabash Keyboard API
 
-  Background: I should see the first view
-    Given I see the first tab
+  Background: Navigate to the controls tab
+    Given I see the controls tab
 
   Scenario: I should be able to type something
     And I touch the text field

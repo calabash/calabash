@@ -16,7 +16,7 @@ Feature: Orientation and Rotation
     And I can rotate to portrait
 
   Scenario: View controller does not support rotation
-    Given I see the first tab
+    Given I see the controls tab
     And the view controller does not support rotation
     When I rotate left
     Then no rotation occurred

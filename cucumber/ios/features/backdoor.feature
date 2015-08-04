@@ -39,8 +39,8 @@ Feature:  Backdoors
   # - (NSString *) stringWithBOOL:(BOOL) argument
   # - (NSString *) stringWithNSUInteger:(NSUInteger) argument
 
-  Background: The app has launched
-    Given I see the first tab
+  Background: Navigate to the controls tab
+    Given I see the controls tab
 
   Scenario: Backdoor selector is unknown
     And I call backdoor with an unknown selector

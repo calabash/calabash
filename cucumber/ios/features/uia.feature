@@ -5,7 +5,7 @@ Feature: UIA Automation Javascript API
   I want to interact with the UIAutomation Javascript API
 
   Scenario: Tapping
-    Given I see the first tab
+    Given I see the controls tab
     Then I use UIA to touch the text field
     And I wait for the keyboard
     Then I use UIA to type "Hello"

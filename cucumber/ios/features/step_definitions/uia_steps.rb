@@ -1,7 +1,7 @@
 
 Then(/^I use UIA to touch the text field$/) do
   wait_for_view("UITextField marked:'text'")
-  uia_with_main_window("elements()['first page'].textFields()['text'].tap()")
+  uia_with_main_window("elements()['controls page'].textFields()['text'].tap()")
 end
 
 Then(/^I use UIA to type "([^"]*)"$/) do |text|
