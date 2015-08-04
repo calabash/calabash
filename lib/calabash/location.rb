@@ -12,18 +12,16 @@ module Calabash
     # @example
     #  set_location(coordinates_for_place('The little mermaid, Copenhagen'))
     #
-    # @param {Hash} options specifies which location to simulate
-    # @option options {Numeric} :latitude latitude of a gps coordinate (same
-    #  coordinate system as Google maps)
-    # @option options {Numeric} :longitude longitude of a gps coordinate (same
-    #  coordinate system as Google maps)
+    # @param [Hash] location The location to simulate.
+    # @raise [ArgumentError] If location is not a hash and does not contain a
+    #  latitude and longitude key.
     def set_location(location)
       unless location.is_a?(Hash)
         raise ArgumentError, "Expected location to be a Hash, not '#{location.class}'"
       end
 
       unless location[:latitude] || location[:longitude]
-        raise ArgumentError, "You must supply :latitude and :longitude"
+        raise ArgumentError, 'You must supply :latitude and :longitude'
       end
 
       Device.default.set_location(location)
