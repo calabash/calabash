@@ -11,7 +11,7 @@ module Calabash
 
     # Set the default device.
     #
-    # @see #Calabash::Defaults#default_device
+    # @see Calabash::Defaults#default_device
     def default_device=(device)
       Device.default = device
     end
@@ -28,7 +28,7 @@ module Calabash
 
     # Set the default application.
     #
-    # @see #Calabash::Defaults.default_application
+    # @see Calabash::Defaults#default_application
     def default_application=(application)
       Application.default = application
     end
@@ -47,7 +47,7 @@ module Calabash
 
     # Set the default server.
     #
-    # @see #Calabash::Defaults.default_server
+    # @see Calabash::Defaults#default_server
     # @raise [RuntimeError] If default device is not set
     def default_server=(server)
       default_device.change_server(server)
