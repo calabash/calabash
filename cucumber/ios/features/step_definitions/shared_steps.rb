@@ -1,14 +1,16 @@
-Given(/^I see the (first|scrolls|special|tapping) tab$/) do |tab|
+Given(/^I see the (controls|gestures|scrolls|special|tapping) tab$/) do |tab|
   wait_for_view('tabBarButton')
   case tab
-  when 'first'
+  when 'controls'
     index = 0
-  when 'scrolls'
+  when 'gestures'
     index = 1
-  when 'special'
+  when 'scrolls'
     index = 2
-  when 'tapping'
+  when 'special'
     index = 3
+  when 'tapping'
+    index = 4
   end
   tap("tabBarButton index:#{index}")
   expected_view = "#{tab} page"

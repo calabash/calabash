@@ -35,3 +35,52 @@ But(/^I can pan to the cayenne box on the device$/) do
     wait_for_view("view marked:'cayenne'")
   end
 end
+
+And(/^I am on the panning gestures page$/) do
+  wait_for_animations
+  tap("view marked:'panning row'")
+
+  query = "view marked:'panning page'"
+  wait_for_view(query)
+end
+
+And(/^I clear the pan touch points$/) do
+  wait_for_animations
+
+  query = "view marked:'panning page'"
+  wait_for_view(query)
+
+  query(query, :clearTouchPoints)
+end
+
+Then(/^I can pan full-screen bottom to top$/) do
+  wait_for_animations
+
+  pan_screen_up
+
+  wait_for_views("view marked:'begin'", "view marked:'end'")
+end
+
+And(/^I can pan full-screen top to bottom$/) do
+  wait_for_animations
+
+  pan_screen_down
+
+  wait_for_views("view marked:'begin'", "view marked:'end'")
+end
+
+Then(/^I can pan full-screen left to right$/) do
+  wait_for_animations
+
+  pan_screen_right
+
+  wait_for_views("view marked:'begin'", "view marked:'end'")
+end
+
+Then(/^I can pan full-screen right to left$/) do
+  wait_for_animations
+
+  pan_screen_left
+
+  wait_for_views("view marked:'begin'", "view marked:'end'")
+end
