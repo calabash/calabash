@@ -4,6 +4,7 @@ module Calabash
     module Text
       def dismiss_keyboard
         Device.default.perform_action('hide_soft_keyboard')
+        sleep 0.5
       end
 
       # Taps a keyboard action key on the keyboard. Notice that Calabash does

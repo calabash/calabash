@@ -4,7 +4,7 @@ module Calabash
     module Interactions
       # Go back.
       def go_back
-        dismiss_keyboard
+        Device.default.perform_action('hide_soft_keyboard')
         press_back_button
       end
 
