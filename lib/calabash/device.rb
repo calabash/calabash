@@ -138,9 +138,7 @@ module Calabash
       gesture_options[:at] ||= {}
       gesture_options[:at][:x] ||= 50
       gesture_options[:at][:y] ||= 50
-      gesture_options[:offset] ||= {}
-      gesture_options[:offset][:x] ||= 0
-      gesture_options[:offset][:y] ||= 0
+      gesture_options[:offset] = {x: 0, y: 0}
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _tap(query, gesture_options)
@@ -156,9 +154,7 @@ module Calabash
       gesture_options[:at] ||= {}
       gesture_options[:at][:x] ||= 50
       gesture_options[:at][:y] ||= 50
-      gesture_options[:offset] ||= {}
-      gesture_options[:offset][:x] ||= 0
-      gesture_options[:offset][:y] ||= 0
+      gesture_options[:offset] = {x: 0, y: 0}
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _double_tap(query, gesture_options)
@@ -174,9 +170,7 @@ module Calabash
       gesture_options[:at] ||= {}
       gesture_options[:at][:x] ||= 50
       gesture_options[:at][:y] ||= 50
-      gesture_options[:offset] ||= {}
-      gesture_options[:offset][:x] ||= 0
-      gesture_options[:offset][:y] ||= 0
+      gesture_options[:offset] = {x: 0, y: 0}
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
       gesture_options[:duration] ||= 1
 
