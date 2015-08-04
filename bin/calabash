@@ -47,49 +47,58 @@ module Calabash
       def parse_arguments!
         argument = @arguments.shift
 
-        case argument
-          when '-v', '--verbose'
-            @options[:verbose] = true
-            Logger.log_levels += [:debug]
-            parse_arguments!
-          when '--platform'
-            platform = @arguments.shift.downcase
+        begin
+          case argument
+            when '-v', '--verbose'
+              @options[:verbose] = true
+              Logger.log_levels += [:debug]
+              parse_arguments!
+            when '--platform'
+              platform = @arguments.shift.downcase
 
-            fail("Invalid specified platform '#{platform}'") unless platform == 'android' || platform == 'ios'
+              fail("Invalid specified platform '#{platform}'") unless platform == 'android' || platform == 'ios'
 
-            set_platform!(platform.to_sym)
+              set_platform!(platform.to_sym)
 
-            parse_arguments!
-          when 'version'
-            puts Calabash::VERSION
-          when 'build'
-            parse_build_arguments!
-          when 'resign'
-            parse_resign_arguments!
-          when 'console'
-            parse_console_arguments!
-          when 'generate'
-            parse_generate_arguments!
-          when 'run'
-            parse_run_arguments!
-          when 'setup-keystore'
-            parse_setup_keystore_arguments!
-          when 'help'
-            argument = @arguments.shift
+              parse_arguments!
+            when 'version'
+              puts Calabash::VERSION
+            when 'build'
+              parse_build_arguments!
+            when 'resign'
+              parse_resign_arguments!
+            when 'console'
+              parse_console_arguments!
+            when 'generate'
+              parse_generate_arguments!
+            when 'run'
+              parse_run_arguments!
+            when 'setup-keystore'
+              parse_setup_keystore_arguments!
+            when 'help'
+              argument = @arguments.shift
 
-            if argument.nil?
+              if argument.nil?
+                print_usage
+              else
+                if key_for_command(argument)
+                  print_usage_for(key_for_command(argument))
+                else
+                  fail("No such command '#{argument}'")
+                end
+              end
+            when nil
               print_usage
             else
-              if key_for_command(argument)
-                print_usage_for(key_for_command(argument))
-              else
-                fail("No such command '#{argument}'")
-              end
-            end
-          when nil
-            print_usage
+              fail("Invalid command #{argument}.\n  For help use 'calabash help'")
+          end
+        rescue => e
+          if Logger.log_levels.include?(:debug)
+            raise e
           else
-            fail("Invalid command #{argument}.\n  For help use 'calabash help'")
+            puts "#{Color.red(e.message)}"
+            exit 1
+          end
         end
       end
     end
