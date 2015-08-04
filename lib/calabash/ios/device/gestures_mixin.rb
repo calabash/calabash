@@ -94,12 +94,11 @@ module Calabash
         gesture_waiter = _gesture_waiter
         view_to_pan = gesture_waiter.wait_for_view(query, options)
 
-        if Device.default.simulator?
-
+        # * will never match a UIScrollView or subclass.
+        if Device.default.simulator? && query.to_s != '*'
           should_raise = false
 
           content_offset = gesture_waiter.query(query, :contentOffset).first
-
           if content_offset != '*****'
             # Panning on anything with a content offset is broken.
             should_raise = true
