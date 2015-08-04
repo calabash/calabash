@@ -6,8 +6,8 @@ Feature: keyboard delete
   As a developer and tester
   I want to be able to app the delete key
 
-  Background: I should see the first view
-    Given I see the first tab
+  Background: Navigate to the controls tab
+    Given I see the controls tab
 
   Scenario: Default keyboard
     And the default keyboard is showing
