@@ -47,6 +47,20 @@ $ be rake spec # All tests.  Launches iOS Simulators, etc.
 $ be guard     # Run unit tests as you develop.
 ```
 
+### Cucumber Android
+
+**NOTE** If you find you cannot launch on Android, be sure you run the
+`copy\_repos` and `changing\_old\_files.sh` script.
+
+```
+$ bundle update
+$ rake android:build
+$ cd cucumber/android
+$ be calabash resign ../../spec/resources/android/xtc-android-sample.apk
+$ be calabash build ../../spec/resources/android/xtc-android-sample.apk
+$ be cucumber
+```
+
 ### Cucumber iOS
 
 ```
