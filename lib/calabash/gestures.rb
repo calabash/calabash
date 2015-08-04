@@ -4,7 +4,6 @@ module Calabash
   #
   # Many gestures take an optional :duration. On iOS, the duration must be
   # between 0.5 and 60 (seconds).  This is a limitation of the UIAutomation API.
-  # @!visibility private
   module Gestures
 
     # How long do we wait for a view to appear by default when performing a
@@ -114,9 +113,9 @@ module Calabash
     # @see Calabash::IOS::Scroll#scroll_to_item_with_mark
     #
     # @param [String] query A query describing the view to pan inside.
-    # @param [Hash] from ({:x, :y}) The point at which the gesture
+    # @param [Hash] from `({:x, :y})` The point at which the gesture
     #   originates from.
-    # @param [Hash] to ({:x, :y}) The point at which the gesture
+    # @param [Hash] to `({:x, :y})` The point at which the gesture
     #   ends.
     #
     # @param [Hash] options Options for modifying the details of the pan.
@@ -240,9 +239,9 @@ module Calabash
     #
     # @param [String,Hash,Query] query A query describing the view to flick
     #  inside of.
-    # @param [Hash] from ({:x, :y}) The point at which the gesture
+    # @param [Hash] from `({:x, :y})` The point at which the gesture
     #   originates from.
-    # @param [Hash] to ({:x, :y}) The point at which the gesture
+    # @param [Hash] to `({:x, :y})` The point at which the gesture
     #   ends.
     #
     # @param [Hash] options Options for controlling the flick.
