@@ -1,19 +1,23 @@
 module Calabash
-  # @!visibility private
   class Device
     include Utility
 
+    # @!visibility private
     @@default = nil
 
+    # @!visibility private
     def self.default
       @@default
     end
 
+    # @!visibility private
     def self.default=(value)
       @@default = value
     end
 
-    attr_reader :identifier, :server, :http_client, :logger
+    attr_reader :identifier
+    # @!visibility private
+    attr_reader :server, :http_client, :logger
 
     # Create a new device.
     # @param [String] identifier A token that uniquely identifies the device.
@@ -21,9 +25,10 @@ module Calabash
     #   `$ xcrun instruments -s devices`.
     #   On Android, this is the serial of the device, emulator or simulator
     #   returned by `$ adb devices`.
-    # @param [Server] server A server object.
+    # @param [Calabash::Server] server A server object.
     #
-    # @return [Device] A device.
+    # @return [Calabash::Device] A device.
+    # @!visibility public
     def initialize(identifier, server, options={})
       @identifier = identifier
       @server = server
@@ -31,12 +36,14 @@ module Calabash
       @http_client = HTTP::RetriableClient.new(server, options.fetch(:http_options, {}))
     end
 
+    # @!visibility private
     def change_server(new_server)
       @server = new_server
       @http_client.change_server(new_server)
     end
 
     # Start the application and the test server
+    # @!visibility private
     def start_app(path_or_application, options={})
       application = parse_path_or_app_parameters(path_or_application)
 
@@ -44,45 +51,53 @@ module Calabash
     end
 
     # Shutdown the application and the test server
+    # @!visibility private
     def stop_app
       _stop_app
     end
 
     # @see Screenshot#screenshot
+    # @!visibility private
     def screenshot(name=nil)
       path = Screenshot.obtain_screenshot_path!(name)
 
       _screenshot(path)
     end
 
+    # @!visibility private
     def install_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       _install_app(application)
     end
 
+    # @!visibility private
     def ensure_app_installed(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       _ensure_app_installed(application)
     end
 
+    # @!visibility private
     def uninstall_app(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       _uninstall_app(application)
     end
 
+    # @!visibility private
     def clear_app_data(path_or_application)
       application = parse_path_or_app_parameters(path_or_application)
 
       _clear_app_data(application)
     end
 
+    # @!visibility private
     def set_location(location)
       abstract_method!
     end
 
+    # @!visibility private
     def dump
       request = HTTP::Request.new('/dump')
 
@@ -95,6 +110,7 @@ module Calabash
     # Ensures the test server is ready
     #
     # @raise [RuntimeError] Raises error when the server does not respond
+    # @!visibility private
     def ensure_test_server_ready(options={})
       begin
         Timeout.timeout(options.fetch(:timeout, 30), EnsureTestServerReadyTimeoutError) do
@@ -114,6 +130,7 @@ module Calabash
 
     # Performs a `tap` on the (first) view that matches `query`.
     # @see Calabash::Gestures#tap
+    # @!visibility private
     def tap(query, options={})
       Query.ensure_valid_query(query)
 
@@ -131,6 +148,7 @@ module Calabash
 
     # Performs a `double_tap` on the (first) view that matches `query`.
     # @see Calabash::Gestures#double_tap
+    # @!visibility private
     def double_tap(query, options={})
       Query.ensure_valid_query(query)
 
@@ -148,6 +166,7 @@ module Calabash
 
     # Performs a `long_press` on the (first) view that matches `query`.
     # @see Calabash::Gestures#long_press
+    # @!visibility private
     def long_press(query, options={})
       Query.ensure_valid_query(query)
 
@@ -166,6 +185,7 @@ module Calabash
 
     # Performs a `pan` on the (first) view that matches `query`.
     # @see Calabash::Gestures#pan
+    # @!visibility private
     def pan(query, from, to, options={})
       Query.ensure_valid_query(query)
 
@@ -180,6 +200,7 @@ module Calabash
 
     # Performs a `pan` between two elements.
     # @see Calabash::Gestures#pan_between
+    # @!visibility private
     def pan_between(query_from, query_to, options={})
       Query.ensure_valid_query(query_from)
       Query.ensure_valid_query(query_to)
@@ -193,6 +214,7 @@ module Calabash
 
     # Performs a `flick` on the (first) view that matches `query`.
     # @see Calabash::Gestures#flick
+    # @!visibility private
     def flick(query, from, to, options={})
       Query.ensure_valid_query(query)
 
@@ -206,6 +228,7 @@ module Calabash
     end
 
     # @see Calabash::Gestures#pinch
+    # @!visibility private
     def pinch(direction, query, options={})
       Query.ensure_valid_query(query)
 
@@ -221,6 +244,7 @@ module Calabash
 
     # Enter `text` into the currently focused view.
     # @see Calabash::Text#enter_text
+    # @!visibility private
     def enter_text(text)
       abstract_method!
     end
