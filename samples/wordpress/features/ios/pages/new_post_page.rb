@@ -15,5 +15,6 @@ class IOS::NewPostPage < Calabash::Page
 
   def publish
     tap({marked: 'Publish'})
+    wait_for_no_network_indicator
   end
 end

@@ -32,3 +32,9 @@ case platform
     Calabash::Logger.error(failure_messages.join("\n"))
     exit(1)
 end
+
+unless Calabash::Environment.xamarin_test_cloud?
+  require 'pry'
+  Pry.config.history.file = '.pry-history'
+  require 'pry-nav'
+end

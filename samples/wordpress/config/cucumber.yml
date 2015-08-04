@@ -6,5 +6,5 @@ APK = ENV['CAL_APP'] || File.expand_path("features/prebuilt/wordpress_android.ap
 %>
 
 # Platform
-android: CAL_APP=<%= APK %> PLATFORM=android -r features
-ios:     CAL_APP=<%= APP %> PLATFORM=ios -r features
+android: CAL_APP=<%= APK %> PLATFORM=android -r features --tags ~@ios
+ios:     CAL_APP=<%= APP %> PLATFORM=ios -r features --tags ~@android

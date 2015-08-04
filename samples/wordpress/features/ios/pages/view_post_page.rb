@@ -12,8 +12,4 @@ class IOS::ViewPostPage < Calabash::Page
   def content
     wait_for_view({marked: 'Content'})['text']
   end
-
-  def delete
-    fail("This screen does not have a delete key")
-  end
 end
