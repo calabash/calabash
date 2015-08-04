@@ -90,7 +90,7 @@ module Calabash
     #   backdoor('calabashBackdoor', 'first argument', 2)
     #
     # @param [String] name The selector/method name.
-    # @param [Object] *arguments A comma separated list of arguments to be
+    # @param [Object] arguments A comma separated list of arguments to be
     #  passed to the backdoor selector/method.
     # @return [Object] the result of performing the selector/method with the
     #  arguments (serialized)
