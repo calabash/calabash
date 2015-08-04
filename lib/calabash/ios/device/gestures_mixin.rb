@@ -149,6 +149,12 @@ module Calabash
         Calabash::QueryResult.create([view_to_pan], query)
       end
 
+      def pan_screen(view_to_pan, from_offset, to_offset, options)
+        uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
+
+        Calabash::QueryResult.create([view_to_pan], '*')
+      end
+
       private
 
       # @!visibility private

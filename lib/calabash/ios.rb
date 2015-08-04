@@ -29,6 +29,7 @@ module Calabash
     require 'calabash/ios/uia'
     require 'calabash/ios/scroll'
     require 'calabash/ios/runtime'
+    require 'calabash/ios/gestures'
 
     include Calabash::IOS::Conditions
     include Calabash::IOS::Orientation
@@ -37,6 +38,7 @@ module Calabash
     include Calabash::IOS::UIA
     include Calabash::IOS::Scroll
     include Calabash::IOS::Runtime
+    include Calabash::IOS::Gestures
 
   end
 end
