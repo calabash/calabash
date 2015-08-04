@@ -16,7 +16,11 @@ module Calabash
       def _tap(query, options={})
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
-        offset = uia_center_of_view(view_to_touch)
+        rect = view_to_touch['rect']
+        x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
+        y = rect['y'] + (rect['height'] * (options[:at][:y] / 100.0)).to_i
+
+        offset = coordinate(x, y)
 
         uia_serialize_and_call(:tapOffset, offset, options)
 
@@ -26,7 +30,11 @@ module Calabash
       def _double_tap(query, options={})
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
-        offset = uia_center_of_view(view_to_touch)
+        rect = view_to_touch['rect']
+        x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
+        y = rect['y'] + (rect['height'] * (options[:at][:y] / 100.0)).to_i
+
+        offset = coordinate(x, y)
 
         uia_serialize_and_call(:doubleTapOffset, offset, options)
 
@@ -43,7 +51,11 @@ module Calabash
 
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
-        offset = uia_center_of_view(view_to_touch)
+        rect = view_to_touch['rect']
+        x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
+        y = rect['y'] + (rect['height'] * (options[:at][:y] / 100.0)).to_i
+
+        offset = coordinate(x, y)
 
         uia_serialize_and_call(:touchHoldOffset, options[:duration], offset)
 
