@@ -47,10 +47,18 @@ module Calabash
         File.open(File.join('features', 'support', 'hooks.rb'), 'w') {|file| file.write(hooks) }
         File.open(File.join('features', 'support', 'env.rb'), 'w') {|file| file.write(env) }
 
-        gemfile = File.read(file(File.join('Gemfile')))
+        gemfile = File.readlines(file(File.join('Gemfile')))
 
         unless File.exist?('Gemfile')
-          File.open('Gemfile', 'w') {|file| file.write(gemfile) }
+          File.open('Gemfile', 'w') do |file|
+            gemfile.each do |skeleton_line|
+              if skeleton_line == "gem 'calabash'\n"
+                file.write("#{skeleton_line.strip}, '#{Calabash::VERSION}'\n")
+              else
+                file.write(skeleton_line)
+              end
+            end
+          end
         end
 
         gitignore = File.read(file(File.join('.gitignore')))
