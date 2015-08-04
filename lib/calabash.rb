@@ -99,12 +99,12 @@ module Calabash
 
   # Is the app under test running on Android?
   def android?
-    Android.const_defined?(:Device) && Device.default.is_a?(Android::Device)
+    Android.const_defined?(:Device, false) && Device.default.is_a?(Android::Device)
   end
 
   # Is the app under test running on iOS?
   def ios?
-    IOS.const_defined?(:Device) && Device.default.is_a?(IOS::Device)
+    IOS.const_defined?(:Device, false) && Device.default.is_a?(IOS::Device)
   end
 
   # @!visibility private
