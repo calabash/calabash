@@ -137,11 +137,11 @@ module Calabash
 
         from_x = rect['width'] * (from[:x]/100.0)
         from_y = rect['height'] * (from[:y]/100.0)
-        from_offset = percent(from_x, from_y)
+        from_offset = coordinate(from_x, from_y)
 
         to_x = rect['width'] * (to[:x]/100.0)
         to_y = rect['height'] * (to[:y]/100.0)
-        to_offset = percent(to_x, to_y)
+        to_offset = coordinate(to_x, to_y)
 
         uia_serialize_and_call(:panOffset, from_offset, to_offset)
 
