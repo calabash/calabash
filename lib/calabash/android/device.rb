@@ -16,6 +16,12 @@ module Calabash
         end
       end
 
+      # @!visibility private
+      def change_server(new_server)
+        super(new_server)
+        port_forward(new_server.endpoint.port, new_server.test_server_port)
+      end
+
       def self.default_serial
         serials = list_serials
 
