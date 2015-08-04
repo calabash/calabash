@@ -30,6 +30,7 @@ module Calabash
     # Is Calabash running in debug mode. True if $CAL_DEBUG is '1'
     DEBUG = variable('CAL_DEBUG') == '1'
 
+    # @!visibility private
     # Experimental! Print every method that is called in Calabash
     DEBUG_CALLED_METHODS = variable('CAL_DEBUG_CALLED_METHODS') == '1'
 
