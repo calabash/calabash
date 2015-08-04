@@ -29,8 +29,8 @@ module Calabash
     # @see Calabash::Text#clear_text
     #
     # @param query A query describing the view to clear text in.
-    def clear_text_in(view)
-      _clear_text_in(view)
+    def clear_text_in(query)
+      _clear_text_in(query)
     end
 
     # @todo add docs
