@@ -4,7 +4,7 @@ GEM
     CFPropertyList (2.3.1)
     awesome_print (1.6.1)
     builder (3.2.2)
-    calabash (1.9.9.pre2)
+    calabash (1.9.9.pre3)
       awesome_print
       bundler (>= 1.3.0, < 2.0)
       clipboard
@@ -15,7 +15,7 @@ GEM
       json
       luffa
       rubyzip (~> 1.1)
-      run_loop (>= 1.3.3, < 2.0)
+      run_loop (>= 1.4.1, < 2.0)
     clipboard (1.0.6)
     coderay (1.1.0)
     cucumber (2.0.2)
@@ -64,7 +64,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  calabash (= 1.9.9.pre2)
+  calabash (= 1.9.9.pre3)
   cucumber
   pry
   pry-nav
