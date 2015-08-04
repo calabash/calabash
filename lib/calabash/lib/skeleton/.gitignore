@@ -1,10 +1,19 @@
-# Calabash test-server
+# Calabash Android test server
 test_servers
 
 # Screenshots
 screenshots
 
-# irb history
+# Console artifacts.
 .irb-history
+.pry-history
 
+# RubyMine project directory.
 .idea
+
+# MacOS
+.DS_Store
+__MACOSX
+
+# Emacs
+(.*/)?\#[^/]*\#$
