@@ -1,7 +1,6 @@
 require 'geocoder'
 
 module Calabash
-  # @!visibility private
   module Location
     # Simulates gps location of the device/simulator.
     # @note Seems UIAutomation is broken here on physical devices on iOS 7.1
