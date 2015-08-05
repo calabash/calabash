@@ -1,5 +1,4 @@
 module Calabash
-  # @!visibility private
   module LifeCycle
     def start_app(path_or_application = nil, **opt)
       path_or_application ||= Application.default
