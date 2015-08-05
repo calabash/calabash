@@ -73,15 +73,15 @@ module Calabash
       # @return [String] The position of the home button relative to the status
       #  bar after the rotation. Can be one of 'down', 'left', 'right', 'up'.
       def rotate_home_button_to(position)
-        valid_positions = ['down', 'bottom', 'top', 'up', 'left', 'right']
-        unless valid_positions.include?(position)
+        valid_positions = [:down, :bottom, :top, :up, :left, :right]
+        unless valid_positions.include?(position.to_sym)
           raise ArgumentError,
                 "Expected '#{position}' to be one of #{valid_positions.join(', ')}"
         end
 
-        canonical_position = position
-        canonical_position = 'down' if position == 'bottom'
-        canonical_position = 'up' if position == 'top'
+        canonical_position = position.to_sym
+        canonical_position = :down if position.to_sym == :bottom
+        canonical_position = :up if position.to_sym == :top
 
         Calabash::Device.default.rotate_home_button_to(canonical_position)
       end

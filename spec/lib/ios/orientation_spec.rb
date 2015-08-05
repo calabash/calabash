@@ -136,13 +136,13 @@ describe Calabash::IOS::Orientation do
 
     describe 'canonical position' do
       it "converts 'bottom' to 'down'" do
-        expect(device).to receive(:rotate_home_button_to).with('down').and_return :orientation
+        expect(device).to receive(:rotate_home_button_to).with(:down).and_return :orientation
 
         expect(world.rotate_home_button_to('bottom')).to be == :orientation
       end
 
       it "converts 'top' to 'up'" do
-        expect(device).to receive(:rotate_home_button_to).with('up').and_return :orientation
+        expect(device).to receive(:rotate_home_button_to).with(:up).and_return :orientation
 
         expect(world.rotate_home_button_to('top')).to be == :orientation
       end

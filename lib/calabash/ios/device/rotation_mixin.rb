@@ -59,10 +59,10 @@ module Calabash
       end
 
       # @!visibility private
-      # Caller must pass position one of these positions down, left, right, up
+      # Caller must pass position one of these positions :down, :left, :right, :up
       def rotate_home_button_to(position)
 
-        valid_positions = ['down', 'left', 'right', 'up']
+        valid_positions = [:down, :left, :right, :up]
         unless valid_positions.include?(position)
           raise ArgumentError,
                 "Expected '#{position}' to be on of #{valid_positions.join(', ')}"
