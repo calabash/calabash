@@ -107,7 +107,7 @@ module Calabash
         interval = options.fetch(:interval, @interval)
         header = options.fetch(:header, HEADER)
 
-        @logger.log "Getting: #{@server.endpoint + request.route}"
+        @logger.log "Getting: #{@server.endpoint + request.route} #{options}"
 
         start_time = Time.now
         last_error = nil
