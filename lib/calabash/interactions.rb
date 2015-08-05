@@ -49,7 +49,7 @@ module Calabash
     # @note Even if the query matches only one view, the QueryResult returned
     #  is still a list of elements.
     #
-    # @param [String, Symbol, Calabash::Query] query The query to match the
+    # @param [String, Hash, Calabash::Query] query The query to match the
     #  view(s)
     #
     # @param args Optional var-args list describing a chain of method

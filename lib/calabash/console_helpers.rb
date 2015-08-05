@@ -38,7 +38,7 @@ module Calabash
 
     # Flashes any views matching `query`.
     #
-    # @param [String, Symbol, Calabash::Query] query The query to match the
+    # @param [String, Hash, Calabash::Query] query The query to match the
     #  view(s)
     def flash(query)
       Calabash::Device.default.map_route(Query.new(query), :flash)
