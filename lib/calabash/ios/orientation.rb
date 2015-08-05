@@ -4,7 +4,6 @@ module Calabash
     # On iOS, the presenting view controller must respond to rotation events.
     # If the presenting view controller does not respond to rotation events,
     # then no rotation will be performed.
-    # @!visibility private
     module Orientation
 
       # Returns the home button position relative to the status bar.
@@ -17,30 +16,31 @@ module Calabash
         Device.default.status_bar_orientation
       end
 
-      # Rotates the device in the direction indicated by `direction`.
-      #
-      # @example
-      #  > rotate('left')
-      #  > rotate('right')
+      # Rotate the device left - clockwise relative to the home button.
       #
       # @note
       #   The presenting view controller must respond to rotation events.
       #   If the presenting view controller does not respond to rotation events,
       #   then no rotation will be performed.
       #
-      # @param [String] direction The direction in which to rotate.
-      #  Valid arguments are :left and :right
-      #
-      # @raise [ArgumentError] If an invalid direction is given.
       # @return [String] The position of the home button relative to the status
       #  bar after the rotation. Can be one of 'down', 'left', 'right', 'up'.
-      def rotate(direction)
-        unless direction == 'left' || direction == 'right'
-          raise ArgumentError, "Expected '#{direction}' to be 'left' or 'right'"
-        end
+      def rotate_device_left
+        Device.default.rotate(:left)
+        status_bar_orientation
+      end
 
-        Device.default.rotate(direction.to_sym)
-        wait_for_animations
+      # Rotate the device right - counterclockwise relative to the home button.
+      #
+      # @note
+      #   The presenting view controller must respond to rotation events.
+      #   If the presenting view controller does not respond to rotation events,
+      #   then no rotation will be performed.
+      #
+      # @return [String] The position of the home button relative to the status
+      #  bar after the rotation. Can be one of 'down', 'left', 'right', 'up'.
+      def rotate_device_right
+        Device.default.rotate(:right)
         status_bar_orientation
       end
 
