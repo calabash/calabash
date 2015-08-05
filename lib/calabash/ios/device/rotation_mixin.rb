@@ -94,8 +94,10 @@ module Calabash
           playback_route(recording_name, form_factor)
 
           # Wait for rotation animation.
-          timeout = 1.0
-          condition_route('NONE_ANIMATING', timeout, '*')
+          #
+          # Can't wait for animations because there might be animations other
+          # than rotation on the screen.
+          sleep(0.4)
 
           orientation = status_bar_orientation
           if orientation == position
