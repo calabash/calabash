@@ -230,7 +230,7 @@ module Calabash
       #
       # If the view has a UINavigationBar or UITabBar, the defaults *might*
       # cause vertical gestures to start and/or end on one of these bars.
-      def _flick(query, to, from, options)
+      def _flick(query, from, to, options)
         begin
           _expect_valid_duration(options)
         rescue ArgumentError => e
