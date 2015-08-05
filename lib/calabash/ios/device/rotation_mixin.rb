@@ -59,10 +59,10 @@ module Calabash
       end
 
       # @!visibility private
-      # Caller must pass position one of these positions down, left, right, up
+      # Caller must pass position one of these positions :down, :left, :right, :up
       def rotate_home_button_to(position)
 
-        valid_positions = ['down', 'left', 'right', 'up']
+        valid_positions = [:down, :left, :right, :up]
         unless valid_positions.include?(position)
           raise ArgumentError,
                 "Expected '#{position}' to be on of #{valid_positions.join(', ')}"
@@ -94,8 +94,10 @@ module Calabash
           playback_route(recording_name, form_factor)
 
           # Wait for rotation animation.
-          timeout = 1.0
-          condition_route('NONE_ANIMATING', timeout, '*')
+          #
+          # Can't wait for animations because there might be animations other
+          # than rotation on the screen.
+          sleep(0.4)
 
           orientation = status_bar_orientation
           if orientation == position

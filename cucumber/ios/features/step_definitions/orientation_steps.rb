@@ -26,7 +26,11 @@ end
 
 When(/^I rotate (left|right)$/) do |direction|
   @orientation_before_rotation = status_bar_orientation
-  rotate direction
+  if direction == 'left'
+    rotate_device_left
+  else
+    rotate_device_right
+  end
 end
 
 Then(/^no rotation occurred$/) do
