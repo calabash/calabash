@@ -108,6 +108,24 @@ module Calabash
         Device.default.flick_screen(top_view, from_offset, to_offset, gesture_options)
       end
 
+      # @!visibility private
+      # Concrete implementation of pinch_screen
+      def _pinch_screen(direction, options={})
+        Device.default.pinch(direction, '*', options)
+      end
+
+      # @!visibility private
+      # Concrete implementation of pinch_to_zoom
+      def _pinch_to_zoom(direction, query, options={})
+        Device.default.pinch(direction, query, options)
+      end
+
+      # @!visibility private
+      # Concrete implementation of pinch_screen_to_zoom
+      def _pinch_screen_to_zoom(direction, options={})
+        Device.default.pinch(direction, '*', options)
+      end
+
       private
 
       # Number of points from the top to start a full-screen vertical gesture.
