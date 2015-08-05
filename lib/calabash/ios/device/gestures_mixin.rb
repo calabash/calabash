@@ -274,6 +274,22 @@ module Calabash
         Calabash::QueryResult.create([view_to_pan], '*')
       end
 
+      # @!visibility private
+      def _pinch(direction, query, options={})
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError, e
+        end
+
+        view_to_pinch = _gesture_waiter.wait_for_view(query, options)
+        offset = uia_center_of_view(view_to_pinch)
+
+        uia_serialize_and_call(direction, offset, options)
+
+        Calabash::QueryResult.create([view_to_pinch], query)
+      end
+
       private
 
       # @!visibility private
