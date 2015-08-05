@@ -238,15 +238,15 @@ module Calabash
         end
 
         gesture_waiter = _gesture_waiter
-        view_to_pan = gesture_waiter.wait_for_view(query, options)
+        view_to_flick = gesture_waiter.wait_for_view(query, options)
 
         begin
-          check_for_broken_uia_automation(query, view_to_pan, gesture_waiter)
+          check_for_broken_uia_automation(query, view_to_flick, gesture_waiter)
         rescue => e
           raise "Could not flick with query: #{query}\n#{e.message}"
         end
 
-        rect = view_to_pan['rect']
+        rect = view_to_flick['rect']
 
         from_x = rect['width'] * (from[:x]/100.0)
         from_y = rect['height'] * (from[:y]/100.0)
@@ -258,7 +258,7 @@ module Calabash
 
         uia_serialize_and_call(:flickOffset, from_offset, to_offset, options)
 
-        Calabash::QueryResult.create([view_to_pan], query)
+        Calabash::QueryResult.create([view_to_flick], query)
       end
 
       # @!visibility private
