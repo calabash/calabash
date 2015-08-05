@@ -4,6 +4,7 @@ module Calabash
     # @!visibility private
     module Gestures
 
+      # @!visibility private
       # Concrete implementation of pan_screen_up gesture.
       def _pan_screen_up(options={})
 
@@ -29,6 +30,7 @@ module Calabash
         Device.default.pan_screen(top_view, from_offset, to_offset, gesture_options)
       end
 
+      # @!visibility private
       # Concrete implementation of pan_screen_down gesture.
       def _pan_screen_down(options={})
 
@@ -54,6 +56,7 @@ module Calabash
         Device.default.pan_screen(top_view, from_offset, to_offset, gesture_options)
       end
 
+      # @!visibility private
       # Concrete implementation of flick_screen_up gesture.
       def _flick_screen_up(options={})
 
@@ -79,6 +82,7 @@ module Calabash
         Device.default.flick_screen(top_view, from_offset, to_offset, gesture_options)
       end
 
+      # @!visibility private
       # Concrete implementation of flick_screen_down gesture.
       def _flick_screen_down(options={})
 
