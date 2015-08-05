@@ -161,7 +161,50 @@ module Calabash
       end
 
       def pan_screen(view_to_pan, from_offset, to_offset, options)
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError, e
+        end
+
         uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
+
+        Calabash::QueryResult.create([view_to_pan], '*')
+      end
+
+      def _flick(query, to, from, options)
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError, e
+        end
+
+        gesture_waiter = _gesture_waiter
+        view_to_pan = gesture_waiter.wait_for_view(query, options)
+
+        rect = view_to_pan['rect']
+
+        from_x = rect['width'] * (from[:x]/100.0)
+        from_y = rect['height'] * (from[:y]/100.0)
+        from_offset = percent(from_x, from_y)
+
+        to_x = rect['width'] * (to[:x]/100.0)
+        to_y = rect['height'] * (to[:y]/100.0)
+        to_offset = percent(to_x, to_y)
+
+        uia_serialize_and_call(:flickOffset, from_offset, to_offset, options)
+
+        Calabash::QueryResult.create([view_to_pan], query)
+      end
+
+      def flick_screen(view_to_pan, from_offset, to_offset, options)
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError, e
+        end
+
+        uia_serialize_and_call(:flickOffset, from_offset, to_offset, options)
 
         Calabash::QueryResult.create([view_to_pan], '*')
       end
