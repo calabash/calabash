@@ -11,8 +11,8 @@ module Calabash
         gesture_options[:duration] ||= 0.5
         gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
-        points_from_top = pan_points_from_top
-        points_from_bottom = pan_points_from_bottom
+        points_from_top = gesture_points_from_top
+        points_from_bottom = gesture_points_from_bottom
 
         top_view = query('*').first
 
@@ -36,8 +36,8 @@ module Calabash
         gesture_options[:duration] ||= 0.5
         gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
-        points_from_top = pan_points_from_top
-        points_from_bottom = pan_points_from_bottom
+        points_from_top = gesture_points_from_top
+        points_from_bottom = gesture_points_from_bottom
 
         top_view = query('*').first
 
@@ -54,10 +54,60 @@ module Calabash
         Device.default.pan_screen(top_view, from_offset, to_offset, gesture_options)
       end
 
+      # Concrete implementation of flick_screen_up gesture.
+      def _flick_screen_up(options={})
+
+        gesture_options = options.dup
+        gesture_options[:duration] ||= 0.5
+        gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
+
+        points_from_top = gesture_points_from_top
+        points_from_bottom = gesture_points_from_bottom
+
+        top_view = query('*').first
+
+        height = top_view['frame']['height'].to_f
+        width = top_view['frame']['width'].to_f
+
+        start_y = height - points_from_bottom
+        end_y = points_from_top
+        x = width/2.0
+
+        from_offset = coordinate(x, start_y)
+        to_offset = coordinate(x, end_y)
+
+        Device.default.flick_screen(top_view, from_offset, to_offset, gesture_options)
+      end
+
+      # Concrete implementation of flick_screen_down gesture.
+      def _flick_screen_down(options={})
+
+        gesture_options = options.dup
+        gesture_options[:duration] ||= 0.5
+        gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
+
+        points_from_top = gesture_points_from_top
+        points_from_bottom = gesture_points_from_bottom
+
+        top_view = query('*').first
+
+        height = top_view['frame']['height'].to_f
+        width = top_view['frame']['width'].to_f
+
+        start_y = points_from_top
+        end_y = height - points_from_bottom
+        x = width/2.0
+
+        from_offset = coordinate(x, start_y)
+        to_offset = coordinate(x, end_y)
+
+        Device.default.flick_screen(top_view, from_offset, to_offset, gesture_options)
+      end
+
       private
 
-      # Number of points from the top to start a full-screen vertical pan.
-      def pan_points_from_top
+      # Number of points from the top to start a full-screen vertical gesture.
+      def gesture_points_from_top
         # 20 pixels for status bar in portrait; status bar is usually missing
         # in landscape @todo route for status bar height
 
@@ -79,8 +129,8 @@ module Calabash
         points_from_top
       end
 
-      # Number of points from the bottom to start a full-screen vertical pan.
-      def pan_points_from_bottom
+      # Number of points from the bottom to start a full-screen vertical gesture.
+      def gesture_points_from_bottom
         # Dragging from the bottom will lift the transport controls.
         points_from_bottom = 10
 

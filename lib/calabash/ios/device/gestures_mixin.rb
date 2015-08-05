@@ -1,5 +1,6 @@
 module Calabash
   module IOS
+
     # @!visibility private
     #
     # Gestures should wait for the views involved before performing the
@@ -13,6 +14,87 @@ module Calabash
     # @todo Needs unit tests.
     module GesturesMixin
 
+      # @!visibility private
+      class UIAutomationError < StandardError; end
+
+      # @!visibility private
+      #
+      # Since iOS 7, Apple's UIAutomation API:
+      #
+      #  * dragInsideWithOptions
+      #  * flickInsideWithOptions
+      #
+      # has been broken for iOS Simulators under the following conditions:
+      #
+      #  * View is UIScrollView or UIScrollView subclass
+      #  * View is inside a UIScrollView or UIScrollView subclass
+      #
+      # @todo Check for fix on iOS 9
+      def check_for_broken_uia_automation(query, view, gesture_waiter)
+        # Only broken for simulators.
+        return if Device.default.physical_device?
+
+        conditions = [
+          # All UIScrollViews have content_offset.
+          lambda do
+            content_offset = gesture_waiter.query(query, :contentOffset).first
+            content_offset != '*****'
+          end,
+
+          # If view looks like a table view cell.
+          lambda do
+            view['class'][/TableViewCell/, 0]
+          end,
+
+          # Or a collection view cell.
+          lambda do
+            view['class'][/CollectionViewCell/, 0]
+          end,
+
+          # If view in inside a UITableViewCell.
+          lambda do
+            if query.to_s == '*'
+              # '*' parent UITableViewCell is too broad.
+              false
+            else
+              new_query = "#{query} parent UITableViewCell"
+              !gesture_waiter.query(new_query).empty?
+            end
+          end,
+
+          # Or inside a UICollectionViewCell
+          lambda do
+            if query.to_s == '*'
+              # '*' parent UICollectionViewCell is too broad.
+              false
+            else
+              new_query = "#{query} parent UICollectionViewCell"
+              !gesture_waiter.query(new_query).empty?
+            end
+          end
+        ]
+
+        if conditions.any? { |condition| condition.call }
+          message = [
+                '',
+                "Apple's public UIAutomation API `dragInsideWithOptions` is broken for iOS Simulators >= 7",
+                '',
+                'If you are trying to swipe-to-delete on a simulator, it will only work on a device.',
+                '',
+                'If you are trying to manipulate a table, collection or scroll view, try using the Scroll API.',
+                '  * scroll                    # Scroll in a direction.',
+                '  * scroll_to_row             # Scroll to a row with row / section indexes.',
+                '  * scroll_to_row_with_mark   # Scroll to table row with a mark.',
+                '  * scroll_to_item            # Scroll to collection item with item / section indexes.',
+                '  * scroll_to_item_with_mark  # Scroll to collection item with a mark.',
+                '',
+                'All gestures work on physical devices.'
+          ].map { |msg| Color.red(msg) }.join("\n")
+          raise UIAutomationError, message
+        end
+      end
+
+      # @!visibility private
       def _tap(query, options={})
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
@@ -27,6 +109,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      # @!visibility private
       def _double_tap(query, options={})
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
@@ -41,6 +124,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      # @!visibility private
       def _long_press(query, options={})
 
         begin
@@ -62,6 +146,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      # @!visibility private
       def _pan_between(query_from, query_to, options={})
 
         begin
@@ -84,17 +169,14 @@ module Calabash
         }
       end
 
-      # The default to and from for the pan_* methods are not good for iOS.
+      # @!visibility private
+      # @todo The default to and from for the pan_* methods are not good for iOS.
       #
       # * from: {x: 90, y: 50}
       # *   to: {x: 10, y: 50}
       #
-      # If the view has a UINavigationBar or UITabBar, the defaults will
+      # If the view has a UINavigationBar or UITabBar, the defaults *might*
       # cause vertical gestures to start and/or end on one of these bars.
-      #
-      # dragInsideWithOptions broke in iOS 7, so the condition should really be
-      # `Device.default.simulator? && !Device.ios6?`, but I haven't checked on
-      # iOS 9 yet, so I will leave the condition out.
       def _pan(query, from, to, options={})
 
         begin
@@ -106,43 +188,10 @@ module Calabash
         gesture_waiter = _gesture_waiter
         view_to_pan = gesture_waiter.wait_for_view(query, options)
 
-        # * will never match a UIScrollView or subclass.
-        if Device.default.simulator? && query.to_s != '*'
-          should_raise = false
-
-          content_offset = gesture_waiter.query(query, :contentOffset).first
-          if content_offset != '*****'
-            # Panning on anything with a content offset is broken.
-            should_raise = true
-          elsif view_to_pan['class'][/TableViewCell/, 0]
-            should_raise = true
-          else
-            new_query = "#{query} parent UITableViewCell"
-            should_raise = !gesture_waiter.query(new_query).empty?
-            # TODO: Identify other conditions
-            # TODO: Can we detect UITableViewCells?
-            # The gist is that if the view is a UIScrollView or in a UIScrollView
-            # dragInsideWithOptions does not work
-          end
-
-          if should_raise
-            message = [
-                  '',
-                  "Apple's public UIAutomation API `dragInsideWithOptions` is broken for iOS Simulators >= 7",
-                  '',
-                  'If you are trying to swipe-to-delete on a simulator, it will only work on a device.',
-                  '',
-                  'If you are trying to manipulate a table, collection or scroll view, try using the Scroll API.',
-                  '  * scroll                    # Scroll in a direction.',
-                  '  * scroll_to_row             # Scroll to a row with row / section indexes.',
-                  '  * scroll_to_row_with_mark   # Scroll to table row with a mark.',
-                  '  * scroll_to_item            # Scroll to collection item with item / section indexes.',
-                  '  * scroll_to_item_with_mark  # Scroll to collection item with a mark.',
-                  '',
-                  'All gestures work on physical devices.'
-            ].map { |msg| Color.red(msg) }.join("\n")
-            raise message
-          end
+        begin
+          check_for_broken_uia_automation(query, view_to_pan, gesture_waiter)
+        rescue => e
+          raise "Could not pan with query: #{query}\n#{e.message}"
         end
 
         rect = view_to_pan['rect']
@@ -160,8 +209,67 @@ module Calabash
         Calabash::QueryResult.create([view_to_pan], query)
       end
 
+      # @!visibility private
       def pan_screen(view_to_pan, from_offset, to_offset, options)
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError, e
+        end
+
         uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
+
+        Calabash::QueryResult.create([view_to_pan], '*')
+      end
+
+      # @!visibility private
+      # @todo The default to and from for the screen_* methods are not good for iOS.
+      #
+      # * from: {x: 90, y: 50}
+      # *   to: {x: 10, y: 50}
+      #
+      # If the view has a UINavigationBar or UITabBar, the defaults *might*
+      # cause vertical gestures to start and/or end on one of these bars.
+      def _flick(query, from, to, options)
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError, e
+        end
+
+        gesture_waiter = _gesture_waiter
+        view_to_pan = gesture_waiter.wait_for_view(query, options)
+
+        begin
+          check_for_broken_uia_automation(query, view_to_pan, gesture_waiter)
+        rescue => e
+          raise "Could not flick with query: #{query}\n#{e.message}"
+        end
+
+        rect = view_to_pan['rect']
+
+        from_x = rect['width'] * (from[:x]/100.0)
+        from_y = rect['height'] * (from[:y]/100.0)
+        from_offset = percent(from_x, from_y)
+
+        to_x = rect['width'] * (to[:x]/100.0)
+        to_y = rect['height'] * (to[:y]/100.0)
+        to_offset = percent(to_x, to_y)
+
+        uia_serialize_and_call(:flickOffset, from_offset, to_offset, options)
+
+        Calabash::QueryResult.create([view_to_pan], query)
+      end
+
+      # @!visibility private
+      def flick_screen(view_to_pan, from_offset, to_offset, options)
+        begin
+          _expect_valid_duration(options)
+        rescue ArgumentError => e
+          raise ArgumentError, e
+        end
+
+        uia_serialize_and_call(:flickOffset, from_offset, to_offset, options)
 
         Calabash::QueryResult.create([view_to_pan], '*')
       end
@@ -201,6 +309,7 @@ module Calabash
         end.call(self)
       end
 
+      # @!visibility private
       def _expect_valid_duration(options)
         duration = options[:duration].to_f
         if duration < 0.5 || duration > 60
