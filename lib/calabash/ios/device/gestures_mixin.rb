@@ -94,6 +94,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def _tap(query, options={})
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
@@ -108,6 +109,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      # @!visibility private
       def _double_tap(query, options={})
         view_to_touch = _gesture_waiter.wait_for_view(query, options)
 
@@ -122,6 +124,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      # @!visibility private
       def _long_press(query, options={})
 
         begin
@@ -143,6 +146,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
+      # @!visibility private
       def _pan_between(query_from, query_to, options={})
 
         begin
@@ -165,17 +169,14 @@ module Calabash
         }
       end
 
-      # The default to and from for the pan_* methods are not good for iOS.
+      # @!visibility private
+      # @todo The default to and from for the pan_* methods are not good for iOS.
       #
       # * from: {x: 90, y: 50}
       # *   to: {x: 10, y: 50}
       #
-      # If the view has a UINavigationBar or UITabBar, the defaults will
+      # If the view has a UINavigationBar or UITabBar, the defaults *might*
       # cause vertical gestures to start and/or end on one of these bars.
-      #
-      # dragInsideWithOptions broke in iOS 7, so the condition should really be
-      # `Device.default.simulator? && !Device.ios6?`, but I haven't checked on
-      # iOS 9 yet, so I will leave the condition out.
       def _pan(query, from, to, options={})
 
         begin
@@ -208,6 +209,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_pan], query)
       end
 
+      # @!visibility private
       def pan_screen(view_to_pan, from_offset, to_offset, options)
         begin
           _expect_valid_duration(options)
@@ -220,6 +222,14 @@ module Calabash
         Calabash::QueryResult.create([view_to_pan], '*')
       end
 
+      # @!visibility private
+      # @todo The default to and from for the screen_* methods are not good for iOS.
+      #
+      # * from: {x: 90, y: 50}
+      # *   to: {x: 10, y: 50}
+      #
+      # If the view has a UINavigationBar or UITabBar, the defaults *might*
+      # cause vertical gestures to start and/or end on one of these bars.
       def _flick(query, to, from, options)
         begin
           _expect_valid_duration(options)
@@ -251,6 +261,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_pan], query)
       end
 
+      # @!visibility private
       def flick_screen(view_to_pan, from_offset, to_offset, options)
         begin
           _expect_valid_duration(options)
@@ -298,6 +309,7 @@ module Calabash
         end.call(self)
       end
 
+      # @!visibility private
       def _expect_valid_duration(options)
         duration = options[:duration].to_f
         if duration < 0.5 || duration > 60
