@@ -140,9 +140,15 @@ module Calabash
 
     # Waits for `query` to match one or more views.
     #
-    # @param [String] query Query to match view
+    # @example
+    #  wait_for_view({marked: 'mark'})
+    #
+    # @example
+    #  text = wait_for_view("myview")['text']
+    #
+    # @param [String, Symbol, Calabash::Query] query Query to match view
     # @see Calabash::Wait#with_timeout for options
-    # @return [Object] The first view matching `query`.
+    # @return [Hash] The first view matching `query`.
     def wait_for_view(query, options={})
       if query.nil?
         raise ArgumentError, 'Query cannot be nil'
@@ -168,7 +174,9 @@ module Calabash
 
     # Waits for all `queries` to simultaneously match at least one view.
     #
-    # @param [Array<String>, String] queries List of queries or a query.
+    # @param [String, Symbol, Calabash::Query] queries List of queries or a
+    #  query.
+    #
     # @see Calabash::Wait#with_timeout for options
     # @return [void] The return value for this method is undefined.
     def wait_for_views(*queries, **options)
@@ -199,7 +207,7 @@ module Calabash
 
     # Waits for `query` not to match any views
     #
-    # @param [String] query Query to match view
+    # @param [String, Symbol, Calabash::Query] query Query to match view
     # @see Calabash::Wait#with_timeout for options
     def wait_for_no_view(query, options={})
       if query.nil?
@@ -225,7 +233,9 @@ module Calabash
 
     # Waits for all `queries` to simultaneously match no views
     #
-    # @param [Array<String>, String] queries List of queries or a query.
+    # @param [String, Symbol, Calabash::Query] queries List of queries or a
+    #  query.
+    #
     # @see Calabash::Wait#with_timeout for options
     def wait_for_no_views(*queries, **options)
       if queries.nil? || queries.any?(&:nil?)
@@ -251,7 +261,7 @@ module Calabash
 
     # Does the given `query` match at least one view?
     #
-    # @param [String] query Query to match view
+    # @param [String, Symbol, Calabash::Query] query Query to match view
     # @return [Object] Returns truthy if the `query` matches at least one view
     # @raise [ArgumentError] If given an invalid `query`
     def view_exists?(query)
@@ -270,7 +280,9 @@ module Calabash
 
     # Does the given `queries` all match at least one view?
     #
-    # @param [Array<String>, String] queries List of queries or a query
+    # @param [String, Symbol, Calabash::Query] queries List of queries or a
+    #  query
+    #
     # @return Returns truthy if the `queries` all match at least one view
     # @raise [ArgumentError] If given an invalid list of queries
     def views_exist?(*queries)
@@ -290,7 +302,7 @@ module Calabash
     # Expect `query` to match at least one view. Raise an exception if it does
     # not.
     #
-    # @param [String] query Query to match view
+    # @param [String, Symbol, Calabash::Query] query Query to match a view
     # @raise [ArgumentError] If given an invalid `query`
     # @raise [ViewNotFoundError] If `query` does not match at least one view
     def expect_view(query)
@@ -302,6 +314,8 @@ module Calabash
         raise ViewNotFoundError,
               "No view matched #{parse_query_list(query)}"
       end
+
+      true
     end
 
     alias_method :view_should_exist, :expect_view
@@ -309,7 +323,8 @@ module Calabash
     # Expect `queries` to each match at least one view. Raise an exception if
     # they do not.
     #
-    # @param [String] queries List of queries or a query
+    # @param [String, Symbol, Calabash::Query] queries List of queries or a
+    #  query.
     # @raise [ArgumentError] If given an invalid list of queries
     # @raise [ViewNotFoundError] If `queries` do not all match at least one
     #   view.
@@ -322,12 +337,15 @@ module Calabash
         raise ViewNotFoundError,
               "Not all queries #{parse_query_list(queries)} matched a view"
       end
+
+      true
     end
 
     alias_method :views_should_exist, :expect_views
 
     # Expect `query` to match no views. Raise an exception if it does.
     #
+    # @param [String, Symbol, Calabash::Query] query Query to match a view
     # @raise [ArgumentError] If given an invalid `query`
     # @raise [ViewFoundError] If `query` matches any views.
     def do_not_expect_view(query)
@@ -338,13 +356,16 @@ module Calabash
       if view_exists?(query)
         raise ViewFoundError, "A view matched #{parse_query_list(query)}"
       end
+
+      true
     end
 
     alias_method :view_should_not_exist, :do_not_expect_view
 
     # Expect `queries` to each match no views. Raise an exception if they do.
     #
-    # @param [Array<String>, String] queries List of queries or a query
+    # @param [String, Symbol, Calabash::Query] queries List of queries or a
+    #  query.
     # @raise [ArgumentError] If given an invalid list of queries
     # @raise [ViewFoundError] If one of `queries` matched any views
     def do_not_expect_views(*queries)
@@ -356,6 +377,8 @@ module Calabash
         raise ViewFoundError,
               "Some views matched #{parse_query_list(queries)}"
       end
+
+      true
     end
 
     alias_method :views_should_not_exist, :do_not_expect_views
