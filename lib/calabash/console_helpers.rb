@@ -36,6 +36,14 @@ module Calabash
       true
     end
 
+    # Flashes any views matching `query`.
+    #
+    # @param [String, Symbol, Calabash::Query] query The query to match the
+    #  view(s)
+    def flash(query)
+      Calabash::Device.default.map_route(Query.new(query), :flash)
+    end
+
     # Puts a message of the day.
     def message_of_the_day
       messages = [
