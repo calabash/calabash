@@ -1,7 +1,6 @@
 module Calabash
 
   # A public API for waiting for things to happen.
-  # @!visibility private
   module Wait
     # @!visibility private
     class TimeoutError < RuntimeError
