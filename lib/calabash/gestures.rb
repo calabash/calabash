@@ -323,42 +323,114 @@ module Calabash
       _flick_screen_down(options)
     end
 
-    # Performs a `pinch` outwards.
+    # Performs a **pinch** outwards on the first view match by `query`.
+    #
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #   to pinch.
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_out(query, options={})
       Device.default.pinch(:out, query, options)
     end
 
-    # Performs a `pinch` inwards.
+    # Performs a **pinch** inwards on the first view match by `query`.
+    #
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #   to pinch.
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_in(query, options={})
       Device.default.pinch(:in, query, options)
     end
 
-    # Performs a `pinch` outwards on the screen.
+    # Performs a **pinch** outwards on the screen.
+    #
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_screen_out(options={})
       _pinch_screen(:out, options)
     end
 
-    # Performs a `pinch` inwards on the screen.
+    # Performs a **pinch** inwards on the screen.
+    #
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_screen_in(options={})
       _pinch_screen(:in, options)
     end
 
-    # Performs a `pinch` to zoom out.
+    # Performs a **pinch** to zoom out.
+    #
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #   to pinch.
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_to_zoom_out(query, options={})
       _pinch_to_zoom(:out, query, options)
     end
 
-    # Performs a `pinch` to zoom in.
+    # Performs a **pinch** to zoom in.
+    #
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #   to pinch.
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_to_zoom_in(query, options={})
       _pinch_to_zoom(:in, query, options)
     end
 
-    # Performs a `pinch` to zoom in on the screen.
+    # Performs a **pinch** on the screen to zoom in.
+    #
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_screen_to_zoom_in(options={})
       _pinch_screen_to_zoom(:in, options)
     end
 
-    # Performs a `pinch` to zoom in on the screen.
+    # Performs a **pinch** on the screen to zoom out.
+    #
+    # @param [Hash] options Options for controlling the pinch.
+    # @option options [Numeric] :duration The duration of the pinch. On iOS,
+    #   the duration must be between 0.5 and 60.
+    #
+    # @raise [ViewNotFoundError] If the `query` returns no results.
+    # @raise [ArgumentError] If `query` is invalid.
+    # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_screen_to_zoom_out(options={})
       _pinch_screen_to_zoom(:out, options)
     end
