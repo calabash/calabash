@@ -193,3 +193,45 @@ end
 unless Object.const_defined?(:IOS)
   Object.const_set(:IOS, Module.new)
 end
+
+if Calabash::Environment::DEBUG_CALLED_METHODS
+  $stdout.puts "#{Calabash::Color.red("Will print every Calabash method called!")}"
+  $stdout.puts "#{Calabash::Color.red("Warning: This might slow down your test drastically")}"
+  $stdout.puts "#{Calabash::Color.red("and is an experimental feature.")}"
+
+  calabash_file = Calabash.method(:extended).source_location.first
+  $__calabash_dir_name = File.dirname(calabash_file)
+
+  trace_func = lambda do |event, file, line, id, binding, classname|
+    if event == 'call'
+      if classname.to_s.split('::').first == 'Calabash'
+        binding_caller_locations = binding.eval("caller_locations")
+        files = binding_caller_locations[3..-1].map(&:path)
+
+        calabash_not_in_stacktrace = files.none? do |file|
+          file.start_with?($__calabash_dir_name) &&
+              File.basename(file) != 'page.rb'
+        end
+
+        if calabash_not_in_stacktrace
+          unless id == :included || id == :extended || id == :inherited
+            arguments = {}
+
+            binding.eval('local_variables').each do |variable|
+              arguments[variable] = binding.eval(variable.to_s)
+            end
+
+            # The arguments will be in order
+            if arguments.empty?
+              $stdout.puts "Calabash method called: #{id}"
+            else
+              $stdout.puts "Calabash method called: #{id}(#{arguments.values.map(&:inspect).join(', ')})"
+            end
+          end
+        end
+      end
+    end
+  end
+
+  set_trace_func(trace_func)
+end

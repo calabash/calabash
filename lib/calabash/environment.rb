@@ -30,6 +30,10 @@ module Calabash
     # Is Calabash running in debug mode. True if $CAL_DEBUG is '1'
     DEBUG = variable('CAL_DEBUG') == '1'
 
+    # @!visibility private
+    # Experimental! Print every method that is called in Calabash
+    DEBUG_CALLED_METHODS = variable('CAL_DEBUG_CALLED_METHODS') == '1'
+
     # The path of the default app under test. This value is used if no app is
     # given from the command line. e.g. $ calabash run.
     #
