@@ -36,7 +36,8 @@ module Calabash
       true
     end
 
-    # Flashes any views matching `query`.
+    # Flashes any views matching `query`. Only one view is flashed at a time,
+    # in the order they are returned.
     #
     # @param [String, Hash, Calabash::Query] query The query to match the
     #  view(s)
