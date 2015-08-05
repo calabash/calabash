@@ -8,7 +8,7 @@ Scenario: Left-to-right screen pan in portrait
   Given I see the scrolls tab
   When I touch the table views row
   Then I see the table views page
-  When I pan left on the screen
+  When I pan right on the screen (swipe to go back)
   Then I go back to the Scrolls page
 
 Scenario: Left-to-right screen pan in landscape
@@ -16,7 +16,7 @@ Scenario: Left-to-right screen pan in landscape
   And I rotate so the home button is on the right
   When I touch the collection views row
   Then I see the collection views page
-  When I pan left on the screen
+  When I pan right on the screen (swipe to go back)
   Then I go back to the Scrolls page
 
 Scenario: Panning on a scroll view
