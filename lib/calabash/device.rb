@@ -228,6 +228,7 @@ module Calabash
       end
 
       gesture_options = options.dup
+      gesture_options[:duration] ||= 0.5
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _pinch(direction, query, gesture_options)
