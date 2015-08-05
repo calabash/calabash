@@ -1,6 +1,5 @@
 module Calabash
   module Android
-    # @!visibility private
     module Orientation
       # @!visibility private
       def _set_orientation_landscape
