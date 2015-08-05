@@ -10,7 +10,7 @@ module Calabash
     # gesture.
     DEFAULT_GESTURE_WAIT_TIMEOUT = 3
 
-    # Performs a `tap` on the (first) view that matches `query`.
+    # Performs a **tap** on the first view that matches `query`.
     #
     # Taps the center of the view by default.
     #
@@ -32,7 +32,8 @@ module Calabash
     #   3. tap("* marked:'email'", at:  {x: 100, y: 0})
     #   4. tap("* marked:'email'", at:  {x: 50, y: 100})
     #
-    # @param [String] query A query describing the view to tap.
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #   to tap.
     # @param [Hash] options Options for modifying the details of the touch.
     # @option options [Hash] :at ({x: 50, y: 50}) The point at which the
     #   gesture originates from.  It is a percentage-based translation using
@@ -45,8 +46,17 @@ module Calabash
       Device.default.tap(Query.new(query), options)
     end
 
-    # Performs a `double_tap` on the (first) view that matches `query`.
-    # @see tap
+    # Performs a **double_tap** on the first view that matches `query`.
+    #
+    # @see #tap
+    #
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #  to tap.
+    # @param [Hash] options Options for modifying the details of the touch.
+    # @option options [Hash] :at ({x: 50, y: 50}) The point at which the
+    #   gesture originates from.  It is a percentage-based translation using
+    #   top-left `(0,0)` as the reference point.
+    #
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def double_tap(query, options={})
@@ -55,12 +65,14 @@ module Calabash
       Device.default.double_tap(Query.new(query), options)
     end
 
-    # Performs a `long_press` on the (first) view that matches `query`.
+    # Performs a **long_press** on the first view that matches `query`.
+    #
     # On iOS this is often referred to as _touch-and-hold_.  On Android this
     # is known variously as _press_, _long-push_, _press-and-hold_, or _hold_.
     #
-    # @see tap
+    # @see #tap
     #
+    # @param [String] query A query describing the view to tap.
     # @param [Hash] options Options for modifying the details of the touch.
     # @option options [Number] :duration (1.0) The amount of time in seconds to
     #  press.  On iOS, the duration must be between 0.5 and 60.
@@ -73,10 +85,13 @@ module Calabash
       Device.default.long_press(Query.new(query), options)
     end
 
-    # Performs a `pan` on the (first) view that matches `query`.
+    # Performs a **pan** on the first view that matches `query`.
+    #
     # A pan is a straight line swipe that pauses at the final point
     # before releasing the gesture. This is the general purpose pan method. For
     # standardized pans see `pan_left`, `pan_right`, `pan_up`, and `pan_down`.
+    #
+    # Also known as **scroll** and **swipe**.
     #
     # @example
     #  Consider a pan on a scrollable view.  When the finger is is released,
@@ -103,7 +118,8 @@ module Calabash
     # @see Calabash::IOS::Scroll#scroll_to_item
     # @see Calabash::IOS::Scroll#scroll_to_item_with_mark
     #
-    # @param [String] query A query describing the view to pan inside.
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #  to pan inside.
     # @param [Hash] from `({:x, :y})` The point at which the gesture
     #   originates from.
     # @param [Hash] to `({:x, :y})` The point at which the gesture
@@ -123,8 +139,10 @@ module Calabash
       Device.default.pan(Query.new(query), from, to, options)
     end
 
-    # Performs a `pan` from the center of the first view that matches
+    # Performs a **pan** from the center of the first view that matches
     # `query_from` to the center of the first view that matches `query_to`.
+    #
+    # Also known as **drag and drop**.
     #
     # @example
     #  Panning between two elements.
@@ -162,56 +180,64 @@ module Calabash
       Device.default.pan_between(Query.new(query_from), Query.new(query_to), options)
     end
 
-    # Performs a `pan` heading `left` on the (first) view that matches `query`.
-    # @see pan
+    # Performs a **pan** heading _left_ on the first view that matches `query`.
+    #
+    # @see #pan
     def pan_left(query, options={})
       pan(query, {x: 90, y: 50}, {x: 10, y: 50}, options)
     end
 
-    # Performs a `pan` heading `right` on the (first) view that matches
-    # `query`.
-    # @see pan
+    # Performs a **pan** heading _right_ on the first view that matches `query`.
+    #
+    # @see #pan
     def pan_right(query, options={})
       pan(query, {x: 10, y: 50}, {x: 90, y: 50}, options)
     end
 
-    # Performs a `pan` heading `up` on the (first) view that matches `query`.
-    # @see pan
+    # Performs a **pan** heading _up_ on the first view that matches `query`.
+    #
+    # @see #pan
     def pan_up(query, options={})
       pan(query, {x: 50, y: 90}, {x: 50, y: 10}, options)
     end
 
-    # Performs a `pan` heading `down` on the (first) view that matches `query`.
-    # @see pan
+    # Performs a **pan** heading _down_ on the first view that matches `query`.
+    #
+    # @see #pan
     def pan_down(query, options={})
       pan(query, {x: 50, y: 10}, {x: 50, y: 90}, options)
     end
 
-    # Performs a `pan` heading `left` on the screen.
-    # @see pan_left
+    # Performs a **pan** heading _left_ on the screen.
+    #
+    # @see #pan
     def pan_screen_left(options={})
       pan_left('*', options)
     end
 
-    # Performs a `pan` heading `right` on the screen.
-    # @see pan_right
+    # Performs a **pan** heading _right_ on the screen.
+    #
+    # @see #pan
     def pan_screen_right(options={})
       pan_right('*', options)
     end
 
-    # Performs a `pan` heading `up` on the screen.
-    # @see pan_up
+    # Performs a **pan** heading _up_ on the screen.
+    #
+    # @see #pan
     def pan_screen_up(options={})
       _pan_screen_up(options)
     end
 
-    # Performs a `pan` heading `down` on the screen.
-    # @see pan_down
+    # Performs a **pan** heading _down_ on the screen.
+    #
+    # @see #pan
     def pan_screen_down(options={})
       _pan_screen_down(options)
     end
 
-    # Performs a `flick` on the (first) view that matches `query`.
+    # Performs a **flick** on the first view that matches `query`.
+    #
     # A flick is a straight line swipe that **lifts the finger while
     # the gesture is still in motion**. This will often cause scrollable
     # views to continue moving for some time after the gesture is released.
@@ -248,51 +274,51 @@ module Calabash
       Device.default.flick(Query.new(query), from, to, options)
     end
 
-    # Performs a `flick` heading `left` on the (first) view that matches `query`.
-    # @see flick
+    # Performs a **flick** heading _left_ on the first view that matches `query`.
+    # @see #flick
     def flick_left(query, options={})
       flick(query, {x: 90, y: 50}, {x: 10, y: 50}, options)
     end
 
-    # Performs a `flick` heading `right` on the (first) view that matches
+    # Performs a **flick** heading _right_ on the first view that matches
     # `query`.
-    # @see flick
+    # @see #flick
     def flick_right(query, options={})
       flick(query, {x: 10, y: 50}, {x: 90, y: 50}, options)
     end
 
-    # Performs a `flick` heading `up` on the (first) view that matches `query`.
-    # @see flick
+    # Performs a **flick** heading _up_ on the first view that matches `query`.
+    # @see #flick
     def flick_up(query, options={})
       flick(query, {x: 50, y: 90}, {x: 50, y: 10}, options)
     end
 
-    # Performs a `flick` heading `down` on the (first) view that matches `query`.
-    # @see flick
+    # Performs a **flick** heading _down_ on the first view that matches `query`.
+    # @see #flick
     def flick_down(query, options={})
       flick(query, {x: 50, y: 10}, {x: 50, y: 90}, options)
     end
 
-    # Performs a `flick` heading `left` on the screen.
-    # @see flick_left
+    # Performs a **flick** heading _left_ on the screen.
+    # @see #flick
     def flick_screen_left(options={})
       flick_left('*', options)
     end
 
-    # Performs a `flick` heading `right` on the screen.
-    # @see flick_right
+    # Performs a **flick** heading _right_ on the screen.
+    # @see #flick
     def flick_screen_right(options={})
       flick_right('*', options)
     end
 
-    # Performs a `flick` heading `up` on the screen.
-    # @see flick_up
+    # Performs a **flick** heading _up_ on the screen.
+    # @see #flick
     def flick_screen_up(options={})
       _flick_screen_up(options)
     end
 
-    # Performs a `flick` heading `down` on the screen.
-    # @see flick_down
+    # Performs a **flick** heading _down_ on the screen.
+    # @see #flick
     def flick_screen_down(options={})
       _flick_screen_down(options)
     end
