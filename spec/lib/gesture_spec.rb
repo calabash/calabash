@@ -157,8 +157,8 @@ describe Calabash::Gestures do
   describe '#pan_left' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 90, y: 50}
-      to = {x: 10, y: 50}
+      from = {x: 95, y: 50}
+      to = {x: 5, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -169,8 +169,8 @@ describe Calabash::Gestures do
   describe '#pan_right' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 10, y: 50}
-      to = {x: 90, y: 50}
+      from = {x: 5, y: 50}
+      to = {x: 95, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -181,8 +181,8 @@ describe Calabash::Gestures do
   describe '#pan_up' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 90}
-      to = {x: 50, y: 10}
+      from = {x: 50, y: 95}
+      to = {x: 50, y: 5}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -193,8 +193,8 @@ describe Calabash::Gestures do
   describe '#pan_down' do
     it 'should invoke #pan with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 10}
-      to = {x: 50, y: 90}
+      from = {x: 50, y: 5}
+      to = {x: 50, y: 95}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:pan).with(query, from, to, options)
@@ -274,8 +274,8 @@ describe Calabash::Gestures do
   describe '#flick_left' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 90, y: 50}
-      to = {x: 10, y: 50}
+      from = {x: 95, y: 50}
+      to = {x: 5, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)
@@ -286,8 +286,8 @@ describe Calabash::Gestures do
   describe '#flick_right' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 10, y: 50}
-      to = {x: 90, y: 50}
+      from = {x: 5, y: 50}
+      to = {x: 95, y: 50}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)
@@ -298,8 +298,8 @@ describe Calabash::Gestures do
   describe '#flick_up' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 90}
-      to = {x: 50, y: 10}
+      from = {x: 50, y: 95}
+      to = {x: 50, y: 5}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)
@@ -310,8 +310,8 @@ describe Calabash::Gestures do
   describe '#flick_down' do
     it 'should invoke #flick with the right coordinates' do
       query = "my query"
-      from = {x: 50, y: 10}
-      to = {x: 50, y: 90}
+      from = {x: 50, y: 5}
+      to = {x: 50, y: 95}
       options = {my: :arg}
 
       expect(dummy_instance).to receive(:flick).with(query, from, to, options)

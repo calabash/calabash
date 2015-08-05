@@ -1,8 +1,9 @@
 
-When(/^I pan left on the screen$/) do
-  to = percent(0, 50)
-  from = percent(75, 50)
-  pan('*', to, from)
+When(/^I pan right on the screen \(swipe to go back\)$/) do
+  wait_for_animations
+
+  pan_screen_right
+
   wait_for_animations
 end
 
