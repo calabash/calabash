@@ -1,8 +1,11 @@
 module Calabash
   # Contains the Android implementations of the Calabash APIs.
   module Android
+    # @!visibility private
     TEST_SERVER_CODE_PATH = File.join(File.dirname(__FILE__), '..', '..', 'android', 'test-server')
+    # @!visibility private
     UNSIGNED_TEST_SERVER_APK = File.join(File.dirname(__FILE__), 'android', 'lib', 'TestServer.apk')
+    # @!visibility private
     ANDROID_MANIFEST_PATH = File.join(File.dirname(__FILE__), 'android', 'lib', 'AndroidManifest.xml')
 
     require 'calabash'

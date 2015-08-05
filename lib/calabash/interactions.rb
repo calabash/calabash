@@ -1,14 +1,63 @@
 module Calabash
-  # @!visibility private
   module Interactions
-    # @todo Needs docs!
+    # Queries the view hierarchy to find all views matching `query`.
+    # Optionally query takes a variable number of “invocation” arguments
+    # (args below).
+    # If called with an empty list of *args, query will find the views
+    # specified by `query` and return a QueryResult of serialized views.
+    #
+    # @example
+    #  query("* marked:'my view'")
+    #  query("* id:'foo' descendant UIButton")
+    #  query("android.widget.ProgressBar")
+    #  query("* {text CONTAINS 'something'}")
+    #  query("* {y > 200}")
+    #
+    # @example
+    #  # Find all the elements, visible as well as invisible
+    #  query("all *")
+    #
+    # @example
+    #  query("editText", :setText => 'my text')
+    #  query("scrollView", :scrollBy => [50, 10])
+    #
+    # @example
+    #  irb(main):009:0> query("UITabBarButton index:0")
+    #  [
+    #      [0] {
+    #      "class" => "UITabBarButton",
+    #      "id" => nil,
+    #      "rect" => {
+    #          "center_x" => 40,
+    #          "y" => 520,
+    #          "width" => 76,
+    #          "x" => 2,
+    #          "center_y" => 544,
+    #          "height" => 48
+    #      },
+    #      "frame" => {
+    #          "y" => 1,
+    #          "width" => 76,
+    #          "x" => 2,
+    #          "height" => 48
+    #      },
+    #      "label" => "Reader",
+    #      "description" => "<UITabBarButton: 0xdabb510; frame = (2 1; 76 48); opaque = NO; layer = <CALayer: 0xdabd8e0>>"
+    #  }
+    #  ]
+    #
+    # @note Even if the query matches only one view, the QueryResult returned
+    #  is still a list of elements.
+    #
+    # @param [String, Hash, Calabash::Query] query The query to match the
+    #  view(s)
+    #
+    # @param args Optional var-args list describing a chain of method
+    #  names (selectors).
+    #
+    # @return [Calabash::QueryResult] A result of the query
     def query(query, *args)
       Calabash::Device.default.map_route(Query.new(query), :query, *args)
-    end
-
-    # @todo Needs docs!
-    def flash(query)
-      Calabash::Device.default.map_route(Query.new(query), :flash)
     end
 
     # Evaluate javascript in a Web View. On iOS, an implicit return is

@@ -1,8 +1,6 @@
 module Calabash
 
   # A representation of a Calabash query.
-  # @todo Query needs more documentation.
-  # @todo Query needs some methods moved to private or doc'd private.
   class Query
     # @!visibility private
     def self.web_query?(query_string)
@@ -110,6 +108,13 @@ module Calabash
       result
     end
 
+    # Create a new query. The returned instance will be frozen (immutable).
+    #
+    # @example
+    #  Calabash::Query.new({marked: 'mark'})
+    #  Calabash::Query.new("myview")
+    #
+    # @param [String, Hash, Calabash::Query] query The query to create
     def initialize(query)
       unless query.is_a?(Query) || query.is_a?(Hash) || query.is_a?(String)
         raise ArgumentError, "Invalid argument for query: '#{query}' (#{query.class})"
@@ -120,6 +125,13 @@ module Calabash
       freeze
     end
 
+    # Parse the query to it's string representation.
+    #
+    # @example
+    #  puts Calabash::Query.new({marked: 'foo'})
+    #  # => "* marked:'foo'"
+    #
+    # @!visibility private
     def to_s
       if @query.is_a?(Query)
         @query.to_s
@@ -130,14 +142,17 @@ module Calabash
       end
     end
 
+    # @!visibility private
     def inspect
       "<Calabash::Query #{@query.inspect}>"
     end
 
+    # @!visibility private
     def web_query?
       Query.web_query?(to_s)
     end
 
+    # @!visibility private
     WEB_QUERY_INDICATORS =
         [
             {

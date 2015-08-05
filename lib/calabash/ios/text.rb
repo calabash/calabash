@@ -1,7 +1,6 @@
 module Calabash
   module IOS
     # Methods for entering text and interacting with iOS keyboards.
-    # @!visibility private
     module Text
       # @!visibility private
       def _enter_text(text)

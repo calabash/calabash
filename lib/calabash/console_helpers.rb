@@ -4,7 +4,6 @@ module Calabash
 
   # Methods you can use in the Calabash console to help you
   # interact with your app.
-  # @!visibility private
   module ConsoleHelpers
 
     # Outputs all visible elements as a tree.
@@ -30,13 +29,24 @@ module Calabash
       true
     end
 
-    # Clear the console.
+    # Clear the console history. Note that this also clears the contents
+    # given to Calabash::ConsoleHelpers#copy.
     def clear
       ConsoleHelpers.clear
       true
     end
 
+    # Flashes any views matching `query`. Only one view is flashed at a time,
+    # in the order they are returned.
+    #
+    # @param [String, Hash, Calabash::Query] query The query to match the
+    #  view(s)
+    def flash(query)
+      Calabash::Device.default.map_route(Query.new(query), :flash)
+    end
+
     # Puts a message of the day.
+    # @!visibility private
     def message_of_the_day
       messages = [
             "Let's get this done!",
@@ -141,6 +151,7 @@ module Calabash
       readline_history.last(length)
     end
 
+    # @!visibility private
     FILTER_REGEX = Regexp.union(/\s*copy(\(|\z)/, /\s*tree(\(|\z)/,
                                 /\s*flash(\(|\z)/, /\s*classes(\(|\z)/,
                                 /\s*ids(\(|\z)/, /\s*start_app(\(|\z)/,

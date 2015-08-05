@@ -2,7 +2,6 @@ module Calabash
 
   # Methods for querying an app's orientation and for rotating the app into
   # different orientations.
-  # @!visibility private
   module Orientation
     # Is the device in the portrait orientation?
     #

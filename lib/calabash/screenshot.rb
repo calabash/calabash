@@ -4,7 +4,6 @@ require 'pathname'
 module Calabash
 
   # A public API for taking screenshots.
-  # @!visibility private
   module Screenshot
     # @!visibility private
     def self.screenshot_directory_prefix
@@ -12,6 +11,7 @@ module Calabash
     end
 
     # Set the screenshot directory prefix.
+    # @!visibility private
     def self.screenshot_directory_prefix=(value)
       if class_variable_defined?(:@@screenshots_taken) &&
           @@screenshots_taken != 0
@@ -39,7 +39,8 @@ module Calabash
       Device.default.screenshot(name)
     end
 
-    # Takes a screenshot and embeds it in the test report.
+    # Takes a screenshot and embeds it in the test report. This method is only
+    # available/useful when running in the context of cucumber.
     # @see Screenshot#screenshot
     def screenshot_embed(name=nil)
       path = screenshot(name)

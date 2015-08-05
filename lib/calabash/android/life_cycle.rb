@@ -1,6 +1,5 @@
 module Calabash
   module Android
-    # @!visibility private
     module LifeCycle
       # Resume an application. If the application is already focused, nothing
       # will happen.
@@ -22,7 +21,6 @@ module Calabash
 
         true
       end
-
 
       # @!visibility private
       def _send_current_app_to_background(for_seconds)
