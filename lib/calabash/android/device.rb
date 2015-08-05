@@ -157,7 +157,13 @@ module Calabash
 
         request = HTTP::Request.new('map', params_for_request(parameters))
 
-        result = JSON.parse(http_client.get(request).body)
+        http_result = if method_name == :flash
+                        http_client.get(request, timeout: 30)
+                      else
+                        http_client.get(request)
+                      end
+
+        result = JSON.parse(http_result.body)
 
         if result['outcome'] != 'SUCCESS'
           raise "mapping \"#{query}\" with \"#{method_name}\" failed because: #{result['reason']}\n#{result['details']}"
