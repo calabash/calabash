@@ -3,6 +3,12 @@
 APP = ENV['CAL_APP'] || File.expand_path("./CalSmoke-cal.app")
 IPA = ENV['CAL_APP'] || File.expand_path("./CalSmoke-cal.ipa")
 
+DEVICE="193688959205dc7eb48d603c558ede919ad8dd0d"
+ENDPOINT="http://denis.local:37265"
+
+SIX_PLUS="iPhone 6 Plus (8.4 Simulator)"
+IPAD_RETINA="iPad Retina (8.4 Simulator)"
+
 if ENV["USER"] == "jenkins"
   formatter = "progress"
 else
@@ -15,7 +21,7 @@ verbose: CAL_DEBUG=1
 formatter: -f <%= formatter %>
 
 # Launch on default simulator.
-default: CAL_APP=<%= APP %> -p formatter
+default: CAL_APP=<%= APP %> -p formatter CAL_DEVICE_ID="iPad Retina (8.4 Simulator)"
 
 # Launch on device.
-device:  CAL_APP=<%= IPA %> -p formatter
+device:  CAL_APP=<%= IPA %> CAL_DEVICE_ID=<%= DEVICE %> CAL_ENDPOINT=<%= ENDPOINT %>
