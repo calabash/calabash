@@ -6,6 +6,14 @@ module Calabash
     # application is given, it will start
     # {Calabash::Defaults#default_application Calabash.default_application}
     #
+    # @note This method will fail if the application (and test-server for
+    #  Android) is not installed, or if the application installed is not the
+    #  same as the one specified.
+    #
+    # @note On Android, if a test-server is already running on the port of
+    #  {Calabash::Defaults#default_server Calabash.default_server} then that
+    #  application will be shut down.
+    #
     # @param [String, Calabash::Application] path_or_application A path to the
     #  application, or an instance of {Calabash::Application}.
     #  Defaults to
