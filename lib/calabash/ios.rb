@@ -30,6 +30,7 @@ module Calabash
     require 'calabash/ios/scroll'
     require 'calabash/ios/runtime'
     require 'calabash/ios/gestures'
+    require 'calabash/ios/slider'
 
     include Calabash::IOS::Conditions
     include Calabash::IOS::Orientation
@@ -39,6 +40,7 @@ module Calabash
     include Calabash::IOS::Scroll
     include Calabash::IOS::Runtime
     include Calabash::IOS::Gestures
+    include Calabash::IOS::Slider
 
   end
 end
