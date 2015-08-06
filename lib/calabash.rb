@@ -76,9 +76,11 @@ module Calabash
       raise ArgumentError, "Expected a 'Class', got '#{page_class.class}'"
     end
 
-    page_name = page_class.name.split('::').last
 
-    if platform_module.const_defined?(page_name, false)
+    page_name = page_class.name
+    full_page_name = "#{platform_module}::#{page_name}"
+
+    if Calabash.is_defined?(full_page_name)
       page_class = platform_module.const_get(page_name, false)
 
       if page_class.is_a?(Class)
@@ -93,7 +95,7 @@ module Calabash
         raise "Page '#{page_class}' is not a class"
       end
     else
-      raise "No such page defined '#{platform_module}::#{page_name}'"
+      raise "No such page defined '#{full_page_name}'"
     end
   end
 
@@ -156,6 +158,29 @@ module Calabash
 
     unless EmbeddingContext.embedding_context_set?
       new_embed_method!(cucumber_embed)
+    end
+  end
+
+  # @!visibility private
+  def self.is_defined?(string, scope = Object)
+    constant, rest = string.split('::', 2)
+
+    begin
+      scope.const_defined?(constant.to_sym, false) &&
+          (!rest || is_defined?(rest, scope.const_get(constant, false)))
+    rescue NameError => _
+      false
+    end
+  end
+
+  # @!visibility private
+  def self.recursive_const_get(string, scope = Object)
+    constant, rest = string.split('::', 2)
+
+    if rest
+      recursive_const_get(rest, scope.const_get(constant.to_sym, false))
+    else
+      scope.const_get(constant.to_sym, false)
     end
   end
 
