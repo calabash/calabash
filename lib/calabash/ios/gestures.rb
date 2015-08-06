@@ -117,13 +117,15 @@ module Calabash
       # @!visibility private
       # Concrete implementation of pinch_to_zoom
       def _pinch_to_zoom(direction, query, options={})
-        Device.default.pinch(direction, query, options)
+        gesture_direction = direction == :in ? :out : :in
+        Device.default.pinch(gesture_direction, query, options)
       end
 
       # @!visibility private
       # Concrete implementation of pinch_screen_to_zoom
       def _pinch_screen_to_zoom(direction, options={})
-        Device.default.pinch(direction, '*', options)
+        gesture_direction = direction == :in ? :out : :in
+        Device.default.pinch(gesture_direction, '*', options)
       end
 
       private

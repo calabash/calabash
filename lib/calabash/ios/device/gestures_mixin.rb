@@ -275,6 +275,9 @@ module Calabash
       end
 
       # @!visibility private
+      # @todo The pinch gestures are incredibly coarse grained.
+      #
+      # https://github.com/krukow/calabash-script/commit/fa33550ac7ac4f37da649498becef441d2284cd8
       def _pinch(direction, query, options={})
         begin
           _expect_valid_duration(options)
@@ -282,12 +285,26 @@ module Calabash
           raise ArgumentError, e
         end
 
-        view_to_pinch = _gesture_waiter.wait_for_view(query, options)
+        gesture_waiter = _gesture_waiter
+
+        view_to_pinch = gesture_waiter.wait_for_view(query, options)
         offset = uia_center_of_view(view_to_pinch)
 
-        uia_serialize_and_call(direction, offset, options)
+        gesture_direction = direction == :in ? :out : :in
 
-        Calabash::QueryResult.create([view_to_pinch], query)
+        uia_serialize_and_call(:pinchOffset, gesture_direction, offset, options)
+
+        after = gesture_waiter.query(query)
+        if after.empty?
+          after_result = nil
+        else
+          after_result = after.first
+        end
+
+        {
+              :before => Calabash::QueryResult.create([view_to_pinch], query),
+              :after => Calabash::QueryResult.create([after_result], query)
+        }
       end
 
       private
