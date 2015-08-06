@@ -11,6 +11,7 @@ Scenario: Left-to-right screen flick in portrait
   When I flick right on the screen (swipe to go back)
   Then I go back to the Scrolls page
 
+# Does not work on iPad; use pan.
 Scenario: Left-to-right screen flick in landscape
   Given I see the scrolls tab
   And I rotate so the home button is on the right
