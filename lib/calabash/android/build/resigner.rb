@@ -27,7 +27,25 @@ module Calabash
         end
 
         def unsign(unsigned_path)
-          files_to_remove = `"#{Environment.aapt_path}" list "#{unsigned_path}"`.lines.collect(&:strip).grep(/^META-INF\//)
+          meta_files = `"#{Environment.aapt_path}" list "#{unsigned_path}"`.lines.collect(&:strip).grep(/^META-INF\//)
+
+          signing_file_names = ['.mf', '.rsa', '.dsa', '.ec', '.sf']
+
+          files_to_remove = meta_files.select do |file|
+            # other will be:
+            # META-INF/foo/bar
+            #  other #=> bar
+            directory, file_name, other = file.split('/')
+
+            if other != nil || file_name.nil?
+              false
+            else
+              if signing_file_names.include?(File.extname(file_name).downcase)
+                true
+              end
+            end
+          end
+
           if files_to_remove.empty?
             @logger.log "App wasn't signed. Will not try to unsign it.", :debug
           else
