@@ -1,9 +1,13 @@
 module Calabash
-  # Methods for performing gestures.  Gestures are taps, flicks,
-  # and pans.
+  # Methods for performing gestures.  Gestures are taps, flicks, and pans.
   #
   # Many gestures take an optional :duration. On iOS, the duration must be
   # between 0.5 and 60 (seconds).  This is a limitation of the UIAutomation API.
+  #
+  # @note All gestures have _undefined return values._  This is intentional.
+  #  Please do not rely on return values of gestures in your tests.  For
+  #  convenience when working in the console, some gestures return sensible
+  #  values.  However, these values are subject to change.
   module Gestures
 
     # How long do we wait for a view to appear by default when performing a
