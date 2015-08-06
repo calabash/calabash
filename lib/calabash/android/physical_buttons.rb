@@ -1,9 +1,12 @@
 module Calabash
   module Android
+    # Simulates pressing a *physical* button on the device. Use these methods
+    # carefully, as only a few devices have hardware key input. They can,
+    # however, be very useful for testing behaviour that would be hard to
+    # replicate otherwise.
     # @!visibility private
     module PhysicalButtons
 
-      # @todo: Add note about this class being easily abused
       def press_button(key)
         Device.default.perform_action('press_key', key)
         true
