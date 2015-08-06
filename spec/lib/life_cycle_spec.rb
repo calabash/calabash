@@ -48,7 +48,7 @@ describe Calabash::LifeCycle do
     it 'should fail if no app is given, and default is not set' do
       allow(Calabash::Application).to receive(:default).and_return(nil)
 
-      expect{world.start_app}.to raise_error 'No application given, and Application.default is not set'
+      expect{world.start_app}.to raise_error 'No application given, and Calabash.default_application is not set'
     end
   end
 
@@ -85,7 +85,7 @@ describe Calabash::LifeCycle do
 
         expect do
           world.send(method_name)
-        end.to raise_error('No application given, and Application.default is not set')
+        end.to raise_error('No application given, and Calabash.default_application is not set')
       end
     end
   end

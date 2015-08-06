@@ -6,10 +6,13 @@ module Calabash
       #
       # @example
       #  go_home
+      #  # Do something
       #  resume_app
       #
-      # @param [String, Calabash::Application] path_or_application The
-      #  application to resume.
+      # @param [String, Calabash::Application] path_or_application A path to the
+      #  application, or an instance of {Calabash::Application}.
+      #  Defaults to
+      #  {Calabash::Defaults#default_application Calabash.default_application}
       def resume_app(path_or_application = nil)
         path_or_application ||= Application.default
 
