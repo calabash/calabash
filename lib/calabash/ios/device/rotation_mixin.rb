@@ -76,7 +76,7 @@ module Calabash
           wait_for_server_to_start({:timeout => 1})
         end
 
-        orientation = status_bar_orientation
+        orientation = status_bar_orientation.to_sym
 
         if orientation == position
           return orientation
@@ -99,13 +99,13 @@ module Calabash
           # than rotation on the screen.
           sleep(0.4)
 
-          orientation = status_bar_orientation
+          orientation = status_bar_orientation.to_sym
           if orientation == position
-            return orientation
+            return orientation.to_s
           end
         end
 
-        orientation
+        orientation.to_s
       end
 
       private
