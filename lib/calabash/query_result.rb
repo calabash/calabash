@@ -4,6 +4,7 @@ module Calabash
   # It will, unlike `Array`, raise an IndexError instead of returning nil if
   # an entry outside bounds is accessed.
   class QueryResult < Array
+    # @!visibility private
     def self.create(result, query)
       query_result = QueryResult.send(:new, query)
       query_result.send(:initialize_copy, result)
@@ -13,36 +14,43 @@ module Calabash
 
     private_class_method :new
 
+    # @!visibility private
     attr_reader :query
 
+    # @!visibility private
     def initialize(query)
       @query = Query.new(query)
     end
 
+    # @!visibility private
     def first(*several_variants)
       ensure_in_bounds(0)
 
       super(*several_variants)
     end
 
+    # @!visibility private
     def last(*several_variants)
       ensure_in_bounds(-1)
 
       super(*several_variants)
     end
 
+    # @!visibility private
     def [](index)
       ensure_in_bounds(index)
 
       super(index)
     end
 
+    # @!visibility private
     def at(index)
       ensure_in_bounds(index)
 
       super(index)
     end
 
+    # @!visibility private
     def fetch(*several_variants)
       unless block_given? || several_variants.length > 1
         ensure_in_bounds(several_variants.first)
@@ -51,6 +59,7 @@ module Calabash
       super(*several_variants)
     end
 
+    # @!visibility private
     def ensure_in_bounds(index)
       if empty?
         raise IndexError, "Query result is empty"
@@ -65,6 +74,7 @@ module Calabash
       end
     end
 
+    # @!visibility private
     def self.recursive_freeze(object)
       if object.is_a?(Array)
         object.each do |entry|
