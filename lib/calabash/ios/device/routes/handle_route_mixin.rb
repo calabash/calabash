@@ -9,7 +9,11 @@ module Calabash
 
         def route_post_request(request)
           begin
-            http_client.post(request)
+            if request.params[/\"method_name\":\"flash\"/, 0]
+              http_client.post(request, timeout: 30)
+            else
+              http_client.post(request)
+            end
           rescue => e
             raise Calabash::IOS::RouteError, e
           end
