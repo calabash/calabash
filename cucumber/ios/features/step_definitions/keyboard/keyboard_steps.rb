@@ -33,7 +33,7 @@ When(/^I type "([^"]*)" character by character$/) do |string|
 end
 
 And(/^I can dismiss the keyboard by touching the Done key$/) do
-  tap_current_keyboard_action_key
+  tap_keyboard_action_key
   wait_for_no_keyboard
 end
 

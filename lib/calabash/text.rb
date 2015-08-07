@@ -34,9 +34,46 @@ module Calabash
       _clear_text_in(query)
     end
 
-    # @todo add docs
-    def tap_current_keyboard_action_key
-      _tap_current_keyboard_action_key
+    # Taps the keyboard action key. On iOS there is only one action key, which
+    # is the blue coloured key on the standard keyboard. On Android, there can
+    # be multiple actions keys available depending on the keyboard, but one key
+    # is often replacing the enter key, becoming the default action key. The
+    # view in focus on Android asks to keyboard to show one action key, but the
+    # keyboard might not adhere to this.
+    #
+    # On iOS some examples include:
+    #  * Return
+    #  * Next
+    #  * Go
+    #  * Join
+    #  * Search
+    #
+    # On Android some examples include:
+    #  * Search
+    #  * Next
+    #  * Previous
+    #
+    # See http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html
+    #
+    # @example
+    #  tap_keyboard_action_key(:search)
+    #  tap_keyboard_action_key(:send)
+    #  tap_keyboard_action_key(:next)
+    #  tap_keyboard_action_key(:previous)
+    #
+    # Notice that, for Android, Calabash does not ensure that this particular action key is
+    # actually available on the current keyboard.
+    #
+    # Not all keyboards have an action key. For example, on iOS, numeric keyboards
+    # do not have an action key. On Android, if no action key is set for the
+    # view, the enter key is pressed instead.
+    #
+    # @param [Symbol] action_key The action key to press. This is only
+    #  used for Android.
+    # @raise [ArgumentError] If action_key if set for iOS.
+    def tap_keyboard_action_key(action_key = nil)
+      _tap_keyboard_action_key(action_key)
+      true
     end
 
     # Escapes single quotes in `string`.
@@ -77,7 +114,7 @@ module Calabash
     end
 
     # @!visibility private
-    def _tap_current_keyboard_action_key
+    def _tap_keyboard_action_key(action_key)
       abstract_method!
     end
 

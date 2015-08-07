@@ -127,7 +127,12 @@ module Calabash
       # @todo Refactor uia_route to a public API call
       # @todo Move this documentation to the public method
       # @!visibility private
-      def _tap_current_keyboard_action_key
+      def _tap_keyboard_action_key(action_key)
+        unless action_key.nil?
+          raise ArgumentError,
+                "An iOS keyboard does not have multiple action keys"
+        end
+
         char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:action]
         Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
       end
