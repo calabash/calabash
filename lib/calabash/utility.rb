@@ -5,7 +5,6 @@ module Calabash
 
   end
 
-  # @!visibility private
   module Utility
 
     # @!visibility private
@@ -27,8 +26,8 @@ module Calabash
     #
     # @example
     #  # These are equivalent.
-    #  pan(percent(20, 50), percent(20, 100))
-    #  pan({x: 20, y: 50}, {x: 20, y: 100})
+    #  pan("*", percent(20, 50), percent(20, 100))
+    #  pan("*", {x: 20, y: 50}, {x: 20, y: 100})
     #
     # @param [Number] x The value of the x percent.
     # @param [Number] y The value of the y percent.
@@ -50,6 +49,7 @@ module Calabash
     # @param [Number] x The value of the x.
     # @param [Number] y The value of the y.
     # @return [Hash] Representing the given values.
+    # @!visibility private
     def coordinate(x, y)
       {x: x, y: y}
     end
