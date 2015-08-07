@@ -24,14 +24,24 @@ module Calabash
     # @!visibility private
     self.screenshot_directory_prefix = 'test_run_'
 
-    # Takes a screenshot and saves it. The file is stored in the directory
-    # given by the ENV variable $CAL_SCREENSHOT_DIR, or by default in
-    # the relative directory 'screenshots'. The files are saved in a
+    # Takes a screenshot and saves it.
+    #
+    # If `name` is a relative path or a file name, then the file is stored in
+    # the directory specified by the ENV variable CAL_SCREENSHOT_DIR, or by
+    # default in the relative directory 'screenshots'. The files are saved in a
     # sub directory named test_run_n, where n is unique and incrementing for
     # each new test run. The filename of the screenshot will be `name`.
     # If `name` is not given (nil), the screenshot will be saved as
     # screenshot_N, where N is the total amount of screenshots taken for the
     # test run.
+    #
+    # If the name given is an absolute path, then Calabash will save the
+    # screenshot to the absolute directory given.
+    #
+    # If the file specified by `name` has no extension then the filename will
+    # default to name + '.png'.
+    #
+    # If the directories specified do not exist, Calabash will create them.
     #
     # @param [String] name Name of the screenshot.
     # @return [String] Path to the screenshot
@@ -59,11 +69,13 @@ module Calabash
 
       @@screenshots_taken += 1
 
-      unless Dir.exist?(File.expand_path(screenshot_directory))
-        FileUtils.mkdir_p(File.expand_path(screenshot_directory))
+      file_name = File.expand_path(name, screenshot_directory)
+
+      unless Dir.exist?(File.dirname(file_name))
+        FileUtils.mkdir_p(File.dirname(file_name))
       end
 
-      File.join(screenshot_directory, name)
+      file_name
     end
 
     # @!visibility private
