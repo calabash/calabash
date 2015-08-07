@@ -1,14 +1,14 @@
 # Shared Page Logic Sample
-This sample demonstrates how to share logic across platforms using pages. The relevant files are in
+This sample demonstrates how to share logic across platforms using pages. The relevant files are in:
 
  - features/pages
  - features/android/pages
  - features/ios/pages
+
+ and the files:
  
- and the files
- 
-  - features/step_definitions/login_steps.rb
-  - features/support/pages.rb
+ - features/step_definitions/login_steps.rb
+ - features/support/pages.rb
   
 The pages.rb file is responsible for auto loading the various pages as they depend on eachother and we do not know in which order they are loaded.
 
