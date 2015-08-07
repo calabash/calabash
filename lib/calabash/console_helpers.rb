@@ -36,15 +36,6 @@ module Calabash
       true
     end
 
-    # Flashes any views matching `query`. Only one view is flashed at a time,
-    # in the order they are returned.
-    #
-    # @param [String, Hash, Calabash::Query] query The query to match the
-    #  view(s)
-    def flash(query)
-      Calabash::Device.default.map_route(Query.new(query), :flash)
-    end
-
     # Puts a message of the day.
     # @!visibility private
     def message_of_the_day
