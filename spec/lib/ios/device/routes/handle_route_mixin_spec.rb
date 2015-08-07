@@ -11,7 +11,7 @@ describe Calabash::IOS::Routes::HandleRouteMixin do
 
       def initialize
         @http_client = Class.new do
-          def post(_); ; end;
+          def post(_, _={}); ; end;
         end.new
       end
     end.new
@@ -24,18 +24,32 @@ describe Calabash::IOS::Routes::HandleRouteMixin do
   end
 
   describe '#route_post_request' do
-    it 'calls http_client.post' do
-      expect(device.http_client).to receive(:post).with('request').and_return 'response'
+    let (:request) do
+      Class.new do
+        def params; 'parameter' ; end
+      end.new
+    end
 
-      expect(device.send(:route_post_request, 'request')).to be == 'response'
+    it 'calls http_client.post' do
+      expect(device.http_client).to receive(:post).with(request).and_return 'response'
+
+      expect(device.send(:route_post_request, request)).to be == 'response'
     end
 
     it "does not re-raise errors raised by 'post'" do
-      expect(device.http_client).to receive(:post).with('request').and_raise ArgumentError
+      expect(device.http_client).to receive(:post).with(request).and_raise ArgumentError
 
       expect do
-        device.send(:route_post_request, 'request')
+        device.send(:route_post_request, request)
       end.to raise_error error_class
+    end
+
+    it 'sets the timeout to 30 if route is flash' do
+      json = "{\"operation\":{\"method_name\":\"flash\",\"arguments\":[]},\"query\":\"button\"}"
+      expect(request).to receive(:params).and_return(json)
+      expect(device.http_client).to receive(:post).with(request, {timeout: 30}).and_return 'response'
+
+      expect(device.send(:route_post_request, request)).to be == 'response'
     end
   end
 

@@ -60,6 +60,15 @@ module Calabash
       Calabash::Device.default.map_route(Query.new(query), :query, *args)
     end
 
+    # Flashes any views matching `query`. Only one view is flashed at a time,
+    # in the order they are returned.
+    #
+    # @param [String, Hash, Calabash::Query] query The query to match the
+    #  view(s)
+    def flash(query)
+      Calabash::Device.default.map_route(Query.new(query), :flash)
+    end
+
     # Evaluate javascript in a Web View. On iOS, an implicit return is
     # inserted, on Android an explicit return is needed.
     #
