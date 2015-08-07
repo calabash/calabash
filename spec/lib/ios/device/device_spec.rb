@@ -773,6 +773,8 @@ describe Calabash::IOS::Device do
 
     describe '#expect_runtime_attributes_available' do
       it 'raises an error when runtime_attributes are not available' do
+        error_class = Calabash::Device::EnsureTestServerReadyTimeoutError
+        expect(device).to receive(:ensure_test_server_ready).with({:timeout => 1}).and_raise error_class
         device.instance_variable_set(:@runtime_attributes, nil)
         expect {
           device.send(:expect_runtime_attributes_available, 'foo')

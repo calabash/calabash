@@ -22,8 +22,6 @@ module Calabash
 
       include Calabash::IOS::GesturesMixin
 
-      # @todo Should these be public?
-      # @todo If public, document!
       attr_reader :run_loop
       attr_reader :uia_strategy
       attr_reader :start_options
@@ -290,6 +288,13 @@ module Calabash
         # app has launched.
         expect_runtime_attributes_available(__method__)
         runtime_attributes.server_version
+      end
+
+      # @!visibility private
+      # A dump of runtime details.
+      def runtime_details
+        expect_runtime_attributes_available(__method__)
+        @runtime_attributes.runtime_info
       end
 
       # Is this device a simulator?
@@ -729,11 +734,18 @@ module Calabash
 
       # @!visibility private
       def expect_runtime_attributes_available(method_name)
+
         if runtime_attributes.nil?
-          logger.log("The method '#{method_name}' is not available to IOS::Device until", :info)
-          logger.log('the app has been launched with Calabash start_app.', :info)
-          raise "The method '#{method_name}' can only be called after the app has been launched"
+          begin
+            # Populates the @runtime_attributes
+            wait_for_server_to_start({:timeout => 1.0})
+          rescue Calabash::Device::EnsureTestServerReadyTimeoutError => _
+            logger.log("The method '#{method_name}' is not available to IOS::Device until", :info)
+            logger.log('the app has been launched with Calabash start_app.', :info)
+            raise "The method '#{method_name}' can only be called after the app has been launched"
+          end
         end
+
         true
       end
 
