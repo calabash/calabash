@@ -49,4 +49,5 @@ lib/calabash/android/lib/AndroidManifest.xml
 
 # screenshots that might be produced during testing
 *screenshots*
+!screenshots.feature
 
