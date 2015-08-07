@@ -1,7 +1,7 @@
 module Calabash
   module Android
     module Interactions
-      # Go back.
+      # Go back. If the keyboard is shown, it will be dismissed.
       def go_back
         Device.default.perform_action('hide_soft_keyboard')
         press_back_button
