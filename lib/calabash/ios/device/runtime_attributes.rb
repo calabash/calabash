@@ -9,6 +9,10 @@ module Calabash
       require 'run_loop'
 
       # @!visibility private
+      # The hash passed to initialize.
+      attr_reader :runtime_info
+
+      # @!visibility private
       # Creates a new instance of DeviceRuntimeInfo.
       # @param [Hash] runtime_info The result of calling the version route on
       #  on the server
@@ -173,11 +177,6 @@ module Calabash
           runtime_info['system']
         end.call
       end
-
-      # @!visibility private
-      # The hash passed to initialize.
-      attr_reader :runtime_info
-
     end
   end
 end
