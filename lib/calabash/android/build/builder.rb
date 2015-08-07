@@ -37,7 +37,7 @@ module Calabash
             end
             @logger.log ""
             @logger.log "You can resign the app with #{keystores.first.location} by running:
-      calabash resign #{@application_path}"
+      calabash resign \"#{@application_path}\""
 
             @logger.log ""
             @logger.log "Notice that resigning an app might break some functionality."
