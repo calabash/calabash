@@ -86,6 +86,8 @@ And(/^I see the map views page$/) do
   query = "view marked:'map'"
   wait_for_view(query)
 
+  # Map can take long time to stablize
+  sleep 1.0
   wait_for_animations
 end
 
@@ -102,8 +104,10 @@ Then(/^I can zoom (out|in) on the map$/) do |in_out|
     pinch_to_zoom_in(query)
   end
 
-  wait_for_animations
+  # Map can take long time to stabilize.
   sleep 1.0
+  wait_for_animations
+
   expect(query(query, :region)).not_to be == region
 end
 
@@ -120,8 +124,10 @@ Then(/^I can zoom (out|in) on the screen$/) do |in_out|
     pinch_screen_to_zoom_in
   end
 
-  wait_for_animations
+  # Map can take long time to stabilize.
   sleep 1.0
+  wait_for_animations
+
   expect(query(query, :region)).not_to be == region
 end
 
@@ -138,8 +144,10 @@ Then(/^I can pinch (in|out) on the screen$/) do |in_out|
     pinch_screen_in
   end
 
-  wait_for_animations
+  # Map can take long time to stabilize.
   sleep 1.0
+  wait_for_animations
+
   expect(query(query, :region)).not_to be == region
 end
 

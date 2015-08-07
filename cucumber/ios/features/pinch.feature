@@ -18,7 +18,7 @@ Scenario: Zoom in and out on a map
   Then I can zoom out on the map
   And I can zoom in on the map
 
-Scenario: Zoom in and out on a map
+Scenario: Zoom in and out on screen
   Given I see the scrolls tab
   And I see the map views page
   Then I can zoom out on the screen
