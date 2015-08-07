@@ -38,6 +38,9 @@ module Calabash
     # If the name given is an absolute path, then Calabash will save the
     # screenshot to the absolute directory given.
     #
+    # If the name given starts with ./ (e.g. `screenshot('./foo.png')`) then
+    # the filename will be saved relative to the current working directory.
+    #
     # If the file specified by `name` has no extension then the filename will
     # default to name + '.png'.
     #
@@ -68,6 +71,10 @@ module Calabash
       name = "#{name}.png" if File.extname(name).empty?
 
       @@screenshots_taken += 1
+
+      if name.start_with?('./')
+        name = File.join(Dir.pwd, "#{name[2..-1]}")
+      end
 
       file_name = File.expand_path(name, screenshot_directory)
 
