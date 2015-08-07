@@ -1,6 +1,5 @@
 module Calabash
   module IOS
-    # @!visibility private
     module Runtime
 
       # @todo Complete and document the Runtime API
