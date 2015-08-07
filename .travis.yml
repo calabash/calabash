@@ -1,5 +1,8 @@
 language: ruby
 
+# Container based: faster
+sudo: false
+
 before_script:
   - ./copy_repos.sh
   - ./changing_old_files.sh
