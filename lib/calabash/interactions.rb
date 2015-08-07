@@ -6,6 +6,10 @@ module Calabash
     # If called with an empty list of *args, query will find the views
     # specified by `query` and return a QueryResult of serialized views.
     #
+    # @note If this method is called with invocation arguments, it might allow
+    #  the author of the test to do an interaction with app that a user would
+    #  not be able to (for example changing the text of a view).
+    #
     # @example
     #  query("* marked:'my view'")
     #  query("* id:'foo' descendant UIButton")
@@ -76,7 +80,7 @@ module Calabash
     #  # iOS
     #  evaluate_javascript_in("UIWebView", "2+2")
     #  # Android
-    #  evaluate_javascript_in("WebView", "return 2+2"
+    #  evaluate_javascript_in("WebView", "return 2+2")
     #
     # @example
     #  # iOS
@@ -137,7 +141,7 @@ module Calabash
     #
     # @example
     #   # iOS
-    #   backdoor('calabashBackdoor:'', '')
+    #   backdoor('calabashBackdoor:', '')
     #
     # @example
     #   # iOS
