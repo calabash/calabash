@@ -1,4 +1,4 @@
-Given(/^I see the (controls|gestures|scrolls|special) tab$/) do |tab|
+Given(/^I see the (controls|gestures|scrolls|special|date picker) tab$/) do |tab|
   wait_for_view('tabBarButton')
   case tab
   when 'controls'
@@ -9,6 +9,8 @@ Given(/^I see the (controls|gestures|scrolls|special) tab$/) do |tab|
     index = 2
   when 'special'
     index = 3
+  when 'date picker'
+    index = 4
   end
   tap("tabBarButton index:#{index}")
   expected_view = "#{tab} page"
