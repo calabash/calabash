@@ -1,37 +1,38 @@
 @keyboard
 Feature: Keyboard
-  In order to test keyboard interactions
-  As a developer and tester
-  I want a Calabash Keyboard API
+In order to test keyboard interactions
+As a developer and tester
+I want a Calabash Keyboard API
 
-  Background: Navigate to the controls tab
-    Given I see the controls tab
+Background: Navigate to the controls tab
+  Given I see the controls tab
 
-  Scenario: I should be able to type something
-    And I touch the text field
-    Then I wait for the keyboard
-    Then I type "Hello"
-    And the text in the text field should be "Hello"
-    When I type " World!" character by character
-    Then the text in the text field should be "Hello World!"
-    And I can dismiss the keyboard by touching the Done key
+Scenario: I should be able to type something
+  And I touch the text field
+  Then I wait for the keyboard
+  Then I type "Hello"
+  And the text in the text field should be "Hello"
+  When I type " World!" character by character
+  Then the text in the text field should be "Hello World!"
+  And I can dismiss the keyboard by touching the Done key
 
-  Scenario: I can ask questions about the keyboard visibility
-    And I touch the text field
-    Then I wait for the keyboard
-    And the keyboard is visible
-    And the docked keyboard is visible
-    And the undocked keyboard is not visible
-    And the split keyboard is not visible
+Scenario: I can ask questions about the keyboard visibility
+  And I touch the text field
+  Then I wait for the keyboard
+  And the keyboard is visible
+  And the docked keyboard is visible
+  And the undocked keyboard is not visible
+  And the split keyboard is not visible
 
-  Scenario: I can clear the text using setText:
-    Given I have entered some text in the text field
-    Then I can clear the text field with setText:
+Scenario: I can clear the text using setText:
+  Given I have entered some text in the text field
+  Then I can clear the text field with setText:
 
-  Scenario: I can clear the text using the editing menu
-    Given I have entered some text in the text field
-    Then I can clear the text field with the editing menu
+Scenario: I can clear the text using the editing menu
+  Given I have entered some text in the text field
+  Then I can clear the text field with the editing menu
 
-  Scenario: I can clear the text using the clear button
-   Given I have entered some text in the text field
-   Then I can clear the text field with the clear text button
+Scenario: I can clear the text using the clear button
+  Given I have entered some text in the text field
+  Then I can clear the text field with the clear text button
+
