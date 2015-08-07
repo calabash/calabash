@@ -10,7 +10,7 @@ and the files:
  - features/step_definitions/login_steps.rb
  - features/support/pages.rb
   
-The pages.rb file is responsible for auto loading the various pages as they depend on eachother and we do not know in which order they are loaded.
+The pages.rb file is responsible for auto loading the various pages as they depend on each other and we do not know in which order they are loaded.
 
 ## Running the sample
 Run the sample using
@@ -75,4 +75,4 @@ end
 ```
 
 Notice how `Android::LoginPage` still includes `Calabash::Android`. This is still needed, as they redefine the Calabash methods used in `SharedLoginPage`. Calling
-`page(LoginPage)` from our step definitions still simply instantiates the `LoginPage` of the platform (`Android::LoginPage` or `IOS::LoginPage`).
+`page(LoginPage)` from our step definitions still simply instantiate the `LoginPage` of the platform (`Android::LoginPage` or `IOS::LoginPage`).
