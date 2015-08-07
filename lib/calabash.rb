@@ -45,7 +45,10 @@ module Calabash
 
   require 'calabash/page'
 
-  # Instantiate a page object.
+  # Instantiate a page object for the current platform.
+  #
+  # @note Your pages **must** be in the scope of either Android or IOS. See the
+  #  examples for details.
   #
   # @example
   #  # android/pages/login_page.rb
@@ -61,6 +64,39 @@ module Calabash
   #    page(LoginPage).method
   #  end
   #
+  # @example
+  #  # This example shows page code sharing across iOS and Android
+  #  # Please see the sample 'shared-page-logic' for details.
+  #  # pages/abstract_login_page.rb
+  #  class AbstractLoginPage < Calabash::Page
+  #    def login(username, password)
+  #     enter_text_in(username_field, username)
+  #     [...]
+  #    end
+  #
+  #    private
+  #
+  #    def username_field
+  #      abstract_method!
+  #    end
+  #  end
+  #
+  #  # pages/android_login_page.rb
+  #  class Android::LoginPage < SharedLoginPage
+  #    include Calabash::Android
+  #
+  #    private
+  #
+  #    def username_field
+  #      "* marked:'a_username'"
+  #    end
+  #
+  #    [...]
+  #  end
+  #
+  #
+  # @see #android?
+  # @see #ios?
   # @param [Class] page_class The page to instantiate
   # @return [Calabash::Page] An instance of the page class
   def page(page_class)
@@ -99,12 +135,20 @@ module Calabash
     end
   end
 
-  # Is the app under test running on Android?
+  # Is the device under test running Android?
+  #
+  # @return [Boolean] Returns true if
+  #  {Calabash::Defaults#default_device Calabash.default_device} is an instance
+  #  of {Calabash::Android::Device}.
   def android?
     Android.const_defined?(:Device, false) && Device.default.is_a?(Android::Device)
   end
 
-  # Is the app under test running on iOS?
+  # Is the device under test running iOS?
+  #
+  # @return [Boolean] Returns true if
+  #  {Calabash::Defaults#default_device Calabash.default_device} is an instance
+  #  of {Calabash::IOS::Device}.
   def ios?
     IOS.const_defined?(:Device, false) && Device.default.is_a?(IOS::Device)
   end
