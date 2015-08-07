@@ -51,17 +51,17 @@ module Calabash
   #  examples for details.
   #
   # @example
-  #  # android/pages/login_page.rb
-  #  class Android::LoginPage < Calabash::Page
+  #  # android/pages/my_page.rb
+  #  class Android::MyPage < Calabash::Page
   #    include Calabash::Android
   #
-  #    [...]
+  #    # [...]
   #  end
   #
   #  # step definition
-  #  Given([...]) do
+  #  Given(/[...]/) do
   #    # Calabash will determine your platform and pick the Android page.
-  #    page(LoginPage).method
+  #    page(MyPage).method
   #  end
   #
   # @example
@@ -71,7 +71,7 @@ module Calabash
   #  class AbstractLoginPage < Calabash::Page
   #    def login(username, password)
   #     enter_text_in(username_field, username)
-  #     [...]
+  #     # [...]
   #    end
   #
   #    private
@@ -91,7 +91,7 @@ module Calabash
   #      "* marked:'a_username'"
   #    end
   #
-  #    [...]
+  #    # [...]
   #  end
   #
   #
