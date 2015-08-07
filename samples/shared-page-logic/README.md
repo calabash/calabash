@@ -5,7 +5,7 @@ This sample demonstrates how to share logic across platforms using pages. The re
  - features/android/pages
  - features/ios/pages
 
- and the files:
+and the files:
  
  - features/step_definitions/login_steps.rb
  - features/support/pages.rb
