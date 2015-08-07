@@ -14,7 +14,8 @@ module Calabash
     # @see Calabash::Text#enter_text
     #
     # @param [String] text The text to type.
-    # @param query A query describing the view to enter text into.
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #  to enter text into.
     def enter_text_in(query, text)
       _enter_text_in(query, text)
     end
@@ -27,7 +28,8 @@ module Calabash
     # Clears the text `view`
     # @see Calabash::Text#clear_text
     #
-    # @param query A query describing the view to clear text in.
+    # @param [String, Hash, Calabash::Query] query A query describing the view
+    #  to clear text in.
     def clear_text_in(query)
       _clear_text_in(query)
     end
@@ -40,8 +42,14 @@ module Calabash
     # Escapes single quotes in `string`.
     #
     # @example
-    #   > escape_quotes("Let's get this done.")
+    #   escape_single_quotes("Let's get this done.")
     #   => "Let\\'s get this done."
+    #
+    # @example
+    #  query("* text:'#{escape_single_quotes("Let's go")}'")
+    #  # Equivalent to
+    #  query("* text:'Let\\'s go'")
+    #
     # @param [String] string The string to escape.
     # @return [String] A string with its single quotes properly escaped.
     def escape_single_quotes(string)
