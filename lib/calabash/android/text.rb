@@ -1,6 +1,9 @@
 module Calabash
   module Android
     module Text
+      # Dismisses the current keyboard. This is equivalent to the user
+      # pressing the back button if the keyboard is showing. If the keyboard is
+      # already hidden/dismissed, nothing is done.
       def dismiss_keyboard
         Device.default.perform_action('hide_soft_keyboard')
         sleep 0.5
