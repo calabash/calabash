@@ -22,6 +22,7 @@ module Calabash
         cucumber_config = File.read(file(File.join('config', 'cucumber.yml')))
 
         env = File.read(file(File.join('features', 'support', 'env.rb')))
+        dry_run = File.read(file(File.join('features', 'support', 'dry_run.rb')))
         sample_feature = File.read(file(File.join('features', 'sample.feature')))
         calabash_steps = File.read(file(File.join('features', 'step_definitions', 'calabash_steps.rb')))
 
@@ -46,6 +47,7 @@ module Calabash
         File.open(File.join('features', 'step_definitions', 'calabash_steps.rb'), 'w') {|file| file.write(calabash_steps) }
         File.open(File.join('features', 'support', 'hooks.rb'), 'w') {|file| file.write(hooks) }
         File.open(File.join('features', 'support', 'env.rb'), 'w') {|file| file.write(env) }
+        File.open(File.join('features', 'support', 'dry_run.rb'), 'w') {|file| file.write(dry_run) }
 
         gemfile = File.readlines(file(File.join('Gemfile')))
 
