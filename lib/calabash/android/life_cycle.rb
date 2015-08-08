@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # Android specific life cyle methods.
     module LifeCycle
       # Resume an application. If the application is already focused, nothing
       # will happen.
