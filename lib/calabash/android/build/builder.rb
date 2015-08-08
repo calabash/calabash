@@ -16,6 +16,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def build
           apk_fingerprint = fingerprint_from_apk
           @logger.log "#{@application_path} was signed with a certificate with fingerprint #{apk_fingerprint}", :debug
@@ -83,6 +84,7 @@ module Calabash
           @logger.log "Done signing the test server. Moved it to #{test_server_file_name}"
         end
 
+        # @!visibility private
         def fingerprint_from_apk
           application_path = File.expand_path(@application_path)
 

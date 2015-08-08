@@ -14,6 +14,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def resign!
           Dir.mktmpdir do |tmp_dir|
             @logger.log 'Resigning apk', :debug
@@ -26,6 +27,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def unsign(unsigned_path)
           meta_files = `"#{Environment.aapt_path}" list "#{unsigned_path}"`.lines.collect(&:strip).grep(/^META-INF\//)
 
@@ -53,12 +55,14 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def zipalign(unaligned_path, app_path)
           cmd = %Q("#{Environment.zipalign_path}" -f 4 "#{unaligned_path}" "#{app_path}")
           @logger.log "Zipaligning using: #{cmd}", :debug
           system(cmd)
         end
 
+        # @!visibility private
         def sign(app_path, dest_path)
           java_keystore = JavaKeystore.get_keystores.first
 

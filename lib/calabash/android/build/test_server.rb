@@ -7,10 +7,12 @@ module Calabash
           @application_path = application_path
         end
 
+        # @!visibility private
         def path
           File.expand_path("test_servers/#{checksum(@application_path)}_#{VERSION}.apk")
         end
 
+        # @!visibility private
         def exists?
           File.exists?(path)
         end

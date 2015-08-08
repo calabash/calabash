@@ -5,6 +5,7 @@ module Calabash
     module Build
       # @!visibility private
       class JavaKeystore
+        # @!visibility private
         CALABASH_KEYSTORE_SETTINGS_FILENAME = 'calabash_keystore_settings.json'
 
         attr_reader :errors, :location, :keystore_alias, :store_password
@@ -68,6 +69,7 @@ module Calabash
           @logger.log "Signature algorithm name: #{signature_algorithm_name}", :debug
         end
 
+        # @!visibility private
         def sign_apk(apk_path, dest_path)
           raise "Cannot sign with a miss configured keystore" if errors
           raise "No such file: #{apk_path}" unless File.exists?(apk_path)
@@ -86,6 +88,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def system_with_stdout_on_success(cmd, *args)
           a = Escape.shell_command(args)
           cmd = "#{cmd} #{a.gsub("'", '"')}"
@@ -98,10 +101,12 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def fail_wrong_info
           raise "Could not read keystore with the given credentials. Please ensure "
         end
 
+        # @!visibility private
         def self.read_keystore_with_default_password_and_alias(path)
           path = File.expand_path path
 
@@ -128,6 +133,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def self.get_keystores
           if keystore = keystore_from_settings
             [ keystore ]
@@ -141,6 +147,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def self.keystore_from_settings
           if File.exist?(CALABASH_KEYSTORE_SETTINGS_FILENAME)
             Logger.info "Reading keystore information specified in #{CALABASH_KEYSTORE_SETTINGS_FILENAME}"
@@ -157,16 +164,19 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def self.fail_if_key_missing(map, key)
           raise "Found #{CALABASH_KEYSTORE_SETTINGS_FILENAME} but no #{key} defined." unless map[key]
         end
 
+        # @!visibility private
         def self.extract_md5_fingerprint(fingerprints)
           m = fingerprints.scan(/MD5.*((?:[a-fA-F\d]{2}:){15}[a-fA-F\d]{2})/).flatten
           raise "No MD5 fingerprint found:\n #{fingerprints}" if m.empty?
           m.first
         end
 
+        # @!visibility private
         def self.extract_signature_algorithm_name(fingerprints)
           m = fingerprints.scan(/Signature algorithm name: (.*)/).flatten
           raise "No signature algorithm names found:\n #{fingerprints}" if m.empty?
