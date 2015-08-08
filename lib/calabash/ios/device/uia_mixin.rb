@@ -4,6 +4,7 @@ module Calabash
     # @!visibility private
     module UIAMixin
 
+      # @!visibility private
       def evaluate_uia(script)
         uia_route(script)
       end
