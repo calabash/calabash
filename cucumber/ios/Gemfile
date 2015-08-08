@@ -4,7 +4,16 @@ gem 'calabash', :path => '../../'
 
 gem 'cucumber', '~> 2.0'
 gem 'slowhandcuke', '>= 0.0.3', '< 1.0'
+
+# For easy expectations. No screenshots on failures!
 gem 'rspec', '~> 3.0'
+
+# For date parsing.
+gem 'chronic', '>= 0.10', '< 1.0'
+
+# Debugging.
 gem 'pry'
 gem 'pry-nav'
+
+# Makes tidy Xcode build logs.
 gem 'xcpretty'
