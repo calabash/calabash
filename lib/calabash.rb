@@ -241,6 +241,7 @@ module Calabash
       @@has_set_embedding_context
     end
 
+    # @!visibility private
     def self.new_embed_method(method)
       define_method(:embed) do |*args|
         method.call(*args)
@@ -249,6 +250,7 @@ module Calabash
       @@has_set_embedding_context = true
     end
 
+    # @!visibility private
     def embed(*_)
       Logger.warn 'Embed is not available in this context. Will not embed.'
     end
@@ -264,9 +266,9 @@ unless Object.const_defined?(:IOS)
 end
 
 if Calabash::Environment::DEBUG_CALLED_METHODS
-  $stdout.puts "#{Calabash::Color.red("Will print every Calabash method called!")}"
-  $stdout.puts "#{Calabash::Color.red("Warning: This might slow down your test drastically")}"
-  $stdout.puts "#{Calabash::Color.red("and is an experimental feature.")}"
+  $stdout.puts "#{Calabash::Color.red('Will print every Calabash method called!')}"
+  $stdout.puts "#{Calabash::Color.red('Warning: This might slow down your test drastically')}"
+  $stdout.puts "#{Calabash::Color.red('and is an experimental feature.')}"
 
   calabash_file = Calabash.method(:extended).source_location.first
   $__calabash_dir_name = File.dirname(calabash_file)
@@ -274,7 +276,7 @@ if Calabash::Environment::DEBUG_CALLED_METHODS
   trace_func = lambda do |event, file, line, id, binding, classname|
     if event == 'call'
       if classname.to_s.split('::').first == 'Calabash'
-        binding_caller_locations = binding.eval("caller_locations")
+        binding_caller_locations = binding.eval('caller_locations')
         files = binding_caller_locations[3..-1].map(&:path)
 
         calabash_not_in_stacktrace = files.none? do |file|
