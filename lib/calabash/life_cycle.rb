@@ -1,4 +1,12 @@
 module Calabash
+
+  # Methods for managing an app's life cycle.
+  #
+  # The life cycle of an app includes:
+  #  * installing / uninstalling
+  #  * stopping / starting
+  #  * clearing the application data
+  #  * sending the application to background and resuming it
   module LifeCycle
     # Start the given application (and its test-server) on the port of
     # {Calabash::Defaults#default_server Calabash.default_server}.
