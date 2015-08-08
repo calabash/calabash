@@ -1,8 +1,17 @@
 module Calabash
+
+  # A base class for the Page Object Model (POM) or Page Object Pattern.
+  #
+  # We recommend the POM for testing cross-platform apps.
+  #
+  # We have a great examples of using the POM in the Calabash 2.0 repository.
+  #   * https://github.com/calabash/calabash/tree/develop/samples/wordpress
+  #   * https://github.com/calabash/calabash/tree/develop/samples/shared-page-logic
   class Page
     # For auto-completion
     include Calabash
 
+    # @!visibility private
     def self.inherited(subclass)
       # Define the page into global scope
       full_name = subclass.name
@@ -49,14 +58,18 @@ module Calabash
 
     private_class_method :new
 
+    # @!visibility private
     def initialize(world)
       @world = world
     end
 
+    # A query that distinguishes your page.
+    # @return [String, Hash, Calabash::Query] A query.
     def trait
       raise 'Implement your own trait'
     end
 
+    # Waits for the page trait to appear.
     def await(options={})
       wait_for_view(trait, options)
     end
