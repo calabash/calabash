@@ -3,6 +3,7 @@ module Calabash
   module Patch
     require 'calabash/patch/array'
 
+    # @!visibility private
     def self.apply_patches!
       modules = Patch.constants(false)
 
