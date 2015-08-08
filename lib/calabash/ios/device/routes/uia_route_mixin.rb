@@ -9,6 +9,7 @@ module Calabash
         require 'run_loop'
         require 'edn'
 
+        # @!visibility private
         def uia_route(command)
           unless run_loop
             if defined?(IRB)
