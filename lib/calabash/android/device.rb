@@ -22,6 +22,7 @@ module Calabash
         port_forward(new_server.endpoint.port, new_server.test_server_port)
       end
 
+      # @!visibility private
       def self.default_serial
         serials = list_serials
 
@@ -46,6 +47,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def self.list_serials
         output = ADB.command('devices')
         lines = output.lines
@@ -62,12 +64,14 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def installed_packages
         adb.shell('pm list packages').lines.map do |line|
           line.sub('package:', '').chomp
         end
       end
 
+      # @!visibility private
       def installed_apps
         adb.shell('pm list packages -f').lines.map do |line|
           # line will be package:<path>=<package>
@@ -80,6 +84,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def test_server_responding?
         begin
           http_client.get(HTTP::Request.new('ping'), retries: 1).body == 'pong'
@@ -88,6 +93,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def test_server_ready?
         begin
           http_client.get(HTTP::Request.new('ready')).body == 'true'
@@ -96,6 +102,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def port_forward(host_port, test_server_port = nil)
         if test_server_port.nil?
           test_server_port = server.test_server_port
@@ -105,6 +112,7 @@ module Calabash
         adb.command(*adb_forward_cmd)
       end
 
+      # @!visibility private
       def make_map_parameters(query, map_method_name, *method_args)
         converted_args = []
 
@@ -172,6 +180,7 @@ module Calabash
         Calabash::QueryResult.create(result['results'], query)
       end
 
+      # @!visibility private
       def perform_action(action, *arguments)
         @logger.log "Action: #{action} - Arguments: #{arguments.join(', ')}"
 
@@ -197,10 +206,12 @@ module Calabash
         result
       end
 
+      # @!visibility private
       def enter_text(text)
         perform_action('keyboard_enter_text', text)
       end
 
+      # @!visibility private
       def md5_checksum(file_path)
         result = adb.shell("#{md5_binary} '#{file_path}'")
         captures = result.match(/(\w+)/).captures
@@ -234,15 +245,18 @@ module Calabash
         result['result']
       end
 
+      # @!visibility private
       def go_home
         adb.shell("input keyevent 3")
       end
 
+      # @!visibility private
       def set_location(location)
         perform_action('set_gps_coordinates',
                        location[:latitude], location[:longitude])
       end
 
+      # @!visibility private
       def resume_app(path_or_application)
         application = parse_path_or_app_parameters(path_or_application)
 
@@ -263,6 +277,7 @@ module Calabash
         true
       end
 
+      # @!visibility private
       def resume_activity(package, activity)
         if package_running?(package)
           if info[:sdk_version] >= 11
@@ -279,12 +294,14 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def app_running?(path_or_application)
         application = parse_path_or_app_parameters(path_or_application)
 
         package_running?(application.identifier)
       end
 
+      # @!visibility private
       def current_focus
         # Example: mFocusedApp=AppWindowToken{42c52610 token=Token{42b5d048 ActivityRecord{42a7bcc8 u0 com.example/.MainActivity t3}}}
         result = adb.shell('dumpsys window windows')
@@ -314,6 +331,7 @@ module Calabash
         raise "Unexpected output from `dumpsys window windows`"
       end
 
+      # @!visibility private
       def evaluate_javascript_in(query, javascript)
         parameters =
             {
