@@ -5,6 +5,7 @@ module Calabash
 
   end
 
+  # Utility methods for testing.
   module Utility
 
     # @!visibility private
@@ -39,17 +40,16 @@ module Calabash
     alias_method :pct, :percent
 
     # A convenience method for creating a coordinate hash that that can be
-    # passed to gestures.
+    # passed to the tap_coordinate gesture.
     #
     # @example
     #  # These are equivalent.
-    #  tap(query, offset: coordinate(20, 50))
-    #  tap(query, offset: {x: 20, y: 50})
+    #  tap_coordinate(coordinate(20, 50)
+    #  tap_coordinate({x: 20, y: 50})
     #
     # @param [Number] x The value of the x.
     # @param [Number] y The value of the y.
     # @return [Hash] Representing the given values.
-    # @!visibility private
     def coordinate(x, y)
       {x: x, y: y}
     end
