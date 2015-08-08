@@ -130,11 +130,20 @@ module Calabash
     end
 
     # Sends the current app to the background and resumes it after
-    # `for_seconds`. This should not exceed 60 seconds for iOS.
+    # `for_seconds`.
     #
-    # On Android you can control the app lifecycle more granularly using
+    # On iOS, `for_seconds` must be between 1 and 60 seconds.
+    #
+    # On iOS the _current app_ is the app under test (your app).
+    #
+    # On Android you can control the app lifecycle more granularity using
     # {Calabash::Android::Interactions#go_home \#go_home} and
     # {Calabash::Android::LifeCycle#resume_app \#resume_app}.
+    #
+    # @param [Numeric] for_seconds How long to keep the app to the background.
+    #
+    # @raise [ArgumentError] On iOS, if number of seconds is less than 1 and
+    # more than 60 seconds.
     def send_current_app_to_background(for_seconds = 10)
       _send_current_app_to_background(for_seconds)
 
