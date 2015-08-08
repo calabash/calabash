@@ -21,7 +21,12 @@ verbose: CAL_DEBUG=1
 formatter: -f <%= formatter %>
 
 # Launch on default simulator.
-default: CAL_APP=<%= APP %> -p formatter CAL_DEVICE_ID="iPad Retina (8.4 Simulator)"
+simulator_vars: CAL_APP=<%= APP %> #CAL_DEVICE_ID="iPad Retina (8.4 Simulator)"
+simulator_tags: --tags ~@device_only
+default:        -p simulator_vars -p simulator_tags -p formatter
 
 # Launch on device.
-device:  CAL_APP=<%= IPA %> CAL_DEVICE_ID=<%= DEVICE %> CAL_ENDPOINT=<%= ENDPOINT %>
+device_vars:  CAL_APP=<%= IPA %> CAL_DEVICE_ID=<%= DEVICE %> CAL_ENDPOINT=<%= ENDPOINT %>
+device_tags:  --tags ~@simulator_only
+device:       -p device_vars -p device_tags -p formatter
+
