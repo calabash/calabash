@@ -1,6 +1,8 @@
 require 'geocoder'
 
 module Calabash
+
+  # An API for setting the location of your app.
   module Location
     # Simulates gps location of the device/simulator.
     # @note Seems UIAutomation is broken here on physical devices on iOS 7.1
