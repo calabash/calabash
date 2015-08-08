@@ -4,6 +4,7 @@ module Calabash
     # Interactions with your app that are specific to iOS
     module Interactions
 
+      # @!visibility private
       # Sends app to background. Simulates pressing the home button.
       #
       # @note Cannot be more than 60 seconds.
@@ -12,7 +13,7 @@ module Calabash
       #   in the background
       # @raise [ArgumentError] If number of seconds is less than 1 and more
       #   than 60 seconds.
-      def send_app_to_background(seconds)
+      def _send_current_app_to_background(seconds)
         unless (1..60).member?(seconds)
           raise ArgumentError,
             "Number of seconds: '#{seconds}' must be between 1 and 60"
