@@ -7,35 +7,43 @@ module Calabash
     # @!visibility private
     module PhysicalButtons
 
+      # @!visibility private
       def press_button(key)
         Device.default.perform_action('press_key', key)
         true
       end
 
+      # @!visibility private
       def press_back_button
         press_button('KEYCODE_BACK')
       end
 
+      # @!visibility private
       def press_menu_button
         press_button('KEYCODE_MENU')
       end
 
+      # @!visibility private
       def press_down_button
         press_button('KEYCODE_DPAD_DOWN')
       end
 
+      # @!visibility private
       def press_up_button
         press_button('KEYCODE_DPAD_UP')
       end
 
+      # @!visibility private
       def press_left_button
         press_button('KEYCODE_DPAD_LEFT')
       end
 
+      # @!visibility private
       def press_right_button
         press_button('KEYCODE_DPAD_RIGHT')
       end
 
+      # @!visibility private
       def press_enter_button
         press_button('KEYCODE_ENTER')
       end
