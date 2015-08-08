@@ -6,6 +6,7 @@ module Calabash
   module CLI
     # @!visibility private
     module SetupKeystore
+      # @!visibility private
       def parse_setup_keystore_arguments!
         set_platform!(:android)
 
@@ -25,6 +26,7 @@ module Calabash
         puts "Saved your settings to '#{Android::Build::JavaKeystore::CALABASH_KEYSTORE_SETTINGS_FILENAME}'. You can edit the settings manually or run this setup script again"
       end
 
+      # @!visibility private
       def prompt(message, secure = false)
         puts message
 

@@ -3,6 +3,7 @@ module Calabash
   module CLI
     # @!visibility private
     module Helpers
+      # @!visibility private
       HELP = {
           help: 'help',
           generate: 'generate',
@@ -14,6 +15,7 @@ module Calabash
           build: 'build <apk>'
       }
 
+      # @!visibility private
       def key_for_command(command)
         HELP.each do |key, value|
           if value.split(' ').first == command
@@ -24,6 +26,7 @@ module Calabash
         nil
       end
 
+      # @!visibility private
       def print_usage_for(key, output=STDOUT)
         if key.nil? || HELP[key].nil?
           output.write <<EOF
@@ -37,6 +40,7 @@ EOF
         end
       end
 
+      # @!visibility private
       def print_usage(output=STDOUT)
           output.write <<EOF
   Usage: calabash [options] <command-name> [command specific options]
@@ -101,11 +105,13 @@ EOF
 EOF
       end
 
+      # @!visibility private
       def help
         file_name = File.join(File.dirname(__FILE__), '..', 'doc', 'calabash_help.txt')
         system("less \"#{file_name}\"")
       end
 
+      # @!visibility private
       def fail(reason, command=nil)
         STDERR.write("#{reason}\n")
 

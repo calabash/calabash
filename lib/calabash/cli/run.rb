@@ -3,6 +3,7 @@ module Calabash
   module CLI
     # @!visibility private
     module Run
+      # @!visibility private
       def parse_run_arguments!
         first_argument = @arguments.first # Do not remove the entry from the arguments yet - it might be a cucumber arg
 
@@ -54,6 +55,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def run(application_path, cucumber_arguments)
         cucumber_environment = {}
         cucumber_environment['CAL_DEBUG'] = Environment::DEBUG ? '1' : '0'

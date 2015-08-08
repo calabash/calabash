@@ -3,6 +3,7 @@ module Calabash
   module CLI
     # @!visibility private
     module Console
+      # @!visibility private
       def parse_console_arguments!
         application = @arguments.shift
 
@@ -45,6 +46,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def enter_console(application_path)
         irbrc_path = Environment::IRBRC
 

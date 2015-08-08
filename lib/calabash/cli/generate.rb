@@ -5,6 +5,7 @@ module Calabash
   module CLI
     # @!visibility private
     module Generate
+      # @!visibility private
       def parse_generate_arguments!
         if File.exist?('features')
           puts "A features directory already exists. Please remove this to continue."
@@ -70,10 +71,12 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def file(file)
         File.join(Calabash::Environment::SKELETON_DIR_PATH, file)
       end
 
+      # @!visibility private
       def msg(title, &block)
         puts "\n" + "-"*10 + title + "-"*10
         block.call
