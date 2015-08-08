@@ -57,10 +57,12 @@ module Calabash
         @on_error = {}
       end
 
+      # @!visibility private
       def on_error(type, &block)
         @on_error[type] = block
       end
 
+      # @!visibility private
       def change_server(new_server)
         @server = new_server
       end
