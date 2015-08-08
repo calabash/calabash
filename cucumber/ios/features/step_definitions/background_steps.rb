@@ -14,3 +14,7 @@ end
 But(/^I can send the app to the background for (\d+) seconds?$/) do |seconds|
   send_app_to_background(seconds.to_i)
 end
+
+Then(/^I can background the app when UIA strategy is (?::host|:preferences|:shared_element)$/) do
+  send_app_to_background(1.0)
+end

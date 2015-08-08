@@ -10,9 +10,18 @@ Background: Launch the app
 Scenario: Simulate touching the home button
   Then backgrounding the app for less than one second raises an error
   And backgrounding the app for more than sixty seconds raises an error
-  But I can send the app to the background for 1 seconds
+  But I can send the app to the background for 1 second
 
 @shared_element
-Scenario: Background does not work with :shared_element
-  Then backgrounding app when UIA strategy is :shared_element raises an error
+Scenario: Backgrounding works with :shared_element
+  Then I can background the app when UIA strategy is :shared_element
+
+@host
+Scenario: Backgrounding works with :host
+  Then I can background the app when UIA strategy is :host
+
+@preferences
+@simulator_only
+Scenario: Background works with :preferences
+  Then I can background the app when UIA strategy is :preferences
 
