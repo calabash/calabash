@@ -31,6 +31,7 @@ module Calabash
     require 'calabash/ios/runtime'
     require 'calabash/ios/gestures'
     require 'calabash/ios/slider'
+    require 'calabash/ios/date_picker'
 
     include Calabash::IOS::Conditions
     include Calabash::IOS::Orientation
@@ -41,6 +42,7 @@ module Calabash
     include Calabash::IOS::Runtime
     include Calabash::IOS::Gestures
     include Calabash::IOS::Slider
+    include Calabash::IOS::DatePicker
 
   end
 end
