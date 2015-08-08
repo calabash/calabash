@@ -17,8 +17,10 @@ module Calabash
         end
       end
 
+      # @!visibility private
       PROCESS_WAIT_TIME = 10
 
+      # @!visibility private
       def self.open_pipe_with_timeout(timeout, *cmd, &block)
         begin
           i, o, e, t, pid = nil
@@ -52,6 +54,7 @@ module Calabash
         end
       end
 
+      # @!visibility private
       def self.open_adb_pipe(*cmd, **options, &block)
         timeout = options.fetch(:timeout, PROCESS_WAIT_TIME)
 
@@ -60,8 +63,10 @@ module Calabash
         end
       end
 
+      # @!visibility private
       DAEMON_STARTED_MESSAGE = "* daemon not running. starting it now on port 5037 *\n* daemon started successfully *\n"
 
+      # @!visibility private
       def self.command(*cmd, **args)
         Logger.debug("ADB Command: #{cmd.join(', ')}")
         Logger.debug("ADB input: #{args[:input]}")
@@ -121,10 +126,12 @@ module Calabash
 
       attr_reader :serial
 
+      # @!visibility private
       def initialize(serial)
         @serial = serial
       end
 
+      # @!visibility private
       def command(*argv, **args)
         cmd = argv.dup
 
@@ -135,8 +142,10 @@ module Calabash
         ADB.command(*cmd, args)
       end
 
+      # @!visibility private
       END_STRING = '__CAL_END__'
 
+      # @!visibility private
       def shell(shell_cmd, options={})
         if shell_cmd.nil? || shell_cmd.empty?
           raise ArgumentError, "Invalid shell command '#{shell_cmd}'"
