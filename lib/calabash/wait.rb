@@ -27,10 +27,14 @@ module Calabash
             screenshot_on_error: true
         }
 
+    # Returns the default wait options.
+    # @return [Hash] Key/value pairs describing the wait options.
     def self.default_options
       @@default_options
     end
 
+    # Sets the default wait options.
+    # @param [Hash] value The new default wait options.
     def self.default_options=(value)
       @@default_options = value
     end
