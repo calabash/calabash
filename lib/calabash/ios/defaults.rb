@@ -1,5 +1,6 @@
 module Calabash
   module IOS
+    # Runtime defaults for iOS.
     module Defaults
       # Sets up the default application based on the
       # environment, and the default device based on the default application

@@ -1,4 +1,5 @@
 module Calabash
+  # Query, flash, backdoor, etc.
   module Interactions
     # Queries the view hierarchy to find all views matching `query`.
     # Optionally query takes a variable number of “invocation” arguments

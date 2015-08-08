@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # Runtime defaults for Android.
     module Defaults
       # Sets up the default device and the default application based on the
       # environment.

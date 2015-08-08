@@ -1,4 +1,6 @@
 module Calabash
+  # A model of the device under test.  Can be a physical Android or iOS device,
+  # an Android emulator, or an iOS simulator.
   class Device
     include Utility
 

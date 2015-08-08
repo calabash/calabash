@@ -1,4 +1,5 @@
 module Calabash
+  # Runtime defaults.
   module Defaults
     # Get the default device. The device represents a physical device,
     # an emulator, or a simulator. Calabash will communicate with this

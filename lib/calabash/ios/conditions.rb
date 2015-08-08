@@ -1,5 +1,8 @@
 module Calabash
   module IOS
+
+    # Methods for waiting for things to happen on iOS, like animations to
+    # complete.
     module Conditions
 
       # Waits for all elements to stop animating.
