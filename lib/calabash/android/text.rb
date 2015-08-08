@@ -1,5 +1,6 @@
 module Calabash
   module Android
+    # Android specific text-related actions.
     module Text
       # Dismisses the current keyboard. This is equivalent to the user
       # pressing the back button if the keyboard is showing. If the keyboard is
