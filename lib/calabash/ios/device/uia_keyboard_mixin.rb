@@ -43,6 +43,7 @@ module Calabash
 
       private
 
+      # @!visibility private
       def uia_type_string_handler(string, escaped_string, existing_text, result, logger)
         UIATypeStringHandler.new(string,
                                  escaped_string,
@@ -73,6 +74,7 @@ module Calabash
           @logger = logger
         end
 
+        # @!visibility private
         def self.escape_backslashes_in_string(string)
           return string if string.index(/\\/)
 
@@ -95,10 +97,12 @@ module Calabash
           result['value']
         end
 
+        # @!visibility private
         def log(message)
           logger.log(Color.blue(message), :info)
         end
 
+        # @!visibility private
         def log_preamble
           log('When typing:')
           log("   raw string: #{string}")
@@ -106,6 +110,7 @@ module Calabash
           log("existing text: #{existing_text}")
         end
 
+        # @!visibility private
         def log_epilogue
           log("       result: #{result}")
           log('')
@@ -113,6 +118,7 @@ module Calabash
           log('https://github.com/calabash/calabash-ios/issues/374')
         end
 
+        # @!visibility private
         def handle_result
           the_status = status
           if the_status == 'error'
@@ -130,6 +136,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def handle_error
           log_preamble
           if result.has_key? 'value'
@@ -161,6 +168,7 @@ module Calabash
           end
         end
 
+        # @!visibility private
         def handle_success_with_incident
           log_preamble
           if value.nil?
@@ -176,6 +184,7 @@ module Calabash
           false
         end
 
+        # @!visibility private
         def handle_unknown_status
           log_preamble
           log("receive response with an unknown value for 'status' key: '#{status}'")

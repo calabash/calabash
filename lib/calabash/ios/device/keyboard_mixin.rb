@@ -110,6 +110,7 @@ module Calabash
         end.call(self)
       end
 
+      # @!visibility private
       def query_for_keyboard
         keyboard_waiter.query(KEYBOARD_QUERY)
       end
@@ -120,6 +121,7 @@ module Calabash
         keyboard_waiter.query(KEYBOARD_KEY_QUERY)
       end
 
+      # @!visibility private
       def query_for_text_of_first_responder(query)
         result = keyboard_waiter.query("#{query} isFirstResponder:1", :text)
         if result.empty?
