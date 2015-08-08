@@ -5,6 +5,7 @@ module Calabash
       # @!visibility private
       module ConditionRouteMixin
 
+        # @!visibility private
         def condition_route(condition, timeout, query)
           request = make_condition_request(condition, timeout, query)
           response = route_post_request(request)

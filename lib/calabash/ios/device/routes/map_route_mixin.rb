@@ -5,6 +5,7 @@ module Calabash
       # @!visibility private
       module MapRouteMixin
 
+        # @!visibility private
         def map_route(query, method_name, *method_args)
           request = make_map_request(query, method_name, *method_args)
           response = route_post_request(request)

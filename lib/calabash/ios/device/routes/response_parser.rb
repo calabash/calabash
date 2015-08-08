@@ -6,6 +6,7 @@ module Calabash
       # @!visibility private
       module ResponseParser
 
+        # @!visibility private
         def parse_response_body(response)
           body = response.body
           begin

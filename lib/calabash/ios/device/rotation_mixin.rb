@@ -4,6 +4,7 @@ module Calabash
     # @!visibility private
     module RotationMixin
 
+      # @!visibility private
       def rotate(direction)
         # If we are in the console, we want to be able to rotate without
         # calling start_app.  However, if the Device in the console has not
