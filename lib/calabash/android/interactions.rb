@@ -3,6 +3,8 @@ require 'time'
 
 module Calabash
   module Android
+
+    # Interactions with your app that are specific to Android.
     module Interactions
       # Go back. If the keyboard is shown, it will be dismissed.
       def go_back
