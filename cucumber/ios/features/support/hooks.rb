@@ -1,5 +1,17 @@
 require 'calabash'
 
+Before('@shared_element') do
+  @uia_strategy = :shared_element
+end
+
+Before('@host') do
+  @uia_strategy = :shared_element
+end
+
+Before('@preferences') do
+  @uia_strategy = :preferences
+end
+
 Before do |scenario|
   if scenario.respond_to?(:scenario_outline)
     scenario = scenario.scenario_outline
@@ -8,11 +20,17 @@ Before do |scenario|
   AppLifeCycle.on_new_scenario(scenario)
   Cucumber.wants_to_quit = false
 
-  start_app
+  if @uia_strategy
+    options = {:uia_strategy => @uia_strategy}
+  else
+    options = {}
+  end
+
+  start_app(options)
 end
 
 After do
-  #stop_app
+  @uia_strategy = nil
 end
 
 module AppLifeCycle
