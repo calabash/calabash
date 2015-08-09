@@ -50,6 +50,13 @@ module Calabash
           end
         end
 
+        # @!visibility private
+        def uia_serialize_and_call(uia_command, *query_args)
+          command = uia_serialize_command(uia_command, *query_args)
+          result = uia_route(command)
+          result.first
+        end
+
         private
 
         UIA_STRATEGIES = [:preferences, :host, :shared_element]
@@ -158,12 +165,6 @@ module Calabash
           rescue => e
             raise Calabash::IOS::RouteError, e
           end
-        end
-
-        def uia_serialize_and_call(uia_command, *query_args)
-          command = uia_serialize_command(uia_command, *query_args)
-          result = uia_route(command)
-          result.first
         end
 
         # @todo Verify this is the correct way to escape '\n in string
