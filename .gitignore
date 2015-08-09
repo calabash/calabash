@@ -1,6 +1,5 @@
 # Temporary git ignores. Remove these when changing repos
 android/test-server
-playground/
 # End of temporary git ignores
 
 /.bundle/
