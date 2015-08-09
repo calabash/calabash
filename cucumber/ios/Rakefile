@@ -1,3 +1,5 @@
+require 'luffa'
+
 desc 'Run Scenarios with :host strategy'
 task :host do
   sh "CAL_UIA_STRATEGY=host bundle exec cucumber"
@@ -20,33 +22,111 @@ task :strategies do
   end
 end
 
-desc 'Install a CalSmoke-cal.app for Cucumber testing.'
-task :ensure_app do
+module IOS
+  class App
+    attr :name, :repo, :source_dir, :make_dir, :rule, :product_dir
 
-  this_dir = File.dirname(__FILE__)
-  app_path = File.join(this_dir, 'CalSmoke-cal.app')
-
-  if File.exist?(app_path)
-    puts "INFO: App exists at #{app_path}"
-  else
-
-    puts "INFO: App does not exist at #{app_path}"
-    puts "INFO: Will install from sources."
-
-    unless File.exist?('./binaries')
-      sh 'git clone git@github.com:calabash/ios-smoke-test-app.git binaries'
+    def initialize(name, repo, source_dir, make_dir, rule, product_dir)
+      @name = name
+      @repo = repo
+      @source_dir = source_dir
+      @make_dir = make_dir
+      @rule = rule
+      @product_dir = product_dir
     end
 
-    working_dir = File.expand_path(File.join(this_dir, 'binaries', 'CalSmokeApp'))
-
-    Dir.chdir(working_dir) do
-      sh 'git checkout master'
-      sh 'git pull origin master'
-      sh 'make app-cal'
-      sh "mv CalSmoke-cal.app #{this_dir}"
+    def git_clone
+      cmd = "git clone --recursive --depth 1 #{repo} #{source_dir}"
+      Luffa.log_info("Cloning #{repo}")
+      Luffa.unix_command(cmd,
+                         {:fail_msg => "Could not clone #{repo}",
+                          :pass_msg => "Cloned #{repo}"})
     end
 
-    puts "Installed: #{app_path}"
+    def make(install_dir)
+      Dir.chdir(source_dir) do
+        Luffa.unix_command('git checkout master')
+        Luffa.unix_command('git pull origin master')
+        Dir.chdir(make_dir) do
+          Luffa.unix_command("make #{rule}",
+                             {:fail_msg => "Could not 'make #{rule}'",
+                              :pass_msg => "Made rule '#{rule}'"} )
+          Luffa.unix_command("mv #{File.join(product_dir, name)} #{install_dir}",
+                             {:fail_msg => "Could not install '#{name}'",
+                              :pass_msg => "Installed '#{name}'"})
+        end
+      end
+
+      Luffa.log_info("Installed: #{File.join(install_dir, name)}")
+    end
+
+    def build(install_dir)
+      unless File.exists?(source_dir)
+        git_clone
+      end
+
+      make(install_dir)
+    end
+  end
+end
+
+APPS = [
+  IOS::App.new('CalSmoke-cal.app',
+               'git@github.com:calabash/ios-smoke-test-app.git',
+               'binaries/smoke-test-app',
+               'CalSmokeApp',
+               'app-cal',
+               './'),
+
+  IOS::App.new('iPhoneOnly.app',
+               'git@github.com:calabash/ios-iphone-only-app.git',
+               'binaries/iphone-only-app',
+               './',
+               'app',
+               'Calabash-app')
+]
+
+IPAS = [
+  IOS::App.new('CalSmoke-cal.ipa',
+               'git@github.com:calabash/ios-smoke-test-app.git',
+               'binaries/smoke-test-app',
+               'CalSmokeApp',
+               'ipa-cal',
+               './xtc-staging'),
+
+  IOS::App.new('iPhoneOnly.ipa',
+               'git@github.com:calabash/ios-iphone-only-app.git',
+               'binaries/iphone-only-app',
+               './',
+               'ipa',
+               'Calabash-ipa')
+]
+
+desc 'Uninstall test binaries'
+task :clean do
+  sh 'mkdir -p ./binaries'
+  sh 'rm -rf ./binaries/*.app'
+  sh 'rm -rf ./binaries/*.ipa'
+end
+
+desc 'Install the .apps for Cucumber testing.'
+task :install_apps do
+
+  install_dir = File.join(File.dirname(__FILE__), 'binaries')
+
+  APPS.each do |app|
+
+    app_path = File.join(install_dir, app.name)
+
+    if File.exist?(app_path)
+      Luffa.log_info("App exists at #{app_path}")
+      Luffa.log_info('Done')
+    else
+      Luffa.log_info("App does not exist at #{app_path}")
+      Luffa.log_info("Will install from sources.")
+
+      app.build(install_dir)
+    end
   end
 end
 
@@ -54,33 +134,23 @@ end
 # need to set the CODE_SIGN_IDENTITY variable.
 #
 # $ CODE_SIGN_IDENTITY="iPhone Developer: Joshua Moody (8QXXXXX9F)" rake ensure_ipa
-desc 'Install a CalSmoke-cal.ipa for Cucumber testing.'
-task :ensure_ipa do
-  this_dir = File.dirname(__FILE__)
-  ipa_path = File.join(this_dir, 'CalSmoke-cal.ipa')
+desc 'Install the .ipas for Cucumber testing.'
+task :install_ipas do
+  install_dir = File.join(File.dirname(__FILE__), 'binaries')
 
-  if File.exist?(ipa_path)
-    puts "INFO: .ipa exists at #{ipa_path}"
-  else
+  IPAS.each do |app|
 
-    puts "INFO: .ipa does not exist at #{ipa_path}"
-    puts "INFO: Will install from sources."
+    app_path = File.join(install_dir, app.name)
 
-    unless File.exist?('./binaries')
-      sh 'git clone git@github.com:calabash/ios-smoke-test-app.git binaries'
+    if File.exist?(app_path)
+      Luffa.log_info("App exists at #{app_path}")
+      Luffa.log_info('Done')
+    else
+      Luffa.log_info("App does not exist at #{app_path}")
+      Luffa.log_info("Will install from sources.")
+
+      app.build(install_dir)
     end
-
-    working_dir = File.expand_path(File.join(this_dir, 'binaries', 'CalSmokeApp'))
-
-    Dir.chdir(working_dir) do
-      sh 'git checkout master'
-      sh 'git pull origin master'
-      sh 'make ipa-cal'
-      sh "mv xtc-staging/CalSmoke-cal.ipa #{this_dir}"
-    end
-
-    puts "Installed: #{ipa_path}"
   end
-  true
 end
 
