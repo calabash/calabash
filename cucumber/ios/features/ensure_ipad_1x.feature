@@ -13,7 +13,6 @@ I want a way to ensure the app is displayed @ 1x zoom
 # an iPad and will tap the 1X/2X zoom button to get the app into the correct
 # scale.
 
-@wip
 Scenario: Ensure app in 1x
   Given the iPhoneOnly app has launched
   Then the app will be in 1x mode
