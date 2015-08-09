@@ -1,0 +1,14 @@
+<%
+
+if ENV["USER"] == "jenkins"
+  formatter = "progress"
+else
+  formatter = "Slowhandcuke::Formatter"
+end
+
+%>
+
+verbose: CAL_DEBUG=1
+formatter: -f <%= formatter %>
+
+fake_device:    -p fake_device

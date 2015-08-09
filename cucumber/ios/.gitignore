@@ -1,0 +1,5 @@
+*.ipa
+*.app
+binaries
+ideviceinstaller.log
+

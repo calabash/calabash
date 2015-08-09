@@ -1,0 +1,18 @@
+<%
+
+APP = File.join(File.dirname(__FILE__), "..", "..", "spec", "resources", "android", "xtc-android-sample.apk")
+
+if ENV["USER"] == "jenkins"
+  formatter = "progress"
+else
+  formatter = "Slowhandcuke::Formatter"
+end
+
+%>
+
+verbose: CAL_DEBUG=1
+formatter: -f <%= formatter %>
+
+app:           CAL_APP="<%= APP %>"
+
+default:       -p app -p formatter

@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+require 'calabash'
+
+module Calabash
+  module CLI
+    require 'calabash/cli'
+
+    class CLI
+      include Calabash::CLI::Helpers
+      include Calabash::CLI::Build
+      include Calabash::CLI::Console
+      include Calabash::CLI::Generate
+      include Calabash::CLI::Resign
+      include Calabash::CLI::Run
+      include Calabash::CLI::SetupKeystore
+
+      def initialize(arguments)
+        @arguments = arguments.dup
+        @original_arguments = @arguments.dup
+        @options = {verbose: false}
+        @platform = nil
+      end
+
+      def evaluate
+        parse_arguments!
+      end
+
+      def set_platform!(platform)
+        if @platform.nil?
+          case platform
+            when :android
+              require 'calabash/android'
+            when :ios
+              require 'calabash/ios'
+            else
+              raise "Invalid platform '#{platform}'"
+          end
+
+          @platform = platform
+        elsif @platform != platform
+          raise "Cannot change platform from '#{@platform}' to '#{platform}'"
+        end
+      end
+
+      private
+
+      def parse_arguments!
+        argument = @arguments.shift
+
+        begin
+          case argument
+            when '-v', '--verbose'
+              @options[:verbose] = true
+              Logger.log_levels += [:debug]
+              parse_arguments!
+            when '--platform'
+              platform = @arguments.shift.downcase
+
+              fail("Invalid specified platform '#{platform}'") unless platform == 'android' || platform == 'ios'
+
+              set_platform!(platform.to_sym)
+
+              parse_arguments!
+            when 'version'
+              puts Calabash::VERSION
+            when 'build'
+              parse_build_arguments!
+            when 'resign'
+              parse_resign_arguments!
+            when 'console'
+              parse_console_arguments!
+            when 'generate'
+              parse_generate_arguments!
+            when 'run'
+              parse_run_arguments!
+            when 'setup-keystore'
+              parse_setup_keystore_arguments!
+            when 'help'
+              argument = @arguments.shift
+
+              if argument.nil?
+                print_usage
+              else
+                if key_for_command(argument)
+                  print_usage_for(key_for_command(argument))
+                else
+                  fail("No such command '#{argument}'")
+                end
+              end
+            when nil
+              print_usage
+            else
+              fail("Invalid command #{argument}.\n  For help use 'calabash help'")
+          end
+        rescue => e
+          if Logger.log_levels.include?(:debug)
+            raise e
+          else
+            puts "#{Color.red(e.message)}"
+            exit 1
+          end
+        end
+      end
+    end
+  end
+end
+
+Calabash::CLI::CLI.new(ARGV).evaluate

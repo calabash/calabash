@@ -1,0 +1,26 @@
+language: ruby
+
+# Container based: faster
+sudo: false
+
+before_script:
+  - ./copy_repos.sh
+  - ./changing_old_files.sh
+
+rvm:
+  - 2.0.0
+  - 2.1.2
+  - 2.2.1
+
+script:
+  - script/ci/travis/install-gem-ci.rb
+  - bundle exec rake unit
+  - rake install
+
+notifications:
+  email:
+    recipients:
+      - joshua.moody@xamarin.com
+      - tobias.roikjer@xamarin.com
+    on_success: never
+    on_failure: always
