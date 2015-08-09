@@ -18,6 +18,7 @@ module Calabash
     require 'calabash/ios/device/uia_keyboard_mixin'
     require 'calabash/ios/device/text_mixin'
     require 'calabash/ios/device/uia_mixin'
+    require 'calabash/ios/device/ipad_1x_2x_mixin'
     require 'calabash/ios/device/device_implementation'
 
   end
