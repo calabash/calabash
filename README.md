@@ -27,8 +27,6 @@ $ rake -T
 rake android:build     # Build the Android test server
 rake build             # Build calabash-1.9.9.pre2.gem into the pkg directory
 rake ctags             # Generate ctags in ./git/tags
-rake cucumber:android  # Run Android cucumber tests
-rake cucumber:ios      # Run iOS cucumber tests
 rake install           # Build and install calabash-1.9.9.pre2.gem into system gems
 rake release           # Create tag v1.9.9.pre2 and build and push calabash-1.9.9.pre2.gem to Rubygems
 rake spec              # Run RSpec code examples
