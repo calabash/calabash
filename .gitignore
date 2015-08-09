@@ -1,8 +1,8 @@
 # Temporary git ignores. Remove these when changing repos
 android/test-server
-playground/
 # End of temporary git ignores
 
+# Standard gem ignores
 /.bundle/
 /.yardoc
 /Gemfile.lock
@@ -50,4 +50,7 @@ lib/calabash/android/lib/AndroidManifest.xml
 # screenshots that might be produced during testing
 *screenshots*
 !screenshots.feature
+
+# Legacy directory from initial development
+playground
 
