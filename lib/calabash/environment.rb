@@ -11,6 +11,7 @@ module Calabash
       ENV[name]
     end
 
+    # @!visibility private
     # Utility method to set the value of an environment variable.
     #
     # @param [String] name of the environment variable
