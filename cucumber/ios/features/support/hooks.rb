@@ -12,6 +12,18 @@ Before('@preferences') do
   @uia_strategy = :preferences
 end
 
+Before('@ensure_ipad_1x') do
+  app = Calabash::IOS::Application.new('./binaries/iPhoneOnly.app')
+  Calabash::Application.default = app
+
+  xcode_version = RunLoop::XCTools.new.xcode_version
+  simulator_version = "#{xcode_version.major + 2}.#{xcode_version.minor}"
+  simulator_name = "iPad Air (#{simulator_version} Simulator)"
+
+  server = Calabash::IOS::Server.default
+  Calabash::Device.default = Calabash::IOS::Device.new(simulator_name, server)
+end
+
 Before do |scenario|
   if scenario.respond_to?(:scenario_outline)
     scenario = scenario.scenario_outline
@@ -27,6 +39,10 @@ Before do |scenario|
   end
 
   start_app(options)
+end
+
+After('@ensure_ipad_1x') do
+  Calabash::IOS.setup_defaults!
 end
 
 After do

@@ -88,6 +88,7 @@ DEPENDENCIES
   calabash!
   chronic (>= 0.10, < 1.0)
   cucumber (~> 2.0)
+  luffa
   pry
   pry-nav
   rspec (~> 3.0)

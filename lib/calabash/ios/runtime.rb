@@ -63,6 +63,14 @@ module Calabash
       end
 
       # Is the device under test an iPhone 3.5in?
+      #
+      # @note If the app under test is an iPhone app emulated on an iPad then
+      #  the form factor will _always_ be 'iphone 3.5.in'.  If you need to
+      #  branch on the actual device the app is running on, use the #ipad?
+      #  method.
+      #
+      # @see #iphone_app_emulated_on_ipad?
+      # @see #ipad?
       def iphone_35in?
         Calabash::IOS::Device.default.form_factor == 'iphone 3.5in'
       end

@@ -19,7 +19,7 @@ module Calabash
       include Calabash::IOS::UIAKeyboardMixin
       include Calabash::IOS::TextMixin
       include Calabash::IOS::UIAMixin
-
+      include Calabash::IOS::IPadMixin
       include Calabash::IOS::GesturesMixin
 
       attr_reader :run_loop
@@ -339,6 +339,10 @@ module Calabash
         else
           raise "Invalid application #{application} for iOS platform."
         end
+
+        # @todo Get the language code from the server!
+        ensure_ipad_emulation_1x
+
         {
            :device => self,
            :application => application,

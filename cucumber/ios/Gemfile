@@ -17,3 +17,7 @@ gem 'pry-nav'
 
 # Makes tidy Xcode build logs.
 gem 'xcpretty'
+
+# CI and workflow tool
+gem 'luffa'
+

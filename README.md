@@ -27,8 +27,6 @@ $ rake -T
 rake android:build     # Build the Android test server
 rake build             # Build calabash-1.9.9.pre2.gem into the pkg directory
 rake ctags             # Generate ctags in ./git/tags
-rake cucumber:android  # Run Android cucumber tests
-rake cucumber:ios      # Run iOS cucumber tests
 rake install           # Build and install calabash-1.9.9.pre2.gem into system gems
 rake release           # Create tag v1.9.9.pre2 and build and push calabash-1.9.9.pre2.gem to Rubygems
 rake spec              # Run RSpec code examples
@@ -63,28 +61,5 @@ $ be cucumber
 
 ### Cucumber iOS
 
-```
-$ cd cucumber/ios
-$ bundle update
-$ rake ensure_app  # Optional. See note below.
-$ be cucumber
-```
-
-The rake task `ensure_app` checks the `cucumber/ios` directory for
-CalSmoke-cal.app. If it exists, it will do nothing.  If it does not exist,
-it will pull the latest sources from the CalSmoke repo, build the
-CalSmoke-cal.app from the master branch, and install it in the
-`cucumber/ios` directory.
-
-If you want to use a different CalSmoke-cal.app, drop it into `cucumber/ios`
-or call cucumber with `CAL\_APP` set.
-
-```
-$ CAL_APP=/path/to/your/CalSmoke-cal.app be cucumber
-```
-
-The rake task `ensure_ipa` does the same thing, but for the CalSmoke-cal.ipa.
-
-Testing against physical devices requires that you have ideviceinstaller
-installed in /usr/local/bin/ideviceinstaller.
+See `cucumber/ios/README.md`.
 

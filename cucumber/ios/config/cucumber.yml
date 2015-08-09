@@ -1,7 +1,7 @@
 <%
 
-APP = ENV['CAL_APP'] || File.expand_path("./CalSmoke-cal.app")
-IPA = ENV['CAL_APP'] || File.expand_path("./CalSmoke-cal.ipa")
+APP = ENV['CAL_APP'] || File.expand_path("./binaries/CalSmoke-cal.app")
+IPA = ENV['CAL_APP'] || File.expand_path("./binaries/CalSmoke-cal.ipa")
 
 DEVICE="193688959205dc7eb48d603c558ede919ad8dd0d"
 ENDPOINT="http://denis.local:37265"

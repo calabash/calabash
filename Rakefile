@@ -63,22 +63,6 @@ task :ctags do
   sh cmd
 end
 
-namespace :cucumber do
-  desc 'Run iOS cucumber tests.'
-  task :ios do
-    Dir.chdir('cucumber/ios/') do
-      sh 'bundle exec cucumber'
-    end
-  end
-
-  desc 'Run Android cucumber tests.'
-  task :android do
-    Dir.chdir('cucumber/android') do
-      sh 'bundle exec cucumber'
-    end
-  end
-end
-
 namespace :android do
   task :ensure_files_exist do
     Calabash::Build::AndroidTestServer.ensure_test_server_exists
@@ -99,3 +83,4 @@ namespace :android do
   task :build => [:ensure_files_exist, :build_test_server] do
   end
 end
+
