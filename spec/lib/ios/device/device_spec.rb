@@ -245,6 +245,7 @@ describe Calabash::IOS::Device do
       it 'calls start_app_on_simulator when app is a simulator bundle' do
         expect(app).to receive(:simulator_bundle?).and_return true
         expect(device).to receive(:start_app_on_simulator).with(app, options).and_return true
+        expect(device).to receive(:ensure_ipad_emulation_1x).and_return true
 
         expect(device.start_app(app, options)).to be_truthy
       end
@@ -253,6 +254,7 @@ describe Calabash::IOS::Device do
         expect(app).to receive(:simulator_bundle?).and_return false
         expect(app).to receive(:device_binary?).and_return true
         expect(device).to receive(:start_app_on_physical_device).with(app, options).and_return true
+        expect(device).to receive(:ensure_ipad_emulation_1x).and_return true
 
         expect(device.start_app(app, options)).to be_truthy
       end
