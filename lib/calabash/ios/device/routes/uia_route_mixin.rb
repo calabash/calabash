@@ -57,6 +57,42 @@ module Calabash
           result.first
         end
 
+        # @!visibility private
+        # @todo Extract argument consing and unit test
+        def uia_query_then_make_javascript_calls(uia_command, query_parts, *javascript_parts)
+          if javascript_parts.empty?
+            uia_serialize_and_call(uia_command, *query_parts)
+          else
+            javascript_command = uia_serialize_command(uia_command, *query_parts)
+
+            javascript_args = []
+            javascript_parts.each do |invocation|
+              javascript_args << case invocation
+                when Symbol
+                  "#{invocation}()"
+                when Hash
+                  method = invocation.keys.first
+                  method_args = invocation[method]
+
+                  if method_args.is_a?(Array)
+                    serialized_args = (method_args.map &:to_json).join(',')
+                  else
+                    serialized_args = method_args.to_json
+                  end
+
+                  "#{method}(#{serialized_args})"
+                else
+                  raise Calabash::IOS::RouteError,
+                        "Invalid invocation spec #{invocation}"
+              end
+            end
+            command = "#{javascript_command}.#{javascript_args.join('.')}"
+
+            result = uia_route(command)
+            result.first
+          end
+        end
+
         private
 
         UIA_STRATEGIES = [:preferences, :host, :shared_element]
