@@ -38,6 +38,7 @@ module Calabash
     require 'calabash/android/text'
     require 'calabash/android/console_helpers'
     require 'calabash/android/life_cycle'
+    require 'calabash/android/scroll'
 
     include Calabash::Android::Gestures
     include Calabash::Android::Interactions
@@ -45,6 +46,7 @@ module Calabash
     include Calabash::Android::Orientation
     include Calabash::Android::PhysicalButtons
     include Calabash::Android::Text
+    include Calabash::Android::Scroll
 
     # @!visibility private
     def self.binary_location(name, abi, using_pie)
