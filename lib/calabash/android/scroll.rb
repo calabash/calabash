@@ -104,7 +104,7 @@ module Calabash
 
         result.length.times do |i|
           if result[i].is_a?(Hash) && result[i].has_key?('error')
-            raise "Unable to scroll view nr. #{i+1} matching '#{query}'. #{result[i]['error']}"
+            raise "Unable to scroll view number #{i+1} matching '#{query}'. #{result[i]['error']}"
           end
         end
 
