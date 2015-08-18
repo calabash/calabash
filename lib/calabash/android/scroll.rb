@@ -87,14 +87,14 @@ module Calabash
         true
       end
 
-      # Scroll to `row` in `query`. If `query` matches multiple views, the
+      # Scroll to `item` in `query`. If `query` matches multiple views, the
       # first view matching `query` is scrolled.
       #
       # @param [String, Hash, Calabash::Query] query A query describing the
       #  view to scroll.
-      # @param [Numeric] row The row number to scroll to. This value is
+      # @param [Numeric] item The item number to scroll to. This value is
       #  0-indexed.
-      def scroll_to_item(query, item)
+      def scroll_to_row(query, item)
         wait_for_view(query, timeout: Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT)
         result = query("#{Query.new(query)} index:0", setSelection: item)
 
