@@ -78,7 +78,7 @@ module Calabash
         identifier = Environment::DEVICE_IDENTIFIER
 
         if identifier.nil?
-          connected_devices = RunLoop::XCTools.new.instruments(:devices)
+          connected_devices = RunLoop::Instruments.new.physical_devices
           if connected_devices.empty?
             raise 'There are no physical devices connected.'
           elsif connected_devices.count > 1
@@ -639,8 +639,8 @@ module Calabash
       # @!visibility private
       # Very expensive!
       def Device.fetch_matching_physical_device(udid_or_name)
-        xctools = RunLoop::XCTools.new
-        xctools.instruments(:devices).detect do |device|
+        instruments = RunLoop::Instruments.new
+        instruments.physical_devices.detect do |device|
           device.name == udid_or_name ||
                 device.udid == udid_or_name
         end
