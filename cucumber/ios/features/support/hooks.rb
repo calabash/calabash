@@ -16,7 +16,7 @@ Before('@ensure_ipad_1x') do
   app = Calabash::IOS::Application.new('./binaries/iPhoneOnly.app')
   Calabash::Application.default = app
 
-  xcode_version = RunLoop::XCTools.new.xcode_version
+  xcode_version = RunLoop::Xcode.new.version
   simulator_version = "#{xcode_version.major + 2}.#{xcode_version.minor}"
   simulator_name = "iPad Air (#{simulator_version} Simulator)"
 
