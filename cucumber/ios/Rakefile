@@ -92,7 +92,7 @@ IPAS = [
                'binaries/smoke-test-app',
                'CalSmokeApp',
                'ipa-cal',
-               './xtc-staging'),
+               "./Products/ipa/CalSmoke-cal"),
 
   IOS::App.new('iPhoneOnly.ipa',
                'git@github.com:calabash/ios-iphone-only-app.git',
