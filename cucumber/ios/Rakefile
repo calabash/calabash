@@ -76,7 +76,7 @@ APPS = [
                'binaries/smoke-test-app',
                'CalSmokeApp',
                'app-cal',
-               './'),
+               "./Products/app/CalSmoke-cal"),
 
   IOS::App.new('iPhoneOnly.app',
                'git@github.com:calabash/ios-iphone-only-app.git',
