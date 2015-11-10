@@ -112,7 +112,6 @@ module Calabash
       raise ArgumentError, "Expected a 'Class', got '#{page_class.class}'"
     end
 
-
     page_name = page_class.name
     full_page_name = "#{platform_module}::#{page_name}"
 
@@ -120,6 +119,17 @@ module Calabash
       page_class = platform_module.const_get(page_name, false)
 
       if page_class.is_a?(Class)
+        modules = page_class.included_modules.map(&:to_s)
+
+        unless modules.include?("Calabash::#{platform_module}")
+          raise "Page '#{page_class}' does not include Calabash::#{platform_module}"
+        end
+
+        if modules.include?('Calabash::Android') &&
+            modules.include?('Calabash::IOS')
+          raise "Page '#{page_class}' includes both Calabash::Android and Calabash::IOS"
+        end
+
         page = page_class.send(:new, self)
 
         if page.is_a?(Calabash::Page)
