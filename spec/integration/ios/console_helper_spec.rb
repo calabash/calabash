@@ -30,14 +30,17 @@ describe Calabash::ConsoleHelpers do
     let(:sim_name) { RunLoop::Core.default_simulator }
 
     let(:run_loop_device) do
-      RunLoop::SimControl.new.simulators.detect do |sim|
+      RunLoop::Instruments.new.simulators.detect do |sim|
         sim.instruments_identifier == sim_name
       end
     end
 
     let(:app_bundle_path) { IOSResources.instance.app_bundle_path }
 
-    let(:bridge) { RunLoop::Simctl::Bridge.new(run_loop_device, abp) }
+    let(:bridge) do
+      run_loop_app = RunLoop::App.new(app_bundle_path)
+      RunLoop::CoreSimulator.new(run_loop_device, run_loop_app)
+    end
 
     let(:device) do
       uri = URI.parse('http://localhost:37265')
