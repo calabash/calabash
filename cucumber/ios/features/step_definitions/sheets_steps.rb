@@ -2,7 +2,7 @@ module CalSmoke
   module Sheets
 
     def sheet_query
-      if ios8?
+      if ios8? || ios9?
         "view:'_UIAlertControllerView'"
       else
         'UIActionSheet'
@@ -38,7 +38,7 @@ module CalSmoke
     def tap_sheet_button(button_title)
       wait_for_sheet
 
-      if ios8?
+      if ios8? || ios9?
         query = "view:'_UIAlertControllerActionView' marked:'#{button_title}'"
       else
         query = "UIActionSheet child button child label marked:'#{button_title}'"

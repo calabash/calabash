@@ -371,7 +371,7 @@ module Calabash
 
         expect_app_installed_on_simulator(bridge)
 
-        installed_app = Calabash::IOS::Application.new(bridge.fetch_app_dir)
+        installed_app = Calabash::IOS::Application.new(bridge.send(:installed_app_bundle_dir))
         expect_matching_sha1s(installed_app, application)
       end
 
@@ -472,7 +472,7 @@ module Calabash
           bridge = run_loop_bridge(@run_loop_device, application)
 
           if bridge.app_is_installed?
-            installed_app = Calabash::IOS::Application.new(bridge.fetch_app_dir)
+            installed_app = Calabash::IOS::Application.new(bridge.send(:installed_app_bundle_dir))
 
             if installed_app.same_sha1_as?(application)
               true
@@ -575,9 +575,9 @@ module Calabash
       # @!visibility private
       def uninstall_app_on_simulator(application, run_loop_device, bridge)
         begin
-          bridge.uninstall
+          bridge.uninstall_app_and_sandbox
           true
-        rescue e
+        rescue => e
           raise "Could not uninstall #{application.identifier} on #{run_loop_device}: #{e}"
         end
       end
@@ -603,10 +603,11 @@ module Calabash
       end
 
       # @!visibility private
-      # Do not memoize this.  The Bridge initializer does a bunch of work to
+      # Do not memoize this.  The CoreSimulator initializer does a bunch of work to
       # prepare the environment for simctl actions.
       def run_loop_bridge(run_loop_simulator_device, application)
-        RunLoop::Simctl::Bridge.new(run_loop_simulator_device, application.path)
+        run_loop_app = RunLoop::App.new(application.path)
+        RunLoop::CoreSimulator.new(run_loop_simulator_device, run_loop_app)
       end
 
       # @!visibility private
@@ -619,7 +620,7 @@ module Calabash
             bridge = run_loop_bridge
           end
 
-          bridge.uninstall
+          bridge.uninstall_app_and_sandbox
           bridge.install
         rescue StandardError => e
           raise "Could not install #{application} on #{run_loop_device}: #{e}"

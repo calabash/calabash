@@ -10,7 +10,10 @@ describe Calabash::IOS::Device do
 
   let(:abp) { IOSResources.instance.app_bundle_path }
 
-  let(:bridge) { RunLoop::Simctl::Bridge.new(run_loop_device, abp) }
+  let(:bridge) do
+    run_loop_app = RunLoop::App.new(abp)
+    RunLoop::CoreSimulator.new(run_loop_device, run_loop_app)
+  end
 
   let(:device) do
     uri = URI.parse('http://localhost:37265')
@@ -20,7 +23,6 @@ describe Calabash::IOS::Device do
 
   let(:app) { Calabash::IOS::Application.new(abp) }
 
-  before { bridge.uninstall }
 
   it '#stop_app' do
     bridge.launch
@@ -33,6 +35,9 @@ describe Calabash::IOS::Device do
   end
 
   describe '#install_app' do
+
+    before { bridge.uninstall_app_and_sandbox }
+
     describe 'simulators' do
       it 'installs the app' do
         device.install_app(app)
@@ -56,7 +61,7 @@ describe Calabash::IOS::Device do
         new_app = Calabash::IOS::Application.new(new_abp)
         expect(device.install_app(new_app)).to be_truthy
 
-        installed_app_bundle = bridge.send(:fetch_app_dir)
+        installed_app_bundle = bridge.send(:installed_app_bundle_dir)
 
         installed_app_sha = RunLoop::Directory.directory_digest(installed_app_bundle)
         expect(installed_app_sha).to be == new_sha
@@ -95,14 +100,14 @@ describe Calabash::IOS::Device do
 
     it 'can report runtime attributes' do
       expect(device.device_family).to be == 'iPhone'
-      expect(device.form_factor).to be == 'iphone 4in'
+      expect(device.form_factor).to be == 'iphone 6'
       expect(device.ios_version).to be == run_loop_device.version
       expect(device.iphone_app_emulated_on_ipad?).to be == false
       expect(device.physical_device?).to be == false
-      expect(device.screen_dimensions).to be == { :sample => 1,
-                                                  :height => 1136,
-                                                  :width => 640,
-                                                  :scale => 2 }
+      expect(device.screen_dimensions).to be == {:sample => 1,
+                                                 :height => 1334,
+                                                 :width => 750,
+                                                 :scale => 2}
       run_loop_app = RunLoop::App.new(abp)
       path_to_exec = File.join(abp, run_loop_app.executable_name)
       raw_output = `xcrun strings #{path_to_exec} | grep -E 'CALABASH VERSION'`
