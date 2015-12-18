@@ -21,14 +21,14 @@ describe Calabash::IOS::Device do
 
   let(:app) { Calabash::IOS::Application.new(IOSResources.instance.app_bundle_path) }
 
-  # Mock RunLoop::Simctl::Bridge
+  # Mock RunLoop::CoreSimulator
   let(:mock_bridge) do
     Class.new do
       def app_is_installed?; ; end
       def reset_app_sandbox; ; end
-      def uninstall; ; end
+      def uninstall_app_and_sandbox; ; end
       def install; ; end
-      def fetch_app_dir; ; end
+      def installed_app_bundle_dir; ; end
     end.new
   end
 
@@ -421,7 +421,7 @@ describe Calabash::IOS::Device do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
           expect(device).to receive(:run_loop_bridge).and_return(mock_bridge)
           expect(mock_bridge).to receive(:app_is_installed?).and_return true
-          expect(mock_bridge).to receive(:fetch_app_dir).and_return(:preinstalled)
+          expect(mock_bridge).to receive(:installed_app_bundle_dir).and_return(:preinstalled)
           expect(app).to receive(:same_sha1_as?).with(preinstalled_app).and_return(true)
 
           expect(device.ensure_app_installed(app)).to be_truthy
@@ -437,7 +437,7 @@ describe Calabash::IOS::Device do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
           expect(device).to receive(:run_loop_bridge).and_return(mock_bridge)
           expect(mock_bridge).to receive(:app_is_installed?).and_return true
-          expect(mock_bridge).to receive(:fetch_app_dir).and_return(:preinstalled)
+          expect(mock_bridge).to receive(:installed_app_bundle_dir).and_return(:preinstalled)
           expect(app).to receive(:same_sha1_as?).with(preinstalled_app).and_return(false)
           expect(device).to receive(:install_app_on_simulator).with(app, run_loop_device, mock_bridge).and_return true
 
@@ -482,14 +482,14 @@ describe Calabash::IOS::Device do
 
     describe '#install_app_on_simulator' do
       it 'uninstalls and then installs' do
-        expect(mock_bridge).to receive(:uninstall).and_return true
+        expect(mock_bridge).to receive(:uninstall_app_and_sandbox).and_return true
         expect(mock_bridge).to receive(:install).and_return true
 
         expect(device.send(:install_app_on_simulator, app, run_loop_device, mock_bridge)).to be_truthy
       end
 
       it 'creates a new mock_bridge if one is not provided' do
-        expect(mock_bridge).to receive(:uninstall).and_return true
+        expect(mock_bridge).to receive(:uninstall_app_and_sandbox).and_return true
         expect(mock_bridge).to receive(:install).and_return true
         expect(device).to receive(:run_loop_bridge).with(run_loop_device, app).and_return mock_bridge
 
@@ -497,7 +497,7 @@ describe Calabash::IOS::Device do
       end
 
       describe 'raises errors when' do
-        it 'cannot create a new RunLoop::Simctl::Bridge' do
+        it 'cannot create a new RunLoop::CoreSimulator' do
           expect(device).to receive(:run_loop_bridge).with(run_loop_device, app).and_raise
 
           expect {
@@ -506,7 +506,7 @@ describe Calabash::IOS::Device do
         end
 
         it 'calls bridge.uninstall and an exception is raised' do
-          expect(mock_bridge).to receive(:uninstall).and_raise
+          expect(mock_bridge).to receive(:uninstall_app_and_sandbox).and_raise
 
           expect {
             device.send(:install_app_on_simulator, app, run_loop_device, mock_bridge)
@@ -514,7 +514,7 @@ describe Calabash::IOS::Device do
         end
 
         it 'calls bridge.install and an exception is raised' do
-          expect(mock_bridge).to receive(:uninstall).and_return true
+          expect(mock_bridge).to receive(:uninstall_app_and_sandbox).and_return true
           expect(mock_bridge).to receive(:install).and_raise
 
           expect {
