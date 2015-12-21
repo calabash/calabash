@@ -61,6 +61,10 @@ module Calabash
 
     # @!visibility private
     def ensure_in_bounds(index)
+      unless index.is_a?(Numeric)
+        return true
+      end
+
       if empty?
         raise IndexError, "Query result is empty"
       end
