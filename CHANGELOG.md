@@ -1,3 +1,7 @@
+### 2.0.0.pre6
+
+* Includes 0.5.16.pre1 Android Server
+
 ### 2.0.0.pre5
 
 * Xcode 7 compatibility: update to run-loop 2.0.2 #299
