@@ -24,7 +24,7 @@ module Calabash
         FileUtils.cp(File.join(test_server_directory, 'AndroidManifest.xml'), android_manifest_location)
 
         Dir.mktmpdir do |workspace_dir|
-          test_server_dir = File.join(workspace_dir, 'test-server')
+          test_server_dir = File.join(workspace_dir, 'server')
           FileUtils.cp_r(test_server_directory, workspace_dir)
 
           args =
@@ -57,7 +57,7 @@ module Calabash
       private
 
       def self.test_server_directory
-        File.join(ROOT, 'android', 'test-server')
+        File.join(find_server_repo_or_raise, 'server')
       end
 
       def self.calabash_js_directory
@@ -76,6 +76,30 @@ module Calabash
         puts reason unless reason.empty?
         puts Messages::SEE_INSTRUCTIONS
         exit(exit_code)
+      end
+
+      def self.find_server_repo_or_raise
+        calabash_server_dir = ENV['CALABASH_SERVER_PATH'] || File.join(File.dirname(__FILE__), '..', '..', 'calabash-android-server')
+        unless File.exist?(calabash_server_dir) && File.exists?(File.join(calabash_server_dir, "server", "calabash-js", "src"))
+          raise %Q{\033[31m
+Expected to find the calabash-android-server repo at:
+
+    #{File.expand_path(calabash_server_dir)}
+
+Either clone the repo to that location with:
+
+$ git clone --recursive git@github.com:calabash/calabash-android-server.git #{calabash_server_dir}
+
+or set CALABASH_SERVER_PATH to point to your local copy of the server.
+
+$ CALABASH_SERVER_PATH=/path/to/server bundle exec rake build
+
+For full instuctions see: https://github.com/calabash/calabash-android/wiki/Building-calabash-android\033[0m
+
+    }
+        end
+
+        calabash_server_dir
       end
     end
   end
