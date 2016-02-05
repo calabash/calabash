@@ -102,6 +102,36 @@ module Calabash
       _keyboard_visible?
     end
 
+    # Waits for a keyboard to appear.
+    #
+    # @see Calabash::Wait.default_options
+    #
+    # @param [Number] timeout How long to wait for the keyboard.
+    # @raise [Calabash::Wait::TimeoutError] Raises error if no keyboard
+    #  appears.
+    def wait_for_keyboard(timeout=nil)
+      keyboard_timeout = keyboard_wait_timeout(timeout)
+      message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to appear"
+      wait_for(message, timeout: keyboard_timeout) do
+        keyboard_visible?
+      end
+    end
+
+    # Waits for the keyboard to disappear.
+    #
+    # @see Calabash::Wait.default_options
+    #
+    # @param [Number] timeout How log to wait for the keyboard to disappear.
+    # @raise [Calabash::Wait::TimeoutError] Raises error if any keyboard is
+    #  visible after the `timeout`.
+    def wait_for_no_keyboard(timeout=nil)
+      keyboard_timeout = keyboard_wait_timeout(timeout)
+      message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to disappear"
+      wait_for(message, timeout: keyboard_timeout) do
+        !keyboard_visible?
+      end
+    end
+
     # @!visibility private
     def _enter_text(text)
       abstract_method!
@@ -135,6 +165,15 @@ module Calabash
     # @!visibility private
     def self.escape_single_quotes(string)
       string.gsub("'", "\\\\'")
+    end
+
+    # @!visibility private
+    def keyboard_wait_timeout(timeout)
+      if timeout.nil?
+        Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
+      else
+        timeout
+      end
     end
   end
 end
