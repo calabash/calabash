@@ -42,6 +42,11 @@ module Calabash
           Device.default.perform_action('press_user_action_button', action_key.to_s)
         end
       end
+
+      # @!visibility private
+      def _keyboard_visible?
+        Device.default.keyboard_visible?
+      end
     end
   end
 end

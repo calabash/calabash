@@ -245,6 +245,29 @@ module Calabash
         result['result']
       end
 
+
+      # @!visibility private
+      def keyboard_visible?
+        input_method = adb.shell("dumpsys input_method")
+        input_method.lines.each do |line|
+          match = line.match(/mInputShown\s*=\s*(.*)/)
+
+          if match && match.captures.length != 0
+            shown = match.captures.first.chomp
+
+            if shown == "true"
+              return true
+            elsif shown == "false"
+              return false
+            else
+              raise "Could not detect keyboard visibility. '#{shown}'"
+            end
+          end
+        end
+
+        raise "Could not detect keyboard visibility. Could not find 'mInputShown'"
+      end
+
       # @!visibility private
       def go_home
         adb.shell("input keyevent 3")

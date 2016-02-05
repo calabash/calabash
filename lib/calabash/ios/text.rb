@@ -73,43 +73,6 @@ module Calabash
         Device.default.split_keyboard_visible?
       end
 
-      # Returns true if there is a visible keyboard.
-      #
-      # @return [Boolean] Returns true if there is a visible keyboard.
-      def keyboard_visible?
-        docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
-      end
-
-      # Waits for a keyboard to appear.
-      #
-      # @see Calabash::Wait.default_options
-      #
-      # @param [Number] timeout How long to wait for the keyboard.
-      # @raise [Calabash::Wait::TimeoutError] Raises error if no keyboard
-      #  appears.
-      def wait_for_keyboard(timeout=nil)
-        keyboard_timeout = keyboard_wait_timeout(timeout)
-        message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to appear"
-        wait_for(message, timeout: keyboard_timeout) do
-          keyboard_visible?
-        end
-      end
-
-      # Waits for the keyboard to disappear.
-      #
-      # @see Calabash::Wait.default_options
-      #
-      # @param [Number] timeout How log to wait for the keyboard to disappear.
-      # @raise [Calabash::Wait::TimeoutError] Raises error if any keyboard is
-      #  visible after the `timeout`.
-      def wait_for_no_keyboard(timeout=nil)
-        keyboard_timeout = keyboard_wait_timeout(timeout)
-        message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to disappear"
-        wait_for(message, timeout: keyboard_timeout) do
-          !keyboard_visible?
-        end
-      end
-
       # Touches the keyboard action key.
       #
       # The action key depends on the keyboard.  Some examples include:
@@ -135,6 +98,11 @@ module Calabash
 
         char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:action]
         Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
+      end
+
+      # @!visibility private
+      def _keyboard_visible?
+        docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
       end
 
       # Touches the keyboard delete key.
@@ -242,14 +210,6 @@ module Calabash
               #'International' => nil,
               #'More' => nil,
           }
-
-      def keyboard_wait_timeout(timeout)
-        if timeout.nil?
-          Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
-        else
-          timeout
-        end
-      end
     end
   end
 end

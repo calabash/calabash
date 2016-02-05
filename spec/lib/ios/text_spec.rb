@@ -20,14 +20,6 @@ describe Calabash::IOS::Text do
     end.new
   end
 
-  let(:short_timeout) do
-    if Luffa::Environment.travis_ci?
-      0.1
-    else
-      0.01
-    end
-  end
-
   before do
     allow(Calabash::Device).to receive(:default).at_least(:once).and_return device
   end
@@ -90,94 +82,6 @@ describe Calabash::IOS::Text do
 
         expect(world.keyboard_visible?).to be_truthy
       end
-    end
-  end
-
-  describe '#wait_for_keyboard' do
-    it 'waits for the keyboard' do
-      options =
-          {
-              timeout: 0.5,
-              retry_frequency: 0.01,
-              exception_class: Calabash::Wait::TimeoutError
-          }
-      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
-      expect(world).to receive(:keyboard_visible?).and_return(false, true)
-
-      expect do
-        world.wait_for_keyboard(5)
-      end.not_to raise_error
-    end
-
-    it 'raises a timeout error if keyboard does not appear' do
-      expect(world).to receive(:keyboard_visible?).at_least(:once).and_return false
-
-      expect do
-        world.wait_for_keyboard(short_timeout)
-      end.to raise_error Calabash::Wait::TimeoutError
-    end
-
-    it 'uses default time out if none is given' do
-      options =
-          {
-              retry_frequency: 0.01,
-              exception_class: Calabash::Wait::TimeoutError
-          }
-
-      time = 22
-      stub_const('Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT', time)
-      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
-      expect(world).to receive(:keyboard_visible?).and_return(false, true)
-      message = "Timed out after #{time} seconds waiting for the keyboard to appear"
-      expect(world).to receive(:wait_for).with(message, timeout: time).and_call_original
-
-      expect do
-        world.wait_for_keyboard
-      end.not_to raise_error
-    end
-  end
-
-  describe '#wait_for_no_keyboard' do
-    it 'waits for no visible keyboard' do
-      options =
-          {
-              retry_frequency: 0.01,
-              exception_class: Calabash::Wait::TimeoutError
-          }
-      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
-      expect(world).to receive(:keyboard_visible?).and_return(true, false)
-
-      expect do
-        world.wait_for_no_keyboard(5)
-      end.not_to raise_error
-    end
-
-    it 'raises a timeout error if keyboard does not disappear' do
-      expect(world).to receive(:keyboard_visible?).at_least(:once).and_return true
-
-      expect do
-        world.wait_for_no_keyboard(short_timeout)
-      end.to raise_error Calabash::Wait::TimeoutError
-    end
-
-    it 'uses default time out if none is given' do
-      options =
-          {
-              retry_frequency: 0.01,
-              exception_class: Calabash::Wait::TimeoutError
-          }
-
-      time = 22
-
-      expect(Calabash::Wait).to receive(:default_options).at_least(:once).and_return(options)
-      stub_const('Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT', time)
-      expect(world).to receive(:keyboard_visible?).and_return(true, false)
-      message = "Timed out after #{time} seconds waiting for the keyboard to disappear"
-      expect(world).to receive(:wait_for).with(message, timeout: time).and_call_original
-
-      expect do
-        world.wait_for_no_keyboard
-      end.not_to raise_error
     end
   end
 
