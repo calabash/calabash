@@ -1,7 +1,3 @@
-# Temporary git ignores. Remove these when changing repos
-android/test-server
-# End of temporary git ignores
-
 # Standard gem ignores
 /.bundle/
 /.yardoc
