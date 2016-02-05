@@ -93,6 +93,15 @@ module Calabash
       Text.escape_single_quotes(string)
     end
 
+    # Returns true if there is a visible keyboard.
+    # On Android, if a physical keyboard is connected, this method will always
+    # return true.
+    #
+    # @return [Boolean] Returns true if there is a visible keyboard.
+    def keyboard_visible?
+      _keyboard_visible?
+    end
+
     # @!visibility private
     def _enter_text(text)
       abstract_method!
@@ -115,6 +124,11 @@ module Calabash
 
     # @!visibility private
     def _tap_keyboard_action_key(action_key)
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _keyboard_visible?
       abstract_method!
     end
 

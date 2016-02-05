@@ -73,13 +73,6 @@ module Calabash
         Device.default.split_keyboard_visible?
       end
 
-      # Returns true if there is a visible keyboard.
-      #
-      # @return [Boolean] Returns true if there is a visible keyboard.
-      def keyboard_visible?
-        docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
-      end
-
       # Waits for a keyboard to appear.
       #
       # @see Calabash::Wait.default_options
@@ -135,6 +128,11 @@ module Calabash
 
         char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:action]
         Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
+      end
+
+      # @!visibility private
+      def _keyboard_visible?
+        docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
       end
 
       # Touches the keyboard delete key.

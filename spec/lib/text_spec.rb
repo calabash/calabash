@@ -70,4 +70,10 @@ describe Calabash::Text do
       expect{dummy._tap_keyboard_action_key(nil)}.to raise_error(Calabash::AbstractMethodError)
     end
   end
+
+  describe '#_keyboard_visible?' do
+    it 'should have an abstract implementation' do
+      expect{dummy._keyboard_visible?}.to raise_error(Calabash::AbstractMethodError)
+    end
+  end
 end
