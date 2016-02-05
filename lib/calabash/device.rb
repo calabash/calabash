@@ -253,6 +253,11 @@ module Calabash
       abstract_method!
     end
 
+    # @!visibility private
+    def keyboard_visible?
+      abstract_method!
+    end
+
     private
 
     # @!visibility private
