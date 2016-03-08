@@ -38,7 +38,8 @@ describe Calabash::Android::Application do
       stub_const('Calabash::Environment::APP_PATH', nil)
       stub_const('Calabash::Environment::TEST_SERVER_PATH', test_server_path)
 
-      expect{Calabash::Android::Application.default_from_environment}.to raise_error('No application path is set')
+      expect{Calabash::Android::Application.default_from_environment}.to raise_error(
+       'No application path is set. Specify application with environment variable CAL_APP')
     end
   end
 

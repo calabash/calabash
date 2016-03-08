@@ -27,7 +27,7 @@ module Calabash
         application_path = Environment::APP_PATH
 
         if application_path.nil?
-          raise 'No application path is set'
+          raise 'No application path is set. Specify application with environment variable CAL_APP'
         end
 
         Application.new(application_path)

@@ -1,6 +1,20 @@
 require 'calabash'
+require 'calabash/android/application'
+require 'calabash/ios/application'
 
 platform = ENV['PLATFORM']
+
+unless platform
+  application = Calabash::Application.default_from_environment
+
+  if application.android_application?
+    platform = 'android'
+  elsif application.ios_application?
+    platform = 'ios'
+  else
+    raise "Application '#{application}' is neither an Android app or an iOS app"
+  end
+end
 
 case platform
   when 'android'
@@ -26,7 +40,7 @@ case platform
         [
             'ERROR! Unable to start the cucumber test:',
             message,
-            "Use the profile 'android' or 'ios', or run cucumber using $ calabash run"
+            "Run cucumber with the ENV variable 'CAL_APP', or run cucumber using $ calabash run"
         ]
 
     Calabash::Logger.error(failure_messages.join("\n"))

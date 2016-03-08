@@ -746,7 +746,7 @@ module Calabash
           installed_app_md5_checksum = md5_checksum(installed_app[:path])
 
           if application.md5_checksum != installed_app_md5_checksum
-            @logger.log("The md5 checksum has changed (#{application.md5_checksum} != #{installed_app_md5_checksum}.", :info)
+            @logger.log("The md5 checksum has changed (#{application.md5_checksum} != #{installed_app_md5_checksum}).", :info)
             _install_app(application)
           end
         else

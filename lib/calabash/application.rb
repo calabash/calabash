@@ -21,6 +21,21 @@ module Calabash
 
     attr_reader :path
 
+    # Get the application from the default environment.
+    def self.default_from_environment
+      application_path = Environment::APP_PATH
+
+      if application_path.nil?
+        raise 'No application path is set. Specify application with environment variable CAL_APP'
+      end
+
+      unless File.exist?(application_path)
+        raise "Application '#{application_path}' does not exist"
+      end
+
+      Application.from_path(application_path)
+    end
+
     # Create an application from a path
     #
     # @return [Calabash::Android::Application, Calabash::IOS::Application] An

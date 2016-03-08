@@ -92,7 +92,7 @@ module Calabash
           end
         end
 
-        arguments = ['-S', 'cucumber', '-p', @platform.to_s, *cucumber_arguments]
+        arguments = ['-S', 'cucumber', *cucumber_arguments]
 
         Logger.debug("Starting Ruby with arguments: #{arguments.join(', ')} and environment #{cucumber_environment.to_s}")
 
