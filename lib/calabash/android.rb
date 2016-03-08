@@ -39,6 +39,7 @@ module Calabash
     require 'calabash/android/console_helpers'
     require 'calabash/android/life_cycle'
     require 'calabash/android/scroll'
+    require 'calabash/android/legacy'
 
     include Calabash::Android::Gestures
     include Calabash::Android::Interactions

@@ -25,6 +25,7 @@ module Calabash
   require 'calabash/text'
   require 'calabash/interactions'
   require 'calabash/defaults'
+  require 'calabash/legacy'
   require 'calabash/console_helpers'
 
 
