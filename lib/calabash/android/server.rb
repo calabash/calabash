@@ -4,7 +4,8 @@ module Calabash
     class Server < ::Calabash::Server
       # The default Android test server.
       def self.default
-        Server.new(URI.parse('http://127.0.0.1:33765'))
+        endpoint = Environment::DEVICE_ENDPOINT
+        Server.new(endpoint)
       end
     end
   end
