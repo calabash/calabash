@@ -68,7 +68,7 @@ EOF
       #{HELP[:resign]}
         resigns the app with the currently configured keystore.
 
-      #{HELP[:build]}
+      #{HELP[:build]} [-o <output_file>]
         builds the test server that will be used when testing the app.
 
     iOS specific commands

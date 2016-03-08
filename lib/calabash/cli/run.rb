@@ -31,12 +31,14 @@ module Calabash
             when '.apk'
               set_platform!(:android)
 
-              # Create the test server if it does not exist
-              test_server = Android::Build::TestServer.new(application_path)
+              unless Environment::TEST_SERVER_PATH
+                # Create the test server if it does not exist
+                test_server = Android::Build::TestServer.new(application_path)
 
-              unless test_server.exists?
-                Logger.info('Test server does not exist. Creating test server.')
-                Calabash::Android::Build::Builder.new(application_path).build
+                unless test_server.exists?
+                  Logger.info('Test server does not exist. Creating test server.')
+                  Calabash::Android::Build::Builder.new(application_path).build
+                end
               end
 
               run(application_path, @arguments)
