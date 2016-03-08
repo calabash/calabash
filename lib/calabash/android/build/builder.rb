@@ -17,7 +17,7 @@ module Calabash
         end
 
         # @!visibility private
-        def build
+        def build(out_file = nil)
           apk_fingerprint = fingerprint_from_apk
           @logger.log "#{@application_path} was signed with a certificate with fingerprint #{apk_fingerprint}", :debug
 
@@ -49,7 +49,7 @@ module Calabash
 
           application = Calabash::Application.from_path(@application_path)
 
-          test_server_file_name = TestServer.new(@application_path).path
+          test_server_file_name = out_file || TestServer.new(@application_path).path
           FileUtils.mkdir_p File.dirname(test_server_file_name) unless File.exist? File.dirname(test_server_file_name)
 
           Dir.mktmpdir do |workspace_dir|
