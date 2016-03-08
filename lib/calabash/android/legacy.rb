@@ -14,6 +14,12 @@ module Calabash
         true
       end
 
+      def installed_apps
+        packages = installed_packages
+
+        packages.map{|p| {package: p, path: ''}}
+      end
+
       def md5_checksum(file_path)
         "samplechecksum"
       end
