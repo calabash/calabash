@@ -102,4 +102,24 @@ describe Calabash::Application do
       expect(Calabash::Application.from_path(path)).to eq(app)
     end
   end
+
+  describe '#android_application?' do
+    before(:each) do
+      expect(File).to receive(:exist?).with(app_path).and_return(true)
+    end
+
+    it 'should always return false' do
+      expect(Calabash::Application.new(app_path).android_application?).to eq(false)
+    end
+  end
+
+  describe '#ios_application?' do
+    before(:each) do
+      expect(File).to receive(:exist?).with(app_path).and_return(true)
+    end
+
+    it 'should always return false' do
+      expect(Calabash::Application.new(app_path).ios_application?).to eq(false)
+    end
+  end
 end

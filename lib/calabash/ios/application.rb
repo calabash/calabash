@@ -67,6 +67,13 @@ module Calabash
         @device_binary
       end
 
+      # Is this application an iOS application
+      #
+      # @return [Boolean] Always returns true
+      def ios_application?
+        true
+      end
+
       # Returns the sha1 of the directory or binary of this app's path.
       # @return [String] A checksum.
       def sha1

@@ -101,4 +101,28 @@ describe Calabash::IOS::Application do
       end
     end
   end
+
+  describe '#android_application?' do
+    let(:app_path) { File.join(Dir.tmpdir, 'my.app') }
+
+    before(:each) do
+      expect(File).to receive(:exist?).with(app_path).and_return(true)
+    end
+
+    it 'should always return false' do
+      expect(Calabash::IOS::Application.new(app_path).android_application?).to eq(false)
+    end
+  end
+
+  describe '#ios_application?' do
+    let(:app_path) { File.join(Dir.tmpdir, 'my.app') }
+
+    before(:each) do
+      expect(File).to receive(:exist?).with(app_path).and_return(true)
+    end
+
+    it 'should always return true' do
+      expect(Calabash::IOS::Application.new(app_path).ios_application?).to eq(true)
+    end
+  end
 end
