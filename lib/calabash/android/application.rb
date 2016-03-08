@@ -8,7 +8,7 @@ module Calabash
         application_path = Environment::APP_PATH
 
         if application_path.nil?
-          raise 'No application path is set'
+          raise 'No application path is set. Specify application with environment variable CAL_APP'
         end
 
         unless File.exist?(application_path)
@@ -20,8 +20,12 @@ module Calabash
         end
 
         build_test_server = Build::TestServer.new(application_path)
-        test_server_path = Environment::TEST_SERVER_PATH ||
-            build_test_server.path
+        test_server_path = Environment::TEST_SERVER_PATH
+
+        unless test_server_path
+          test_server_path = build_test_server.path
+          Logger.info "No test-server specified. Defaulting to path '#{test_server_path}'"
+        end
 
         unless File.exist?(test_server_path)
           Logger.error "Test-server '#{test_server_path}' does not exist."

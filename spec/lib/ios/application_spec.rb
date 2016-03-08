@@ -13,7 +13,8 @@ describe Calabash::IOS::Application do
     it 'should raise an error if the ENV is not sufficient' do
       stub_const('Calabash::Environment::APP_PATH', nil)
 
-      expect{Calabash::IOS::Application.default_from_environment}.to raise_error('No application path is set')
+      expect{Calabash::IOS::Application.default_from_environment}.to raise_error(
+       'No application path is set. Specify application with environment variable CAL_APP')
     end
   end
 

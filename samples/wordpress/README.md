@@ -12,7 +12,7 @@ as your computer.
 $ bundle install
 
 # Run the cucumbers.
-$ bundle exec calabash run features/prebuilt/wordpress_android.apk
+$ bundle exec calabash run binaries/wordpress_android.apk -p android
 
 # You can also use cucumber directly.
 $ bundle exec cucumber -p android
@@ -21,10 +21,10 @@ $ bundle exec cucumber -p android
 To start a console:
 
 ```
-$ bundle exec calabash console features/prebuilt/wordpress_android.apk
+$ bundle exec calabash console binaries/wordpress_android.apk
 ```
 
-If you have mutliple Android device connected, you must specify which
+If you have multiple Android device connected, you must specify which
 device you want to test on.
 
 ```
@@ -41,7 +41,7 @@ $ CAL_DEVICE_ID=0373707d093b bundle exec calabash run ...
 $ bundle install
 
 # Run the cucumbers.
-$ bundle exec calabash run features/prebuilt/wordpress_ios.app
+$ bundle exec calabash run binaries/wordpress_ios.app -p ios
 
 # You can also use cucumber directly.
 $ bundle exec cucumber -p ios
@@ -50,7 +50,7 @@ $ bundle exec cucumber -p ios
 To start a console:
 
 ```
-$ bundle exec calabash console features/prebuilt/wordpress_ios.app
+$ bundle exec calabash console binaries/wordpress_ios.app
 ```
 
 To choose a different simulator to run the tests on, use the
