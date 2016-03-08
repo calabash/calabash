@@ -51,6 +51,20 @@ module Calabash
       ensure_application_path
     end
 
+    # Is this application an android application
+    #
+    # @return [Boolean] true if this application is an android application
+    def android_application?
+      false
+    end
+
+    # Is this application an iOS application
+    #
+    # @return [Boolean] true if this application is an iOS application
+    def ios_application?
+      false
+    end
+
     # @!visibility private
     def to_s
       "#<Application #{path}>"

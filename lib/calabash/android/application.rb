@@ -38,6 +38,13 @@ module Calabash
         @test_server = Application.new(test_server_path, nil, options) if test_server_path
       end
 
+      # Is this application an android application
+      #
+      # @return [Boolean] Always returns true
+      def android_application?
+        true
+      end
+
       def extract_identifier
         package_line = aapt_dump('package').first
         raise "'package' not found in aapt output" unless package_line
