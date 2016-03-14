@@ -456,6 +456,8 @@ module Calabash
 
         if options[:activity]
           env_options[:main_activity] = options[:activity]
+        else
+          env_options[:main_activity] = 'null'
         end
 
         if application.test_server.nil?
