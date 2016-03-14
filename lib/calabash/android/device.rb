@@ -185,7 +185,7 @@ module Calabash
         @logger.log "Action: #{action} - Arguments: #{arguments.join(', ')}"
 
         parameters = {command: action, arguments: arguments}
-        request = HTTP::Request.new('/', params_for_request(parameters))
+        request = HTTP::Request.new('', params_for_request(parameters))
 
         result = JSON.parse(http_client.post(request).body)
 
