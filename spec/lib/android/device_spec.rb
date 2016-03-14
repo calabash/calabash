@@ -79,21 +79,21 @@ eos
     let(:dummy_http_response) {dummy_http_response_class.new}
 
     it 'should return false when a Calabash:HTTP::Error is raised' do
-      allow(dummy_device.http_client).to receive(:get).and_raise(Calabash::HTTP::Error)
+      allow(dummy_device.http_client).to receive(:post).and_raise(Calabash::HTTP::Error)
 
       expect(dummy_device.test_server_responding?).to be == false
     end
 
     it 'should return false when ping does not respond pong' do
       allow(dummy_http_response).to receive(:body).and_return('not_pong')
-      allow(dummy_device.http_client).to receive(:get).and_return(dummy_http_response)
+      allow(dummy_device.http_client).to receive(:post).and_return(dummy_http_response)
 
       expect(dummy_device.test_server_responding?).to be == false
     end
 
     it 'should return true when ping responds pong' do
       allow(dummy_http_response).to receive(:body).and_return('pong')
-      allow(dummy_device.http_client).to receive(:get).and_return(dummy_http_response)
+      allow(dummy_device.http_client).to receive(:post).and_return(dummy_http_response)
 
       expect(dummy_device.test_server_responding?).to be == true
     end

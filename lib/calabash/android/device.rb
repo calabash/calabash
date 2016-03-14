@@ -87,7 +87,7 @@ module Calabash
       # @!visibility private
       def test_server_responding?
         begin
-          http_client.get(HTTP::Request.new('ping'), retries: 1).body == 'pong'
+          http_client.post(HTTP::Request.new('ping'), retries: 1).body == 'pong'
         rescue HTTP::Error => _
           false
         end
@@ -96,7 +96,7 @@ module Calabash
       # @!visibility private
       def test_server_ready?
         begin
-          http_client.get(HTTP::Request.new('ready')).body == 'true'
+          http_client.post(HTTP::Request.new('ready')).body == 'true'
         rescue HTTP::Error => _
           false
         end
@@ -166,9 +166,9 @@ module Calabash
         request = HTTP::Request.new('map', params_for_request(parameters))
 
         http_result = if method_name == :flash
-                        http_client.get(request, timeout: 30)
+                        http_client.post(request, timeout: 30)
                       else
-                        http_client.get(request)
+                        http_client.post(request)
                       end
 
         result = JSON.parse(http_result.body)
@@ -187,7 +187,7 @@ module Calabash
         parameters = {command: action, arguments: arguments}
         request = HTTP::Request.new('/', params_for_request(parameters))
 
-        result = JSON.parse(http_client.get(request).body)
+        result = JSON.parse(http_client.post(request).body)
 
         unless result['success']
           message = result['message'] || result['bonusInformation']
@@ -240,7 +240,7 @@ module Calabash
         json = parameters.to_json
         request = HTTP::Request.new('/backdoor', json: json)
 
-        body = http_client.get(request).body
+        body = http_client.post(request).body
         result = JSON.parse(body)
 
         if result['outcome'] != 'SUCCESS'
@@ -377,7 +377,7 @@ module Calabash
         json = parameters.to_json
         request = HTTP::Request.new('/map', json: json)
 
-        body = http_client.get(request).body
+        body = http_client.post(request).body
         result = JSON.parse(body)
 
         if result['outcome'] != 'SUCCESS'
@@ -561,7 +561,7 @@ module Calabash
       def _stop_app
         Retriable.retriable(tries: 5, interval: 1) do
           begin
-            http_client.get(HTTP::Request.new('kill'), retries: 1, interval: 0)
+            http_client.post(HTTP::Request.new('kill'), retries: 1, interval: 0)
           rescue HTTP::Error => _
             # It's fine that we can't contact the test-server, as it might already have been shut down
             if test_server_responding?
@@ -998,9 +998,9 @@ module Calabash
 
       # @!visibility private
       def execute_gesture(multi_touch_gesture)
-        request = HTTP::Request.new('gesture', json: multi_touch_gesture.to_json)
+        request = HTTP::Request.new('gesture', params_for_request(multi_touch_gesture))
 
-        body = http_client.get(request, timeout: multi_touch_gesture.timeout + 10).body
+        body = http_client.post(request, timeout: multi_touch_gesture.timeout + 10).body
         result = JSON.parse(body)
 
         if result['outcome'] != 'SUCCESS'
