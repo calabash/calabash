@@ -66,18 +66,8 @@ module Calabash
       # @!visibility private
       DAEMON_STARTED_MESSAGE = "* daemon not running. starting it now on port 5037 *\n* daemon started successfully *\n"
 
-      def self.command(*cmd, **args)
-        Logger.debug("ADB Command: #{cmd.join(', ')}")
-        Logger.debug("ADB input: #{args[:input]}")
-
-        cmd_s = "#{Environment.adb_path} #{cmd.join(' ')}"
-
-        Logger.debug("Going to execute: #{cmd_s}")
-        `#{cmd_s}`
-      end
-
       # @!visibility private
-      def self.old_command(*cmd, **args)
+      def self.command(*cmd, **args)
         Logger.debug("ADB Command: #{cmd.join(', ')}")
         Logger.debug("ADB input: #{args[:input]}")
         stderr = nil
@@ -153,15 +143,10 @@ module Calabash
       end
 
       # @!visibility private
-      def shell(shell_cmd, options={})
-        command('shell', shell_cmd)
-      end
-
-      # @!visibility private
       END_STRING = '__CAL_END__'
 
       # @!visibility private
-      def old_shell(shell_cmd, options={})
+      def shell(shell_cmd, options={})
         if shell_cmd.nil? || shell_cmd.empty?
           raise ArgumentError, "Invalid shell command '#{shell_cmd}'"
         end
