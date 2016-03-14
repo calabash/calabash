@@ -44,5 +44,6 @@ module Calabash
     include Calabash::IOS::Slider
     include Calabash::IOS::DatePicker
 
+    require 'calabash/ios/legacy'
   end
 end
