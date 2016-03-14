@@ -131,8 +131,20 @@ module Calabash
           client.receive_timeout = [time_diff, client.receive_timeout].min
 
           begin
-            return client.send(request_method, @server.endpoint + request.route,
-                               request.params, header)
+            if request_method == :get
+              return client.send(request_method, @server.endpoint + request.route,
+                                 request.params, header)
+            else
+              if request.params.is_a?(Hash)
+                if request.params.key?(:json)
+                  return client.send(request_method, @server.endpoint + request.route,
+                                     {body: request.params[:json]}.merge(header: header))
+                end
+              end
+
+              return client.send(request_method, @server.endpoint + request.route,
+                                 {body: request.params}.merge(header: header))
+            end
           rescue *RETRY_ON => e
             @logger.log "Http error: #{e}"
 
