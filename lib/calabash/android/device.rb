@@ -509,7 +509,7 @@ module Calabash
         extras = ''
 
         env_options.each_pair do |key, val|
-          extras = "#{extras} -e \"#{key.to_s}\" \"#{val.to_s}\""
+          extras = "#{extras} -e #{key.to_s} #{val.to_s}"
         end
 
         begin
