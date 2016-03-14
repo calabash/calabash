@@ -212,6 +212,17 @@ module Calabash
       end
 
       # @!visibility private
+      def md5_checksum_for_app_package(package)
+        app = installed_apps.find{|app| app[:package] == package}
+
+        unless app
+          raise "Application with package '#{app}' not installed"
+        end
+
+        md5_checksum(app[:path])
+      end
+
+      # @!visibility private
       def md5_checksum(file_path)
         result = adb.shell("#{md5_binary} '#{file_path}'")
         captures = result.match(/(\w+)/).captures
@@ -459,15 +470,13 @@ module Calabash
           raise "The test-server '#{application.test_server.identifier}' is not installed"
         end
 
-        installed_app = installed_apps.find{|app| app[:package] == application.identifier}
-        installed_app_md5_checksum = md5_checksum(installed_app[:path])
+        installed_app_md5_checksum = md5_checksum_for_app_package(application.identifier)
 
         if application.md5_checksum != installed_app_md5_checksum
           raise "The specified app is not the same as the installed app (#{application.md5_checksum} != #{installed_app_md5_checksum})."
         end
 
-        installed_test_server = installed_apps.find{|app| app[:package] == application.test_server.identifier}
-        installed_test_server_md5_checksum = md5_checksum(installed_test_server[:path])
+        installed_test_server_md5_checksum = md5_checksum_for_app_package(application.test_server.identifier)
 
         if application.test_server.md5_checksum != installed_test_server_md5_checksum
           raise "The specified test-server is not the same as the installed test-server (#{application.test_server.md5_checksum} != #{installed_test_server_md5_checksum})."
@@ -742,8 +751,7 @@ module Calabash
         if installed_packages.include?(application.identifier)
           @logger.log 'Application is already installed. Ensuring right checksum'
 
-          installed_app = installed_apps.find{|app| app[:package] == application.identifier}
-          installed_app_md5_checksum = md5_checksum(installed_app[:path])
+          installed_app_md5_checksum = md5_checksum_for_app_package(application.identifier)
 
           if application.md5_checksum != installed_app_md5_checksum
             @logger.log("The md5 checksum has changed (#{application.md5_checksum} != #{installed_app_md5_checksum}).", :info)
