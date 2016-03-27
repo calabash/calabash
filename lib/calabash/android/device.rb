@@ -420,20 +420,55 @@ module Calabash
         adb.shell(cmd, no_exit_code_check: true).chomp == file
       end
 
+      def file_exists?(file)
+        ensure_helper_application_started
+
+        request = HTTP::Request.new('file-exists', params_for_request(fileName: file))
+        response = helper_application_http_client.post(request)
+
+        if response.status != 200
+          result = JSON.parse(response.body)
+          raise "Failed to find out if file exists #{result['reason']}"
+        end
+
+        case response.body
+          when 'true'
+            return true
+          when 'false'
+            return false
+          else
+            raise "Invalid resposne '#{response.body}'"
+        end
+      end
+
+      def read_file(file)
+        ensure_helper_application_started
+
+        request = HTTP::Request.new('read-file', params_for_request(fileName: file))
+        response = helper_application_http_client.post(request)
+
+        if response.status != 200
+          result = JSON.parse(response.body)
+          raise "Failed to read file. Reason: #{result['reason']}"
+        end
+
+        response.body
+      end
+
       def calabash_server_failure_exists?(application)
-        adb_file_exists?(calabash_server_failure_file_path(application))
+        file_exists?(calabash_server_failure_file_path(application))
       end
 
       def calabash_server_finished_exists?(application)
-        adb_file_exists?(calabash_server_finished_file_path(application))
+        file_exists?(calabash_server_finished_file_path(application))
       end
 
       def read_calabash_sever_failure(application)
-        adb.shell("cat #{calabash_server_failure_file_path(application)}")
+        read_file(calabash_server_failure_file_path(application))
       end
 
       def read_calabash_sever_finished(application)
-        adb.shell("cat #{calabash_server_finished_file_path(application)}")
+        read_file(calabash_server_finished_file_path(application))
       end
 
       def clear_calabash_server_report(application)
