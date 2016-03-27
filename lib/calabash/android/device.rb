@@ -1091,6 +1091,21 @@ module Calabash
         true
       end
 
+      class StartActivityError < RuntimeError; end
+
+      def start_activity(parameters, http_client = helper_application_http_client)
+        request = HTTP::Request.new('start-activity', params_for_request(parameters))
+
+        body = http_client.post(request).body
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          raise StartActivityError, "Failed to start activity. Reason: #{result['reason']}"
+        end
+
+        true
+      end
+
       def forward_helper_application_port
         port_forward(Server.default_helper.endpoint.port,
                      Server.default_helper.test_server_port)
