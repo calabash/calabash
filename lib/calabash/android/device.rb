@@ -1153,7 +1153,7 @@ module Calabash
         parameters =
             {
                 className: 'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
-                packageName: 'sh.calaba.calabashhelper.test',
+                packageName: helper_application.test_server.identifier,
                 extras:
                     {
                         :'test_server_port' => Server.default_helper.test_server_port.to_s
