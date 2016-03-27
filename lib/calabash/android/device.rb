@@ -473,7 +473,18 @@ module Calabash
 
       def clear_calabash_server_report(application)
         if installed_packages.include?(application.test_server.identifier)
-          adb.shell("am start -e method clear -n #{application.test_server.identifier}/sh.calaba.instrumentationbackend.StatusReporterActivity")
+          parameters =
+              {
+                  packageName: application.test_server.identifier,
+                  className: 'sh.calaba.instrumentationbackend.StatusReporterActivity',
+                  extras:
+                      {
+                          method: 'clear'
+                      }
+              }
+
+          ensure_helper_application_started
+          start_activity(parameters)
         end
       end
 
