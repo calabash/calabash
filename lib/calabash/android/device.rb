@@ -1074,6 +1074,21 @@ module Calabash
         end
       end
 
+      class InstrumentationError < RuntimeError; end
+
+      def instrument(parameters, http_client = helper_application_http_client)
+        request = HTTP::Request.new('instrument', params_for_request(parameters))
+
+        body = http_client.post(request).body
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          raise InstrumentationError, "Failed to instrument. Reason: #{result['reason']}"
+        end
+
+        true
+      end
+
       def forward_helper_application_port
         port_forward(Server.default_helper.endpoint.port,
                      Server.default_helper.test_server_port)
@@ -1143,16 +1158,11 @@ module Calabash
                     }
             }
 
-        request = HTTP::Request.new('instrument', params_for_request(parameters))
-
-        body = http_client.post(request).body
-        result = JSON.parse(body)
-
-        if result['outcome'] != 'SUCCESS'
-          raise "Failed to start helper application. Reason: #{result['reason']}"
+        begin
+          instrument(parameters, http_client)
+        rescue InstrumentationError => e
+          raise "Failed to start helper application. #{e.message}"
         end
-
-        true
       end
 
       # @!visibility private
