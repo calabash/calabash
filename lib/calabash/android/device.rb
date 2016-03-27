@@ -1051,6 +1051,8 @@ module Calabash
         else
           if adb.shell('md5', no_exit_code_check: true).chomp == 'md5 file ...'
             @md5_binary = 'md5'
+          elsif adb.shell('md5sum _cal_no_such_file', no_exit_code_check: true).chomp.start_with?('md5sum:')
+            @md5_binary = 'md5sum'
           else
             # The device does not have 'md5'
             calmd5 = Calabash::Android.binary_location('calmd5', info[:cpu_architecture], can_handle_pie_binaries?)
