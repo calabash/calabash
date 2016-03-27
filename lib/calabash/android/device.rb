@@ -1216,21 +1216,8 @@ module Calabash
       end
 
       def start_helper_application
-        parameters =
-            {
-                className: 'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
-                packageName: helper_application.test_server.identifier,
-                extras:
-                    {
-                        :'test_server_port' => Server.default_helper.test_server_port.to_s
-                    }
-            }
-
-        begin
-          instrument(parameters, http_client)
-        rescue InstrumentationError => e
-          raise "Failed to start helper application. #{e.message}"
-        end
+        adb_instrument(helper_application, 'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
+                       "-e test_server_port #{Server.default_helper.test_server_port}")
       end
 
       # @!visibility private
