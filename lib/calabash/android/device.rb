@@ -514,7 +514,7 @@ module Calabash
         end
 
         begin
-          instrument(application,
+          adb_instrument(application,
                      'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
                      extras)
         rescue ADB::ADBCallError => e
@@ -620,7 +620,7 @@ module Calabash
       end
 
       # @!visibility private
-      def instrument(application, test_server_activity, extras = '')
+      def adb_instrument(application, test_server_activity, extras = '')
         unless application.is_a?(Android::Application)
           raise ArgumentError, "Invalid application type '#{application.class}'"
         end
@@ -648,11 +648,11 @@ module Calabash
       class EnsureInstrumentActionError < RuntimeError; end
 
       # @!visibility private
-      def ensure_instrument_action(application, test_server_activity, extras = '')
+      def ensure_adb_instrument_action(application, test_server_activity, extras = '')
         clear_calabash_server_report(application)
 
         begin
-          instrument(application, test_server_activity, extras)
+          adb_instrument(application, test_server_activity, extras)
         rescue ADB::ADBCallError => e
           raise EnsureInstrumentActionError, e
         end
@@ -683,7 +683,7 @@ module Calabash
       # @!visibility private
       def ts_clear_app_data(application)
         begin
-          ensure_instrument_action(application, 'sh.calaba.instrumentationbackend.ClearAppData2')
+          ensure_adb_instrument_action(application, 'sh.calaba.instrumentationbackend.ClearAppData2')
         rescue EnsureInstrumentActionError => e
           raise "Failed to clear app data: #{e.message}"
         end
