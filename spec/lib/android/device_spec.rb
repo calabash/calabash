@@ -54,7 +54,7 @@ eos
 
   describe '#installed_packages' do
     it 'should be able to list installed packages' do
-      allow(dummy_device.adb).to receive(:shell).with('pm list packages').and_return("package:com.myapp2.app\npackage:com.android.androidapp\npackage:com.app\n")
+      allow(dummy_device.adb).to receive(:shell).with('pm list packages -f').and_return("package:/foo=com.myapp2.app\npackage:/bar=com.android.androidapp\npackage:/baz/=com.app\n")
 
       expect(dummy_device.installed_packages).to eq([
                                                     'com.myapp2.app',
