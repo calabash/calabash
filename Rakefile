@@ -73,6 +73,12 @@ namespace :android do
     Calabash::Build::AndroidTestServer.build_test_server
   end
 
+  task :build_helper_application_test_server do
+    Dir.chdir('lib/calabash/android/lib') do
+      puts `bundle exec calabash build HelperApplication.apk -o HelperApplicationTestServer.apk`
+    end
+  end
+
   task :build_native do
     `NDK_PROJECT_PATH='android/calmd5' $NDK_HOME/ndk-build`
     `rm -r lib/calabash/android/lib/calmd5`
@@ -80,7 +86,7 @@ namespace :android do
   end
 
   desc 'Build the Android test server.'
-  task :build => [:ensure_files_exist, :build_test_server] do
+  task :build => [:ensure_files_exist, :build_test_server, :build_helper_application_test_server] do
   end
 end
 

@@ -7,6 +7,10 @@ module Calabash
     UNSIGNED_TEST_SERVER_APK = File.join(File.dirname(__FILE__), 'android', 'lib', 'TestServer.apk')
     # @!visibility private
     ANDROID_MANIFEST_PATH = File.join(File.dirname(__FILE__), 'android', 'lib', 'AndroidManifest.xml')
+    # @!visibility private
+    HELPER_APPLICATION = File.join(File.dirname(__FILE__), 'android', 'lib', 'HelperApplication.apk')
+    # @!visibility private
+    HELPER_APPLICATION_TEST_SERVER = File.join(File.dirname(__FILE__), 'android', 'lib', 'HelperApplicationTestServer.apk')
 
     require 'calabash'
     include Calabash

@@ -1039,6 +1039,87 @@ module Calabash
         end
       end
 
+      def forward_helper_application_port
+        port_forward(Server.default_helper.endpoint.port,
+                     Server.default_helper.test_server_port)
+      end
+
+      def ensure_helper_application_started
+        unless $_calabash_helper_application_started
+          install_helper_application
+          forward_helper_application_port
+          start_helper_application
+          $_calabash_helper_application_started = true
+        end
+      end
+
+      def helper_application
+        Calabash::Android::Application.new(Calabash::Android::HELPER_APPLICATION,
+                                           Calabash::Android::HELPER_APPLICATION_TEST_SERVER)
+      end
+
+      def helper_application_http_client
+        @helper_application_http_client ||= lambda do
+          http_client = HTTP::RetriableClient.new(Server.default_helper, {})
+
+          http_client.on_error(Errno::ECONNREFUSED) do |server|
+            port_forward(server.endpoint.port, server.test_server_port)
+          end
+
+          http_client
+        end.call
+      end
+
+      # @!visibility private
+      def install_helper_application
+        begin
+          @logger.log("Ensuring helper application is installed", :error)
+          ensure_app_installed(helper_application)
+        rescue => e
+          @logger.log("Unable to install helper application!", :error)
+          raise e
+        end
+
+        $_calabash_helper_application_installed = true
+      end
+
+      # @!visibility private
+      def has_installed_helper_application?
+        $_calabash_helper_application_installed
+      end
+
+      # @!visibility private
+      def helper_application_responding?
+        begin
+          helper_application_http_client.post(HTTP::Request.new('ping'), retries: 1).body == 'pong'
+        rescue HTTP::Error => _
+          false
+        end
+      end
+
+      def start_helper_application
+        parameters =
+            {
+                className: 'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
+                packageName: 'sh.calaba.calabashhelper.test',
+                extras:
+                    {
+                        :'test_server_port' => Server.default_helper.test_server_port.to_s
+                    }
+            }
+
+        request = HTTP::Request.new('instrument', params_for_request(parameters))
+
+        body = http_client.post(request).body
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          raise "Failed to start helper application. Reason: #{result['reason']}"
+        end
+
+        true
+      end
+
       # @!visibility private
       def params_for_request(parameters)
         {json: parameters.to_json}

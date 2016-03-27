@@ -25,6 +25,9 @@ module Calabash
       # @todo Maybe rename this to CAL_SERVER_URL or CAL_SERVER?
       DEVICE_ENDPOINT = URI.parse((variable('CAL_ENDPOINT') || 'http://127.0.0.1:34777'))
 
+      # A URI that points to the helper application
+      DEVICE_HELPER_ENDPOINT = URI.parse((variable('CAL_HELPER_ENDPOINT') || 'http://127.0.0.1:35777'))
+
       private
 
       def self.set_android_dependencies(android_dependencies)

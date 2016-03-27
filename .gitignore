@@ -39,6 +39,9 @@ tags
 lib/calabash/android/lib/TestServer.apk
 lib/calabash/android/lib/AndroidManifest.xml
 
+# Android Helper Application
+lib/calabash/android/lib/HelperApplicationTestServer.apk
+
 # irb
 .irb-history
 .pry-history
