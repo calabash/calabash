@@ -450,7 +450,6 @@ module Calabash
         end
 
         env_options[:test_server_port] = server.test_server_port
-        env_options[:target_package] = application.identifier
 
         env_options[:class] = options.fetch(:class, 'sh.calaba.instrumentationbackend.InstrumentationBackend')
 
@@ -553,8 +552,24 @@ module Calabash
           raise 'Test-server was never ready'
         end
 
+        start_application(options[:intent])
+
         # Return true to avoid cluttering the console
         true
+      end
+
+      # @!visibility private
+      def start_application(intent)
+        request = HTTP::Request.new('start-application', params_for_request(intent: intent))
+        body = http_client.post(request).body
+
+        result = JSON.parse(body)
+
+        if result['outcome'] != 'SUCCESS'
+          raise "Failed to start application. Reason: #{result['reason']}"
+        end
+
+        result['result']
       end
 
       # @!visibility private
