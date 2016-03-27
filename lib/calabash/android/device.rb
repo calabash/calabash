@@ -727,9 +727,49 @@ module Calabash
       end
 
       # @!visibility private
-      def ts_clear_app_data(application)
+      def ensure_instrument_action(application, parameters)
+        ensure_helper_application_started
+        clear_calabash_server_report(application)
+
         begin
-          ensure_adb_instrument_action(application, 'sh.calaba.instrumentationbackend.ClearAppData2')
+          instrument(parameters)
+        rescue ADB::ADBCallError => e
+          raise EnsureInstrumentActionError, e
+        end
+
+        begin
+          Timeout.timeout(10) do
+            loop do
+              if calabash_server_failure_exists?(application)
+                failure_message = read_calabash_sever_failure(application)
+
+                raise EnsureInstrumentActionError, parse_failure_message(failure_message)
+              end
+
+              if calabash_server_finished_exists?(application)
+                output = read_calabash_sever_finished(application)
+
+                if output == 'SUCCESSFUL'
+                  break
+                end
+              end
+            end
+          end
+        rescue Timeout::Error => _
+          raise EnsureInstrumentActionError, 'Timed out waiting for status'
+        end
+      end
+
+      # @!visibility private
+      def ts_clear_app_data(application)
+        parameters =
+            {
+                className: 'sh.calaba.instrumentationbackend.ClearAppData2',
+                packageName: application.test_server.identifier,
+            }
+
+        begin
+          ensure_instrument_action(application, parameters)
         rescue EnsureInstrumentActionError => e
           raise "Failed to clear app data: #{e.message}"
         end
