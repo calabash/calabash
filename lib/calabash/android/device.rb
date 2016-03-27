@@ -66,22 +66,22 @@ module Calabash
 
       # @!visibility private
       def installed_packages
-        adb.shell('pm list packages').lines.map do |line|
-          line.sub('package:', '').chomp
-        end
+        installed_apps.map{|e| e[:package]}
       end
 
       # @!visibility private
       def installed_apps
-        adb.shell('pm list packages -f').lines.map do |line|
-          # line will be package:<path>=<package>
-          # e.g. "package:/system/app/GoogleEars.apk=com.google.android.ears"
-          info = line.sub("package:", "")
+        @installed_apps_cache ||= lambda do
+          adb.shell('pm list packages -f').lines.map do |line|
+            # line will be package:<path>=<package>
+            # e.g. "package:/system/app/GoogleEars.apk=com.google.android.ears"
+            info = line.sub("package:", "")
 
-          app_path, app_id = info.split('=').map(&:chomp)
+            app_path, app_id = info.split('=').map(&:chomp)
 
-          {package: app_id, path: app_path}
-        end
+            {package: app_id, path: app_path}
+          end
+        end.call
       end
 
       # @!visibility private
@@ -964,6 +964,7 @@ module Calabash
 
       # @!visibility private
       def adb_uninstall_app(package)
+        @installed_apps_cache = nil
         @logger.log "Uninstalling #{package}"
         result = adb.command('uninstall', package, timeout: 60).lines.last
 
@@ -978,6 +979,7 @@ module Calabash
 
       # @!visibility private
       def adb_install_app(application)
+        @installed_apps_cache = nil
         # Because of a bug in the latest version of ADB
         # https://github.com/android/platform_system_core/blob/0f91887868e51de67bdf9aedc97fbcb044dc1969/adb/commandline.cpp#L1466
         # ADB now uses rm -f ... to remove the temporary application on the
@@ -1123,7 +1125,7 @@ module Calabash
       # @!visibility private
       def install_helper_application
         begin
-          @logger.log("Ensuring helper application is installed", :error)
+          @logger.log "Ensuring helper application is installed"
           ensure_app_installed(helper_application)
         rescue => e
           @logger.log("Unable to install helper application!", :error)
