@@ -8,11 +8,14 @@ jar_files =  ['lib/calabash/android/lib/screenshot_taker.jar']
 calmd5_exe = Dir.glob('lib/calabash/android/lib/calmd5/**/{calmd5,calmd5-pie}')
 test_server_apk = Dir.glob('lib/calabash/android/lib/TestServer.apk')
 android_manifest = Dir.glob('lib/calabash/android/lib/AndroidManifest.xml')
+helper_application = Dir.glob('lib/calabash/android/lib/HelperApplication.apk')
+helper_application_test_server = Dir.glob('lib/calabash/android/lib/HelperApplicationTestServer.apk')
 playback_files = Dir.glob('lib/calabash/ios/lib/recordings/**/*.base64')
 skeleton_dir = 'lib/calabash/lib/skeleton'
 skeleton_files = Dir.glob(File.join(skeleton_dir,'**/*')) << (File.join(skeleton_dir,'.gitignore'))
 
-gem_files = lib_files + doc_files + jar_files + calmd5_exe + playback_files + test_server_apk + android_manifest + skeleton_files
+gem_files = lib_files + doc_files + jar_files + calmd5_exe + playback_files + test_server_apk + android_manifest +
+    skeleton_files + helper_application + helper_application_test_server
 
 Gem::Specification.new do |spec|
   spec.name          = 'calabash'
