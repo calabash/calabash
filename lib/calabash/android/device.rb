@@ -531,9 +531,6 @@ module Calabash
 
         ensure_screen_on
 
-        # Clear any old error reports
-        clear_calabash_server_report(application)
-
         # We have to forward the port ourselves, as an old test-server could be
         # running on the old port. If the retriable client was able to
         # determine if the port had been forwarded, we would not need this.
@@ -552,6 +549,9 @@ module Calabash
             raise 'Failed to stop old running test-server'
           end
         end
+
+        # Clear any old error reports
+        clear_calabash_server_report(application)
 
         extras = ''
 
