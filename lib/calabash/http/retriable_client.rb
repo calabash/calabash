@@ -33,6 +33,9 @@ module Calabash
                   'Content-Type' => 'application/json;charset=utf-8'
             }
 
+      # @!visibility private
+      attr_accessor :port_forward
+
       # Creates a new retriable client.
       #
       # This initializer takes multiple options.  If the option is not
@@ -107,7 +110,7 @@ module Calabash
         retries = options.fetch(:retries, @retries)
         timeout = options.fetch(:timeout, @timeout)
         interval = options.fetch(:interval, @interval)
-        header = options.fetch(:header, HEADER)
+        header = HEADER.merge(options.fetch(:header, {}))
 
         @logger.log "Getting: #{@server.endpoint + request.route} #{options}"
 

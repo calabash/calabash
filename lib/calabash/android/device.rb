@@ -1157,15 +1157,9 @@ module Calabash
         true
       end
 
-      def forward_helper_application_port
-        port_forward(Server.default_helper.endpoint.port,
-                     Server.default_helper.test_server_port)
-      end
-
       def ensure_helper_application_started
         unless $_calabash_helper_application_started
           install_helper_application
-          forward_helper_application_port
           start_helper_application
           $_calabash_helper_application_started = true
         end
@@ -1177,15 +1171,7 @@ module Calabash
       end
 
       def helper_application_http_client
-        @helper_application_http_client ||= lambda do
-          http_client = HTTP::RetriableClient.new(Server.default_helper, {})
-
-          http_client.on_error(Errno::ECONNREFUSED) do |server|
-            port_forward(server.endpoint.port, server.test_server_port)
-          end
-
-          http_client
-        end.call
+        @helper_application_http_client ||= Calabash::HTTP::ForwardingClient.new(http_client, 8451)
       end
 
       # @!visibility private
@@ -1216,8 +1202,15 @@ module Calabash
       end
 
       def start_helper_application
-        adb_instrument(helper_application, 'sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner',
-                       "-e test_server_port #{Server.default_helper.test_server_port}")
+        extras = "-e test_server_port 8451"
+        name = "#{helper_application.test_server.identifier}/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner"
+        cmd = "am instrument #{extras} #{name}"
+        Logger.debug("Starting global helper application using #{cmd}")
+        adb.shell(cmd)
+
+        cmd = "am start -e port #{server.test_server_port} -e testServerPort 0 -n #{helper_application.identifier}/.MainActivity"
+        Logger.debug("Starting helper application using #{cmd}")
+        adb.shell(cmd)
       end
 
       # @!visibility private
@@ -1232,7 +1225,8 @@ module Calabash
         else
           if adb.shell('md5', no_exit_code_check: true).chomp == 'md5 file ...'
             @md5_binary = 'md5'
-          elsif adb.shell('md5sum _cal_no_such_file', no_exit_code_check: true).chomp.start_with?('md5sum:')
+          elsif (r = adb.shell('md5sum _cal_no_such_file', no_exit_code_check: true)) && r.chomp.start_with?('md5sum:') &&
+              !r.include?('permission denied')
             @md5_binary = 'md5sum'
           else
             # The device does not have 'md5'
