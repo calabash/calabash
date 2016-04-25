@@ -77,6 +77,8 @@ Public License.}
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'guard-bundler'
+  # Pin to 3.0.6; >= 3.1.0 requires ruby 2.2. This is guard dependency.
+  spec.add_development_dependency("listen", "3.0.6")
   spec.add_development_dependency 'growl'
 
   spec.add_development_dependency 'stub_env'
