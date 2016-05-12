@@ -25,6 +25,17 @@ module Calabash
 
         puts "Saved your settings to '#{Android::Build::JavaKeystore::CALABASH_KEYSTORE_SETTINGS_FILENAME}'. You can edit the settings manually or run this setup script again"
       end
+
+      # @!visibility private
+      def prompt(message, secure = false)
+        puts message
+
+        if secure
+          STDIN.noecho(&:gets).chomp
+        else
+          STDIN.gets.chomp
+        end
+      end
     end
   end
 end

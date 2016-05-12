@@ -125,17 +125,6 @@ EOF
 
         exit(1)
       end
-
-      # @!visibility private
-      def prompt(message, secure = false)
-        puts message
-
-        if secure
-          STDIN.noecho(&:gets).chomp
-        else
-          STDIN.gets.chomp
-        end
-      end
     end
   end
 end
