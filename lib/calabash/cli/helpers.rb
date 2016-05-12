@@ -9,6 +9,7 @@ module Calabash
           generate: 'generate',
           run: 'run [application] [cucumber options]',
           console: 'console [application]',
+          doctor: 'doctor [setup]',
           version: 'version',
           setup_keystore: 'setup-keystore',
           resign: 'resign <apk>',
@@ -57,6 +58,9 @@ EOF
 
     #{HELP[:console]}
       starts an interactive console to interact with your app via Calabash
+
+    #{HELP[:doctor]}
+      diagnoses and fixes problems with your setup
 
     #{HELP[:version]}
       prints the gem version

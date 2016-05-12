@@ -9,6 +9,7 @@ module Calabash
       include Calabash::CLI::Helpers
       include Calabash::CLI::Build
       include Calabash::CLI::Console
+      include Calabash::CLI::Doctor
       include Calabash::CLI::Generate
       include Calabash::CLI::Resign
       include Calabash::CLI::Run
@@ -69,6 +70,8 @@ module Calabash
               parse_resign_arguments!
             when 'console'
               parse_console_arguments!
+            when 'doctor'
+              parse_doctor_arguments!
             when 'generate'
               parse_generate_arguments!
             when 'run'
