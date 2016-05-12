@@ -20,7 +20,6 @@ module Calabash
 
       # @!visibility private
       def diagnose
-        begin
         Logger.info("Diagnosing your #{@platform} setup")
         illnesses = [DirIllness.new, FileIllness.new]
         to_cure = []
@@ -43,44 +42,39 @@ module Calabash
           to_cure_message = "#{to_cure.length} illnesses needs to be cured."
         end
         Logger.info("Diagnosis is finished. #{to_cure_message}")
-        if to_cure.length > 0
-          to_manually_cure = to_cure.select { |cure_info|
-            !cure_info[:illness].can_auto_cure
+        cure(to_cure) if to_cure.length > 0
+      end
+
+      def cure(to_cure)
+        to_manually_cure = to_cure.select { |cure_info|
+          !cure_info[:illness].can_auto_cure
+        }
+        if to_manually_cure.length > 0
+          Logger.info("\nYour setup can't be cured automatically. You need to do the following:")
+          to_manually_cure.each { |cure_info|
+            Logger.warn(" - #{cure_info[:illness].cure}")
           }
-          if to_manually_cure.length > 0
-            Logger.info("\nYour setup can't be cured automatically. You need to do the following:")
-            to_manually_cure.each { |cure_info|
-              Logger.warn(" - #{cure_info[:illness].cure}")
-            }
-            Logger.info("\nRun the doctor again after the manual cure#{to_manually_cure.length > 1?'s':''} has beed performed.")
-          else
-            uncured = []
-            to_cure.each { |cure_info|
-              unless cure_info[:illness].cure
-                uncured << cure_info
-              end
-            }
-            if uncured.length > 0
-              illnesses_text = uncured.length == 1?'1 illness':"#{uncured.length} illnesses"
-              Logger.warn("\nYour setup still have #{illnesses_text}. Run the doctor again after to cure #{uncured.length == 1?'it':'them'}.")
-            else
-              Logger.info("\nAll illnesses has been cured. Congratulations!")
+          Logger.info("\nRun the doctor again after the manual cure#{to_manually_cure.length > 1?'s':''} has beed performed.")
+        else
+          uncured = []
+          to_cure.each { |cure_info|
+            unless cure_info[:illness].cure
+              uncured << cure_info
             end
+          }
+          if uncured.length > 0
+            illnesses_text = uncured.length == 1?'1 illness':"#{uncured.length} illnesses"
+            Logger.warn("\nYour setup still have #{illnesses_text}. Run the doctor again after to cure #{uncured.length == 1?'it':'them'}.")
+          else
+            Logger.info("\nAll illnesses has been cured. Congratulations!")
           end
-        end
-        rescue => e
-          Logger.error e.message
-          e.backtrace.each { |line| Logger.error line }
         end
       end
 
       private
 
       class Illness
-
-        def can_auto_cure
-          @can_auto_cure
-        end
+        attr_reader :can_auto_cure
 
         def initialize(opts={})
           @can_auto_cure = opts[:can_auto_cure]
