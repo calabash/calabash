@@ -28,7 +28,7 @@ module Calabash
 
       # @!visibility private
       def diagnose(setup_to_diagnose)
-        Logger.info("Diagnosing your #{name_for_setup(setup_to_diagnose)} setup")
+        Logger.info("Diagnosing your #{name_for_setup(setup_to_diagnose)} setup:")
         illnesses = []
         if setup_to_diagnose.eql?('tryout')
           illnesses << DirIllness.new
@@ -76,10 +76,11 @@ module Calabash
         }
         if to_manually_cure.length > 0
           Logger.info("\nYour setup can't be cured automatically. You need to do the following:")
-          to_manually_cure.each { |cure_info|
-            Logger.warn(" - #{cure_info[:illness].cure}")
+          cures = to_manually_cure.map { |cure_info| cure_info[:illness].cure }.uniq
+          cures.each { |cure|
+            Logger.warn(" - #{cure}")
           }
-          Logger.info("\nRun the doctor again after the manual cure#{to_manually_cure.length > 1?'s':''} has beed performed.")
+          Logger.info("\nRun the doctor again after the manual cure#{cures.length > 1?'s':''} has beed performed.")
         else
           uncured = []
           to_cure.each { |cure_info|
