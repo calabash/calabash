@@ -41,7 +41,10 @@ module Calabash
             illnesses << DevToolsSecurityIllness.new
             illnesses << AuthorizationDbIllness.new
           elsif setup_to_diagnose.eql?('android')
-            #TODO: Add illnesses
+            illnesses << NotSetAndroidHomeEnvVarIllness.new
+            illnesses << MissingAndroidScriptIllness.new
+            illnesses << MissingAdbIllness.new
+            illnesses << MissingAndroidEmulatorIllness.new
           end
         end
         to_cure = []
@@ -165,9 +168,43 @@ module Calabash
         end
       end
 
+      class NotSetEnvVarIllness < ManualCureIllness
+
+        def initialize(env_var)
+          @env_var = env_var
+        end
+
+        def diagnose
+          if ENV[@env_var]
+            well("The environment variable '#{@env_var}' is set to: #{ENV[@env_var]}")
+          else
+            ill("The environment variable '#{@env_var}' is NOT set")
+          end
+        end
+
+        def cure
+          "Manually set up the environment variable '#{@env_var}'"
+        end
+      end
+
+      class NotSetPathEnvVarIllness < NotSetEnvVarIllness
+
+        def diagnose
+          result = super
+          return result unless result[:ok]
+          path = ENV[@env_var]
+          if Dir.exist?(path)
+            well("'#{@env_var}' is set to a valid path: #{path}")
+          else
+            ill("The environment variable '#{@env_var}' is set to '#{path}' but it is NOT valid")
+          end
+        end
+      end
+
       require_relative 'doctor/tryout'
       require_relative 'doctor/ruby'
       require_relative 'doctor/ios'
+      require_relative 'doctor/android'
     end
   end
 end
