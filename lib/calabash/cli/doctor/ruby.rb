@@ -5,6 +5,7 @@ module Calabash
       class OldRubyIllness < ManualCureIllness
 
         def diagnose
+          require 'run_loop'
           version20 = RunLoop::Version.new('2.0')
           if RunLoop::Version.new(RUBY_VERSION) >= version20
             well('Ruby version meets the requirements')

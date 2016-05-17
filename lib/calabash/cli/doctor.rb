@@ -22,6 +22,7 @@ module Calabash
       def diagnose
         Logger.info("Diagnosing your #{@platform} setup")
         illnesses = [OldRubyIllness.new,
+                     MissingXcodeIllness.new, MissingXcodeCommandLineToolsIllness.new
                      DirIllness.new, FileIllness.new]
         to_cure = []
         illnesses.each { |illness|
