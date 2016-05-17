@@ -52,6 +52,51 @@ module Calabash
           end
         end
       end
+
+      class DevToolsSecurityIllness < AutoCureIllness
+
+        def diagnose
+          require 'open3'
+          devtools_ouput, _, _ = Open3.capture3('DevToolsSecurity')
+          if (devtools_ouput =~ /enabled/).nil?
+            @should_enable_dev_tool_security = true
+            ill('DevToolsSecurity is NOT enabled')
+          else
+            well('DevToolsSecurity is enabled')
+          end
+        end
+
+        def cure
+          if should_cure?('Enabling DevToolsSecurity')
+            `DevToolsSecurity --enable`
+            true
+          else
+            false
+          end
+        end
+      end
+
+      class AuthorizationDbIllness < AutoCureIllness
+
+        def diagnose
+          security_output, _, _ = Open3.capture3('security authorizationdb read system.privilege.taskport')
+          if (security_output =~ /is-developer/).nil?
+            @should_write_to_authorization_db = true
+            ill('Authorization Database is NOT correctly set up')
+          else
+            well('Authorization Database is correctly set up')
+          end
+        end
+
+        def cure
+          if should_cure?('Updating authorization db')
+            `security authorizationdb write system.privilege.taskport is-developer`
+            true
+          else
+            false
+          end
+        end
+      end
     end
   end
 end

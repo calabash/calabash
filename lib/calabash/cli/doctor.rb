@@ -38,6 +38,8 @@ module Calabash
           if setup_to_diagnose.eql?('ios')
             illnesses << MissingXcodeIllness.new
             illnesses << MissingXcodeCommandLineToolsIllness.new
+            illnesses << DevToolsSecurityIllness.new
+            illnesses << AuthorizationDbIllness.new
           elsif setup_to_diagnose.eql?('android')
             #TODO: Add illnesses
           end
