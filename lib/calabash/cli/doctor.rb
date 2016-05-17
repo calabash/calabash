@@ -21,7 +21,8 @@ module Calabash
       # @!visibility private
       def diagnose
         Logger.info("Diagnosing your #{@platform} setup")
-        illnesses = [OldRubyIllness.new]
+        illnesses = [OldRubyIllness.new,
+                     DirIllness.new, FileIllness.new]
         to_cure = []
         illnesses.each { |illness|
           diagnosis_result = illness.diagnose
