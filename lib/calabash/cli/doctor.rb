@@ -21,15 +21,15 @@ module Calabash
       # @!visibility private
       def diagnose
         Logger.info("Diagnosing your #{@platform} setup")
-        illnesses = [DirIllness.new, FileIllness.new]
+        illnesses = [OldRubyIllness.new]
         to_cure = []
         illnesses.each { |illness|
           diagnosis_result = illness.diagnose
           if diagnosis_result[:ok]
-            well_message = "#{'☀'.green} #{diagnosis_result[:description]}"
+            well_message = "#{'√'.green} #{diagnosis_result[:description]}"
             Logger.info(well_message)
           else
-            ill_message = "#{'☂'.red} #{diagnosis_result[:description]}"
+            ill_message = "#{'x'.red} #{diagnosis_result[:description]}"
             to_cure << {message: ill_message, illness: illness}
             Logger.warn(ill_message)
           end
@@ -123,6 +123,12 @@ module Calabash
         def initialize
           super({can_auto_cure: true})
         end
+
+        def cure
+          # A auto cure illness should return true or false
+          # based on the result of the cure
+          super
+        end
       end
 
       class ManualCureIllness < Illness
@@ -130,46 +136,16 @@ module Calabash
         def initialize
           super({can_auto_cure: false})
         end
-      end
-
-      class DirIllness < ManualCureIllness
-
-        CHECK_PATH = '/tmp/calabash-doctor'
-
-        def diagnose
-          if Dir.exist?(CHECK_PATH)
-            well("#{CHECK_PATH} exists")
-          else
-            ill("#{CHECK_PATH} does NOT exist")
-          end
-        end
 
         def cure
-          "Manually create a directory at: #{CHECK_PATH}"
+          # A manual cure illness should return a string
+          # explaining how to cure it
         end
       end
 
-      class FileIllness < AutoCureIllness
-
-        CHECK_PATH = '/tmp/calabash-doctor/demo'
-
-        def diagnose
-          if File.exist?(CHECK_PATH)
-            well("#{CHECK_PATH} exists")
-          else
-            ill("#{CHECK_PATH} does NOT exist")
-          end
-        end
-
-        def cure
-          if should_cure?("Create the file: #{CHECK_PATH}")
-            `touch #{CHECK_PATH}`
-            true
-          else
-            false
-          end
-        end
-      end
+      require_relative 'doctor/tryout'
+      require_relative 'doctor/ruby'
+      require_relative 'doctor/ios'
     end
   end
 end
