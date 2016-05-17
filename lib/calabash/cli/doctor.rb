@@ -7,23 +7,41 @@ module Calabash
     module Doctor
       # @!visibility private
       def parse_doctor_arguments!
-        platform = @arguments.shift
-        if platform.eql?('ios')
-          set_platform!(:ios)
-        elsif platform.eql?('android')
-          set_platform!(:android)
-        else
-          fail("Invalid setup to diagnose '#{platform}'")
+        setup_to_diagnose = @arguments.shift
+        unless setup_to_diagnose.eql?('ios') || setup_to_diagnose.eql?('android') || setup_to_diagnose.eql?('tryout')
+          fail("Invalid setup to diagnose '#{name_for_setup(setup_to_diagnose)}'")
         end
-        diagnose
+        diagnose(setup_to_diagnose)
+      end
+
+      def name_for_setup(setup)
+        if setup.eql?('ios')
+          'iOS'
+        elsif setup.eql?('android')
+          'Android'
+        elsif setup.eql?('tryout')
+          'Try-out'
+        else
+          setup
+        end
       end
 
       # @!visibility private
-      def diagnose
-        Logger.info("Diagnosing your #{@platform} setup")
-        illnesses = [OldRubyIllness.new,
-                     MissingXcodeIllness.new, MissingXcodeCommandLineToolsIllness.new
-                     DirIllness.new, FileIllness.new]
+      def diagnose(setup_to_diagnose)
+        Logger.info("Diagnosing your #{name_for_setup(setup_to_diagnose)} setup")
+        illnesses = []
+        if setup_to_diagnose.eql?('tryout')
+          illnesses << DirIllness.new
+          illnesses << FileIllness.new
+        else
+          illnesses << OldRubyIllness.new
+          if setup_to_diagnose.eql?('ios')
+            illnesses << MissingXcodeIllness.new
+            illnesses << MissingXcodeCommandLineToolsIllness.new
+          elsif setup_to_diagnose.eql?('android')
+            #TODO: Add illnesses
+          end
+        end
         to_cure = []
         illnesses.each { |illness|
           diagnosis_result = illness.diagnose
