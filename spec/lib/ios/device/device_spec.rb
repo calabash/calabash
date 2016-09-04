@@ -625,6 +625,7 @@ describe Calabash::IOS::Device do
       it 'sets the @start_options instance variable' do
         device.instance_variable_set(:@start_options, nil)
         expect(run_loop_device).to receive(:instruments_identifier).and_return 'instruments identifier'
+        expect(app).to receive(:identifier).and_return("test.identifier")
         options = device.send(:merge_start_options!,
                               app,
                               run_loop_device,
@@ -697,7 +698,6 @@ describe Calabash::IOS::Device do
         end
 
         it 'calls clear_app_on_physical_device' do
-          expect(app).to receive(:identifier).and_return("test.identifier")
           expect(app).to receive(:simulator_bundle?).and_return false
           expect(app).to receive(:device_binary?).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return run_loop_device
