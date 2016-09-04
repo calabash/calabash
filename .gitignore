@@ -15,6 +15,9 @@
 mkmf.log
 *.gem
 
+# Android test servers
+test_servers
+
 # rbenv and rvm
 .ruby-version
 .ruby-gemset
