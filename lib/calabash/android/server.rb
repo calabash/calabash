@@ -10,7 +10,7 @@ module Calabash
 
       def self.default_helper
         endpoint = Environment::DEVICE_HELPER_ENDPOINT
-        Server.new(endpoint, 8102)
+        Server.new(endpoint, 8081)
       end
     end
   end
