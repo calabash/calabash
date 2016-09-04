@@ -61,8 +61,13 @@ describe Calabash::IOS::Device do
       it 'returns the instruments identifier of the simulator' do
         stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
         sim = RunLoop::Device.new('fake', '8.0', 'some identifier')
-        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(sim)
-        expect(sim).to receive(:instruments_identifier).and_return 'fake (8.0 Simulator)'
+        sim_control = RunLoop::SimControl.new
+        expect(RunLoop::SimControl).to receive(:new).and_return(sim_control)
+        expect(sim_control).to receive(:xcode).and_return(:xcode)
+
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).with('some identifier').and_return(sim)
+        expect(sim).to receive(:instruments_identifier).with(:xcode).and_return 'fake (8.0 Simulator)'
+
         expect(Calabash::IOS::Device.default_simulator_identifier).to be == 'fake (8.0 Simulator)'
       end
     end
@@ -89,7 +94,7 @@ describe Calabash::IOS::Device do
         p_device = RunLoop::Device.new('fake', '8.0', 'some identifier')
         expect(p_device).to receive(:physical_device?).at_least(:once).and_return(true)
         expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return(p_device)
-        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier
+        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier(RunLoop::SimControl.new.xcode)
       end
     end
 
@@ -117,7 +122,7 @@ describe Calabash::IOS::Device do
         p_device = RunLoop::Device.new('fake', '8.0', 'some identifier')
         allow_any_instance_of(RunLoop::Instruments).to receive(:physical_devices).and_return([p_device])
         expect(p_device).to receive(:physical_device?).at_least(:once).and_return(true)
-        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier
+        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier(RunLoop::SimControl.new)
       end
     end
   end

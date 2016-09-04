@@ -50,7 +50,7 @@ module Calabash
           if run_loop_device.nil?
             raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
           end
-          run_loop_device.instruments_identifier
+          run_loop_device.instruments_identifier(RunLoop::SimControl.new.xcode)
         end
       end
 
@@ -84,14 +84,14 @@ module Calabash
           elsif connected_devices.count > 1
             raise 'There is more than one physical devices connected.  Use CAL_DEVICE_ID to indicate which you want to connect to.'
           else
-            connected_devices.first.instruments_identifier
+            connected_devices.first.instruments_identifier(RunLoop::SimControl.new.xcode)
           end
         else
           run_loop_device = Device.fetch_matching_physical_device(identifier)
           if run_loop_device.nil?
             raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
           end
-          run_loop_device.instruments_identifier
+          run_loop_device.instruments_identifier(RunLoop::SimControl.new.xcode)
         end
       end
 
@@ -630,9 +630,9 @@ module Calabash
       # @!visibility private
       # Expensive!
       def Device.fetch_matching_simulator(udid_or_name)
-        sim_control = RunLoop::SimControl.new
-        sim_control.simulators.detect do |sim|
-          sim.instruments_identifier == udid_or_name ||
+        RunLoop::SimControl.new = RunLoop::SimControl.new
+        RunLoop::SimControl.new.simulators.detect do |sim|
+          sim.instruments_identifier(RunLoop::SimControl.new.xcode) == udid_or_name ||
                 sim.udid == udid_or_name
         end
       end
@@ -703,7 +703,7 @@ module Calabash
               {
                     :app => application.path,
                     :bundle_id => application.identifier,
-                    :device_target => run_loop_device.instruments_identifier,
+                    :device_target => run_loop_device.instruments_identifier(RunLoop::SimControl.new.xcode),
                     :uia_strategy => strategy
               }
         @start_options = default_options.merge(options_from_user)
