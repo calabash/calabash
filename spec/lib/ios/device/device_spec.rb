@@ -644,6 +644,7 @@ describe Calabash::IOS::Device do
     describe '#clear_app_on_simulator' do
       it 'raises an error if app data cannot be cleared' do
         expect(mock_bridge).to receive(:reset_app_sandbox).and_raise
+        expect(app).to receive(:identifier).and_return("test.identifier")
         expect {
           device.send(:clear_app_data_on_simulator, app, run_loop_device, mock_bridge)
         }.to raise_error RuntimeError
