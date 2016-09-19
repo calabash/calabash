@@ -14,6 +14,7 @@ script:
   - script/ci/travis/install-gem-ci.rb
   - bundle exec rake unit
   - rake install
+  - rake integration:page-object-model
 
 notifications:
   email:

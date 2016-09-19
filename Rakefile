@@ -63,6 +63,32 @@ task :ctags do
   sh cmd
 end
 
+def rake_run_cucumber(directory, cucumber_args, env)
+  dir = File.join(File.dirname(__FILE__), directory)
+
+  pid = Process.spawn(env.merge({"BUNDLE_GEMFILE" => nil}), "bundle", "install",
+                      out: $stdout, err: $stderr, chdir: dir)
+  Process.wait(pid)
+
+  if $?.exitstatus != 0
+    exit($?.exitstatus)
+  end
+
+  pid =  Process.spawn(env.merge({"BUNDLE_GEMFILE" => nil}), "bundle", "exec", "cucumber",
+                       out: $stdout, err: $stderr, chdir: dir)
+  Process.wait(pid)
+
+  if $?.exitstatus != 0
+    exit($?.exitstatus)
+  end
+end
+
+namespace :integration do
+  task :'page-object-model' do
+    rake_run_cucumber("test/integration/page-object-model", "", {"CAL_NO_DEPENDENCIES" => "1"})
+  end
+end
+
 namespace :android do
   task :ensure_files_exist do
     Calabash::Build::AndroidTestServer.ensure_test_server_exists

@@ -73,5 +73,7 @@ module Calabash
   end
 end
 
-# Setup environment on load
-Calabash::Android::Environment.setup
+unless Calabash::Environment.variable("CAL_NO_DEPENDENCIES") == "1"
+  # Setup environment on load
+  Calabash::Android::Environment.setup
+end
