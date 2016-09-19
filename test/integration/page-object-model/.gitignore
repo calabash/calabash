@@ -1,3 +1,4 @@
 *.ipa
 *.app
 binaries
+Gemfile.lock
