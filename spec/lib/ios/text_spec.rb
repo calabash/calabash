@@ -13,7 +13,6 @@ describe Calabash::IOS::Text do
 
   let(:world) do
     Class.new do
-      require 'calabash/ios'
       include Calabash::IOS
 
       def screenshot_embed; ; end

@@ -630,7 +630,6 @@ module Calabash
       # @!visibility private
       # Expensive!
       def Device.fetch_matching_simulator(udid_or_name)
-        RunLoop::SimControl.new = RunLoop::SimControl.new
         RunLoop::SimControl.new.simulators.detect do |sim|
           sim.instruments_identifier(RunLoop::SimControl.new.xcode) == udid_or_name ||
                 sim.udid == udid_or_name

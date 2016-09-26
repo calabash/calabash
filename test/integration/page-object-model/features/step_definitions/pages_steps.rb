@@ -13,10 +13,20 @@ When(/^I instantiate "([^"]*)"$/) do |page|
   @page = page(clz)
 end
 
+module Calabash
+  class Logger
+    def self.warn(message)
+      $warn ||= ""
+      $warn = "#{$warn}\n#{message}"
+    end
+  end
+end
+
 When(/^I try to instantiate "([^"]*)"$/) do |page|
   clz = eval(page)
 
   begin
+    $warn = ""
     @page = page(clz)
   rescue => e
     @error = e
@@ -86,8 +96,16 @@ Then(/^I should get an error, telling me "(.*)" does not include Calabash::(.*)$
   expect(@error.message).to eq("Page '#{full_page_name}' does not include Calabash::#{os_name}")
 end
 
-Then(/^I should not get an error$/) do
+Then(/^I should not get an error, but a warning$/) do
   expect(@error).to eq(nil)
+
+  str =
+      [
+          "Page \\'.*::.*\\' includes Calabash::.*. It is recommended not to include Calabash.",
+          "Use cal.<method> for cross-platform methods, cal_android.<method> for Android-only and cal_ios.<method> for iOS-only"
+      ].join("\n")
+
+  expect($warn).to match(str)
 end
 
 Then(/^I should get an error, telling me (.*) "([^"]*)" includes both Calabash iOS and Calabash Android$/) do |os, page_name|
@@ -98,10 +116,19 @@ Then(/^I should get an error, telling me (.*) "([^"]*)" includes both Calabash i
             end
 
   full_page_name = if os_name == 'IOS'
-                     full_page_name = "IOS::#{page_name}"
+                     "IOS::#{page_name}"
                    elsif os_name == 'Android'
-                     full_page_name = "Android::#{page_name}"
+                     "Android::#{page_name}"
                    end
 
   expect(@error.message).to eq("Page '#{full_page_name}' includes both Calabash::Android and Calabash::IOS")
+end
+
+Then(/^I should not get an error nor a warning$/) do
+  expect($warning).to eq(nil)
+  expect(@error).to eq(nil)
+end
+
+Then(/^I should get an error, telling me "([^"]*)" does not inherit from Calabash::Page$/) do |page_name|
+  expect(@error.message).to eq("Page '#{page_name}' is not a Calabash::Page")
 end

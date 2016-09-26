@@ -7,7 +7,7 @@ Before do |scenario|
 
   AppLifeCycle.on_new_scenario(scenario)
 
-  start_app
+  cal.start_app(uia_strategy: :host)
 end
 
 After do
@@ -19,14 +19,6 @@ Before('@log_in') do
 end
 
 module AppLifeCycle
-  # Since this is a module, the methods in the Cucumber World are not
-  # available inside the scope of this module. We can safely include Calabash
-  # because we will not affect the scope outside this module. The methods are
-  # loaded as class (static) methods.
-  class << self
-    include Calabash
-  end
-
   DEFAULT_RESET_BETWEEN = :features # Filled in by calabash generate
   DEFAULT_RESET_METHOD = :clear # Filled in by calabash generate
 
@@ -46,7 +38,7 @@ module AppLifeCycle
     # Ensure the app is installed at the beginning of the test,
     # if we never reset
     if @last_feature.nil? && RESET_BETWEEN == :never
-      ensure_app_installed
+      cal.ensure_app_installed
     end
 
     if should_reset?(scenario)
@@ -80,10 +72,10 @@ module AppLifeCycle
 
     case RESET_METHOD
       when :reinstall
-        install_app
+        cal.install_app
       when :clear
-        ensure_app_installed
-        clear_app_data
+        cal.ensure_app_installed
+        cal.clear_app_data
       when '', nil
         raise 'No reset method given'
       else

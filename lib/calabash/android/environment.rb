@@ -1,6 +1,11 @@
 require 'rexml/document'
 require 'timeout'
-require 'luffa'
+
+# We sometimes want to require a Ruby gem without having our IDE auto-complete
+# using it. For example awesome_print adds a ton of methods to 'Object'
+alias :cal_require_without_documentation :require
+cal_require_without_documentation 'luffa'
+
 require 'timeout'
 
 if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/

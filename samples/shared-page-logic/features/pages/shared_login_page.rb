@@ -2,7 +2,7 @@ class SharedLoginPage < Calabash::Page
   def login(username, password)
     enter_text_in(username_field, username)
     enter_text_in(password_field, password)
-    tap(login_button)
+    cal.tap(login_button)
   end
 
   private

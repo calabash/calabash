@@ -141,7 +141,7 @@ module Calabash
 
 
       # @!visibility private
-      def _evaluate_javascript_in(query, javascript)
+      define_method(:_evaluate_javascript_in) do |query, javascript|
         Device.default.evaluate_javascript_in(query, javascript)
       end
     end

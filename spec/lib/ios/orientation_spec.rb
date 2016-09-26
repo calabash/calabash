@@ -12,7 +12,6 @@ describe Calabash::IOS::Orientation do
 
   let(:world) do
     Class.new do
-      require 'calabash/ios'
       include Calabash::IOS
       def to_s; '#<MockWorld >'; end
       def inspect; to_s; end

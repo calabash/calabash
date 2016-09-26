@@ -27,7 +27,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _send_current_app_to_background(for_seconds)
+      define_method(:_send_current_app_to_background) do |for_seconds|
         package = focused_package
         activity = focused_activity
 

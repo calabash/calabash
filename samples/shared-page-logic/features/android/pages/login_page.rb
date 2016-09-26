@@ -1,6 +1,4 @@
 class Android::LoginPage < SharedLoginPage
-  include Calabash::Android
-
   private
 
   def username_field

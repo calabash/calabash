@@ -6,8 +6,7 @@ module Calabash
 
       # @!visibility private
       # Concrete implementation of pan_screen_up gesture.
-      def _pan_screen_up(options={})
-
+      define_method (:_pan_screen_up) do |options={}|
         gesture_options = options.dup
         gesture_options[:duration] ||= 0.5
         gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
@@ -32,8 +31,7 @@ module Calabash
 
       # @!visibility private
       # Concrete implementation of pan_screen_down gesture.
-      def _pan_screen_down(options={})
-
+      define_method (:_pan_screen_down) do |options={}|
         gesture_options = options.dup
         gesture_options[:duration] ||= 0.5
         gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
@@ -58,8 +56,7 @@ module Calabash
 
       # @!visibility private
       # Concrete implementation of flick_screen_up gesture.
-      def _flick_screen_up(options={})
-
+      define_method (:_flick_screen_up) do |options={}|
         gesture_options = options.dup
         gesture_options[:duration] ||= 0.5
         gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
@@ -84,8 +81,7 @@ module Calabash
 
       # @!visibility private
       # Concrete implementation of flick_screen_down gesture.
-      def _flick_screen_down(options={})
-
+      define_method (:_flick_screen_down) do |options={}|
         gesture_options = options.dup
         gesture_options[:duration] ||= 0.5
         gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
@@ -110,20 +106,20 @@ module Calabash
 
       # @!visibility private
       # Concrete implementation of pinch_screen
-      def _pinch_screen(direction, options={})
+      define_method (:_pinch_screen) do |direction, options={}|
         Device.default.pinch(direction, '*', options)
       end
 
       # @!visibility private
       # Concrete implementation of pinch_to_zoom
-      def _pinch_to_zoom(direction, query, options={})
+      define_method (:_pinch_to_zoom) do |direction, query, options={}|
         gesture_direction = direction == :in ? :out : :in
         Device.default.pinch(gesture_direction, query, options)
       end
 
       # @!visibility private
       # Concrete implementation of pinch_screen_to_zoom
-      def _pinch_screen_to_zoom(direction, options={})
+      define_method (:_pinch_screen_to_zoom) do |direction, options={}|
         gesture_direction = direction == :in ? :out : :in
         Device.default.pinch(gesture_direction, '*', options)
       end

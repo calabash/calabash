@@ -6,13 +6,9 @@ case platform
   when 'android'
     require 'calabash/android'
 
-    World(Calabash::Android)
-
     Calabash::Android.setup_defaults!
   when 'ios'
     require 'calabash/ios'
-
-    World(Calabash::IOS)
 
     Calabash::IOS.setup_defaults!
   else

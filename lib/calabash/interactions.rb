@@ -162,7 +162,7 @@ module Calabash
     end
 
     # @!visibility private
-    def _evaluate_javascript_in(query, javascript)
+    define_method(:_evaluate_javascript_in) do |query, javascript|
       abstract_method!
     end
   end

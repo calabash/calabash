@@ -29,9 +29,9 @@ The `SharedLoginPage` has a method `login(username, password)`.
 ```ruby
 class SharedLoginPage < Calabash::Page
   def login(username, password)
-    enter_text_in(username_field, username)
-    enter_text_in(password_field, password)
-    tap(login_button)
+    cal.enter_text_in(username_field, username)
+    cal.enter_text_in(password_field, password)
+    cal.tap(login_button)
   end
 
   private
@@ -56,8 +56,6 @@ The Android login page does this
 
 ```ruby
 class Android::LoginPage < SharedLoginPage
-  include Calabash::Android
-
   private
 
   def username_field

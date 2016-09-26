@@ -13,7 +13,7 @@ module Calabash
       #   in the background
       # @raise [ArgumentError] If number of seconds is less than 1 and more
       #   than 60 seconds.
-      def _send_current_app_to_background(seconds)
+      define_method(:_send_current_app_to_background) do |seconds|
         unless (1..60).member?(seconds)
           raise ArgumentError,
             "Number of seconds: '#{seconds}' must be between 1 and 60"
@@ -32,7 +32,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _evaluate_javascript_in(query, javascript)
+      define_method(:_evaluate_javascript_in) do |query, javascript|
         query(query, calabashStringByEvaluatingJavaScript: javascript)
       end
     end
