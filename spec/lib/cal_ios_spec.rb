@@ -55,31 +55,6 @@ describe "cal_IOS" do
   it 'should change the implementations for `cal` as well' do
     module Calabash
       def test_method
-        :wrong_result
-      end
-    end
-
-    module Calabash
-      module IOSInternal
-        def test_method
-          :result
-        end
-      end
-    end
-
-    calabash_ios_file = File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'ios.rb')
-
-    begin
-      load calabash_ios_file
-    rescue Calabash::RequiredBothPlatformsError
-    end
-
-    expect(cal.test_method).to eq(:result)
-  end
-
-  it 'should change the implementations for `cal` as well' do
-    module Calabash
-      def test_method
         _test_method
       end
 

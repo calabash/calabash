@@ -29,7 +29,6 @@ When(/^I try to instantiate "([^"]*)"$/) do |page|
     $warn = ""
     @page = page(clz)
   rescue => e
-    $stderr.puts "#{e} #{e.backtrace.join("\n")}"
     @error = e
   end
 end
