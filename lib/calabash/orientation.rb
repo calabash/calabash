@@ -62,23 +62,23 @@ module Calabash
     end
 
     # @!visibility private
-    def _portrait?
-      abstract_method!
+    define_method(:_portrait?) do
+      abstract_method!(:_portrait?)
     end
 
     # @!visibility private
-    def _landscape?
-      abstract_method!
+    define_method(:_landscape?) do
+      abstract_method!(:_landscape?)
     end
 
     # @!visibility private
-    def _set_orientation_portrait
-      abstract_method!
+    define_method(:_set_orientation_portrait) do
+      abstract_method!(:_set_orientation_portrait)
     end
 
     # @!visibility private
-    def _set_orientation_landscape
-      abstract_method!
+    define_method(:_set_orientation_landscape) do
+      abstract_method!(:_set_orientation_landscape)
     end
   end
 end

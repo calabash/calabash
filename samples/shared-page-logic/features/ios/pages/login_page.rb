@@ -1,6 +1,4 @@
 class IOS::LoginPage < SharedLoginPage
-  include Calabash::IOS
-
   private
 
   def username_field

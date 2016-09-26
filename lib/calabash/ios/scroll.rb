@@ -455,8 +455,7 @@ module Calabash
                                            :left, :center_horizontal, :right]
 
       # @!visibility private
-      def _wait_for_exactly_one_scroll_view(query)
-
+      define_method(:_wait_for_exactly_one_scroll_view) do |query|
         results = []
 
         found_none = "Expected '#{query}' to match exactly one view, but found no matches."
@@ -477,7 +476,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _expect_valid_scroll_positions(valid_positions, position)
+      define_method(:_expect_valid_scroll_positions) do |valid_positions, position|
         unless valid_positions.include?(position.to_sym)
           raise ArgumentError,
                 "Expected '#{position}' to be one of #{valid_positions.join(', ')}"
@@ -485,7 +484,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _expect_valid_scroll_animate(animate)
+      define_method(:_expect_valid_scroll_animate) do |animate|
         unless [true, false].include?(animate)
           raise ArgumentError,
                 "Expected '#{animate}' to be a Boolean true or false"
@@ -493,13 +492,13 @@ module Calabash
       end
 
       # @!visibility private
-      def _expect_valid_scroll_options(valid_positions, options)
+      define_method(:_expect_valid_scroll_options) do |valid_positions, options|
         _expect_valid_scroll_positions(valid_positions, options[:scroll_position])
         _expect_valid_scroll_animate(options[:animate])
       end
 
       # @!visibility private
-      def _expect_valid_scroll_mark(mark)
+      define_method(:_expect_valid_scroll_mark) do |mark|
         if mark.nil? || mark == ''
           raise ArgumentError,
                 if mark.nil?

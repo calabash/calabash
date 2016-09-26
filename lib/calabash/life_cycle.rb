@@ -151,8 +151,8 @@ module Calabash
     end
 
     # @!visibility private
-    def _send_current_app_to_background(for_seconds)
-      abstract_method!
+    define_method(:_send_current_app_to_background) do |for_seconds|
+      abstract_method!(:_send_current_app_to_background)
     end
   end
 end

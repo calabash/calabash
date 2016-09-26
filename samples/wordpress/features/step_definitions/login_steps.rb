@@ -7,36 +7,36 @@ Given(/^I try to sign in using (invalid|valid) credentials$/) do |type|
     raise "Unexpected credential type '#{type}'"
   end
 
-  page(LoginPage).login(credentials[:username], credentials[:password])
+  cal.page(LoginPage).login(credentials[:username], credentials[:password])
 end
 
 Then(/^I should not be logged in$/) do
-  if android?
-    page(LoginPage).await
-  else
-    page(AlertPage).await
+  if cal.android?
+    cal.page(LoginPage).await
+  elsif cal.ios?
+    cal.page(AlertPage).await
   end
 end
 
 And(/^I should see an error message$/) do
-  if android?
-    page(LoginPage).expect_login_error_message
-  else
-    page(AlertPage).expect_login_error_message
+  if cal.android?
+    cal.page(LoginPage).expect_login_error_message
+  elsif cal.ios?
+    cal.page(AlertPage).expect_login_error_message
   end
 end
 
 Given(/^I am on the login screen$/) do
   # start_app has just been called
-  page(LoginPage).await
+  cal.page(LoginPage).await
 end
 
 Then(/^I should be able to add a self\-hosted site$/) do
-  page(LoginPage).enable_self_hosted_site
+  cal.page(LoginPage).enable_self_hosted_site
 end
 
 Then(/^I should be logged in$/) do
-  page(PostsPage).await
+  cal.page(PostsPage).await
 end
 
 Given(/^I am signed in$/) do
@@ -44,6 +44,6 @@ Given(/^I am signed in$/) do
 end
 
 Then(/^I should be able to sign out$/) do
-  page(PostsPage).sign_out
-  page(LoginPage).await
+  cal.page(PostsPage).sign_out
+  cal.page(LoginPage).await
 end

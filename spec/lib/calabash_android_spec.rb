@@ -1,5 +1,3 @@
-require 'calabash/android'
-
 describe Calabash::Android do
 
   before(:each) do
@@ -12,5 +10,12 @@ describe Calabash::Android do
 
   it 'should include Calabash' do
     expect(Calabash::Android.included_modules).to include(Calabash)
+  end
+
+  it 'cannot be loaded alongside Calabash iOS' do
+    # Calabash::IOSInternal is defined
+    calabash_android_file = File.join(File.dirname(__FILE__), '..', '..', 'lib', 'calabash', 'android.rb')
+
+    expect{load calabash_android_file}.to raise_error(Calabash::RequiredBothPlatformsError)
   end
 end

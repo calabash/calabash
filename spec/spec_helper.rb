@@ -9,8 +9,12 @@ class Calabash::Android::Environment
   end
 end
 
-require 'calabash/android'
-require 'calabash/ios'
+begin
+  require 'calabash/android'
+  require 'calabash/ios'
+rescue Calabash::RequiredBothPlatformsError
+end
+
 require 'awesome_print'
 require 'pry'
 require 'tmpdir'

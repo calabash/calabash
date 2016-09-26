@@ -7,16 +7,15 @@ module Calabash
 
   # Utility methods for testing.
   module Utility
-
     # @!visibility private
-    def abstract_method!
-      method_name = if Kernel.method_defined?(:caller_locations)
+    def abstract_method!(method_name=nil)
+      method_name ||= if Kernel.method_defined?(:caller_locations)
                       caller_locations.first.label
                     else
                       caller.first[/\`(.*)\'/, 1]
                     end
 
-      raise AbstractMethodError.new("Abstract method '#{method_name}'")
+      raise AbstractMethodError.new("Abstract method '#{method_name.to_s}'")
     end
 
     # @!visibility private

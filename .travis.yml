@@ -15,6 +15,7 @@ script:
   - bundle exec rake unit
   - rake install
   - rake integration:page-object-model
+  - rake integration:ruby
 
 notifications:
   email:

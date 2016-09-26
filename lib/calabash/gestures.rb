@@ -440,37 +440,37 @@ module Calabash
     end
 
     # @!visibility private
-    def _pan_screen_up(options={})
+    define_method(:_pan_screen_up) do |options={}|
+      abstract_method!(:_pan_screen_up)
+    end
+
+    # @!visibility private
+    define_method(:_pan_screen_down) do |options={}|
+      abstract_method!(:_pan_screen_down)
+    end
+
+    # @!visibility private
+    define_method(:_flick_screen_up) do |options={}|
+      abstract_method!(:_flick_screen_up)
+    end
+
+    # @!visibility private
+    define_method(:_flick_screen_down) do |options={}|
+      abstract_method!(:_flick_screen_down)
+    end
+
+    # @!visibility private
+    define_method(:_pinch_screen) do |direction, options={}|
       abstract_method!
     end
 
     # @!visibility private
-    def _pan_screen_down(options={})
+    define_method(:_pinch_to_zoom) do |direction, query, options={}|
       abstract_method!
     end
 
     # @!visibility private
-    def _flick_screen_up(options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _flick_screen_down(options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _pinch_screen(direction, options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _pinch_to_zoom(direction, query, options={})
-      abstract_method!
-    end
-
-    # @!visibility private
-    def _pinch_screen_to_zoom(direction, options={})
+    define_method(:_pinch_screen_to_zoom) do |direction, options={}|
       abstract_method!
     end
   end

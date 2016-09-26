@@ -132,33 +132,32 @@ module Calabash
       end
     end
 
-    # @!visibility private
-    def _enter_text(text)
+    define_method(:_enter_text) do |text|
       abstract_method!
     end
 
     # @!visibility private
-    def _enter_text_in(view, text)
+    define_method(:_enter_text_in) do |view, text|
       abstract_method!
     end
 
     # @!visibility private
-    def _clear_text
+    define_method(:_clear_text) do
       abstract_method!
     end
 
     # @!visibility private
-    def _clear_text_in(view)
+    define_method(:_clear_text_in) do |view|
       abstract_method!
     end
 
     # @!visibility private
-    def _tap_keyboard_action_key(action_key)
+    define_method(:_tap_keyboard_action_key) do |action_key|
       abstract_method!
     end
 
     # @!visibility private
-    def _keyboard_visible?
+    define_method(:_keyboard_visible?) do
       abstract_method!
     end
 

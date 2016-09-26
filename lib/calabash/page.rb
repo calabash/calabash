@@ -8,9 +8,6 @@ module Calabash
   #   * https://github.com/calabash/calabash/tree/develop/samples/wordpress
   #   * https://github.com/calabash/calabash/tree/develop/samples/shared-page-logic
   class Page
-    # For auto-completion
-    include Calabash
-
     # @!visibility private
     def self.inherited(subclass)
       # Define the page into global scope
@@ -71,7 +68,7 @@ module Calabash
 
     # Waits for the page trait to appear.
     def await(options={})
-      wait_for_view(trait, options)
+      cal.wait_for_view(trait, options)
     end
 
     # @!visibility private

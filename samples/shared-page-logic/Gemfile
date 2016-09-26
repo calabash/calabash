@@ -1,5 +1,5 @@
 source "https://rubygems.org"
 
-gem 'calabash', '1.9.9.pre3'
+gem 'calabash', path: '../../'
 gem 'cucumber', '~> 2.0'
 gem 'slowhandcuke', '>= 0.0.3', '< 1.0'

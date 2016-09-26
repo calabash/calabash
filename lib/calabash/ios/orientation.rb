@@ -87,7 +87,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _set_orientation_landscape
+      define_method(:_set_orientation_landscape) do
         orientation = status_bar_orientation
         return orientation if landscape?
 
@@ -95,7 +95,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _set_orientation_portrait
+      define_method(:_set_orientation_portrait) do
         orientation = status_bar_orientation
         return orientation if portrait?
 
@@ -103,13 +103,13 @@ module Calabash
       end
 
       # @!visibility private
-      def _portrait?
+      define_method(:_portrait?) do
         orientation = status_bar_orientation
         orientation.eql?('up') || orientation.eql?('down')
       end
 
       # @!visibility private
-      def _landscape?
+      define_method(:_landscape?) do
         orientation = status_bar_orientation
         orientation.eql?('right') || orientation.eql?('left')
       end

@@ -8,7 +8,6 @@ describe Calabash::IOS::UIA do
 
   let(:world) do
     Class.new do
-      require 'calabash/ios'
       include Calabash::IOS
       def to_s; '#<Cucumber World>'; end
       def inspect; to_s; end

@@ -1,32 +1,30 @@
 class IOS::PostsPage < Calabash::Page
-  include Calabash::IOS
-
   def trait
     "UINavigationBar id:'Me'"
   end
 
   def sign_out
-    tap({marked: 'Me'})
-    tap({marked: 'Me'})
-    tap({marked: 'Edit'})
-    tap("UITableViewCellEditControl {accessibilityLabel BEGINSWITH 'Delete'}")
-    wait_for_animations
-    tap("UIButtonLabel marked:'Remove'")
+    cal.tap({marked: 'Me'})
+    cal.tap({marked: 'Me'})
+    cal.tap({marked: 'Edit'})
+    cal.tap("UITableViewCellEditControl {accessibilityLabel BEGINSWITH 'Delete'}")
+    cal_ios.wait_for_animations
+    cal.tap("UIButtonLabel marked:'Remove'")
   end
 
   def goto_add_new_post
-    wait_for_animations
-    tap({id: 'icon-tab-newpost'})
+    cal_ios.wait_for_animations
+    cal.tap({id: 'icon-tab-newpost'})
   end
 
   def view_posts
-    wait_for_animations
-    tap({marked: 'Me'})
-    wait_for_animations
-    tap({marked: 'Me'})
-    wait_for_animations
-    tap("view marked:'Calabash Blog'")
-    tap({id: 'icon-menu-posts'})
+    cal_ios.wait_for_animations
+    cal.tap({marked: 'Me'})
+    cal_ios.wait_for_animations
+    cal.tap({marked: 'Me'})
+    cal_ios.wait_for_animations
+    cal.tap("view marked:'Calabash Blog'")
+    cal.tap({id: 'icon-menu-posts'})
   end
 
   def first_post_title
@@ -34,56 +32,45 @@ class IOS::PostsPage < Calabash::Page
   end
 
   def view_first_post_with_title(title)
-    wait_for(message: "Expected first post to have the title '#{@last_title}'. It had '#{title}'") do
-      page(PostsPage).first_post_title == title
+    cal.wait_for(message: "Expected first post to have the title '#{@last_title}'. It had '#{title}'") do
+      cal.page(PostsPage).first_post_title == title
     end
 
-    wait_for_animations
+    cal_ios.wait_for_animations
 
-    tap("view marked:'#{title}' parent UITableViewCell index:0")
+    cal.tap("view marked:'#{title}' parent UITableViewCell index:0")
   end
 
   def delete_post_with_title(title)
     query = "view marked:'#{title}' parent UITableViewCell"
 
-    wait_for_view(query)
+    cal.wait_for_view(query)
 
-    if physical_device?
+    if cal_ios.physical_device?
       # swipe-do-delete works on physical devices.
-      pan(query, percent(80, 50), percent(20, 50))
+      cal.pan(query, percent(80, 50), percent(20, 50))
 
-      wait_for_animations
+      cal_ios.wait_for_animations
       query = "UIButtonLabel marked:'Remove'"
-      wait_for_view(query)
+      cal.wait_for_view(query)
 
-      tap(query)
-      wait_for_animations
+      cal.tap(query)
+      cal_ios.wait_for_animations
     else
       # but not on simulators
-      begin
-        pan(query, percent(80, 50), percent(20, 50))
-      rescue RuntimeError => e
-        unless e.message[/Apple's public UIAutomation API `dragInsideWithOptions`/][0]
-          message = [
-            "When trying to swipe-to-delete a post on an iOS Simulator.",
-            "Expected: error about a broken UIAutomation API.",
-            "     Got: #{e}",
-          ].join("\n")
-          raise message
-        end
-      end
+      cal.pan(query, percent(80, 50), percent(20, 50))
     end
   end
 
   private
 
   def posts
-    wait_for_view("UITableView")
-    wait_for_animations
+    cal.wait_for_view("UITableView")
+    cal_ios.wait_for_animations
 
     # Some versions of iOS will return nil for empty text property;
     # some versions will return ''
-    text = query("UITableViewCell descendant label", :text).compact
+    text = cal.query("UITableViewCell descendant label", :text).compact
     no_empties = text.map do |string|
       if string == ''
         nil

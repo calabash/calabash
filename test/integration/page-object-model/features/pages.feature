@@ -29,7 +29,7 @@ Feature: Working with pages
   Scenario Outline: Pages not including Calabash
     Given I am targeting an <os> device
     When I try to instantiate "MyNonIncludingPage"
-    Then I should get an error, telling me "MyNonIncludingPage" does not include Calabash::<os>
+    Then I should not get an error nor a warning
 
     Examples:
     | os      |
@@ -40,7 +40,7 @@ Feature: Working with pages
   Scenario Outline: Pages including Calabash indirectly
     Given I am targeting an <os> device
     When I try to instantiate "MyIndirectlyIncludingPage"
-    Then I should not get an error
+    Then I should not get an error, but a warning
 
     Examples:
     | os      |
@@ -62,6 +62,9 @@ Feature: Working with pages
   Scenario: Pages that inherit from something that inherits from page
     Given I am targeting an Android device
     When I try to instantiate "MyIndirectlyInheritingPage"
-    Then I should not get an error
+    Then I should not get an error nor a warning
 
-    # @todo when instantiating a page that does not inherit from page
+  Scenario: Pages that do not inherit from Calabash::Page
+    Given I am targeting an Android device
+    When I try to instantiate "NotAPage"
+    Then I should get an error, telling me "Android::NotAPage" does not inherit from Calabash::Page

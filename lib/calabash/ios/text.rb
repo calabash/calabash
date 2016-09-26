@@ -3,7 +3,7 @@ module Calabash
     # Methods for entering text and interacting with iOS keyboards.
     module Text
       # @!visibility private
-      def _enter_text(text)
+      define_method(:_enter_text) do |text|
         wait_for_keyboard
         existing_text = text_from_keyboard_first_responder
         options = { existing_text: existing_text }
@@ -11,13 +11,13 @@ module Calabash
       end
 
       # @!visibility private
-      def _enter_text_in(view, text)
+      define_method(:_enter_text_in) do |view, text|
         tap(view)
         enter_text(text)
       end
 
       # @!visibility private
-      def _clear_text
+      define_method(:_clear_text) do
         unless view_exists?("* isFirstResponder:1")
           raise 'Cannot clear text. No view has focus'
         end
@@ -26,7 +26,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _clear_text_in(view)
+      define_method(:_clear_text_in) do |view|
         unless keyboard_visible?
           tap(view)
           wait_for_keyboard
@@ -90,7 +90,7 @@ module Calabash
       # @todo Refactor uia_route to a public API call
       # @todo Move this documentation to the public method
       # @!visibility private
-      def _tap_keyboard_action_key(action_key)
+      define_method(:_tap_keyboard_action_key) do |action_key|
         unless action_key.nil?
           raise ArgumentError,
                 "An iOS keyboard does not have multiple action keys"
@@ -101,7 +101,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _keyboard_visible?
+      define_method(:_keyboard_visible?) do
         docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
       end
 

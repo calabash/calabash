@@ -314,7 +314,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _pan_screen_up(options={})
+      define_method(:_pan_screen_up) do |options={}|
         from = {x: 50, y: 90}
         to = {x: 50, y: 10}
 
@@ -322,7 +322,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _pan_screen_down(options={})
+      define_method(:_pan_screen_down) do |options={}|
         from = {x: 50, y: 10}
         to = {x: 50, y: 90}
 
@@ -330,7 +330,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _flick_screen_up(options={})
+      define_method(:_flick_screen_up) do |options={}|
         from = {x: 50, y: 90}
         to = {x: 50, y: 10}
 
@@ -338,7 +338,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _flick_screen_down(options={})
+      define_method(:_flick_screen_down) do |options={}|
         from = {x: 50, y: 10}
         to = {x: 50, y: 90}
 
@@ -346,12 +346,12 @@ module Calabash
       end
 
       # @!visibility private
-      def _pinch_screen(direction, options={})
+      define_method(:_pinch_screen) do |options={}|
         Device.default.pinch(direction, "* id:'content'", options)
       end
 
       # @!visibility private
-      def _pinch_to_zoom(direction, query, options={})
+      define_method(:_pinch_to_zoom) do |options={}|
         if direction == :out
           Device.default.pinch(:in, query, options)
         elsif direction == :in
@@ -362,7 +362,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _pinch_screen_to_zoom(direction, options={})
+      define_method(:_pinch_screen_to_zoom) do |options={}|
         _pinch_to_zoom(direction, "* id:'content'", options)
       end
     end

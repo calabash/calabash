@@ -4,6 +4,9 @@
 # It is developed and maintained by Xamarin and is released under the Eclipse
 # Public License.
 module Calabash
+  class RequiredBothPlatformsError < LoadError
+  end
+
   require 'calabash/version'
   require 'calabash/environment'
   require 'calabash/logger'
@@ -54,9 +57,9 @@ module Calabash
   # @example
   #  # android/pages/my_page.rb
   #  class Android::MyPage < Calabash::Page
-  #    include Calabash::Android
-  #
-  #    # [...]
+  #    def method
+  #      # [...]
+  #    end
   #  end
   #
   #  # step definition
@@ -71,7 +74,7 @@ module Calabash
   #  # pages/abstract_login_page.rb
   #  class AbstractLoginPage < Calabash::Page
   #    def login(username, password)
-  #     enter_text_in(username_field, username)
+  #     cal.enter_text_in(username_field, username)
   #     # [...]
   #    end
   #
@@ -84,8 +87,6 @@ module Calabash
   #
   #  # pages/android_login_page.rb
   #  class Android::LoginPage < SharedLoginPage
-  #    include Calabash::Android
-  #
   #    private
   #
   #    def username_field
@@ -122,13 +123,18 @@ module Calabash
       if page_class.is_a?(Class)
         modules = page_class.included_modules.map(&:to_s)
 
-        unless modules.include?("Calabash::#{platform_module}")
-          raise "Page '#{page_class}' does not include Calabash::#{platform_module}"
+        if modules.include?("Calabash::#{platform_module}")
+          Logger.warn("Page '#{page_class}' includes Calabash::#{platform_module}. It is recommended not to include Calabash.")
+          Logger.warn("Use cal.<method> for cross-platform methods, cal_android.<method> for Android-only and cal_ios.<method> for iOS-only")
         end
 
         if modules.include?('Calabash::Android') &&
             modules.include?('Calabash::IOS')
           raise "Page '#{page_class}' includes both Calabash::Android and Calabash::IOS"
+        end
+
+        unless page_class.ancestors.include?(Calabash::Page)
+          raise "Page '#{page_class}' is not a Calabash::Page"
         end
 
         page = page_class.send(:new, self)
@@ -316,4 +322,24 @@ if Calabash::Environment::DEBUG_CALLED_METHODS
   end
 
   set_trace_func(trace_func)
+end
+
+# @!visibility private
+class CalabashMethodsInternal
+  include ::Calabash
+end
+
+# @!visibility private
+class CalabashMethods < BasicObject
+  include ::Calabash
+
+  instance_methods.each do |method_name|
+    define_method(method_name) do |*args, &block|
+      ::CalabashMethodsInternal.new.send(method_name, *args, &block)
+    end
+  end
+end
+
+def cal
+  CalabashMethods.new
 end
