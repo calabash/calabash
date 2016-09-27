@@ -69,7 +69,7 @@ module Calabash
               parse_resign_arguments!
             when 'console'
               parse_console_arguments!
-            when 'generate'
+            when 'generate-cucumber'
               parse_generate_arguments!
             when 'run'
               parse_run_arguments!

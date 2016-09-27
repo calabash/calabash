@@ -3,6 +3,9 @@ require 'digest'
 module Calabash
   # A representation of an application that is under test.
   class Application
+    require 'calabash/android/application'
+    require 'calabash/ios/application'
+
     # @!visibility private
     include Calabash::Utility
 
