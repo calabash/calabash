@@ -6,7 +6,7 @@ module Calabash
       # @!visibility private
       HELP = {
           help: 'help',
-          generate: 'generate',
+          'generate-cucumber': 'generate-cucumber',
           run: 'run [application] [cucumber options]',
           console: 'console [application]',
           version: 'version',
@@ -48,7 +48,7 @@ EOF
     #{HELP[:help]} [command]
       print help information.
 
-    #{HELP[:generate]}
+    #{HELP[:'generate-cucumber']}
       generate a Cucumber project folder structure.
 
     #{HELP[:run]}
