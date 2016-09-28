@@ -10,7 +10,7 @@ unless platform
   elsif application.ios_application?
     platform = 'ios'
   else
-    raise "Application '#{application}' is neither an Android app or an iOS app"
+    raise "Application '#{application}' is neither an Android app nor an iOS app"
   end
 end
 
@@ -34,7 +34,7 @@ case platform
         [
             'ERROR! Unable to start the cucumber test:',
             message,
-            "Run cucumber with the ENV variable 'CAL_APP', or specify PLATFORM"
+            "Run cucumber with the ENV variable 'CAL_APP' set to the path of the application under test, or specify 'PLATFORM'"
         ]
 
     Calabash::Logger.error(failure_messages.join("\n"))
