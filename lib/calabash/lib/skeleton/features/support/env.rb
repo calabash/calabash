@@ -1,4 +1,6 @@
 require 'calabash'
+require 'calabash/android/application'
+require 'calabash/ios/application'
 
 platform = ENV['PLATFORM']
 
@@ -18,9 +20,13 @@ case platform
   when 'android'
     require 'calabash/android'
 
+    World(Calabash::Android)
+
     Calabash::Android.setup_defaults!
   when 'ios'
     require 'calabash/ios'
+
+    World(Calabash::IOS)
 
     Calabash::IOS.setup_defaults!
   else
@@ -34,7 +40,7 @@ case platform
         [
             'ERROR! Unable to start the cucumber test:',
             message,
-            "Run cucumber with the ENV variable 'CAL_APP', or specify PLATFORM"
+            "Run cucumber with the ENV variable 'CAL_APP', or run cucumber using $ calabash run"
         ]
 
     Calabash::Logger.error(failure_messages.join("\n"))

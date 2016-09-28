@@ -91,10 +91,6 @@ namespace :integration do
   task :'ruby' do
     rake_run_cucumber("test/integration/ruby", "", {"CAL_NO_DEPENDENCIES" => "1"})
   end
-
-  task :'cli' do
-    rake_run_cucumber("test/integration/cli", "", {"CAL_NO_DEPENDENCIES" => "1"})
-  end
 end
 
 namespace :android do
