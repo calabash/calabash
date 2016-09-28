@@ -11,6 +11,7 @@ module Calabash
       include Calabash::CLI::Console
       include Calabash::CLI::Generate
       include Calabash::CLI::Resign
+      include Calabash::CLI::Run
       include Calabash::CLI::SetupKeystore
 
       def initialize(arguments)
@@ -68,8 +69,10 @@ module Calabash
               parse_resign_arguments!
             when 'console'
               parse_console_arguments!
-            when 'generate-cucumber'
+            when 'generate'
               parse_generate_arguments!
+            when 'run'
+              parse_run_arguments!
             when 'setup-keystore'
               parse_setup_keystore_arguments!
             when 'help'
