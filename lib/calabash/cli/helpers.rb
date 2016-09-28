@@ -6,8 +6,7 @@ module Calabash
       # @!visibility private
       HELP = {
           help: 'help',
-          generate: 'generate',
-          run: 'run [application] [cucumber options]',
+          :'generate-cucumber' => 'generate-cucumber',
           console: 'console [application]',
           version: 'version',
           setup_keystore: 'setup-keystore',
@@ -48,12 +47,8 @@ EOF
     #{HELP[:help]} [command]
       print help information.
 
-    #{HELP[:generate]}
+    #{HELP[:'generate-cucumber']}
       generate a Cucumber project folder structure.
-
-    #{HELP[:run]}
-      runs Cucumber in the current folder with the environment needed.
-      the cucumber options will be passed unchanged to cucumber
 
     #{HELP[:console]}
       starts an interactive console to interact with your app via Calabash
