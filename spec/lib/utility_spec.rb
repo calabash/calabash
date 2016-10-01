@@ -46,4 +46,18 @@ describe Calabash::Utility do
       expect(dummy.new.coordinate(a, b)).to eq({x: a, y: b})
     end
   end
+
+  describe '.bundler_prepend' do
+    it 'returns nothing when this process is not run using bundler' do
+      expect(Calabash::Utility).to receive(:used_bundler?).and_return(false)
+
+      expect(Calabash::Utility.bundle_exec_prepend).to eq('')
+    end
+
+    it 'returns bundle exec when this process is run using bundler' do
+      expect(Calabash::Utility).to receive(:used_bundler?).and_return(true)
+
+      expect(Calabash::Utility.bundle_exec_prepend).to eq('bundle exec ')
+    end
+  end
 end

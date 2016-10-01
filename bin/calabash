@@ -72,6 +72,8 @@ module Calabash
               parse_generate_arguments!
             when 'setup-keystore'
               parse_setup_keystore_arguments!
+            when 'used-bundler' # For testing purposes
+              puts Calabash::Utility.used_bundler?
             when 'help'
               argument = @arguments.shift
 

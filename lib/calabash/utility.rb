@@ -54,5 +54,19 @@ module Calabash
     end
 
     alias_method :coord, :coordinate
+
+    # @!visibility private
+    def self.used_bundler?
+      defined?(Bundler) && !ENV['BUNDLE_BIN_PATH'].nil?
+    end
+
+    # @!visibility private
+    def self.bundle_exec_prepend
+      if used_bundler?
+        'bundle exec '
+      else
+        ''
+      end
+    end
   end
 end

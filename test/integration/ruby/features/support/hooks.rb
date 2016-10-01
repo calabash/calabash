@@ -1,3 +1,5 @@
+require 'fileutils'
+
 After("@full_reset") do
   if Object.const_defined?(:Calabash)
     if Calabash.const_defined?(:AndroidInternal)
@@ -44,4 +46,9 @@ Before("@store_require_errors") do
       end
     end
   end
+end
+
+After("@cleanup_tmp_dir") do
+  FileUtils.remove_entry(@dir)
+  Dir.chdir(@pwd)
 end
