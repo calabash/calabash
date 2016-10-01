@@ -92,7 +92,7 @@ module Calabash
     # @!visibility private
     def puts_console_details
       puts ''
-      puts Color.blue('#             =>  Useful Methods  <=              #')
+      puts Color.blue('#             =>  Useful Console Methods  <=              #')
       puts Color.cyan('>     ids => List all the visible ids.')
       puts Color.cyan('> classes => List all the visible classes.')
       puts Color.cyan(">    tree => The app's visible view hierarchy.")

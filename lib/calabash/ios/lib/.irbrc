@@ -48,7 +48,6 @@ begin
 
   IRB.conf[:PROMPT_MODE] = :CALABASH
 
-  extend Calabash::IOS
   extend Calabash::ConsoleHelpers
 
   Calabash::IOS.setup_defaults!

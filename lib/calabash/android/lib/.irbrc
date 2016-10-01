@@ -48,7 +48,6 @@ begin
 
   IRB.conf[:PROMPT_MODE] = :CALABASH
 
-  extend Calabash::Android
   extend Calabash::ConsoleHelpers
 
   Calabash::Android.setup_defaults!
