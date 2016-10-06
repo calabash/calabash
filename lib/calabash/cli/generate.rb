@@ -17,14 +17,14 @@ module Calabash
           exit 1
         end
 
-        cucumber_config = File.read(file(File.join('config', 'cucumber.yml')))
+        cucumber_config = File.read(file(File.join('config', 'cucumber.yml.skeleton')))
 
-        env = File.read(file(File.join('features', 'support', 'env.rb')))
-        dry_run = File.read(file(File.join('features', 'support', 'dry_run.rb')))
-        sample_feature = File.read(file(File.join('features', 'sample.feature')))
-        calabash_steps = File.read(file(File.join('features', 'step_definitions', 'sample_steps.rb')))
+        env = File.read(file(File.join('features', 'support', 'env.rb.skeleton')))
+        dry_run = File.read(file(File.join('features', 'support', 'dry_run.rb.skeleton')))
+        sample_feature = File.read(file(File.join('features', 'sample.feature.skeleton')))
+        calabash_steps = File.read(file(File.join('features', 'step_definitions', 'sample_steps.rb.skeleton')))
 
-        hooks = File.read(file(File.join('features', 'support', 'hooks.rb')))
+        hooks = File.read(file(File.join('features', 'support', 'hooks.rb.skeleton')))
 
         FileUtils.mkdir('config')
 
@@ -40,7 +40,7 @@ module Calabash
         File.open(File.join('features', 'support', 'env.rb'), 'w') {|file| file.write(env) }
         File.open(File.join('features', 'support', 'dry_run.rb'), 'w') {|file| file.write(dry_run) }
 
-        gemfile = File.readlines(file(File.join('Gemfile')))
+        gemfile = File.readlines(file(File.join('Gemfile.skeleton')))
 
         unless File.exist?('Gemfile')
           File.open('Gemfile', 'w') do |file|

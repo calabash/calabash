@@ -19,19 +19,17 @@ gem_files = lib_files + doc_files + jar_files + calmd5_exe + playback_files + te
 
 Gem::Specification.new do |spec|
   spec.name          = 'calabash'
-  spec.authors       = ['Jonas Maturana Larsen',
-                        'Karl Krukow',
+  spec.authors       = ['Karl Krukow',
                         'Tobias Røikjer',
                         'Joshua Moody']
-  spec.email         = ['jonaspec.larsen@xamarin.com',
-                        'karl.krukow@xamarin.com',
+  spec.email         = ['karl.krukow@xamarin.com',
                         'tobias.roikjer@xamarin.com',
                         'joshua.moody@xamarin.com']
 
   spec.summary       = 'Automated Acceptance Testing for Mobile Apps'
   spec.description   =
-        %q{Calabash is a Behavior-driven development (BDD)
-framework for Android and iOS. It supports both native and hybrid app testing.
+        %q{Calabash is a mobile automation tool used for automatic UI-testing.
+It supports Android and iOS, both native and hybrid app testing.
 
 It is developed and maintained by Xamarin and is released under the Eclipse
 Public License.}
@@ -70,7 +68,6 @@ Public License.}
 
   # Run-loop should control the version.
   spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'travis'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-nav'
 

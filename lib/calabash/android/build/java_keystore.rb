@@ -155,7 +155,7 @@ module Calabash
             begin
               keystore = JSON.parse(IO.read(CALABASH_KEYSTORE_SETTINGS_FILENAME))
             rescue JSON::ParserError => e
-              Logger.error('Could not parse keystore settings. Please run calabash setup-keystore again')
+              Logger.error("Could not parse keystore settings. Please run #{Calabash::Utility.bundle_exec_prepend}calabash setup-keystore again")
 
               raise e
             end
