@@ -68,7 +68,6 @@ Public License.}
 
   # Run-loop should control the version.
   spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'travis'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-nav'
 
