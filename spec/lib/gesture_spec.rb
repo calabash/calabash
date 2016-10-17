@@ -86,7 +86,8 @@ describe Calabash::Gestures do
 
       q = Calabash::Query.new(query)
       allow(Calabash::Query).to receive(:new).with(query).and_return(q)
-      expected = [Calabash::Query.new(query), from, to, options]
+
+      expected = [Calabash::Query.new(query), from, to, anything]
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
       expect(Calabash::Device.default).to receive(:pan).with(*expected)
@@ -113,8 +114,7 @@ describe Calabash::Gestures do
     it 'should delegate to the default device' do
       query_from = "my query"
       query_to = "my query 2"
-      options = {my: :arg}
-      args = [query_from, query_to, options]
+      args = [query_from, query_to]
 
       from = Calabash::Query.new(query_from)
       to = Calabash::Query.new(query_to)
@@ -122,7 +122,7 @@ describe Calabash::Gestures do
       allow(Calabash::Query).to receive(:new).with(query_from).and_return(from)
       allow(Calabash::Query).to receive(:new).with(query_to).and_return(to)
 
-      expected = [from, to, options]
+      expected = [from, to, anything]
 
       allow(Calabash::Device).to receive(:default).and_return(dummy_device)
       expect(Calabash::Device.default).to receive(:pan_between).with(*expected)
@@ -206,7 +206,7 @@ describe Calabash::Gestures do
     it 'should invoke #pan_left' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:pan_left).with("*", options)
+      expect(dummy_instance).to receive(:pan_left).with("*", hash_including(my: :arg))
       dummy_instance.pan_screen_left(options)
     end
   end
@@ -215,7 +215,7 @@ describe Calabash::Gestures do
     it 'should invoke #pan_right' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:pan_right).with("*", options)
+      expect(dummy_instance).to receive(:pan_right).with("*", hash_including(my: :arg))
       dummy_instance.pan_screen_right(options)
     end
   end
@@ -224,7 +224,7 @@ describe Calabash::Gestures do
     it 'should invoke #_pan_screen_up' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:_pan_screen_up).with(options)
+      expect(dummy_instance).to receive(:_pan_screen_up).with(hash_including(my: :arg))
       dummy_instance.pan_screen_up(options)
     end
   end
@@ -233,7 +233,7 @@ describe Calabash::Gestures do
     it 'should invoke #_pan_screen_down' do
       options = {my: :arg}
 
-      expect(dummy_instance).to receive(:_pan_screen_down).with(options)
+      expect(dummy_instance).to receive(:_pan_screen_down).with(hash_including(my: :arg))
       dummy_instance.pan_screen_down(options)
     end
   end

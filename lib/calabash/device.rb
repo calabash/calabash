@@ -5,7 +5,7 @@ module Calabash
     include Utility
 
     # @!visibility private
-    @@default = nil
+    @@default ||= nil
 
     # @!visibility private
     def self.default
@@ -180,29 +180,14 @@ module Calabash
     # @see Calabash::Gestures#pan
     # @!visibility private
     def pan(query, from, to, options={})
-      Query.ensure_valid_query(query)
-
-      ensure_valid_swipe_params(from, to)
-
-      gesture_options = options.dup
-      gesture_options[:duration] ||= 0.5
-      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
-
-      _pan(query, from, to, gesture_options)
+      _pan(query, from, to, options)
     end
 
     # Performs a `pan` between two elements.
     # @see Calabash::Gestures#pan_between
     # @!visibility private
     def pan_between(query_from, query_to, options={})
-      Query.ensure_valid_query(query_from)
-      Query.ensure_valid_query(query_to)
-
-      gesture_options = options.dup
-      gesture_options[:duration] ||= 1
-      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
-
-      _pan_between(query_from, query_to, gesture_options)
+      _pan_between(query_from, query_to, options)
     end
 
     # Performs a `flick` on the (first) view that matches `query`.
@@ -239,7 +224,7 @@ module Calabash
     # Enter `text` into the currently focused view.
     # @see Calabash::Text#enter_text
     # @!visibility private
-    def enter_text(text)
+    def enter_text(text, options={})
       abstract_method!
     end
 

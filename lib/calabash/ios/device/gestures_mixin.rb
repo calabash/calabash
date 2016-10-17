@@ -102,9 +102,7 @@ module Calabash
         x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
         y = rect['y'] + (rect['height'] * (options[:at][:y] / 100.0)).to_i
 
-        offset = coordinate(x, y)
-
-        uia_serialize_and_call(:tapOffset, offset, options)
+        @automator.touch({coordinates: coordinate(x, y)})
 
         Calabash::QueryResult.create([view_to_touch], query)
       end
@@ -117,15 +115,14 @@ module Calabash
         x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
         y = rect['y'] + (rect['height'] * (options[:at][:y] / 100.0)).to_i
 
-        offset = coordinate(x, y)
-
-        uia_serialize_and_call(:doubleTapOffset, offset, options)
+        @automator.double_tap({coordinates: coordinate(x, y)})
 
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
       # @!visibility private
       def _long_press(query, options={})
+        options[:duration] += 0.2
 
         begin
           _expect_valid_duration(options)
@@ -139,33 +136,60 @@ module Calabash
         x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
         y = rect['y'] + (rect['height'] * (options[:at][:y] / 100.0)).to_i
 
-        offset = coordinate(x, y)
-
-        uia_serialize_and_call(:touchHoldOffset, options[:duration], offset)
+        @automator.touch_hold({coordinates: coordinate(x, y), duration: options[:duration]})
 
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
       # @!visibility private
       def _pan_between(query_from, query_to, options={})
+        from_query_result = nil
+        to_query_result  = nil
+        from = coordinate(0, 0)
+        to = coordinate(0, 0)
 
-        begin
-          _expect_valid_duration(options)
-        rescue ArgumentError => e
-          raise ArgumentError e
+        unless query_from.nil?
+          from_view = _gesture_waiter.wait_for_view(query_from, options)
+          from = coordinate(from_view['rect']['center_x'], from_view['rect']['center_y'])
+          from_query_result = Calabash::QueryResult.create([from_view], query_from)
         end
 
-        from_view = _gesture_waiter.wait_for_view(query_from, options)
-        to_view = _gesture_waiter.wait_for_view(query_to, options)
+        unless query_to.nil?
+          to_view = _gesture_waiter.wait_for_view(query_to, options)
+          to = coordinate(to_view['rect']['center_x'], to_view['rect']['center_y'])
+          Calabash::QueryResult.create([to_view], query_to)
+        end
 
-        from_offset = uia_center_of_view(from_view)
-        to_offset = uia_center_of_view(to_view)
+        offset = options[:offset]
 
-        uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
+        if offset
+          from_offset = offset[:from]
+
+          if from_offset
+            x, y = from_offset[:x], from_offset[:y]
+
+            from[:x] += x || 0
+            from[:y] += y || 0
+          end
+
+          to_offset = offset[:to]
+
+          if from_offset
+            x, y = to_offset[:x], to_offset[:y]
+
+            to[:x] += x || 0
+            to[:y] += y || 0
+          end
+        end
+
+        @automator.pan({coordinates:
+                            {from: from,
+                             to: to},
+                        duration: options[:duration]})
 
         {
-          :from => Calabash::QueryResult.create([from_view], query_from),
-          :to => Calabash::QueryResult.create([to_view], query_to)
+          :from => from_query_result,
+          :to => to_query_result
         }
       end
 
@@ -178,48 +202,22 @@ module Calabash
       # If the view has a UINavigationBar or UITabBar, the defaults *might*
       # cause vertical gestures to start and/or end on one of these bars.
       def _pan(query, from, to, options={})
-
-        begin
-          _expect_valid_duration(options)
-        rescue ArgumentError => e
-          raise ArgumentError, e
-        end
-
         gesture_waiter = _gesture_waiter
         view_to_pan = gesture_waiter.wait_for_view(query, options)
-
-        begin
-          check_for_broken_uia_automation(query, view_to_pan, gesture_waiter)
-        rescue => e
-          raise "Could not pan with query: #{query}\n#{e.message}"
-        end
 
         rect = view_to_pan['rect']
 
         from_x = rect['width'] * (from[:x]/100.0)
         from_y = rect['height'] * (from[:y]/100.0)
-        from_offset = coordinate(from_x, from_y)
 
         to_x = rect['width'] * (to[:x]/100.0)
         to_y = rect['height'] * (to[:y]/100.0)
-        to_offset = coordinate(to_x, to_y)
 
-        uia_serialize_and_call(:panOffset, from_offset, to_offset)
+        @automator.pan({coordinates: {from: coordinate(from_x, from_y), to: coordinate(to_x, to_y)},
+                               duration: options[:duration]})
+
 
         Calabash::QueryResult.create([view_to_pan], query)
-      end
-
-      # @!visibility private
-      def pan_screen(view_to_pan, from_offset, to_offset, options)
-        begin
-          _expect_valid_duration(options)
-        rescue ArgumentError => e
-          raise ArgumentError, e
-        end
-
-        uia_serialize_and_call(:panOffset, from_offset, to_offset, options)
-
-        Calabash::QueryResult.create([view_to_pan], '*')
       end
 
       # @!visibility private
