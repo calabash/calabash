@@ -15,7 +15,7 @@ describe Calabash::Android::Gestures do
       args = ["* id:'content'", {x: 50, y: 90}, {x: 50, y: 10}, options]
       query = Calabash::Query.new(args[0])
       allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
-      expected = [Calabash::Query.new(args[0]), {x: 50, y: 90}, {x: 50, y: 10}, options]
+      expected = [Calabash::Query.new(args[0]), {x: 50, y: 90}, {x: 50, y: 10}, anything]
 
       expect(Calabash::Device.default).to receive(:pan).with(*expected)
 
@@ -29,7 +29,7 @@ describe Calabash::Android::Gestures do
       args = ["* id:'content'", {x: 50, y: 10}, {x: 50, y: 90}, options]
       query = Calabash::Query.new(args[0])
       allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
-      expected = [Calabash::Query.new(args[0]), {x: 50, y: 10}, {x: 50, y: 90}, options]
+      expected = [Calabash::Query.new(args[0]), {x: 50, y: 10}, {x: 50, y: 90}, anything]
 
       expect(Calabash::Device.default).to receive(:pan).with(*expected)
 

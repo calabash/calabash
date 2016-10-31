@@ -7,7 +7,7 @@ module Calabash
         wait_for_keyboard
         existing_text = text_from_keyboard_first_responder
         options = { existing_text: existing_text }
-        Device.default.uia_type_string(text, options)
+        Device.default.enter_text(text, options)
       end
 
       # @!visibility private
@@ -35,6 +35,7 @@ module Calabash
         unless wait_for_view(view)['text'].empty?
           tap(view)
           tap("UICalloutBarButton marked:'Select All'")
+          sleep 0.5
           tap_keyboard_delete_key
         end
 
@@ -96,8 +97,8 @@ module Calabash
                 "An iOS keyboard does not have multiple action keys"
         end
 
-        char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:action]
-        Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
+        wait_for_keyboard
+        Device.default.tap_keyboard_action_key
       end
 
       # @!visibility private
@@ -149,27 +150,7 @@ module Calabash
       #  localization of 'Delete'.
       # @todo Need translations of 'Delete' key.
       def tap_keyboard_delete_key(options = {})
-        default_options =
-            {
-                use_escaped_char: false,
-                delete_key_label: 'Delete'
-            }
-        merged_options = default_options.merge(options)
-
-        use_escape_sequence = merged_options[:use_escaped_char]
-        if use_escape_sequence
-          if use_escape_sequence.to_s == 'true'
-            # Use the default \b
-            char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:delete]
-          else
-            char_sequence = use_escape_sequence
-          end
-          return Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
-        end
-
-        delete_key_label = merged_options[:delete_key_label]
-        uia = "uia.keyboard().elements().firstWithName('#{delete_key_label}').tap()"
-        Device.default.uia_route(uia)
+        Device.default.tap_keyboard_delete_key(options)
       end
 
       # Returns the the text in the first responder.

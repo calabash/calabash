@@ -56,6 +56,26 @@ module Calabash
     alias_method :coord, :coordinate
 
     # @!visibility private
+    # Sets the default values for a hash. The hash is not mutated by duplicated
+    #
+    # @example
+    #  default_hash_values({a: 'b'}, {a: 'q', b: 'c'}) # => {a: 'b', b: 'c'}
+    #
+    # @notice
+    #  This method does not overwrite nil
+    def self.default_hash_values(hash, defaults)
+      res = hash.dup
+
+      defaults.each do |key, value|
+        unless res.key?(key)
+          res[key] = value
+        end
+      end
+
+      res
+    end
+
+    # @!visibility private
     def self.used_bundler?
       defined?(Bundler) && !ENV['BUNDLE_BIN_PATH'].nil?
     end

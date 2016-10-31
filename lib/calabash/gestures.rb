@@ -140,7 +140,9 @@ module Calabash
     def pan(query, from, to, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.pan(Query.new(query), from, to, options)
+      gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
+
+      Device.default.pan(Query.new(query), from, to, gesture_options)
     end
 
     # Performs a **pan** from the center of the first view that matches
@@ -181,7 +183,9 @@ module Calabash
       Query.ensure_valid_query(query_from)
       Query.ensure_valid_query(query_to)
 
-      Device.default.pan_between(Query.new(query_from), Query.new(query_to), options)
+      gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
+
+      Device.default.pan_between(Query.new(query_from), Query.new(query_to), gesture_options)
     end
 
     # Performs a **pan** heading _left_ on the first view that matches `query`.
@@ -216,28 +220,36 @@ module Calabash
     #
     # @see #pan
     def pan_screen_left(options={})
-      pan_left('*', options)
+      gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
+
+      pan_left('*', gesture_options)
     end
 
     # Performs a **pan** heading _right_ on the screen.
     #
     # @see #pan
     def pan_screen_right(options={})
-      pan_right('*', options)
+      gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
+
+      pan_right('*', gesture_options)
     end
 
     # Performs a **pan** heading _up_ on the screen.
     #
     # @see #pan
     def pan_screen_up(options={})
-      _pan_screen_up(options)
+      gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
+
+      _pan_screen_up(gesture_options)
     end
 
     # Performs a **pan** heading _down_ on the screen.
     #
     # @see #pan
     def pan_screen_down(options={})
-      _pan_screen_down(options)
+      gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
+
+      _pan_screen_down(gesture_options)
     end
 
     # Performs a **flick** on the first view that matches `query`.
@@ -473,5 +485,8 @@ module Calabash
     define_method(:_pinch_screen_to_zoom) do |direction, options={}|
       abstract_method!
     end
+
+    # @!visibility private
+    DEFAULT_PAN_OPTIONS = {duration: 1}
   end
 end

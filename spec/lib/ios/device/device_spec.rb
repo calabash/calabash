@@ -566,17 +566,6 @@ describe Calabash::IOS::Device do
       end
     end
 
-    it '#start_app_with_device_and_options' do
-      options = { :foo => :bar }
-      run_loop = { :pid => 1234, :uia_strategy => :strategy }
-      expect(device).to receive(:merge_start_options!).with(app, run_loop_device, options).and_return options
-      expect(RunLoop).to receive(:run).with(options).and_return run_loop
-
-      expect(device.send(:start_app_with_device_and_options, app, run_loop_device, options)).to be_truthy
-      expect(device.instance_variable_get(:@uia_strategy)).to be == :strategy
-      expect(device.instance_variable_get(:@run_loop)).to be == run_loop
-    end
-
     it '#wait_for_server_to_start' do
       runtime_attrs = {:device => :info}
       expect(device).to receive(:ensure_test_server_ready).and_return true
@@ -905,60 +894,6 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:default_uia_strategy).and_return(:based_on_device)
 
         expect(device.send(:uia_strategy_from_environment, run_loop_device)).to be == :based_on_device
-      end
-    end
-
-    describe '#attach_to_run_loop' do
-      describe 'passed a uia_strategy' do
-        it ':host' do
-          host_cache = Class.new do
-            def read; {:uia_strategy => :host}; end
-          end.new
-          expect(RunLoop::HostCache).to receive(:default).and_return(host_cache)
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, :host)
-          expect(device.run_loop).to be == {:uia_strategy => :host}
-          expect(device.uia_strategy).to be == :host
-          expect(result).to be_truthy
-        end
-
-        it 'not :host' do
-          expect(device).to receive(:instruments_pid).and_return(1)
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, :not_host)
-          expect(device.run_loop).to be == {:uia_strategy => :not_host, :pid => 1}
-          expect(device.uia_strategy).to be == :not_host
-          expect(result).to be_truthy
-        end
-      end
-
-      describe 'not passed a uia_strategy' do
-        it ':host' do
-          host_cache = Class.new do
-            def read; {:uia_strategy => :host}; end
-          end.new
-          expect(RunLoop::HostCache).to receive(:default).and_return(host_cache)
-          expect(device).to receive(:uia_strategy_from_environment).and_return :host
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, nil)
-          expect(device.run_loop).to be == {:uia_strategy => :host}
-          expect(device.uia_strategy).to be == :host
-          expect(result).to be_truthy
-        end
-
-        it 'not :host' do
-          expect(device).to receive(:instruments_pid).and_return(1)
-          expect(device).to receive(:uia_strategy_from_environment).and_return :not_host
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, nil)
-          expect(device.run_loop).to be == {:uia_strategy => :not_host, :pid => 1}
-          expect(device.uia_strategy).to be == :not_host
-          expect(result).to be_truthy
-        end
       end
     end
   end

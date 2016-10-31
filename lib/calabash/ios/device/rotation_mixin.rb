@@ -14,55 +14,14 @@ module Calabash
           wait_for_server_to_start({:timeout => 1})
         end
 
-        family = device_family
+        orientation = status_bar_orientation.to_sym
 
-        current_orientation = status_bar_orientation.to_sym
-        recording_name = nil
-        case direction
-          when :left
-            if current_orientation == :down
-              recording_name = 'left_home_down'
-            elsif current_orientation == :right
-              recording_name = 'left_home_right'
-            elsif current_orientation == :left
-              recording_name = 'left_home_left'
-            elsif current_orientation == :up
-              recording_name = 'left_home_up'
-            end
-          when :right
-            if current_orientation == :down
-              recording_name = 'right_home_down'
-            elsif current_orientation == :left
-              recording_name = 'right_home_left'
-            elsif current_orientation == :right
-              recording_name = 'right_home_right'
-            elsif current_orientation == :up
-              recording_name = 'right_home_up'
-            end
-          else
-            # Caller should have guarded us against this case.
-            raise ArgumentError, "Expected '#{direction}' to be :left or :right"
-        end
-
-        if family == 'iPad'
-          form_factor = 'ipad'
-        else
-          form_factor = 'iphone'
-        end
-
-        if recording_name.nil?
-          raise "Could not rotate device in direction '#{direction}' " \
-                "with orientation '#{current_orientation}'"
-        end
-
-        recording_name = "rotate_#{recording_name}"
-        playback_route(recording_name, form_factor)
+        @automator.rotate(direction, orientation)
       end
 
       # @!visibility private
       # Caller must pass position one of these positions :down, :left, :right, :up
       def rotate_home_button_to(position)
-
         valid_positions = [:down, :left, :right, :up]
         unless valid_positions.include?(position)
           raise ArgumentError,
@@ -83,28 +42,7 @@ module Calabash
           return orientation
         end
 
-        family = device_family
-
-        if family == 'iPad'
-          form_factor = 'ipad'
-        else
-          form_factor = 'iphone'
-        end
-
-        ROTATION_CANDIDATES.each do |recording_name|
-          playback_route(recording_name, form_factor)
-
-          # Wait for rotation animation.
-          #
-          # Can't wait for animations because there might be animations other
-          # than rotation on the screen.
-          sleep(0.4)
-
-          orientation = status_bar_orientation.to_sym
-          if orientation == position
-            return orientation.to_s
-          end
-        end
+        @automator.rotate_home_button_to(position, status_bar_orientation)
 
         orientation.to_s
       end

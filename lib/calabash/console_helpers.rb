@@ -5,6 +5,25 @@ module Calabash
   # Methods you can use in the Calabash console to help you
   # interact with your app.
   module ConsoleHelpers
+    # Reloads all required files that have git changes
+    def reload_git_files
+      files_to_reload =
+          (`cd ../../../ && git status`.lines.grep(/modified/).map{|l| l.split(" ").last.gsub('../', '')} +
+              `cd ../../../ && git ls-files --others --exclude-standard`.lines).map(&:chomp)
+
+      $LOADED_FEATURES.each do |file|
+        files_to_reload.each do |reload_name|
+          if file.end_with?(reload_name)
+            puts "LOADING #{file}"
+            load file
+            break
+          end
+        end
+      end
+
+      true
+    end
+
     # Outputs all calabash methods
     def cal_methods
       c = Class.new(BasicObject) do
@@ -73,12 +92,12 @@ module Calabash
 
     # List the visible element classes.
     def classes
-      query("*").map{|e| e['class']}.uniq
+      cal.query("*").map{|e| e['class']}.uniq
     end
 
     # List the visible element ids.
     def ids
-      query("*").map{|e| e['id']}.compact
+      cal.query("*").map{|e| e['id']}.compact
     end
 
     # Copy all the commands entered in the current console session into the OS

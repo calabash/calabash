@@ -18,6 +18,7 @@ module Calabash
     require 'calabash/ios/gestures'
     require 'calabash/ios/slider'
     require 'calabash/ios/date_picker'
+    require 'calabash/ios/automator'
 
     include Calabash::IOS::Conditions
     include Calabash::IOS::Orientation

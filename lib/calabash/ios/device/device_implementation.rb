@@ -17,13 +17,11 @@ module Calabash
       include Calabash::IOS::RotationMixin
       include Calabash::IOS::KeyboardMixin
       include Calabash::IOS::UIAKeyboardMixin
-      include Calabash::IOS::TextMixin
       include Calabash::IOS::UIAMixin
       include Calabash::IOS::IPadMixin
       include Calabash::IOS::GesturesMixin
 
       attr_reader :run_loop
-      attr_reader :uia_strategy
       attr_reader :start_options
 
       # Returns the default simulator identifier.  The string that is return
@@ -345,8 +343,7 @@ module Calabash
 
         {
            :device => self,
-           :application => application,
-           :uia_strategy => uia_strategy
+           :application => application
         }
       end
 
@@ -394,7 +391,7 @@ module Calabash
       def start_app_with_device_and_options(application, run_loop_device, user_defined_options)
         start_options = merge_start_options!(application, run_loop_device, user_defined_options)
         @run_loop = RunLoop.run(start_options)
-        @uia_strategy = @run_loop[:uia_strategy]
+        @automator = Calabash::IOS::Automator::DeviceAgent.new(@run_loop)
       end
 
       # @!visibility private
@@ -526,12 +523,6 @@ module Calabash
         else
           raise "Invalid application #{application} for iOS platform."
         end
-      end
-
-      # @!visibility private
-      def enter_text(text)
-        # @todo implement this
-        raise 'ni'
       end
 
       # @!visibility private
@@ -774,13 +765,11 @@ module Calabash
 
         if strategy == :host
           @run_loop = RunLoop::HostCache.default.read
-          @uia_strategy = :host
         else
           pid = instruments_pid
           @run_loop = {}
           @run_loop[:uia_strategy] = strategy
           @run_loop[:pid] = pid
-          @uia_strategy = strategy
         end
 
         # populate the @runtime_attributes

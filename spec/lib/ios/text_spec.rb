@@ -8,6 +8,7 @@ describe Calabash::IOS::Text do
       def text_from_keyboard_first_responder; ; end
       def uia_route(_); ; end
       def screenshot(_); end
+      def enter_text(_, _); end
     end.new
   end
 
@@ -28,7 +29,7 @@ describe Calabash::IOS::Text do
     options = { existing_text: existing_text }
     expect(world).to receive(:wait_for_keyboard).and_return true
     expect(world).to receive(:text_from_keyboard_first_responder).and_return existing_text
-    expect(device).to receive(:uia_type_string).with('text', options).and_return({})
+    expect(device).to receive(:enter_text).with('text', options).and_return({})
 
     expect(world.enter_text('text')).to be_truthy
   end
@@ -101,50 +102,6 @@ describe Calabash::IOS::Text do
       stub_const('Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT', time)
 
       expect(world.send(:keyboard_wait_timeout, nil)).to be == 22
-    end
-  end
-
-  it '#tap_keyboard_action_key' do
-    script = "uia.keyboard().typeString('\\n')"
-    expect(device).to receive(:uia_route).with(script).and_return []
-
-    expect(world.tap_keyboard_action_key).to be_truthy
-  end
-
-  describe '#tap_keyboard_delete_key' do
-    it "taps the element marked 'Delete'" do
-      script = "uia.keyboard().elements().firstWithName('Delete').tap()"
-      expect(device).to receive(:uia_route).with(script).and_return []
-
-      expect(world.tap_keyboard_delete_key).to be_truthy
-    end
-
-    it 'respects the :delete_key_label' do
-      label = 'Slet'
-      script = "uia.keyboard().elements().firstWithName('Slet').tap()"
-      expect(device).to receive(:uia_route).with(script).and_return []
-
-      options = { delete_key_label: label }
-      expect(world.tap_keyboard_delete_key(options)).to be_truthy
-    end
-
-    describe 'respects :use_escaped_char' do
-      it 'uses the default escape sequence' do
-        script = "uia.keyboard().typeString('\\b')"
-        expect(device).to receive(:uia_route).with(script).and_return []
-
-        options = { use_escaped_char: '\b' }
-        expect(world.tap_keyboard_delete_key(options)).to be_truthy
-      end
-
-      it 'used the escape sequence the user passes' do
-        char = '\d'
-        script = "uia.keyboard().typeString('#{char}')"
-        expect(device).to receive(:uia_route).with(script).and_return []
-
-        options = { use_escaped_char: char }
-        expect(world.tap_keyboard_delete_key(options)).to be_truthy
-      end
     end
   end
 end
