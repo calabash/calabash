@@ -1,7 +1,8 @@
 describe Calabash::IOS::Orientation do
 
   let(:device) do
-    Class.new do
+    Class.new(Calabash::IOS::Device) do
+      def initialize; end
       def status_bar_orientation; ; end
       def rotate(_); ; end
       def rotate_home_button_to(_); ; end

@@ -1,6 +1,7 @@
 describe Calabash::IOS::Text do
   let(:device) do
-    Class.new do
+    Class.new(Calabash::IOS::Device) do
+      def initialize; end
       def uia_type_string(_, _); ; end
       def docked_keyboard_visible?; false; end
       def undocked_keyboard_visible?; false; end

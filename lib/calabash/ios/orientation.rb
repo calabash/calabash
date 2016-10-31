@@ -13,7 +13,7 @@ module Calabash
       # @return [String] Returns the device orientation as one of
       #  `{'down' | 'up' | 'left' | 'right'}`.
       def status_bar_orientation
-        Device.default.status_bar_orientation
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.status_bar_orientation}
       end
 
       # Rotate the device left - clockwise relative to the home button.
@@ -26,7 +26,7 @@ module Calabash
       # @return [String] The position of the home button relative to the status
       #  bar after the rotation. Can be one of 'down', 'left', 'right', 'up'.
       def rotate_device_left
-        Device.default.rotate(:left)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.rotate(:left)}
         status_bar_orientation
       end
 
@@ -40,7 +40,7 @@ module Calabash
       # @return [String] The position of the home button relative to the status
       #  bar after the rotation. Can be one of 'down', 'left', 'right', 'up'.
       def rotate_device_right
-        Device.default.rotate(:right)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.rotate(:right)}
         status_bar_orientation
       end
 
@@ -83,7 +83,7 @@ module Calabash
         canonical_position = :down if position.to_sym == :bottom
         canonical_position = :up if position.to_sym == :top
 
-        Calabash::Device.default.rotate_home_button_to(canonical_position)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.rotate_home_button_to(canonical_position)}
       end
 
       # @!visibility private

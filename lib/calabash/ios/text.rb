@@ -7,7 +7,7 @@ module Calabash
         wait_for_keyboard
         existing_text = text_from_keyboard_first_responder
         options = { existing_text: existing_text }
-        Device.default.enter_text(text, options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.enter_text(text, options)}
       end
 
       # @!visibility private
@@ -50,7 +50,7 @@ module Calabash
       #
       # @return [Boolean] Returns true if a keyboard is visible and docked.
       def docked_keyboard_visible?
-        Device.default.docked_keyboard_visible?
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.docked_keyboard_visible?}
       end
 
       # Returns true if an undocked keyboard is visible.
@@ -60,7 +60,7 @@ module Calabash
       # @return [Boolean] Returns false if the device is not an iPad; all
       # keyboards on the iPhone and iPod are docked.
       def undocked_keyboard_visible?
-        Device.default.undocked_keyboard_visible?
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.undocked_keyboard_visible?}
       end
 
       # Returns true if a split keyboard is visible.
@@ -71,7 +71,7 @@ module Calabash
       # @return [Boolean] Returns false if the device is not an iPad; all
       # keyboards on the Phone and iPod are docked and not split.
       def split_keyboard_visible?
-        Device.default.split_keyboard_visible?
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.split_keyboard_visible?}
       end
 
       # Touches the keyboard action key.
@@ -98,7 +98,7 @@ module Calabash
         end
 
         wait_for_keyboard
-        Device.default.tap_keyboard_action_key
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.tap_keyboard_action_key}
       end
 
       # @!visibility private
@@ -150,7 +150,7 @@ module Calabash
       #  localization of 'Delete'.
       # @todo Need translations of 'Delete' key.
       def tap_keyboard_delete_key(options = {})
-        Device.default.tap_keyboard_delete_key(options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.tap_keyboard_delete_key(options)}
       end
 
       # Returns the the text in the first responder.
@@ -164,7 +164,7 @@ module Calabash
       #
       # @raise [RuntimeError] If there is no visible keyboard.
       def text_from_keyboard_first_responder
-        Device.default.text_from_keyboard_first_responder
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.text_from_keyboard_first_responder}
       end
 
       private

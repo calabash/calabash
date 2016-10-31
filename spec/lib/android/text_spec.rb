@@ -2,7 +2,7 @@ describe Calabash::Android::Text do
   let(:dummy_class) {Class.new {include Calabash::Android}}
   let(:world) {dummy_class.new}
 
-  let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
+  let(:dummy_device_class) {Class.new(Calabash::Android::Device) {def initialize; end}}
   let(:dummy_device) {dummy_device_class.new}
 
   before do

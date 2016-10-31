@@ -63,7 +63,7 @@ module Calabash
 
         args = [merged_options[:animate], merged_options[:notify_targets]]
 
-        Device.default.map_route(query, :changeSlider, value_str, *args)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.map_route(query, :changeSlider, value_str, *args)}
       end
     end
   end

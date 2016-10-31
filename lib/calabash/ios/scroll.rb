@@ -71,7 +71,7 @@ module Calabash
           raise RuntimeError, e
         end
 
-        results = Device.default.map_route(query, :scroll, direction)
+        results = Calabash::Internal.with_default_device(required_os: :ios) {|device| device.map_route(query, :scroll, direction)}
 
         if results.first.nil?
           fail("Expected '#{query}' to match a UIScrollView or a subclass")
@@ -153,8 +153,10 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query, :scrollToRow, row.to_i,
-                                          section.to_i, position, animate)
+        results = Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.map_route(query, :scrollToRow, row.to_i,
+                           section.to_i, position, animate)
+        end
 
         if results.first.nil?
           message = [
@@ -240,8 +242,10 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query, :scrollToRowWithMark, mark,
-                                          position, animate)
+        results = Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.map_route(query, :scrollToRowWithMark, mark,
+                           position, animate)
+        end
 
         if results.first.nil?
           message = [
@@ -334,9 +338,12 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query, :collectionViewScroll,
-                                           item.to_i, section.to_i,
-                                           position, animate)
+        results = Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.map_route(query, :collectionViewScroll,
+                           item.to_i, section.to_i,
+                           position, animate)
+        end
+
         if results.first.nil?
           message = [
                 "Could not scroll collection to item '#{item}' and section '#{section}'.",
@@ -427,9 +434,11 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query,
-                                           :collectionViewScrollToItemWithMark,
-                                           mark, position, animate)
+        results = Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.map_route(query,
+                           :collectionViewScrollToItemWithMark,
+                           mark, position, animate)
+        end
 
         if results.first.nil?
           message = [

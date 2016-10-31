@@ -26,7 +26,7 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:bottom], to: swipe[:top]}})
 
-        Device.default.pan_between(nil, nil, gesture_options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pan_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
@@ -35,7 +35,7 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:top], to: swipe[:bottom]}})
 
-        Device.default.pan_between(nil, nil, gesture_options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pan_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
@@ -44,7 +44,7 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:bottom], to: swipe[:top]}})
 
-        Device.default.flick_between(nil, nil, gesture_options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.flick_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
@@ -53,27 +53,27 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:top], to: swipe[:bottom]}})
 
-        Device.default.flick_between(nil, nil, gesture_options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.flick_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
       # Concrete implementation of pinch_screen
       define_method (:_pinch_screen) do |direction, options={}|
-        Device.default.pinch(direction, '*', options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pinch(direction, '*', options)}
       end
 
       # @!visibility private
       # Concrete implementation of pinch_to_zoom
       define_method (:_pinch_to_zoom) do |direction, query, options={}|
         gesture_direction = direction == :in ? :out : :in
-        Device.default.pinch(gesture_direction, query, options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pinch(gesture_direction, query, options)}
       end
 
       # @!visibility private
       # Concrete implementation of pinch_screen_to_zoom
       define_method (:_pinch_screen_to_zoom) do |direction, options={}|
         gesture_direction = direction == :in ? :out : :in
-        Device.default.pinch(gesture_direction, '*', options)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pinch(gesture_direction, '*', options)}
       end
 
       private

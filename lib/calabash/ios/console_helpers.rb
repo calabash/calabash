@@ -55,7 +55,7 @@ module Calabash
       Calabash::Device.default = device
 
       begin
-        Calabash::Device.default.ensure_test_server_ready({:timeout => 4})
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.ensure_test_server_ready({:timeout => 4})}
       rescue RuntimeError => e
         if e.to_s == 'Calabash server did not respond'
           raise RuntimeError, 'You can only attach to a running Calabash iOS App'
@@ -65,7 +65,7 @@ module Calabash
       end
 
       run_loop_device = device.send(:run_loop_device)
-      result = Calabash::Device.default.send(:attach_to_run_loop, run_loop_device, uia_strategy)
+      result = Calabash::Internal.with_default_device(required_os: :ios) {|device| device.send(:attach_to_run_loop, run_loop_device, uia_strategy)}
       result[:application] = Calabash::Application.default
       result
     end

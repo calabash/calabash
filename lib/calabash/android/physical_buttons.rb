@@ -9,7 +9,7 @@ module Calabash
 
       # @!visibility private
       def press_button(key)
-        Device.default.perform_action('press_key', key)
+        Calabash::Internal.with_default_device(required_os: :android) {|device| device.perform_action('press_key', key)}
         true
       end
 

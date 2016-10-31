@@ -6,13 +6,13 @@ module Calabash
       # pressing the back button if the keyboard is showing. If the keyboard is
       # already hidden/dismissed, nothing is done.
       def dismiss_keyboard
-        Device.default.perform_action('hide_soft_keyboard')
+        Calabash::Internal.with_default_device(required_os: :android) {|device| device.perform_action('hide_soft_keyboard')}
         sleep 0.5
       end
 
       # @!visibility private
       define_method(:_clear_text) do
-        Device.default.perform_action('clear_text')
+        Calabash::Internal.with_default_device(required_os: :android) {|device| device.perform_action('clear_text')}
       end
 
       # @!visibility private
@@ -24,7 +24,7 @@ module Calabash
 
       # @!visibility private
       define_method(:_enter_text) do |text|
-        Device.default.enter_text(text)
+        Calabash::Internal.with_default_device(required_os: :android) {|device| device.enter_text(text)}
       end
 
       # @!visibility private
@@ -37,15 +37,15 @@ module Calabash
       # @!visibility private
       define_method(:_tap_keyboard_action_key) do |action_key|
         if action_key.nil?
-          Device.default.perform_action('press_user_action_button')
+          Calabash::Internal.with_default_device(required_os: :android) {|device| device.perform_action('press_user_action_button')}
         else
-          Device.default.perform_action('press_user_action_button', action_key.to_s)
+          Calabash::Internal.with_default_device(required_os: :android) {|device| device.perform_action('press_user_action_button', action_key.to_s)}
         end
       end
 
       # @!visibility private
       define_method(:_keyboard_visible?) do
-        Device.default.keyboard_visible?
+        Calabash::Internal.with_default_device(required_os: :android) {|device| device.keyboard_visible?}
       end
     end
   end

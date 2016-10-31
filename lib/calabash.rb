@@ -30,6 +30,7 @@ module Calabash
   require 'calabash/defaults'
   require 'calabash/legacy'
   require 'calabash/console_helpers'
+  require 'calabash/internal'
 
 
   require 'calabash/patch'
