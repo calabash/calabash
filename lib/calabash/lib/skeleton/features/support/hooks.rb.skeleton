@@ -12,7 +12,11 @@ Before do |scenario|
   end
 end
 
-After do
+After do |scenario|
+  if scenario.failed?
+    cal.screenshot_embed
+  end
+
   cal.stop_app
 end
 

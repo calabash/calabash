@@ -21,10 +21,7 @@ module Calabash
             retry_frequency: 0.1,
 
             # default exception type to raise when the timeout is exceeded
-            exception_class: Calabash::Wait::TimeoutError,
-
-            # whether to embed a screenshot on failure
-            screenshot_on_error: true
+            exception_class: Calabash::Wait::TimeoutError
         }
 
     # Returns the default wait options.
@@ -124,8 +121,6 @@ module Calabash
     # @option options [Number] :timeout (30) How long to wait before timing out.
     # @option options [Number] :retry_frequency (0.3) How often to check for
     #  the condition block to be truthy.
-    # @option options [Boolean] :screenshot_on_error (true) Take a screenshot
-    #  if the block fails to be truthy or an error is raised in the block.
     # @return The returned value of `block` if it is truthy
     def wait_for(timeout_message, options={}, &block)
       wait_options = Wait.default_options.merge(options)
@@ -402,67 +397,6 @@ module Calabash
     # @see Calabash::Wait#wait_for_no_view
     def wait_for_text_to_disappear(text, options={})
       wait_for_no_view("* {text CONTAINS[c] '#{text}'}", options)
-    end
-
-    # Raises an exception. Embeds a screenshot if
-    # Calabash::Wait#default_options[:screenshot_on_error] is true. The fail
-    # method should be used when the test should fail and stop executing. Do
-    # not use fail if you intent on rescuing the error raised without
-    # re-raising.
-    #
-    # @example
-    #  unless view_exists?("* marked:'login'")
-    #    fail('Did not see "login" button')
-    #  end
-    #
-    # @example
-    #  entries = query("ListEntry").length
-    #
-    #  if entries < 5
-    #    fail(MyError, "Should see at least 5 entries, saw #{entries}")
-    #  end
-    #
-    # @raise [RuntimeError, StandardError] By default, raises a RuntimeError with
-    #  `message`.  You can pass in your own Exception class to override the
-    #  the default behavior.
-    def fail(*several_variants)
-      arg0 = several_variants[0]
-      arg1 = several_variants[1]
-
-      if arg1.nil?
-        exception_type = RuntimeError
-        message = arg0
-      else
-        exception_type = arg0
-        message = arg1
-      end
-
-      screenshot_embed if Wait.default_options[:screenshot_on_error]
-
-      raise exception_type, message
-    end
-
-    # Raises an exception and always embeds a screenshot
-    #
-    # @raise [RuntimeError, StandardError] By default, raises a RuntimeError with
-    #  `message`.  You can pass in your own Exception class to override the
-    #  the default behavior.
-    # @see Wait#fail
-    def screenshot_and_raise(*several_variants)
-      arg0 = several_variants[0]
-      arg1 = several_variants[1]
-
-      if arg1.nil?
-        exception_type = RuntimeError
-        message = arg0
-      else
-        exception_type = arg0
-        message = arg1
-      end
-
-      screenshot_embed
-
-      raise exception_type, message
     end
 
     # @!visibility private
