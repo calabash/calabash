@@ -378,14 +378,16 @@ module Calabash
         objc_format = date_picker_objc_date_format
         target_date_string = date_time.strftime(ruby_format).squeeze(' ').strip
 
-        Device.default.map_route(query,
-                                 :changeDatePickerDate,
-                                 target_date_string,
-                                 objc_format,
-                                 # notify targets
-                                 true,
-                                 # animate
-                                 true)
+        Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.map_route(query,
+                           :changeDatePickerDate,
+                           target_date_string,
+                           objc_format,
+                           # notify targets
+                           true,
+                           # animate
+                           true)
+        end
       end
 
       private

@@ -1,7 +1,8 @@
 describe Calabash::IOS::UIA do
 
   let(:device) do
-    Class.new do
+    Class.new(Calabash::IOS::Device) do
+      def initialize; end
       def evaluate_uia(_) ; end
     end.new
   end
@@ -16,8 +17,11 @@ describe Calabash::IOS::UIA do
 
   let(:script) { 'javascript' }
 
+  before do
+    allow(Calabash::Device).to receive(:default).at_least(:once).and_return device
+  end
+
   it '#uia' do
-    expect(Calabash::IOS::Device).to receive(:default).and_return device
     expect(device).to receive(:evaluate_uia).with(script).and_return :result
 
     expect(world.uia(script)).to be == :result
@@ -25,7 +29,6 @@ describe Calabash::IOS::UIA do
 
   it '#uia_with_target' do
     expected = "UIATarget.localTarget().#{script}"
-    expect(Calabash::IOS::Device).to receive(:default).and_return device
     expect(device).to receive(:evaluate_uia).with(expected).and_return :result
 
     expect(world.uia_with_target(script)).to be == :result
@@ -33,7 +36,6 @@ describe Calabash::IOS::UIA do
 
   it '#uia_with_app' do
     expected = "UIATarget.localTarget().frontMostApp().#{script}"
-    expect(Calabash::IOS::Device).to receive(:default).and_return device
     expect(device).to receive(:evaluate_uia).with(expected).and_return :result
 
     expect(world.uia_with_app(script)).to be == :result
@@ -41,7 +43,6 @@ describe Calabash::IOS::UIA do
 
   it '#uia_with_main_window' do
     expected = "UIATarget.localTarget().frontMostApp().mainWindow().#{script}"
-    expect(Calabash::IOS::Device).to receive(:default).and_return device
     expect(device).to receive(:evaluate_uia).with(expected).and_return :result
 
     expect(world.uia_with_main_window(script)).to be == :result

@@ -25,7 +25,7 @@ module Calabash
         raise ArgumentError, 'You must supply :latitude and :longitude'
       end
 
-      Device.default.set_location(location)
+      Calabash::Internal.with_default_device {|device| device.set_location(location)}
     end
 
     # Get the latitude and longitude for a certain place, resolved via Google

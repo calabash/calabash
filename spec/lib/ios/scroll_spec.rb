@@ -1,7 +1,8 @@
 describe Calabash::IOS::Scroll do
 
   let(:device) do
-    Class.new do
+    Class.new(Calabash::IOS::Device) do
+      def initialize; end
       def screenshot(_); end
       def map_route(_, _, *_) ; end
       def to_s; '#<Device>'; end

@@ -47,7 +47,7 @@ module Calabash
     def tap(query, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.tap(Query.new(query), options)
+      Calabash::Internal.with_default_device {|device| device.tap(Query.new(query), options)}
     end
 
     # Performs a **double_tap** on the first view that matches `query`.
@@ -66,7 +66,7 @@ module Calabash
     def double_tap(query, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.double_tap(Query.new(query), options)
+      Calabash::Internal.with_default_device {|device| device.double_tap(Query.new(query), options)}
     end
 
     # Performs a **long_press** on the first view that matches `query`.
@@ -86,7 +86,7 @@ module Calabash
     def long_press(query, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.long_press(Query.new(query), options)
+      Calabash::Internal.with_default_device {|device| device.long_press(Query.new(query), options)}
     end
 
     # Performs a **pan** on the first view that matches `query`.
@@ -142,7 +142,7 @@ module Calabash
 
       gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
 
-      Device.default.pan(Query.new(query), from, to, gesture_options)
+      Calabash::Internal.with_default_device {|device| device.pan(Query.new(query), from, to, gesture_options)}
     end
 
     # Performs a **pan** from the center of the first view that matches
@@ -185,7 +185,7 @@ module Calabash
 
       gesture_options = Utility.default_hash_values(options, DEFAULT_PAN_OPTIONS)
 
-      Device.default.pan_between(Query.new(query_from), Query.new(query_to), gesture_options)
+      Calabash::Internal.with_default_device {|device| device.pan_between(Query.new(query_from), Query.new(query_to), gesture_options)}
     end
 
     # Performs a **pan** heading _left_ on the first view that matches `query`.
@@ -287,7 +287,7 @@ module Calabash
     def flick(query, from, to, options={})
       Query.ensure_valid_query(query)
 
-      Device.default.flick(Query.new(query), from, to, options)
+      Calabash::Internal.with_default_device {|device| device.flick(Query.new(query), from, to, options)}
     end
 
     # Performs a **flick** heading _left_ on the first view that matches `query`.
@@ -351,7 +351,7 @@ module Calabash
     # @raise [ArgumentError] If `query` is invalid.
     # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_out(query, options={})
-      Device.default.pinch(:out, query, options)
+      Calabash::Internal.with_default_device {|device| device.pinch(:out, query, options)}
     end
 
     # Performs a **pinch** inwards on the first view match by `query`.
@@ -366,7 +366,7 @@ module Calabash
     # @raise [ArgumentError] If `query` is invalid.
     # @raise [ArgumentError] iOS: if the `:duration` is not between 0.5 and 60.
     def pinch_in(query, options={})
-      Device.default.pinch(:in, query, options)
+      Calabash::Internal.with_default_device {|device| device.pinch(:in, query, options)}
     end
 
     # Performs a **pinch** outwards on the screen.

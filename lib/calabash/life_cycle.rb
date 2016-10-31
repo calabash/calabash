@@ -38,13 +38,13 @@ module Calabash
         raise 'No application given, and Calabash.default_application is not set'
       end
 
-      Device.default.start_app(path_or_application, options.dup)
+      Calabash::Internal.with_default_device {|device| device.start_app(path_or_application, options.dup)}
     end
 
     # Stop the app running on
     # {Calabash::Defaults#default_server Calabash.default_server}
     def stop_app
-      Device.default.stop_app
+      Calabash::Internal.with_default_device {|device| device.stop_app}
     end
 
     # Installs the given application. If the application is already installed,
@@ -67,7 +67,7 @@ module Calabash
         raise 'No application given, and Calabash.default_application is not set'
       end
 
-      Device.default.install_app(path_or_application)
+      Calabash::Internal.with_default_device {|device| device.install_app(path_or_application)}
     end
 
     # Installs the given application *if it is not already installed*. If no
@@ -90,7 +90,7 @@ module Calabash
         raise 'No application given, and Calabash.default_application is not set'
       end
 
-      Device.default.ensure_app_installed(path_or_application)
+      Calabash::Internal.with_default_device {|device| device.ensure_app_installed(path_or_application)}
     end
 
     # Uninstalls the given application. Does nothing if the application is
@@ -108,7 +108,7 @@ module Calabash
         raise 'No application given, and Calabash.default_application is not set'
       end
 
-      Device.default.uninstall_app(path_or_application)
+      Calabash::Internal.with_default_device {|device| device.uninstall_app(path_or_application)}
     end
 
     # Clears the contents of the given application. This is roughly equivalent to
@@ -126,7 +126,7 @@ module Calabash
         raise 'No application given, and Calabash.default_application is not set'
       end
 
-      Device.default.clear_app_data(path_or_application)
+      Calabash::Internal.with_default_device {|device| device.clear_app_data(path_or_application)}
     end
 
     # Sends the current app to the background and resumes it after

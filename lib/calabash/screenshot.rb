@@ -49,7 +49,7 @@ module Calabash
     # @param [String] name Name of the screenshot.
     # @return [String] Path to the screenshot
     def screenshot(name=nil)
-      Device.default.screenshot(name)
+      Calabash::Internal.with_default_device {|device| device.screenshot(name)}
     end
 
     # Takes a screenshot and embeds it in the test report. This method is only

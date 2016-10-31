@@ -17,7 +17,7 @@ module Calabash
       #  uia("UIATarget.localTarget().frontMostApp().keyboard().buttons()['Delete']")
       #  uia("UIATarget.localTarget().frontMostApp().mainWindow().elements()")
       def uia(script)
-        Device.default.evaluate_uia(script)
+        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.evaluate_uia(script)}
       end
 
       # Evaluates `script` after prefixing with "UIATarget.localTarget()"

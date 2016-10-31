@@ -347,15 +347,15 @@ module Calabash
 
       # @!visibility private
       define_method(:_pinch_screen) do |options={}|
-        Device.default.pinch(direction, "* id:'content'", options)
+        Calabash::Internal.with_default_device(required_os: :android) {|device| device.pinch(direction, "* id:'content'", options)}
       end
 
       # @!visibility private
       define_method(:_pinch_to_zoom) do |options={}|
         if direction == :out
-          Device.default.pinch(:in, query, options)
+          Calabash::Internal.with_default_device(required_os: :android) {|device| device.pinch(:in, query, options)}
         elsif direction == :in
-          Device.default.pinch(:out, query, options)
+          Calabash::Internal.with_default_device(required_os: :android) {|device| device.pinch(:out, query, options)}
         else
           raise "Invalid direction '#{direction}'"
         end
