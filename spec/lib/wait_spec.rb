@@ -2,7 +2,6 @@ describe Calabash::Wait do
   let(:dummy) do
     Class.new do
       include Calabash::Wait
-      def screenshot_embed; ; end
       def query(_); ; end
     end.new
   end
@@ -22,7 +21,6 @@ describe Calabash::Wait do
       expect(default_options[:message].call({timeout: 10})).to eq("Timed out after waiting for 10 seconds...")
       expect(default_options[:retry_frequency]).to eq(0.1)
       expect(default_options[:exception_class]).to eq(Calabash::Wait::TimeoutError)
-      expect(default_options[:screenshot_on_error]).to eq(true)
 
       load wait_file
     end
@@ -34,7 +32,6 @@ describe Calabash::Wait do
       Calabash::Wait.default_options[:message] = 'test'
       Calabash::Wait.default_options[:retry_frequency] = 1
       Calabash::Wait.default_options[:exception_class] = String
-      Calabash::Wait.default_options[:screenshot_on_error] = false
 
       default_options = Calabash::Wait.default_options
 
@@ -42,7 +39,6 @@ describe Calabash::Wait do
       expect(default_options[:message]).to eq('test')
       expect(default_options[:retry_frequency]).to eq(1)
       expect(default_options[:exception_class]).to eq(String)
-      expect(default_options[:screenshot_on_error]).to eq(false)
 
       load wait_file
     end
@@ -191,28 +187,6 @@ describe Calabash::Wait do
       expect(dummy.wait_for('msg', timeout: 10) do
         dummy.test
       end).to eq('truthy')
-    end
-  end
-
-  describe '#fail' do
-    it 'should fail with a given message and error' do
-      my_error = Class.new(RuntimeError)
-      my_message = 'My message'
-
-      expect{dummy.fail(my_message)}.to raise_error(RuntimeError, my_message)
-      expect{dummy.fail(my_error, my_message)}.to raise_error(my_error, my_message)
-    end
-
-    it 'should take a screenshot if screenshot_on_error is true' do
-      Calabash::Wait.default_options[:screenshot_on_error] = true
-      expect(dummy).to receive(:screenshot_embed).once
-      expect{dummy.fail('Message')}.to raise_error RuntimeError
-    end
-
-    it 'should not take a screenshot if screenshot_on_error is false' do
-      Calabash::Wait.default_options[:screenshot_on_error] = false
-      expect(dummy).not_to receive(:screenshot_embed)
-      expect{dummy.fail('Message')}.to raise_error RuntimeError
     end
   end
 
