@@ -576,7 +576,7 @@ module Calabash
         end
 
         begin
-          Retriable.retriable(tries: 30, interval: 1, timeout: 30, on: RetryError) do
+          Calabash::Retry.retry(retries: 30, interval: 1, timeout: 30, on_errors: [RetryError]) do
             unless test_server_responding?
               # Read any message the test-server might have
               if calabash_server_failure_exists?(application)
@@ -595,7 +595,7 @@ module Calabash
         end
 
         begin
-          Retriable.retriable(tries: 10, interval: 1, timeout: 10) do
+          Calabash::Retry.retry(retries: 10, interval: 1, timeout: 10, on_errors: [RetryError]) do
             unless test_server_ready?
               raise RetryError
             end
@@ -628,7 +628,7 @@ module Calabash
 
       # @!visibility private
       def _stop_app
-        Retriable.retriable(tries: 5, interval: 1) do
+        Calabash::Retry.retry(retries: 5, interval: 1) do
           begin
             http_client.post(HTTP::Request.new('kill'), retries: 1, interval: 0)
           rescue HTTP::Error => _
