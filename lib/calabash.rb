@@ -12,6 +12,7 @@ module Calabash
   require 'calabash/logger'
   require 'calabash/color'
   require 'calabash/utility'
+  require 'calabash/retry'
   require 'calabash/application'
   require 'calabash/device'
   require 'calabash/http'
