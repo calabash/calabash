@@ -8,24 +8,24 @@ module Calabash
     # @note Seems UIAutomation is broken here on physical devices on iOS 7.1
     #
     # @example
-    #  set_location({latitude: 48.8567, longitude: 2.3508})
+    #  set_location(latitude: 48.8567, longitude: 2.3508)
     #
     # @example
     #  set_location(coordinates_for_place('The little mermaid, Copenhagen'))
     #
-    # @param [Hash] location The location to simulate.
-    # @raise [ArgumentError] If location is not a hash and does not contain a
-    #  latitude and longitude key.
-    def set_location(location)
-      unless location.is_a?(Hash)
-        raise ArgumentError, "Expected location to be a Hash, not '#{location.class}'"
+    # @param [Number] latitude The latitude of the location to simulate.
+    # @param [Number] longitude The longitude of the location to simulate.
+    # @raise [ArgumentError] If not given a latitude or longitude key.
+    def set_location(latitude: nil, longitude: nil)
+      unless latitude
+        raise ArgumentError, "Expected latitude to be a number, not '#{latitude.class}'"
       end
 
-      unless location[:latitude] || location[:longitude]
-        raise ArgumentError, 'You must supply :latitude and :longitude'
+      unless longitude
+        raise ArgumentError, "Expected longitude to be a number, not '#{longitude.class}'"
       end
 
-      Calabash::Internal.with_default_device {|device| device.set_location(location)}
+      Calabash::Internal.with_default_device {|device| device.set_location(latitude: latitude, longitude: longitude)}
     end
 
     # Get the latitude and longitude for a certain place, resolved via Google
@@ -37,8 +37,8 @@ module Calabash
     #
     # @return [Hash] Latitude and longitude for the given place
     # @raise [RuntimeError] If the place cannot be found
-    def coordinates_for_place(place)
-      result = Geocoder.search(place)
+    def coordinates_for_place(place_name)
+      result = Geocoder.search(place_name)
 
       if result.empty?
         raise "No result found for '#{place}'"
