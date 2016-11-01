@@ -4,13 +4,16 @@ module Calabash
   module Text
     # Enter `text` into the currently focused view.
     #
+    # @see Calabash::Text#enter_text_in
+    #
     # @param [String] text The text to type.
     # @raise [RuntimeError] if the text cannot be typed.
     def enter_text(text)
       _enter_text(text.to_s)
     end
 
-    # Enter `text` into `query`.
+    # Enter `text` into the first view matched by `query`.
+    #
     # @see Calabash::Text#enter_text
     #
     # @param [String] text The text to type.
@@ -21,11 +24,15 @@ module Calabash
     end
 
     # Clears the text of the currently focused view.
+    #
+    # @see Calabash::Text#clear_text_in
+    #
     def clear_text
       _clear_text
     end
 
-    # Clears the text `view`
+    # Clears the text in the first view matched by `query`
+    #
     # @see Calabash::Text#clear_text
     #
     # @param [String, Hash, Calabash::Query] query A query describing the view
@@ -109,7 +116,7 @@ module Calabash
     # @param [Number] timeout How long to wait for the keyboard.
     # @raise [Calabash::Wait::TimeoutError] Raises error if no keyboard
     #  appears.
-    def wait_for_keyboard(timeout=nil)
+    def wait_for_keyboard(timeout: nil)
       keyboard_timeout = keyboard_wait_timeout(timeout)
       message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to appear"
       wait_for(message, timeout: keyboard_timeout) do
@@ -124,7 +131,7 @@ module Calabash
     # @param [Number] timeout How log to wait for the keyboard to disappear.
     # @raise [Calabash::Wait::TimeoutError] Raises error if any keyboard is
     #  visible after the `timeout`.
-    def wait_for_no_keyboard(timeout=nil)
+    def wait_for_no_keyboard(timeout: nil)
       keyboard_timeout = keyboard_wait_timeout(timeout)
       message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to disappear"
       wait_for(message, timeout: keyboard_timeout) do
@@ -167,7 +174,7 @@ module Calabash
     end
 
     # @!visibility private
-    def keyboard_wait_timeout(timeout)
+    define_method(:keyboard_wait_timeout) do |timeout|
       if timeout.nil?
         Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
       else
