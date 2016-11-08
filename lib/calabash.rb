@@ -1,5 +1,5 @@
-# Calabash is a Behavior-driven development (BDD) framework for Android and
-# iOS. It supports both native and hybrid app testing.
+# Calabash is a mobile automation tool used for automatic UI-testing.
+# It supports Android and iOS, both native and hybrid app testing.
 #
 # It is developed and maintained by Xamarin and is released under the Eclipse
 # Public License.
@@ -341,6 +341,19 @@ class CalabashMethods < BasicObject
   end
 end
 
+# Returns a object that exposes all of the public Calabash cross-platform API.
+# This method should *always* be used to access the Calabash API. By default,
+# all methods are executed using the default device and the default
+# application.
+#
+# For OS specific methods use {cal_android} and {cal_ios}
+#
+# All API methods are available with documentation in {Calabash}
+#
+# @see {Calabash}
+#
+# @return [Object] Instance responding to all cross-platform Calabash methods
+#  in the API.
 def cal
   CalabashMethods.new
 end

@@ -35,7 +35,8 @@ module Calabash
   # Contains the iOS implementations of the Calabash APIs.
   module IOS
     require 'calabash'
-    include Calabash
+    # Hide from documentation
+    send(:include, Calabash)
 
     # @!visibility private
     def self.extended(base)
@@ -72,6 +73,20 @@ class CalabashIOSMethods < BasicObject
   end
 end
 
+# Returns a object that exposes all of the public Calabash iOS API.
+# This method should *always* be used to access the Calabash API. By default,
+# all methods are executed using the default device and the default
+# application.
+#
+# For iOS specific methods use {cal_android}. For cross-platform methods use
+# {cal}.
+#
+# All iOS API methods are available with documentation in {Calabash::IOS}
+#
+# @see Calabash::IOS
+#
+# @return [Object] Instance responding to all Calabash iOS methods
+#  in the API.
 def cal_ios
   CalabashIOSMethods.new
 end

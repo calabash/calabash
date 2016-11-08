@@ -52,7 +52,8 @@ module Calabash
     end
 
     require 'calabash'
-    include Calabash
+    # Hide from documentation
+    send(:include, Calabash)
 
     require 'calabash/android/defaults'
     extend Calabash::Android::Defaults
@@ -101,6 +102,20 @@ class CalabashAndroidMethods < BasicObject
   end
 end
 
+# Returns a object that exposes all of the public Calabash Android API.
+# This method should *always* be used to access the Calabash API. By default,
+# all methods are executed using the default device and the default
+# application.
+#
+# For iOS specific methods use {cal_ios}. For cross-platform methods use {cal}.
+#
+# All Android API methods are available with documentation in
+# {Calabash::Android}
+#
+# @see Calabash::Android
+#
+# @return [Object] Instance responding to all Calabash Android methods
+#  in the API.
 def cal_android
   CalabashAndroidMethods.new
 end

@@ -1,6 +1,5 @@
 require "run_loop"
 
-# @!visibility private
 module Calabash
   module IOS
     # @!visibility private
