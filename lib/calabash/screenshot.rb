@@ -38,7 +38,7 @@ module Calabash
     # If the name given is an absolute path, then Calabash will save the
     # screenshot to the absolute directory given.
     #
-    # If the name given starts with ./ (e.g. `screenshot('./foo.png')`) then
+    # If the name given starts with ./ (e.g. `cal.screenshot('./foo.png')`) then
     # the filename will be saved relative to the current working directory.
     #
     # If the file specified by `name` has no extension then the filename will
@@ -53,7 +53,7 @@ module Calabash
     end
 
     # Takes a screenshot and embeds it in the test report. This method is only
-    # available/useful when running in the context of cucumber.
+    # available/useful when running in the context of Cucumber.
     # @see Screenshot#screenshot
     def screenshot_embed(name=nil)
       path = screenshot(name)

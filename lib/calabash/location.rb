@@ -5,13 +5,12 @@ module Calabash
   # An API for setting the location of your app.
   module Location
     # Simulates gps location of the device/simulator.
-    # @note Seems UIAutomation is broken here on physical devices on iOS 7.1
     #
     # @example
-    #  set_location(latitude: 48.8567, longitude: 2.3508)
+    #  cal.set_location(latitude: 48.8567, longitude: 2.3508)
     #
     # @example
-    #  set_location(coordinates_for_place('The little mermaid, Copenhagen'))
+    #  cal.set_location(coordinates_for_place('The little mermaid, Copenhagen'))
     #
     # @param [Number] latitude The latitude of the location to simulate.
     # @param [Number] longitude The longitude of the location to simulate.
@@ -32,7 +31,7 @@ module Calabash
     # maps api. This hash can be used in `set_location`.
     #
     # @example
-    #  coordinates_for_place('The little mermaid, Copenhagen')
+    #  cal.coordinates_for_place('The little mermaid, Copenhagen')
     #  # => {:latitude => 55.6760968, :longitude => 12.5683371}
     #
     # @return [Hash] Latitude and longitude for the given place

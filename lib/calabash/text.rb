@@ -14,6 +14,9 @@ module Calabash
 
     # Enter `text` into the first view matched by `query`.
     #
+    # @example
+    #  cal.enter_text_in({id: 'edit'}, "Hello World")
+    #
     # @see Calabash::Text#enter_text
     #
     # @param [String] text The text to type.
@@ -32,6 +35,9 @@ module Calabash
     end
 
     # Clears the text in the first view matched by `query`
+    #
+    # @example
+    #  cal.clear_text_in({id: 'edit'})
     #
     # @see Calabash::Text#clear_text
     #
@@ -63,10 +69,10 @@ module Calabash
     # See http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html
     #
     # @example
-    #  tap_keyboard_action_key(:search)
-    #  tap_keyboard_action_key(:send)
-    #  tap_keyboard_action_key(:next)
-    #  tap_keyboard_action_key(:previous)
+    #  cal.tap_keyboard_action_key(:search)
+    #  cal.tap_keyboard_action_key(:send)
+    #  cal.tap_keyboard_action_key(:next)
+    #  cal.tap_keyboard_action_key(:previous)
     #
     # Notice that, for Android, Calabash does not ensure that this particular action key is
     # actually available on the current keyboard.
@@ -86,13 +92,13 @@ module Calabash
     # Escapes single quotes in `string`.
     #
     # @example
-    #   escape_single_quotes("Let's get this done.")
+    #   cal.escape_single_quotes("Let's get this done.")
     #   => "Let\\'s get this done."
     #
     # @example
-    #  query("* text:'#{escape_single_quotes("Let's go")}'")
+    #  cal.query("* text:'#{escape_single_quotes("Let's go")}'")
     #  # Equivalent to
-    #  query("* text:'Let\\'s go'")
+    #  cal.query("* text:'Let\\'s go'")
     #
     # @param [String] string The string to escape.
     # @return [String] A string with its single quotes properly escaped.
