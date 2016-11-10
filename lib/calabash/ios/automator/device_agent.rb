@@ -135,13 +135,6 @@ args[0] = #{args[0]}])
           # Therefore we require that the duration is at least
           # 0.005 seconds pr pixel.
 
-          p options
-          p "HAT"
-
-
-
-
-
           duration = [
               options[:duration],
               MIN_SECONDS_PR_PIXEL_FOR_PAN *

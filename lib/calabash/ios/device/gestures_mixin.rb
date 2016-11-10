@@ -96,7 +96,7 @@ module Calabash
 
       # @!visibility private
       def _tap(query, options={})
-        view_to_touch = _gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, timeout: options[:timeout])
 
         rect = view_to_touch['rect']
         x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
@@ -109,7 +109,7 @@ module Calabash
 
       # @!visibility private
       def _double_tap(query, options={})
-        view_to_touch = _gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, timeout: options[:timeout])
 
         rect = view_to_touch['rect']
         x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
@@ -130,7 +130,7 @@ module Calabash
           raise ArgumentError e
         end
 
-        view_to_touch = _gesture_waiter.wait_for_view(query, options)
+        view_to_touch = _gesture_waiter.wait_for_view(query, timeout: options[:timeout])
 
         rect = view_to_touch['rect']
         x = rect['x'] + (rect['width'] * (options[:at][:x] / 100.0)).to_i
@@ -149,13 +149,13 @@ module Calabash
         to = coordinate(0, 0)
 
         unless query_from.nil?
-          from_view = _gesture_waiter.wait_for_view(query_from, options)
+          from_view = _gesture_waiter.wait_for_view(query_from, timeout: options[:timeout])
           from = coordinate(from_view['rect']['center_x'], from_view['rect']['center_y'])
           from_query_result = Calabash::QueryResult.create([from_view], query_from)
         end
 
         unless query_to.nil?
-          to_view = _gesture_waiter.wait_for_view(query_to, options)
+          to_view = _gesture_waiter.wait_for_view(query_to, timeout: options[:timeout])
           to = coordinate(to_view['rect']['center_x'], to_view['rect']['center_y'])
           Calabash::QueryResult.create([to_view], query_to)
         end
@@ -203,7 +203,7 @@ module Calabash
       # cause vertical gestures to start and/or end on one of these bars.
       def _pan(query, from, to, options={})
         gesture_waiter = _gesture_waiter
-        view_to_pan = gesture_waiter.wait_for_view(query, options)
+        view_to_pan = gesture_waiter.wait_for_view(query, timeout: options[:timeout])
 
         rect = view_to_pan['rect']
 
@@ -236,7 +236,7 @@ module Calabash
         end
 
         gesture_waiter = _gesture_waiter
-        view_to_flick = gesture_waiter.wait_for_view(query, options)
+        view_to_flick = gesture_waiter.wait_for_view(query, timeout: options[:timeout])
 
         begin
           check_for_broken_uia_automation(query, view_to_flick, gesture_waiter)
@@ -285,7 +285,7 @@ module Calabash
 
         gesture_waiter = _gesture_waiter
 
-        view_to_pinch = gesture_waiter.wait_for_view(query, options)
+        view_to_pinch = gesture_waiter.wait_for_view(query, timeout: options[:timeout])
         offset = uia_center_of_view(view_to_pinch)
 
         gesture_direction = direction == :in ? :out : :in

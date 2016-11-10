@@ -195,7 +195,8 @@ module Calabash
                timeout: timeout,
                retry_frequency: retry_frequency,
                exception_class: ViewNotFoundError) do
-        view_exists?(query)
+        result = query(query)
+        !result.empty? && result
       end.first
     end
 

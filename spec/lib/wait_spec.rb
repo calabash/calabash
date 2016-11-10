@@ -390,9 +390,9 @@ describe Calabash::Wait do
     it 'should wait for the view to appear' do
       stub_const('Calabash::Wait::Timeout', NeverRaiseTimeout)
       query = 'my query'
-      returned = [false, false, false, false, false, false, false, false, false, [{}]]
+      returned = [[], [], [], [], [], [], [], [], [], [{}]]
 
-      expect(dummy).to receive(:view_exists?).with(query).exactly(10).times.and_return(*returned)
+      expect(dummy).to receive(:query).with(query).exactly(10).times.and_return(*returned)
       expect(dummy).to receive(:sleep).with(Calabash::Wait.default_options[:retry_frequency]).exactly(9).times
 
       dummy.wait_for_view(query)
@@ -414,7 +414,7 @@ describe Calabash::Wait do
       default_options = Calabash::Wait.default_options
 
       expect(dummy).not_to receive(:sleep)
-      expect(dummy).to receive(:view_exists?).with(query).and_return([{}])
+      expect(dummy).to receive(:query).with(query).and_return([{}])
       expect(dummy).to receive(:wait_for).with(anything,
                                                timeout: default_options[:timeout],
                                                exception_class: Calabash::Wait::ViewNotFoundError,
@@ -431,7 +431,7 @@ describe Calabash::Wait do
       retry_frequency = 5
 
       expect(dummy).not_to receive(:sleep)
-      expect(dummy).to receive(:view_exists?).with(query).and_return([{}])
+      expect(dummy).to receive(:query).with(query).and_return([{}])
       expect(dummy).to receive(:wait_for).with(message,
                                                timeout: timeout,
                                                exception_class: Calabash::Wait::ViewNotFoundError,
@@ -446,7 +446,7 @@ describe Calabash::Wait do
       query = 'my query'
       result = {value: :value}
 
-      expect(dummy).to receive(:view_exists?).with(query).and_return([result])
+      expect(dummy).to receive(:query).with(query).and_return([result])
 
       expect(dummy.wait_for_view(query)).to eq(result)
     end
