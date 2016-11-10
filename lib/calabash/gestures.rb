@@ -622,21 +622,6 @@ module Calabash
     end
 
     # @!visibility private
-    define_method(:_pinch_screen) do |direction, options={}|
-      abstract_method!
-    end
-
-    # @!visibility private
-    define_method(:_pinch_to_zoom) do |direction, query, options={}|
-      abstract_method!
-    end
-
-    # @!visibility private
-    define_method(:_pinch_screen_to_zoom) do |direction, options={}|
-      abstract_method!
-    end
-
-    # @!visibility private
     DEFAULT_PAN_OPTIONS = {duration: 1}
   end
 end
