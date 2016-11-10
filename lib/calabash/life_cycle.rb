@@ -150,6 +150,14 @@ module Calabash
       true
     end
 
+    # Attempts to reset the changes Calabash has made to the device.
+    #
+    # This method does nothing at the moment, but will be required to reset the
+    # device changes in the future.
+    def reset_device_changes
+      true
+    end
+
     # @!visibility private
     define_method(:_send_current_app_to_background) do |for_seconds|
       abstract_method!(:_send_current_app_to_background)

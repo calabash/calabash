@@ -6,9 +6,10 @@ Before do |scenario|
   end
 
   reset_between_scenarios(scenario) do
-    cal.ensure_app_installed
-    cal.clear_app_data
-    cal.start_app
+    cal.reset_device_changes  # Resets changes Calabash has made to the device
+    cal.ensure_app_installed  # Installs the app unless it is already installed
+    cal.clear_app_data        # Clears the application data
+    cal.start_app             # Starts the application
   end
 end
 
