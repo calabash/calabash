@@ -8,8 +8,11 @@ module Calabash
     module Interactions
       # Go back. If the keyboard is shown, it will be dismissed.
       def go_back
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.perform_action('hide_soft_keyboard')}
-        press_back_button
+        Calabash::Internal.with_default_device(required_os: :android) do |device|
+          device.perform_action('hide_soft_keyboard')
+        end
+
+        press_physical_back_button
       end
 
       # Go to the home screen.
