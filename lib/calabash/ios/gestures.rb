@@ -62,20 +62,6 @@ module Calabash
         Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pinch(direction, '*', options)}
       end
 
-      # @!visibility private
-      # Concrete implementation of pinch_to_zoom
-      define_method (:_pinch_to_zoom) do |direction, query, options={}|
-        gesture_direction = direction == :in ? :out : :in
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pinch(gesture_direction, query, options)}
-      end
-
-      # @!visibility private
-      # Concrete implementation of pinch_screen_to_zoom
-      define_method (:_pinch_screen_to_zoom) do |direction, options={}|
-        gesture_direction = direction == :in ? :out : :in
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pinch(gesture_direction, '*', options)}
-      end
-
       private
 
       # Number of points from the top to start a full-screen vertical gesture.

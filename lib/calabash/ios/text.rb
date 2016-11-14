@@ -107,50 +107,13 @@ module Calabash
       end
 
       # Touches the keyboard delete key.
-      #
-      # The 'delete' key difficult to find and touch because its behavior
-      # changes depending on the iOS version and keyboard type.  Consider the
-      # following:
-      #
-      # On iOS 6, the 'delete' char code is _not_ \b.
-      # On iOS 7: The Delete char code is \b on non-numeric keyboards.
-      #           On numeric keyboards, the delete key is a button on the
-      #           the keyboard.
-      #
-      # By default, Calabash uses a raw UIAutomaton JavaScript call to tap the
-      # element named 'Delete'.  This works well in English localizations for
-      # most keyboards.  If you find that it does not work, use the options
-      # pass either an translation of 'Delete' for your localization or use the
-      # default the escaped keyboard character.
-      #
       # @example
-      #   # Uses UIAutomation to tap the 'Delete' key or button.
-      #   tap_keyboard_delete_key
+      #   cal_ios.tap_keyboard_delete_key
       #
-      #   # Types the \b key.
-      #   tap_keyboard_delete_key({:use_escaped_char => true})
-      #
-      #   # Types the \d key.
-      #   tap_keyboard_delete_key({:use_escaped_char => '\d'})
-      #
-      #   # Uses UIAutomation to tap the 'Slet' key or button.
-      #   tap_keyboard_delete_key({:delete_key_label => 'Slet'})
-      #
-      #   # Don't specify both options!  If :use_escape_sequence is truthy,
-      #   # Calabash will ignore the :delete_key_label and try to use an
-      #   # escaped character sequence.
-      #   tap_keyboard_delete_key({:use_escaped_char => true,
-      #                            :delete_key_label => 'Slet'})
-      #
-      # @param [Hash] options Alternative ways to tap the delete key.
-      # @option options [Boolean, String] :use_escaped_char (false) If true,
-      #  delete by typing the \b character.  If this value is truthy, but not
-      #  'true', they it is expected to be an alternative escaped character.
-      # @option options [String] :delete_key_label ('Delete') An alternative
-      #  localization of 'Delete'.
-      # @todo Need translations of 'Delete' key.
-      def tap_keyboard_delete_key(options = {})
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.tap_keyboard_delete_key(options)}
+      def tap_keyboard_delete_key
+        Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.tap_keyboard_delete_key
+        end
       end
 
       # Returns the the text in the first responder.
@@ -164,7 +127,9 @@ module Calabash
       #
       # @raise [RuntimeError] If there is no visible keyboard.
       def text_from_keyboard_first_responder
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.text_from_keyboard_first_responder}
+        Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.text_from_keyboard_first_responder
+        end
       end
 
       private

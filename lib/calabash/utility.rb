@@ -26,8 +26,8 @@ module Calabash
     #
     # @example
     #  # These are equivalent.
-    #  pan("*", percent(20, 50), percent(20, 100))
-    #  pan("*", {x: 20, y: 50}, {x: 20, y: 100})
+    #  cal.pan("*", percent(20, 50), percent(20, 100))
+    #  cal.pan("*", {x: 20, y: 50}, {x: 20, y: 100})
     #
     # @param [Number] x The value of the x percent.
     # @param [Number] y The value of the y percent.
@@ -43,8 +43,8 @@ module Calabash
     #
     # @example
     #  # These are equivalent.
-    #  tap_coordinate(coordinate(20, 50)
-    #  tap_coordinate({x: 20, y: 50})
+    #  cal.tap("button", offset: coordinate(20, 50))
+    #  cal.tap("button", offset: {x: 20, y: 50})
     #
     # @param [Number] x The value of the x.
     # @param [Number] y The value of the y.

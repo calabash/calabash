@@ -1,6 +1,5 @@
 require "run_loop"
 
-# @!visibility private
 module Calabash
   module IOS
     # @!visibility private
@@ -135,13 +134,6 @@ args[0] = #{args[0]}])
           # A pan seems to require 0.005 seconds pr. pixel.
           # Therefore we require that the duration is at least
           # 0.005 seconds pr pixel.
-
-          p options
-          p "HAT"
-
-
-
-
 
           duration = [
               options[:duration],

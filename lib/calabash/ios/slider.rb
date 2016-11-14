@@ -16,33 +16,24 @@ module Calabash
       #  * Use the index language feature:  "UISlider index:0"
       #
       # @example
-      #  slider_set_value("UISlider marked:'office slider'", 2)
-      #  slider_set_value("slider marked:'weather slider'", -1)
-      #  slider_set_value("UISlider", 11)
+      #  cal_ios.slider_set_value("UISlider marked:'office slider'", 2)
+      #  cal_ios.slider_set_value("slider marked:'weather slider'", -1)
+      #  cal_ios.slider_set_value("UISlider", 11)
       #
       # @param [String, Hash, Calabash::Query] query A query to that indicates
       #   in which slider to set the value.
       # @param [Numeric] value The value to set the slider to.  value.to_s should
       #  produce a String representation of a Number.
-      #
-      # @param [options] options Options to control the behavior of the gesture.
-      # @option options [Boolean] :animate (true) Animate the change.
-      # @option options [Boolean] :notify_targets (true) Simulate a UIEvent by
+      # @param [Boolean] animate (default: true) Animate the change.
+      # @param [Boolean] notify_targets (default: true) simulate a UIEvent by
       #  calling every target/action pair defined on the UISlider matching
       #  `query`.
       #
       # @raise [RuntimeError] When `query` does not match exactly one slider.
       # @raise [RuntimeError] When setting the value of the slider matched by
       #  `query` is not successful.
-      def slider_set_value(query, value,  options={})
+      def slider_set_value(query, value, animate: true, notify_targets: true)
         Query.ensure_valid_query(query)
-
-        default_options = {
-              :animate => true,
-              :notify_targets => true
-        }
-
-        merged_options = default_options.merge(options)
 
         found_none = "Expected '#{query}' to match exactly one view, but found no matches."
         query_object = Query.new(query)
@@ -53,7 +44,7 @@ module Calabash
                   "Expected '#{query}' to match exactly one view, but found '#{results.length}'",
                   results.join("\n")
             ].join("\n")
-            fail(message)
+            raise message
           else
             results.length == 1
           end
@@ -61,9 +52,11 @@ module Calabash
 
         value_str = value.to_s
 
-        args = [merged_options[:animate], merged_options[:notify_targets]]
+        args = [animate, notify_targets]
 
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.map_route(query, :changeSlider, value_str, *args)}
+        Calabash::Internal.with_default_device(required_os: :ios) do |device|
+          device.map_route(query, :changeSlider, value_str, *args)
+        end
       end
     end
   end
