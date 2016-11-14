@@ -25,7 +25,7 @@ module Calabash
       # Get the name of the currently focused activity
       #
       # @example
-      #  puts focused_activity
+      #  puts cal_android.focused_activity
       #  # => com.example.MainActivity
       #
       # @return [String] The name of the currently focused activity.
@@ -36,7 +36,7 @@ module Calabash
       # Get the name of the currently focused package
       #
       # @example
-      #  puts focused_package
+      #  puts cal_android.focused_package
       #  # => com.example
       #
       # @return [String] The name of the currently focused package
@@ -47,11 +47,11 @@ module Calabash
       # Sets the date of the first visible date picker widget.
       #
       # @example
-      #  set_date('2012-04-24')
+      #  cal_android.set_date('2012-04-24')
       #
       # @example
       #  date = Date.parse('3rd Feb 2012')
-      #  set_date(date)
+      #  cal_android.set_date(date)
       #
       # @param [Date, String] date The date to set. If given a String,
       #  `Date.parse` is called on the string.
@@ -91,11 +91,11 @@ module Calabash
       # Sets the time of the first visible time picker widget.
       #
       # @example
-      #  set_time('14:42')
+      #  cal_android.set_time('14:42')
       #
       # @example
       #  time = Time.parse('8:30 AM')
-      #  set_time(time)
+      #  cal_android.set_time(time)
       #
       # @param [Time, String] time The time to set. If given a String,
       #  `Time.parse` is called on the string.
