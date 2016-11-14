@@ -19,6 +19,7 @@ module Calabash
     require 'calabash/ios/slider'
     require 'calabash/ios/date_picker'
     require 'calabash/ios/automator'
+    require 'calabash/ios/web'
 
     include Calabash::IOS::Conditions
     include Calabash::IOS::Orientation
@@ -30,6 +31,7 @@ module Calabash
     include Calabash::IOS::Gestures
     include Calabash::IOS::Slider
     include Calabash::IOS::DatePicker
+    include Calabash::IOS::Web
   end
 
   # Contains the iOS implementations of the Calabash APIs.

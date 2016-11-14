@@ -15,6 +15,7 @@ module Calabash
     require 'calabash/android/orientation'
     require 'calabash/android/physical_buttons'
     require 'calabash/android/text'
+    require 'calabash/android/web'
     require 'calabash/android/console_helpers'
     require 'calabash/android/life_cycle'
     require 'calabash/android/scroll'
@@ -26,6 +27,7 @@ module Calabash
     include Calabash::Android::PhysicalButtons
     include Calabash::Android::Text
     include Calabash::Android::Scroll
+    include Calabash::Android::Web
   end
 
   # Contains the Android implementations of the Calabash APIs.
