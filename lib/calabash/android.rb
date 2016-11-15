@@ -104,6 +104,11 @@ class CalabashAndroidMethods < BasicObject
   end
 end
 
+# Setup the default device, if it fails, keep it as a message to display later
+Calabash::Internal.save_setup_default_device_error do
+  Calabash::Android.setup_default_device!
+end
+
 # Returns a object that exposes all of the public Calabash Android API.
 # This method should *always* be used to access the Calabash API. By default,
 # all methods are executed using the default device and the default

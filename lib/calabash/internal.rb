@@ -2,6 +2,27 @@ module Calabash
   # @!visibility private
   # Internal usage, NOT a public API
   module Internal
+    # @!visibility private
+    # Message that is saved when detecting the default device
+    def self.default_device_setup_message
+      @default_device_setup_message
+    end
+
+    # @!visibility private
+    def self.default_device_setup_message=(value)
+      @default_device_setup_message = value
+    end
+
+    # @!visibility private
+    # Sets up the default device using `&block`, saves error if it fails
+    def self.save_setup_default_device_error(&block)
+      begin
+        block.call
+      rescue => e
+        self.default_device_setup_message = e.message
+      end
+    end
+
     def self.with_default_device(required_os: nil, &block)
       unless block
         raise ArgumentError, "No block given"
@@ -10,7 +31,7 @@ module Calabash
       device = Calabash.default_device
 
       if device.nil?
-        raise "The default device is not set. Set it using Calabash.default_device = ..."
+        raise "The default device is not set. Could not set default_device automatically: #{self.default_device_setup_message}"
       end
 
       if required_os

@@ -18,6 +18,7 @@ script:
   - rake integration:ruby
   - rake integration:page-object-model
   - rake integration:cli
+  - rake integration:targets
 
 notifications:
   email:
