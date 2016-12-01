@@ -50,8 +50,6 @@ begin
 
   extend Calabash::ConsoleHelpers
 
-  Calabash::Android.setup_defaults!
-
   embed_lambda = lambda do |*_|
     Calabash::Logger.info 'Embed is not available in the console.'
     true

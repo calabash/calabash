@@ -54,8 +54,8 @@ module Calabash
 
         args = [animate, notify_targets]
 
-        Calabash::Internal.with_default_device(required_os: :ios) do |device|
-          device.map_route(query, :changeSlider, value_str, *args)
+        Calabash::Internal.with_current_target(required_os: :ios) do |target|
+          target.map_route(query, :changeSlider, value_str, *args)
         end
       end
     end

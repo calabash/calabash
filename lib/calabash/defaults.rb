@@ -24,7 +24,7 @@ module Calabash
     #
     # @return [Calabash::Application] The default application
     def default_application
-      Application.default
+      Calabash::Internal.with_current_target {|target| target.application}
     end
 
     # Set the default application.

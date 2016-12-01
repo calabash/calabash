@@ -62,7 +62,7 @@ module Calabash
     #
     # @return [Calabash::QueryResult] A result of the query
     def query(query, *args)
-      Calabash::Internal.with_default_device {|device| device.map_route(Query.new(query), :query, *args)}
+      Calabash::Internal.with_current_target {|target| target.map_route(Query.new(query), :query, *args)}
     end
 
     # Flashes any views matching `query`. Only one view is flashed at a time,
@@ -71,7 +71,7 @@ module Calabash
     # @param [String, Hash, Calabash::Query] query The query to match the
     #  view(s)
     def flash(query)
-      Calabash::Internal.with_default_device {|device| device.map_route(Query.new(query), :flash)}
+      Calabash::Internal.with_current_target {|target| target.map_route(Query.new(query), :flash)}
     end
 
     # Invoke a method in your application.
@@ -126,7 +126,7 @@ module Calabash
     # @return [Object] the result of performing the selector/method with the
     #  arguments (serialized)
     def backdoor(name, *arguments)
-      Calabash::Internal.with_default_device {|device| device.backdoor(name, *arguments)}
+      Calabash::Internal.with_current_target {|target| target.backdoor(name, *arguments)}
     end
   end
 end

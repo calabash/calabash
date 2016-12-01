@@ -41,7 +41,7 @@ When(/^calabash\/(android|ios) is required$/) do |os|
 end
 
 Then(/^Calabash sets a default device using the ENV$/) do
-  expect(Calabash.default_device.identifier).to eq('MY-SERIAL')
+  expect(Calabash::Internal.with_current_target {|target| target.device.identifier}).to eq('MY-SERIAL')
 end
 
 When(/^Calabash is asked to interact$/) do

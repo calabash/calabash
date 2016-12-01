@@ -52,9 +52,6 @@ module Calabash
 
     include ::Calabash::IOSInternal
 
-    require 'calabash/ios/defaults'
-    extend Calabash::IOS::Defaults
-
     require 'calabash/ios/legacy'
   end
 end
@@ -75,10 +72,19 @@ class CalabashIOSMethods < BasicObject
   end
 end
 
-# Setup the default device, if it fails, keep it as a message to display later
-Calabash::Internal.save_setup_default_device_error do
-  Calabash::IOS.setup_default_device!
-end
+# Set the default target state to the Android default targets
+Calabash::Internal.default_target_state = Calabash::TargetState::DefaultTargetState.new(
+    device_from_environment: lambda do
+      server = Calabash::IOS::Server.default
+      identifier = Calabash::IOS::Device.default_identifier_for_application(Calabash::IOS::Application.default_from_environment)
+
+      Calabash::IOS::Device.new(identifier, server)
+    end,
+    target_from_environment: lambda do |device|
+      application = Calabash::IOS::Application.default_from_environment
+      Calabash::Target.new(device, application)
+    end
+)
 
 # Returns a object that exposes all of the public Calabash iOS API.
 # This method should *always* be used to access the Calabash API. By default,

@@ -21,7 +21,7 @@ module Calabash
           raise 'No application given, and Application.default is not set'
         end
 
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.resume_app(path_or_application)}
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.resume_app(path_or_application)}
 
         true
       end
@@ -33,7 +33,7 @@ module Calabash
 
         go_home
         sleep(for_seconds)
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.resume_activity(package, activity)}
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.resume_activity(package, activity)}
       end
     end
   end

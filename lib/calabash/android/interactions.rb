@@ -8,8 +8,8 @@ module Calabash
     module Interactions
       # Go back. If the keyboard is shown, it will be dismissed.
       def go_back
-        Calabash::Internal.with_default_device(required_os: :android) do |device|
-          device.perform_action('hide_soft_keyboard')
+        Calabash::Internal.with_current_target(required_os: :android) do |target|
+          target.perform_action('hide_soft_keyboard')
         end
 
         press_physical_back_button
@@ -17,7 +17,9 @@ module Calabash
 
       # Go to the home screen.
       def go_home
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.go_home}
+        Calabash::Internal.with_current_target(required_os: :android) do
+          |target| target.go_home
+        end
 
         true
       end
@@ -30,7 +32,7 @@ module Calabash
       #
       # @return [String] The name of the currently focused activity.
       def focused_activity
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.current_focus[:activity]}
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.current_focus[:activity]}
       end
 
       # Get the name of the currently focused package
@@ -41,7 +43,7 @@ module Calabash
       #
       # @return [String] The name of the currently focused package
       def focused_package
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.current_focus[:package]}
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.current_focus[:package]}
       end
 
       # Sets the date of the first visible date picker widget.

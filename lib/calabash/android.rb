@@ -57,9 +57,6 @@ module Calabash
     # Hide from documentation
     send(:include, Calabash)
 
-    require 'calabash/android/defaults'
-    extend Calabash::Android::Defaults
-
     include ::Calabash::AndroidInternal
 
     # @!visibility private
@@ -104,10 +101,18 @@ class CalabashAndroidMethods < BasicObject
   end
 end
 
-# Setup the default device, if it fails, keep it as a message to display later
-Calabash::Internal.save_setup_default_device_error do
-  Calabash::Android.setup_default_device!
-end
+# Set the default target state to the Android default targets
+Calabash::Internal.default_target_state = Calabash::TargetState::DefaultTargetState.new(
+    device_from_environment: lambda do
+      server = Calabash::Android::Server.default
+      serial = Calabash::Android::Device.default_serial
+
+      Calabash::Android::Device.new(serial, server)
+    end,
+    target_from_environment: lambda do |device|
+      Calabash::Target.new(device, Calabash::Android::Application.default_from_environment)
+    end
+)
 
 # Returns a object that exposes all of the public Calabash Android API.
 # This method should *always* be used to access the Calabash API. By default,

@@ -24,7 +24,7 @@ module Calabash
         raise ArgumentError, "Expected longitude to be a number, not '#{longitude.class}'"
       end
 
-      Calabash::Internal.with_default_device {|device| device.set_location(latitude: latitude, longitude: longitude)}
+      Calabash::Internal.with_current_target {|target| target.set_location(latitude: latitude, longitude: longitude)}
     end
 
     # Get the latitude and longitude for a certain place, resolved via Google

@@ -46,7 +46,7 @@ module Calabash
 
       options = {at: at || {x: 50, y: 50}}
 
-      Calabash::Internal.with_default_device {|device| device.tap(Query.new(query), options)}
+      Calabash::Internal.with_current_target {|target| target.tap(Query.new(query), options)}
     end
 
     # Performs a **double_tap** on the first view that matches `query`.
@@ -66,7 +66,7 @@ module Calabash
 
       options = {at: at || {x: 50, y: 50}}
 
-      Calabash::Internal.with_default_device {|device| device.double_tap(Query.new(query), options)}
+      Calabash::Internal.with_current_target {|target| target.double_tap(Query.new(query), options)}
     end
 
     # Performs a **long_press** on the first view that matches `query`.
@@ -92,7 +92,7 @@ module Calabash
           duration: duration || 1.0
       }
 
-      Calabash::Internal.with_default_device {|device| device.long_press(Query.new(query), options)}
+      Calabash::Internal.with_current_target {|target| target.long_press(Query.new(query), options)}
     end
 
     # Performs a **pan** inside the first view that matches `query`.
@@ -136,7 +136,7 @@ module Calabash
           duration: duration || DEFAULT_PAN_OPTIONS[:duration]
       }
 
-      Calabash::Internal.with_default_device {|device| device.pan(Query.new(query), from, to, options)}
+      Calabash::Internal.with_current_target {|target| target.pan(Query.new(query), from, to, options)}
     end
 
     # Performs a **pan** from the center of the first view that matches
@@ -184,8 +184,8 @@ module Calabash
           duration: duration || DEFAULT_PAN_OPTIONS[:duration]
       }
 
-      Calabash::Internal.with_default_device do |device|
-        device.pan_between(Query.new(query_from), Query.new(query_to), options)
+      Calabash::Internal.with_current_target do |target|
+        target.pan_between(Query.new(query_from), Query.new(query_to), options)
       end
     end
 
@@ -322,8 +322,8 @@ module Calabash
           duration: duration || DEFAULT_PAN_OPTIONS[:duration]
       }
 
-      Calabash::Internal.with_default_device do |device|
-        device.flick(Query.new(query), from, to, options)
+      Calabash::Internal.with_current_target do |target|
+        target.flick(Query.new(query), from, to, options)
       end
     end
 
@@ -459,7 +459,7 @@ module Calabash
           duration: duration || DEFAULT_PAN_OPTIONS[:duration]
       }
 
-      Calabash::Internal.with_default_device {|device| device.pinch(:out, query, options)}
+      Calabash::Internal.with_current_target {|target| target.pinch(:out, query, options)}
     end
 
     # Performs a **pinch** inwards inside the first view match by `query`.
@@ -510,7 +510,7 @@ module Calabash
           duration: duration || DEFAULT_PAN_OPTIONS[:duration]
       }
 
-      Calabash::Internal.with_default_device {|device| device.pinch(:in, query, options)}
+      Calabash::Internal.with_current_target {|target| target.pinch(:in, query, options)}
     end
 
     # Performs a **pinch** outwards on the screen.

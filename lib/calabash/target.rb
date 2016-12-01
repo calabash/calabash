@@ -1,4 +1,8 @@
 module Calabash
+  module TargetState
+    require 'calabash/target_state/default_target_state'
+  end
+
   # @!visibility private
   # Target represents a test-target, which is usually an application running on
   # a specific device. The target is set-up for the strategies used to
@@ -7,9 +11,13 @@ module Calabash
   # DeviceAgent.
   #
   # @todo For now, we just delegate to the device code.
-  class Target
-    def initialize(device)
+  class Target < BasicObject
+    attr_reader :device
+    attr_reader :application
+
+    def initialize(device, application)
       @device = device
+      @application = application
     end
 
     def respond_to?(method)

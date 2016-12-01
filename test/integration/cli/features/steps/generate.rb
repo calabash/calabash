@@ -74,8 +74,10 @@ end
 
 When(/^I run Cucumber with CAL_APP set to (.*)$/) do |app|
   env = File.read('features/support/env.rb')
-  env.gsub!('Calabash::Android.setup_defaults!', 'Calabash.default_device = Calabash::Android::Device.allocate')
-  env.gsub!('Calabash::IOS.setup_defaults!', 'Calabash.default_device = Calabash::IOS::Device.allocate')
+  env.gsub!("require 'calabash/android'",
+            "require 'calabash/android';Calabash::Internal.default_target_state.set_default_device_from_user {Calabash::Android::Device.allocate}")
+  env.gsub!("require 'calabash/ios'",
+            "require 'calabash/ios';Calabash::Internal.default_target_state.set_default_device_from_user {Calabash::IOS::Device.allocate}")
   File.open('features/support/env.rb', 'w') {|file| file.puts env }
 
   File.open('features/support/stub.rb', 'w+') do |file|

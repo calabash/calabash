@@ -347,7 +347,9 @@ module Calabash
 
       # @!visibility private
       define_method(:_pinch_screen) do |options={}|
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.pinch(direction, "* id:'content'", options)}
+        Calabash::Internal.with_current_target(required_os: :android) do |target|
+          target.pinch(direction, "* id:'content'", options)
+        end
       end
     end
   end
