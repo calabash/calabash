@@ -20,6 +20,30 @@ module Calabash
       @application = application
     end
 
+    def start_app(options={})
+      device.start_app(application, options)
+    end
+
+    def install_app
+      device.install_app(application)
+    end
+
+    def clear_app_data
+      device.clear_app_data(application)
+    end
+
+    def ensure_app_installed
+      device.ensure_app_installed(application)
+    end
+
+    def uninstall_app
+      device.uninstall_app(application)
+    end
+
+    def resume_app
+      device.resume_app(application)
+    end
+
     def respond_to?(method)
       @device.respond_to?(method)
     end
