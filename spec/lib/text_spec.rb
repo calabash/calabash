@@ -2,12 +2,6 @@ describe Calabash::Text do
   let(:dummy_class) {Class.new {include Calabash; def screenshot_embed; ; end}}
   let(:world) {dummy_class.new}
 
-  let(:dummy_device) do
-    Class.new do
-      def screenshot(_); end
-    end.new
-  end
-
   let(:short_timeout) do
     if Luffa::Environment.travis_ci?
       0.1
@@ -16,9 +10,6 @@ describe Calabash::Text do
     end
   end
 
-  before do
-    allow(Calabash::Device).to receive(:default).and_return dummy_device
-  end
 
   describe '#enter_text' do
     it 'should invoke the implementation method' do

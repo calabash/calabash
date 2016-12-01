@@ -20,10 +20,21 @@ describe Calabash::IOS::Scroll do
     end.new
   end
 
-  before do
-    allow(Calabash::Device).to receive(:default).at_least(:once).and_return device
+  let(:target) do
+    Class.new(Calabash::Target) do
+    end.new(device, nil)
   end
 
+  before do
+    $_target = target
+
+    allow(Calabash::Internal).to receive(:default_target_state).and_return (Class.new do
+      def obtain_default_target
+        $_target
+      end
+    end.new)
+  end
+  
   # private
 
   describe '#_wait_for_exactly_one_scroll_view' do
@@ -133,7 +144,7 @@ describe Calabash::IOS::Scroll do
       it 'allows strings and symbols' do
         expect(Calabash::Query).to receive(:ensure_valid_query).and_return true
         expect(world).to receive(:_wait_for_exactly_one_scroll_view).and_return true
-        expect(device).to receive(:map_route).and_return([1])
+        expect(target).to receive(:map_route).and_return([1])
         expect(Calabash::QueryResult).to receive(:create).and_return true
 
         expect do
@@ -153,7 +164,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if results are empty' do
-        expect(device).to receive(:map_route).with(query, :scroll, direction).and_return([])
+        expect(target).to receive(:map_route).with(query, :scroll, direction).and_return([])
 
         expect do
           world.scroll(query, direction)
@@ -162,7 +173,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if first result is nil' do
-        expect(device).to receive(:map_route).with(query, :scroll, direction).and_return([nil])
+        expect(target).to receive(:map_route).with(query, :scroll, direction).and_return([nil])
 
         expect do
           world.scroll(query, direction)
@@ -170,7 +181,7 @@ describe Calabash::IOS::Scroll do
                            /Expected 'query' to match a UIScrollView or a subclass/
       end
       it 'returns a QueryResult' do
-        expect(device).to receive(:map_route).with(query, :scroll, direction).and_return([view_to_scroll])
+        expect(target).to receive(:map_route).with(query, :scroll, direction).and_return([view_to_scroll])
 
         result = world.scroll(query, direction)
         expect(result).to be_a_kind_of(Calabash::QueryResult)
@@ -215,7 +226,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is nil' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([nil])
+        expect(target).to receive(:map_route).with(*arguments).and_return([nil])
 
         expect do
           world.scroll_to_row(query, row, section)
@@ -224,7 +235,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is []' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([])
+        expect(target).to receive(:map_route).with(*arguments).and_return([])
 
         expect do
           world.scroll_to_row(query, row, section)
@@ -233,7 +244,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'returns a QueryResult' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
+        expect(target).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
 
         result = world.scroll_to_row(query, row, section)
         expect(result).to be_a_kind_of(Calabash::QueryResult)
@@ -286,7 +297,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is nil' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([nil])
+        expect(target).to receive(:map_route).with(*arguments).and_return([nil])
 
         expect do
           world.scroll_to_row_with_mark(query, mark)
@@ -295,7 +306,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is []' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([])
+        expect(target).to receive(:map_route).with(*arguments).and_return([])
 
         expect do
           world.scroll_to_row_with_mark(query, mark)
@@ -304,7 +315,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'returns a QueryResult' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
+        expect(target).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
 
         result = world.scroll_to_row_with_mark(query, mark)
         expect(result).to be_a_kind_of(Calabash::QueryResult)
@@ -349,7 +360,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is nil' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([nil])
+        expect(target).to receive(:map_route).with(*arguments).and_return([nil])
 
         expect do
           world.scroll_to_item(query, item, section)
@@ -358,7 +369,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is []' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([])
+        expect(target).to receive(:map_route).with(*arguments).and_return([])
 
         expect do
           world.scroll_to_item(query, item, section)
@@ -367,7 +378,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'returns a QueryResult' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
+        expect(target).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
 
         result = world.scroll_to_item(query, item, section)
         expect(result).to be_a_kind_of(Calabash::QueryResult)
@@ -420,7 +431,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is nil' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([nil])
+        expect(target).to receive(:map_route).with(*arguments).and_return([nil])
 
         expect do
           world.scroll_to_item_with_mark(query, mark)
@@ -429,7 +440,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'raises an error if the first result is []' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([])
+        expect(target).to receive(:map_route).with(*arguments).and_return([])
 
         expect do
           world.scroll_to_item_with_mark(query, mark)
@@ -438,7 +449,7 @@ describe Calabash::IOS::Scroll do
       end
 
       it 'returns a QueryResult' do
-        expect(device).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
+        expect(target).to receive(:map_route).with(*arguments).and_return([view_to_scroll])
 
         result = world.scroll_to_item_with_mark(query, mark)
         expect(result).to be_a_kind_of(Calabash::QueryResult)

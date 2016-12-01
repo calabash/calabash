@@ -198,24 +198,6 @@ describe Calabash::Device do
     end
   end
 
-  describe '#default' do
-    after do
-      Calabash::Device.default = nil
-    end
-
-    it 'should be able to set its default device' do
-      Calabash::Device.default = :my_device
-    end
-
-    it 'should be able to get its default device' do
-      device = :my_device
-
-      Calabash::Device.default = device
-
-      expect(Calabash::Device.default).to eq(device)
-    end
-  end
-
   describe '#parse_path_or_app_parameters' do
     it 'raises an error on invalid arguments' do
       expect { device.send(:parse_path_or_app_parameters, :foo) }.to raise_error ArgumentError

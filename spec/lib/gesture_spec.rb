@@ -4,15 +4,35 @@ describe Calabash::Gestures do
   let(:dummy_device_class) {Class.new(Calabash::Device) {def initialize; end}}
   let(:dummy_device) {dummy_device_class.new}
 
+  let(:device) do
+    Class.new(Calabash::Device) do
+      def initialize; end
+    end.new
+  end
+
+  let(:target) do
+    Class.new(Calabash::Target) do
+    end.new(device, nil)
+  end
+
+  before do
+    $_target = target
+
+    allow(Calabash::Internal).to receive(:default_target_state).and_return (Class.new do
+      def obtain_default_target
+        $_target
+      end
+    end.new)
+  end
+
   describe '#tap' do
-    it 'should delegate to the default device' do
+    it 'should delegate to the current target' do
       args = ["my query"]
       query = Calabash::Query.new(args[0])
       allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
       expected = [Calabash::Query.new("my query"), {at: {x: 50, y: 50}}]
 
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:tap).with(*expected)
+      expect(target).to receive(:tap).with(*expected)
 
       dummy_instance.tap(*args)
     end
@@ -29,14 +49,13 @@ describe Calabash::Gestures do
   end
 
   describe '#double_tap' do
-    it 'should delegate to the default device' do
+    it 'should delegate to the current target' do
       args = ["my query"]
       query = Calabash::Query.new(args[0])
       allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
       expected = [Calabash::Query.new("my query"), {at: {x: 50, y: 50}}]
 
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:double_tap).with(*expected)
+      expect(target).to receive(:double_tap).with(*expected)
 
       dummy_instance.double_tap(*args)
     end
@@ -53,14 +72,13 @@ describe Calabash::Gestures do
   end
 
   describe '#long_press' do
-    it 'should delegate to the default device' do
+    it 'should delegate to the current target' do
       args = ["my query"]
       query = Calabash::Query.new(args[0])
       allow(Calabash::Query).to receive(:new).with(args[0]).and_return(query)
       expected = [Calabash::Query.new("my query"), {at: {x: 50, y: 50}, duration: 1.0}]
 
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:long_press).with(*expected)
+      expect(target).to receive(:long_press).with(*expected)
 
       dummy_instance.long_press(*args)
     end
@@ -77,7 +95,7 @@ describe Calabash::Gestures do
   end
 
   describe '#pan' do
-    it 'should delegate to the default device' do
+    it 'should delegate to the current target' do
       query = "my query"
       from = {x: 0, y: 0}
       to = {x: 0, y: 0}
@@ -88,8 +106,7 @@ describe Calabash::Gestures do
 
       expected = [Calabash::Query.new(query), from, to, anything]
 
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:pan).with(*expected)
+      expect(target).to receive(:pan).with(*expected)
 
       dummy_instance.pan(*args)
     end
@@ -110,7 +127,7 @@ describe Calabash::Gestures do
   end
 
   describe '#pan_between' do
-    it 'should delegate to the default device' do
+    it 'should delegate to the current target' do
       query_from = "my query"
       query_to = "my query 2"
       args = [query_from, query_to]
@@ -123,8 +140,7 @@ describe Calabash::Gestures do
 
       expected = [from, to, anything]
 
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:pan_between).with(*expected)
+      expect(target).to receive(:pan_between).with(*expected)
 
       dummy_instance.pan_between(*args)
     end
@@ -226,7 +242,7 @@ describe Calabash::Gestures do
   end
 
   describe '#flick' do
-    it 'should delegate to the default device' do
+    it 'should delegate to the current target' do
       query = "my query"
       from = {x: 0, y: 0}
       to = {x: 0, y: 0}
@@ -236,8 +252,7 @@ describe Calabash::Gestures do
       allow(Calabash::Query).to receive(:new).with(query).and_return(q)
       expected = [Calabash::Query.new(query), from, to, anything]
 
-      allow(Calabash::Device).to receive(:default).and_return(dummy_device)
-      expect(Calabash::Device.default).to receive(:flick).with(*expected)
+      expect(target).to receive(:flick).with(*expected)
 
       dummy_instance.flick(*args)
     end

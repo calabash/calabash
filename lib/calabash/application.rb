@@ -9,19 +9,6 @@ module Calabash
     # @!visibility private
     include Calabash::Utility
 
-    # @!visibility private
-    @@default = nil
-
-    # @!visibility private
-    def self.default
-      @@default
-    end
-
-    # @!visibility private
-    def self.default=(value)
-      @@default = value
-    end
-
     attr_reader :path
 
     # Get the application from the default environment.

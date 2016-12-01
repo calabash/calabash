@@ -44,8 +44,8 @@ module Calabash
       device.resume_app(application)
     end
 
-    def respond_to?(method)
-      @device.respond_to?(method)
+    def respond_to?(*args)
+      @device.respond_to?(*args)
     end
 
     def method_missing(method, *args, &block)
