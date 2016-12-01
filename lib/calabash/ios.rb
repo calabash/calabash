@@ -12,7 +12,6 @@ module Calabash
     require 'calabash/ios/server'
     require 'calabash/ios/text'
     require 'calabash/ios/console_helpers'
-    require 'calabash/ios/uia'
     require 'calabash/ios/scroll'
     require 'calabash/ios/runtime'
     require 'calabash/ios/gestures'
@@ -25,7 +24,6 @@ module Calabash
     include Calabash::IOS::Orientation
     include Calabash::IOS::Interactions
     include Calabash::IOS::Text
-    include Calabash::IOS::UIA
     include Calabash::IOS::Scroll
     include Calabash::IOS::Runtime
     include Calabash::IOS::Gestures
