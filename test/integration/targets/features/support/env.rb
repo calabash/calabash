@@ -52,7 +52,7 @@ Calabash::Android::Device.class_eval do
   define_singleton_method(:singleton_method_added) do |method_name|
     if method_name == :default_serial && !@_stub_added
       @_stub_added = true
-      $_orig_default_serial_method = singleton_method(method_name)
+      $_orig_default_serial_method = method(method_name)
 
       self.define_singleton_method(:default_serial) do
         ::Stubs.new.default_serial
@@ -70,7 +70,7 @@ Calabash::IOS::Device.class_eval do
   define_singleton_method(:singleton_method_added) do |method_name|
     if method_name == :default_identifier_for_application && !@_stub_d_added
       @_stub_d_added = true
-      $_orig_default_serial_method = singleton_method(method_name)
+      $_orig_default_serial_method = method(method_name)
 
       self.define_singleton_method(:default_identifier_for_application) do |application|
         ::Stubs.new.default_identifier_for_application
@@ -79,7 +79,7 @@ Calabash::IOS::Device.class_eval do
 
     if method_name == :expect_compatible_server_endpoint && !@_stub_e_added
       @_stub_e_added = true
-      $_orig_default_identifier_for_application_method = singleton_method(method_name)
+      $_orig_default_identifier_for_application_method = method(method_name)
 
       self.define_singleton_method(:expect_compatible_server_endpoint) do |identifier, server|
         # Empty
