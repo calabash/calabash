@@ -21,17 +21,18 @@ end
 
 module Calabash
   def test_method_returning_device
-    Calabash::Internal.with_default_device do |device|
-      device
+    Calabash::Internal.with_current_target do |target|
+      target.device
     end
   end
 end
 
 Given(/^an ENV that uniquely identifies the default device for (android|ios)$/) do |os|
   if os == 'android'
+    stub_application_default_from_environment {:android_app}
     stub_default_serial {'MY-SERIAL'}
   elsif os == 'ios'
-    Calabash::IOS::Application.default = :some_application
+    stub_application_default_from_environment {:ios_app}
     stub_default_identifier_for_application {'MY-SERIAL'}
   end
 end
@@ -61,13 +62,14 @@ Given(/^an ENV that does not uniquely identify the default device for (android|i
   if os == 'android'
     stub_default_serial {raise 'Unable to set default device MY-MESSAGE'}
   elsif os == 'ios'
-    Calabash::IOS::Application.default = :some_application
+    stub_application_default_from_environment {:ios_app}
     stub_default_identifier_for_application {raise 'Unable to set default device MY-MESSAGE'}
   end
 end
 
 Then(/^Calabash does not set a default device using the ENV$/) do
-  expect(Calabash.default_device).to be_nil
+  expect(Calabash::Internal.default_target_state.
+      instance_variable_get(:@default_device_state)).to be_a(Calabash::TargetState::DefaultTargetState::State::Unknown)
 end
 
 Then(/^it does not fail$/) do
@@ -76,7 +78,7 @@ end
 
 Then(/^it fails stating why the default device was not set$/) do
   expect(@device).to be_nil
-  expect(@error.message).to eq('The default device is not set. Could not set default_device automatically: Unable to set default device MY-MESSAGE')
+  expect(@error.message).to eq('Could not set the default device-target automatically: Unable to set default device MY-MESSAGE')
 end
 
 Given(/^the user explicitly sets the default device$/) do

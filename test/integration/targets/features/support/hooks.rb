@@ -14,6 +14,14 @@ def stub_default_identifier_for_application(&block)
   end
 end
 
+def stub_application_default_from_environment(&block)
+  Stubs.class_eval do
+    define_method(:default_from_environment) do
+      block.call
+    end
+  end
+end
+
 Before do |scenario|
   if $_orig_default_serial_method
     stub_default_serial do

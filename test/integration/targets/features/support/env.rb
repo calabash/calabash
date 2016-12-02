@@ -32,6 +32,18 @@ class Stubs
   def default_identifier_for_application
 
   end
+
+  def default_from_environment
+
+  end
+end
+
+[Calabash::Application, Calabash::Android::Application, Calabash::IOS::Application].each do |clazz|
+  clazz.class_eval do
+    self.define_singleton_method(:default_from_environment) do
+      ::Stubs.new.default_from_environment
+    end
+  end
 end
 
 Calabash::Android::Device.class_eval do
