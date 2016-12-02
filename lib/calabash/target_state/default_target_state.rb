@@ -93,6 +93,8 @@ module Calabash
               # Set the default target now that we have set the default device
               set_default_target_from_environment
             rescue => e
+              Calabash::Logger.debug("Error while setting default device from ENV #{e.message}")
+              Calabash::Logger.debug(e.backtrace[0..5].join("\n"))
               @default_device_state = State::EnvironmentFailedToSet.new(e)
             end
           when State::UserSet, State::UserFailedToSet

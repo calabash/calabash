@@ -20,9 +20,9 @@ def require_calabash(to_require)
 end
 
 module Calabash
-  def test_method_returning_device
+  def test_method_returning_target
     Calabash::Internal.with_current_target do |target|
-      target.device
+      target
     end
   end
 end
@@ -41,21 +41,21 @@ When(/^calabash\/(android|ios) is required$/) do |os|
   require_calabash "calabash/#{os}"
 end
 
-Then(/^Calabash sets a default device using the ENV$/) do
+Then(/^Calabash sets a default device-target using the ENV$/) do
   expect(Calabash::Internal.with_current_target {|target| target.device.identifier}).to eq('MY-SERIAL')
 end
 
 When(/^Calabash is asked to interact$/) do
   begin
-    @device = cal.test_method_returning_device
+    @target = cal.test_method_returning_target
   rescue => e
     @error = e
   end
 end
 
-Then(/^it selects that device$/) do
+Then(/^it selects a target with that device$/) do
   expect(@error).to be_nil
-  expect(@device.identifier).to eq('MY-SERIAL')
+  expect(@target.device.identifier).to eq('MY-SERIAL')
 end
 
 Given(/^an ENV that does not uniquely identify the default device for (android|ios)$/) do |os|
@@ -67,7 +67,7 @@ Given(/^an ENV that does not uniquely identify the default device for (android|i
   end
 end
 
-Then(/^Calabash does not set a default device using the ENV$/) do
+Then(/^Calabash does not set a default device-target using the ENV$/) do
   expect(Calabash::Internal.default_target_state.
       instance_variable_get(:@default_device_state)).to be_a(Calabash::TargetState::DefaultTargetState::State::Unknown)
 end
@@ -76,8 +76,8 @@ Then(/^it does not fail$/) do
 
 end
 
-Then(/^it fails stating why the default device was not set$/) do
-  expect(@device).to be_nil
+Then(/^it fails stating why the default device target was not set$/) do
+  expect(@target).to be_nil
   expect(@error.message).to eq('Could not set the default device-target automatically: Unable to set default device MY-MESSAGE')
 end
 
