@@ -1,6 +1,6 @@
 module Calabash
   module Android
-    # Android specific life cyle methods.
+    # Android specific life cycle methods.
     module LifeCycle
       # Resume an application. If the application is already focused, nothing
       # will happen.
@@ -9,19 +9,8 @@ module Calabash
       #  go_home
       #  # Do something
       #  resume_app
-      #
-      # @param [String, Calabash::Application] path_or_application A path to the
-      #  application, or an instance of {Calabash::Application}.
-      #  Defaults to
-      #  {Calabash::Defaults#default_application Calabash.default_application}
-      def resume_app(path_or_application = nil)
-        path_or_application ||= Application.default
-
-        unless path_or_application
-          raise 'No application given, and Application.default is not set'
-        end
-
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.resume_app(path_or_application)}
+      def resume_app
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.resume_app}
 
         true
       end
@@ -33,7 +22,7 @@ module Calabash
 
         go_home
         sleep(for_seconds)
-        Calabash::Internal.with_default_device(required_os: :android) {|device| device.resume_activity(package, activity)}
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.resume_activity(package, activity)}
       end
     end
   end

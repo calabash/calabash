@@ -15,6 +15,7 @@ module Calabash
   require 'calabash/retry'
   require 'calabash/application'
   require 'calabash/device'
+  require 'calabash/target'
   require 'calabash/http'
   require 'calabash/server'
   require 'calabash/wait'
@@ -158,20 +159,18 @@ module Calabash
 
   # Is the device under test running Android?
   #
-  # @return [Boolean] Returns true if
-  #  {Calabash::Defaults#default_device Calabash.default_device} is an instance
-  #  of {Calabash::Android::Device}.
+  # @return [Boolean] Returns true if the current target is an Android device
   def android?
-    Android.const_defined?(:Device, false) && Device.default.is_a?(Android::Device)
+    Android.const_defined?(:Device, false) &&
+        Calabash::Internal.with_current_target {|target| target.device.is_a?(Android::Device)}
   end
 
   # Is the device under test running iOS?
   #
-  # @return [Boolean] Returns true if
-  #  {Calabash::Defaults#default_device Calabash.default_device} is an instance
-  #  of {Calabash::IOS::Device}.
+  # @return [Boolean] Returns true if the current target is an iOS device
   def ios?
-    IOS.const_defined?(:Device, false) && Device.default.is_a?(IOS::Device)
+    IOS.const_defined?(:Device, false) &&
+        Calabash::Internal.with_current_target {|target| target.device.is_a?(IOS::Device)}
   end
 
   # @!visibility private

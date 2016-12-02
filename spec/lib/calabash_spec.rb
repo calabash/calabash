@@ -57,8 +57,4 @@ describe Calabash do
       expect(Calabash.instance_methods).not_to include(:embed)
     end
   end
-
-  before do
-    allow(Calabash::Device).to receive(:default).and_return device
-  end
 end

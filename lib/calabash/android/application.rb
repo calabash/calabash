@@ -31,7 +31,8 @@ module Calabash
           Logger.error "Test-server '#{test_server_path}' does not exist."
           Logger.error "Build it using: '#{Calabash::Utility.bundle_exec_prepend}calabash build \"#{application_path}\"'"
           Logger.error ''
-          raise "Test-server '#{test_server_path}' does not exist."
+          raise ["Test-server '#{test_server_path}' does not exist.",
+                 "Build it using: '#{Calabash::Utility.bundle_exec_prepend}calabash build \"#{application_path}\"'"].join(' ')
         end
 
         Application.new(application_path, test_server_path)

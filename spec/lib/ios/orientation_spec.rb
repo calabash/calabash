@@ -19,12 +19,25 @@ describe Calabash::IOS::Orientation do
     end.new
   end
 
-  before do
-    allow(Calabash::Device).to receive(:default).and_return device
+  let(:target) do
+    Class.new(Calabash::Target) do
+    end.new(device, nil)
   end
 
+  before do
+    $_target = target
+
+    clz = Class.new do
+      def obtain_default_target
+        $_target
+      end
+    end
+
+    allow(Calabash::Internal).to receive(:default_target_state).and_return(clz.new)
+  end
+  
   it '#status_bar_orientation' do
-    expect(device).to receive(:status_bar_orientation).and_return 'o'
+    expect(target).to receive(:status_bar_orientation).and_return 'o'
 
     expect(world.status_bar_orientation).to be == 'o'
   end
@@ -116,13 +129,13 @@ describe Calabash::IOS::Orientation do
   end
 
   it '#rotate_device_right' do
-    expect(device).to receive(:rotate).with(:right).and_return true
+    expect(target).to receive(:rotate).with(:right).and_return true
     expect(world).to receive(:status_bar_orientation).and_return :orientation
     expect(world.rotate_device_right).to be == :orientation
   end
 
   it '#rotate_device_left' do
-    expect(device).to receive(:rotate).with(:left).and_return true
+    expect(target).to receive(:rotate).with(:left).and_return true
     expect(world).to receive(:status_bar_orientation).and_return :orientation
     expect(world.rotate_device_left).to be == :orientation
   end
@@ -136,13 +149,13 @@ describe Calabash::IOS::Orientation do
 
     describe 'canonical position' do
       it "converts 'bottom' to 'down'" do
-        expect(device).to receive(:rotate_home_button_to).with(:down).and_return :orientation
+        expect(target).to receive(:rotate_home_button_to).with(:down).and_return :orientation
 
         expect(world.rotate_home_button_to('bottom')).to be == :orientation
       end
 
       it "converts 'top' to 'up'" do
-        expect(device).to receive(:rotate_home_button_to).with(:up).and_return :orientation
+        expect(target).to receive(:rotate_home_button_to).with(:up).and_return :orientation
 
         expect(world.rotate_home_button_to('top')).to be == :orientation
       end

@@ -17,12 +17,8 @@ end
 case platform
   when 'android'
     require 'calabash/android'
-
-    Calabash::Android.setup_defaults!
   when 'ios'
     require 'calabash/ios'
-
-    Calabash::IOS.setup_defaults!
   else
     message = if platform.nil? || platform.empty?
                 'No platform given'

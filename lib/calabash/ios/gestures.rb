@@ -26,7 +26,7 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:bottom], to: swipe[:top]}})
 
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pan_between(nil, nil, gesture_options)}
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pan_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
@@ -35,7 +35,7 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:top], to: swipe[:bottom]}})
 
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pan_between(nil, nil, gesture_options)}
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pan_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
@@ -44,7 +44,7 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:bottom], to: swipe[:top]}})
 
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.flick_between(nil, nil, gesture_options)}
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.flick_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
@@ -53,13 +53,13 @@ module Calabash
         swipe = _swipe_coordinates_for_screen
         gesture_options = options.merge({offset: {from: swipe[:top], to: swipe[:bottom]}})
 
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.flick_between(nil, nil, gesture_options)}
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.flick_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
       # Concrete implementation of pinch_screen
       define_method (:_pinch_screen) do |direction, options={}|
-        Calabash::Internal.with_default_device(required_os: :ios) {|device| device.pinch(direction, '*', options)}
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pinch(direction, '*', options)}
       end
 
       private

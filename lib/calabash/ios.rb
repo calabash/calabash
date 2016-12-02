@@ -12,7 +12,6 @@ module Calabash
     require 'calabash/ios/server'
     require 'calabash/ios/text'
     require 'calabash/ios/console_helpers'
-    require 'calabash/ios/uia'
     require 'calabash/ios/scroll'
     require 'calabash/ios/runtime'
     require 'calabash/ios/gestures'
@@ -25,7 +24,6 @@ module Calabash
     include Calabash::IOS::Orientation
     include Calabash::IOS::Interactions
     include Calabash::IOS::Text
-    include Calabash::IOS::UIA
     include Calabash::IOS::Scroll
     include Calabash::IOS::Runtime
     include Calabash::IOS::Gestures
@@ -52,9 +50,6 @@ module Calabash
 
     include ::Calabash::IOSInternal
 
-    require 'calabash/ios/defaults'
-    extend Calabash::IOS::Defaults
-
     require 'calabash/ios/legacy'
   end
 end
@@ -74,6 +69,20 @@ class CalabashIOSMethods < BasicObject
     end
   end
 end
+
+# Set the default target state to the Android default targets
+Calabash::Internal.default_target_state = Calabash::TargetState::DefaultTargetState.new(
+    device_from_environment: lambda do
+      server = Calabash::IOS::Server.default
+      identifier = Calabash::IOS::Device.default_identifier_for_application(Calabash::IOS::Application.default_from_environment)
+
+      Calabash::IOS::Device.new(identifier, server)
+    end,
+    target_from_environment: lambda do |device|
+      application = Calabash::IOS::Application.default_from_environment
+      Calabash::Target.new(device, application)
+    end
+)
 
 # Returns a object that exposes all of the public Calabash iOS API.
 # This method should *always* be used to access the Calabash API. By default,

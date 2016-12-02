@@ -4,19 +4,6 @@ module Calabash
   class Device
     include Utility
 
-    # @!visibility private
-    @@default ||= nil
-
-    # @!visibility private
-    def self.default
-      @@default
-    end
-
-    # @!visibility private
-    def self.default=(value)
-      @@default = value
-    end
-
     attr_reader :identifier
     # @!visibility private
     attr_reader :server, :http_client, :logger

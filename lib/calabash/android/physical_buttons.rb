@@ -9,8 +9,8 @@ module Calabash
 
       # @!visibility private
       def press_physical_button(key)
-        Calabash::Internal.with_default_device(required_os: :android) do |device|
-          device.perform_action('press_physical_key', key)
+        Calabash::Internal.with_current_target(required_os: :android) do |target|
+          target.perform_action('press_physical_key', key)
         end
 
         true

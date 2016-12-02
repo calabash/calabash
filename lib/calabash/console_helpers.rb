@@ -86,7 +86,7 @@ module Calabash
 
     # Outputs all visible elements as a tree.
     def tree
-      ConsoleHelpers.dump(Calabash::Internal.with_default_device {|device| device.dump})
+      ConsoleHelpers.dump(Calabash::Internal.with_current_target {|target| target.dump})
       true
     end
 

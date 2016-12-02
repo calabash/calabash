@@ -1,8 +1,12 @@
 Given(/^I am targeting an (.*) device$/) do |os|
+  Calabash::Internal.default_target_state = Calabash::TargetState::DefaultTargetState.new(
+      device_from_environment: lambda {}, target_from_environment: lambda {})
   if os.downcase == 'android'
-    Calabash.default_device = FakeAndroidDevice.new
+    Calabash::Internal.default_target_state.set_default_device_from_user {FakeAndroidDevice.new}
+    Calabash::Internal.default_target_state.set_default_target_from_user {Calabash::Target.new(FakeAndroidDevice.new, nil)}
   elsif os.downcase == 'ios'
-    Calabash.default_device = FakeIOSDevice.new
+    Calabash::Internal.default_target_state.set_default_device_from_user {FakeIOSDevice.new}
+    Calabash::Internal.default_target_state.set_default_target_from_user {Calabash::Target.new(FakeIOSDevice.new, nil)}
   else
     raise "Unknown os '#{os}'"
   end
