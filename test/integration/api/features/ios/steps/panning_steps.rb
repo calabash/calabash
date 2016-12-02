@@ -101,7 +101,7 @@ When(/^Calabash is asked to pan left on it very fast$/) do
   cal.pan_left("UIScrollView", duration: 0.1)
 end
 
-Then(/^Calabash will limit the speed to ensure the pan is not a flick$/) do
+Then(/^Calabash will limit the inertia to ensure the pan is not a flick$/) do
   after = extract_scroll("UIScrollView")
   distance = @before[:x] - after[:x]
 

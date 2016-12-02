@@ -131,19 +131,12 @@ args[0] = #{args[0]}])
 
         # @!visibility private
         def pan(options)
-          # A pan seems to require 0.005 seconds pr. pixel.
-          # Therefore we require that the duration is at least
-          # 0.005 seconds pr pixel.
-
-          duration = [
-              options[:duration],
-              MIN_SECONDS_PR_PIXEL_FOR_PAN *
-                  Coordinates.distance(options[:coordinates][:from], options[:coordinates][:to])
-          ].max
-
           client.pan_between_coordinates(options[:coordinates][:from],
                                          options[:coordinates][:to],
-                                         {:duration => duration})
+                                         {
+                                             :duration => options[:duration],
+                                             :allow_inertia => false
+                                         })
         end
 
         # @!visibility private
