@@ -21,11 +21,13 @@ describe Calabash::IOS::Text do
   before do
     $_target = target
 
-    allow(Calabash::Internal).to receive(:default_target_state).and_return (Class.new do
+    clz = Class.new do
       def obtain_default_target
         $_target
       end
-    end.new)
+    end
+
+    allow(Calabash::Internal).to receive(:default_target_state).and_return(clz.new)
   end
 
   let(:world) do
