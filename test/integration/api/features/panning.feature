@@ -29,7 +29,7 @@ Feature: Panning
   Scenario: Panning as fast as possible
     Given any view that reacts to panning left
     When Calabash is asked to pan left on it very fast
-    Then Calabash will limit the speed to ensure the pan is not a flick
+    Then Calabash will limit the inertia to ensure the pan is not a flick
 
   Scenario: Panning down inside the screen
     Given any screen that reacts to panning down

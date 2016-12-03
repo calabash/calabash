@@ -141,8 +141,7 @@ module Calabash
         Calabash::QueryResult.create([view_to_touch], query)
       end
 
-      # @!visibility private
-      def _pan_between(query_from, query_to, options={})
+      def parse_swipe_between_args(query_from, query_to, options)
         from_query_result = nil
         to_query_result  = nil
         from = coordinate(0, 0)
@@ -181,6 +180,14 @@ module Calabash
             to[:y] += y || 0
           end
         end
+
+        [from, to, options, from_query_result, to_query_result]
+      end
+
+      # @!visibility private
+      def _pan_between(query_from, query_to, options={})
+        from, to, options, from_query_result, to_query_result =
+            parse_swipe_between_args(query_from, query_to, options)
 
         @automator.pan({coordinates:
                             {from: from,
@@ -229,47 +236,38 @@ module Calabash
       # If the view has a UINavigationBar or UITabBar, the defaults *might*
       # cause vertical gestures to start and/or end on one of these bars.
       def _flick(query, from, to, options)
-        begin
-          _expect_valid_duration(options)
-        rescue ArgumentError => e
-          raise ArgumentError, e
-        end
-
         gesture_waiter = _gesture_waiter
-        view_to_flick = gesture_waiter.wait_for_view(query, timeout: options[:timeout])
+        view_to_pan = gesture_waiter.wait_for_view(query, timeout: options[:timeout])
 
-        begin
-          check_for_broken_uia_automation(query, view_to_flick, gesture_waiter)
-        rescue => e
-          raise "Could not flick with query: #{query}\n#{e.message}"
-        end
-
-        rect = view_to_flick['rect']
+        rect = view_to_pan['rect']
 
         from_x = rect['width'] * (from[:x]/100.0)
         from_y = rect['height'] * (from[:y]/100.0)
-        from_offset = percent(from_x, from_y)
 
         to_x = rect['width'] * (to[:x]/100.0)
         to_y = rect['height'] * (to[:y]/100.0)
-        to_offset = percent(to_x, to_y)
 
-        uia_serialize_and_call(:flickOffset, from_offset, to_offset, options)
+        @automator.flick({coordinates: {from: coordinate(from_x, from_y), to: coordinate(to_x, to_y)},
+                        duration: options[:duration]})
 
-        Calabash::QueryResult.create([view_to_flick], query)
+
+        Calabash::QueryResult.create([view_to_pan], query)
       end
 
       # @!visibility private
-      def flick_screen(view_to_pan, from_offset, to_offset, options)
-        begin
-          _expect_valid_duration(options)
-        rescue ArgumentError => e
-          raise ArgumentError, e
-        end
+      def _flick_between(query_from, query_to, options={})
+        from, to, options, from_query_result, to_query_result =
+            parse_swipe_between_args(query_from, query_to, options)
 
-        uia_serialize_and_call(:flickOffset, from_offset, to_offset, options)
+        @automator.flick({coordinates:
+                            {from: from,
+                             to: to},
+                        duration: options[:duration]})
 
-        Calabash::QueryResult.create([view_to_pan], '*')
+        {
+            :from => from_query_result,
+            :to => to_query_result
+        }
       end
 
       # @!visibility private

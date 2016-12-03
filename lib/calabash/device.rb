@@ -177,6 +177,12 @@ module Calabash
       _pan_between(query_from, query_to, options)
     end
 
+    # Performs a `flick` between two elements.
+    # @!visibility private
+    def flick_between(query_from, query_to, options={})
+      _flick_between(query_from, query_to, options)
+    end
+
     # Performs a `flick` on the (first) view that matches `query`.
     # @see Calabash::Gestures#flick
     # @!visibility private
@@ -364,6 +370,11 @@ module Calabash
 
     # @!visibility private
     def _pan_between(query_from, query_to, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
+    def _flick_between(query_from, query_to, options={})
       abstract_method!
     end
 
