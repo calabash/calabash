@@ -141,28 +141,12 @@ args[0] = #{args[0]}])
 
         # @!visibility private
         def flick(options)
-          gesture_options = {
-            duration: 0.2
-          }
-
-          delta = options[:delta]
-
-          # The UIA deltas are too small.
-          scaled_delta = {
-            :x => delta[:x] * 2.0,
-            :y => delta[:y] * 2.0
-          }
-
-          hash = query_for_coordinates(options)
-          view = hash[:view]
-
-          start_point = point_from(view)
-          end_point = point_from(view, {:offset => scaled_delta})
-
-          client.pan_between_coordinates(start_point,
-                                         end_point,
-                                         gesture_options)
-          [view]
+          client.pan_between_coordinates(options[:coordinates][:from],
+                                         options[:coordinates][:to],
+                                         {
+                                             :duration => options[:duration],
+                                             :allow_inertia => true
+                                         })
         end
 
         # @!visibility private
