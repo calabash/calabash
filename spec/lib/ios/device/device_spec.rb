@@ -657,6 +657,9 @@ describe Calabash::IOS::Device do
         end
 
         it 'calls clear_app_on_simulator when the app is installed' do
+          allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path).and_return(true)
+          allow_any_instance_of(Calabash::IOS::Application).to receive(:same_sha1_as?).and_return(true)
+          expect(mock_bridge).to receive(:installed_app_bundle_dir).and_return('path.app')
           expect(app).to receive(:simulator_bundle?).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
           expect(device).to receive(:run_loop_bridge).and_return mock_bridge
@@ -666,13 +669,12 @@ describe Calabash::IOS::Device do
           expect(device.send(:clear_app_data, app)).to be_truthy
         end
 
-        it 'does nothing if the app is not installed' do
-          expect(app).to receive(:simulator_bundle?).and_return true
+        it 'fails if the app is not installed' do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
           expect(device).to receive(:run_loop_bridge).and_return mock_bridge
           expect(mock_bridge).to receive(:app_is_installed?).and_return false
 
-          expect(device.send(:clear_app_data, app)).to be_truthy
+          expect{device.send(:clear_app_data, app)}.to raise_error
         end
       end
 

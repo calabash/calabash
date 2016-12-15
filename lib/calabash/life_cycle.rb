@@ -65,6 +65,19 @@ module Calabash
 
     # Clears the contents of the current target's application. This is roughly
     # equivalent to reinstalling the application.
+    #
+    # If the application is not installed (or the test-server on Android), then
+    # this method will fail.
+    #
+    # @example
+    #  # Clear the application data if we have not tagged our Cucumber scenario
+    #  # with no_reset
+    #  Before('~@no_reset) do
+    #   ensure_app_installed
+    #   clear_app_data
+    #  end
+    #
+    # @raise [RuntimeError] if the application is not installed.
     def clear_app_data
       Calabash::Internal.with_current_target {|target| target.clear_app_data}
     end

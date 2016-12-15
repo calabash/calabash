@@ -507,11 +507,18 @@ module Calabash
           end
 
           bridge = run_loop_bridge(@run_loop_device, application)
-          if bridge.app_is_installed?
-            clear_app_data_on_simulator(application, @run_loop_device, bridge)
-          else
-            true
+
+          unless bridge.app_is_installed?
+            raise "Cannot clear application data, the application '#{application.identifier}' is not installed"
           end
+
+          installed_app = Calabash::IOS::Application.new(bridge.send(:installed_app_bundle_dir))
+
+          unless installed_app.same_sha1_as?(application)
+            raise "Cannot clear application data, the application '#{application.identifier}' installed is not the same as #{application.path}"
+          end
+
+          clear_app_data_on_simulator(application, @run_loop_device, bridge)
         elsif application.device_binary?
           @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
 
