@@ -84,6 +84,10 @@ module Calabash
         raise ArgumentError, 'You must provide a block'
       end
 
+      if timeout.nil?
+        raise ArgumentError, 'Timeout cannot be nil'
+      end
+
       # Timeout.timeout will never timeout if the given `timeout` is zero.
       # We will raise an exception if the timeout is zero.
       # Timeout.timeout already raises an exception if `timeout` is negative.
@@ -136,7 +140,8 @@ module Calabash
     #
     # @param [String, Proc] timeout_message The error message if timed out.
     # @param [Number] timeout (default: {Calabash::Wait.default_options
-    #  Calabash::Wait.default_options[:timeout]}) The time before
+    #  Calabash::Wait.default_options[:timeout]}) The time to wait before
+    #  failing.
     # @param [Number] retry_frequency (default: {Calabash::Wait.default_options
     #  Calabash::Wait.default_options[:retry_frequency]}) How often to check
     #  for the block to be truthy
