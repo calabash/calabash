@@ -770,6 +770,26 @@ module Calabash
 
       # @!visibility private
       def ts_clear_app_data(application)
+        unless application.is_a?(Calabash::Android::Application)
+          raise "Cannot clear application data, the application given does not include a test-server"
+        end
+
+        unless installed_packages.include?(application.identifier)
+          raise "Cannot clear application data, the application '#{application.identifier}' is not installed"
+        end
+
+        unless exact_app_installed?(application)
+          raise "Cannot clear application data, the application '#{application.identifier}' installed is not the same as #{application.path}"
+        end
+
+        unless installed_packages.include?(application.test_server.identifier)
+          raise "Cannot clear application data, the test-server '#{application.test_server.identifier}' is not installed"
+        end
+
+        unless exact_app_installed?(application.test_server)
+          raise "Cannot clear application data, the test-server '#{application.test_server.identifier}' installed is not the same as #{application.test_server.path}"
+        end
+
         parameters =
             {
                 intent: {
@@ -857,6 +877,15 @@ module Calabash
 
         # Return true to avoid cluttering the console
         true
+      end
+
+      def exact_app_installed?(application)
+        unless installed_packages.include?(application.identifier)
+          return false
+        end
+
+        installed_app_md5_checksum = md5_checksum_for_app_package(application.identifier)
+        application.md5_checksum == installed_app_md5_checksum
       end
 
       # @!visibility private
