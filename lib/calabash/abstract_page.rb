@@ -13,16 +13,45 @@ module Calabash
   #
   # We have a great examples of using the POM in the Calabash 2.0 repository.
   #   * https://github.com/calabash/calabash/tree/develop/samples/shared-page-logic
-  class Page
+  class AbstractPage
     # @!visibility private
     def self.inherited(subclass)
-      unless subclass.superclass.name == "Calabash::Page"
+      # We have been invoked because of our own 'inherited'
+      if subclass.superclass.name == "Calabash::AbstractPage"
+        # Add Android and IOS subclasses to our direct subclass
+        @@_inheriting = true
+        subclass.const_set(:Android, Class.new(subclass) do
+        end)
+        subclass.const_set(:IOS, Class.new(subclass) do
+        end)
+        @@_inheriting = false
+      elsif !((subclass.name == "Android" || subclass.name == "IOS") &&
+          subclass.superclass && subclass.superclass.superclass.name == "Calabash::AbstractPage") &&
+          !@@_inheriting
+
         raise TypeError, ["#{subclass} cannot inherit from #{subclass.superclass}.",
-                          " Can only inherit directly from Calabash::Page"].join("")
+                          " Can only inherit directly from Calabash::AbstractPage,",
+                          " or from platform-specific implementations",
+                          " #{subclass}::Android and #{subclass}::IOS"].join("")
       end
     end
 
     def self.new(*args)
+      if name == "Calabash::AbstractPage"
+        raise "Cannot instantiate a Calabash::AbstractPage, inherit from this class"
+      end
+
+      # We are the direct subclass of AbstractPage, we should instantiate the platform-specific page
+      if superclass.name == "Calabash::AbstractPage"
+        if cal.android?
+          return const_get(:Android).new(*args)
+        elsif cal.ios?
+          return const_get(:IOS).new(*args)
+        else
+          raise "Unable to instantiate #{self}, cannot detect the current platform"
+        end
+      end
+
       instance = allocate
       # Freeze the instance
       instance.freeze
