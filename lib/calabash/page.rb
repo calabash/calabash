@@ -1,28 +1,60 @@
 module Calabash
   # A base class for the Page Object Model (POM) or Page Object Pattern.
   #
-  # We recommend the POM for testing cross-platform apps.
+  # We generally recommend structuring the testing project using a page object
+  # model.
   #
   # @example
-  #  # You must have a page for the platforms you target
-  #  class Android::MyPage < Calabash::Page
-  #    # ...
+  #  # Definition
+  #  class LoginPage < Calabash::Page
+  #    HELP_BUTTON_QUERY = Calabash::Query.new({id: 'help'})
+  #
+  #    def tap_help
+  #      cal.tap(HELP_BUTTON_QUERY)
+  #    end
   #  end
   #
-  #  cal.page(MyPage).await
-  #
-  # We have a great examples of using the POM in the Calabash 2.0 repository.
-  #   * https://github.com/calabash/calabash/tree/develop/samples/shared-page-logic
+  #  # Usage
+  #  LoginPage.new.tap_help
   class Page
     # @!visibility private
     def self.inherited(subclass)
-      unless subclass.superclass.name == "Calabash::Page"
+      # We have been invoked because of our own 'inherited'
+      if subclass.superclass.name == "Calabash::Page"
+        # Add Android and IOS subclasses to our direct subclass
+        @@_inheriting = true
+        subclass.const_set(:Android, Class.new(subclass) do
+        end)
+        subclass.const_set(:IOS, Class.new(subclass) do
+        end)
+        @@_inheriting = false
+      elsif !((subclass.name == "Android" || subclass.name == "IOS") &&
+          subclass.superclass && subclass.superclass.superclass.name == "Calabash::Page") &&
+          !@@_inheriting
+
         raise TypeError, ["#{subclass} cannot inherit from #{subclass.superclass}.",
-                          " Can only inherit directly from Calabash::Page"].join("")
+                          " Can only inherit directly from Calabash::Page,",
+                          " or from platform-specific implementations",
+                          " #{subclass}::Android and #{subclass}::IOS"].join("")
       end
     end
 
     def self.new(*args)
+      if name == "Calabash::Page"
+        raise "Cannot instantiate a Calabash::Page, inherit from this class"
+      end
+
+      # We are the direct subclass of Page, we should instantiate the platform-specific page
+      if superclass.name == "Calabash::Page"
+        if cal.android?
+          return const_get(:Android).new(*args)
+        elsif cal.ios?
+          return const_get(:IOS).new(*args)
+        else
+          raise "Unable to instantiate #{self}, cannot detect the current platform"
+        end
+      end
+
       instance = allocate
       # Freeze the instance
       instance.freeze
@@ -44,7 +76,7 @@ module Calabash
     #    end
     #  end
     #
-    #  cal.page(HomePage).await # Uses `trait`
+    #  HomePage.new.await # Uses `trait`
     #
     # @return [String, Hash, Calabash::Query] A query identifying the page.
     def trait
@@ -68,11 +100,6 @@ module Calabash
       end
 
       cal.wait_for_view(trait, timeout: timeout, timeout_message: timeout_message)
-    end
-
-    # @!visibility private
-    class StubPage
-
     end
   end
 end

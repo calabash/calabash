@@ -53,7 +53,6 @@ module Calabash
   extend Calabash::Defaults
 
   require 'calabash/page'
-  require 'calabash/abstract_page'
 
   # Is the device under test running Android?
   #
