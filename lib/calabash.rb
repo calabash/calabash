@@ -174,14 +174,6 @@ module Calabash
   end
 end
 
-unless Object.const_defined?(:Android)
-  Object.const_set(:Android, Module.new)
-end
-
-unless Object.const_defined?(:IOS)
-  Object.const_set(:IOS, Module.new)
-end
-
 if Calabash::Environment::DEBUG_CALLED_METHODS
   $stdout.puts "#{Calabash::Color.red('Will print every Calabash method called!')}"
   $stdout.puts "#{Calabash::Color.red('Warning: This might slow down your test drastically')}"
