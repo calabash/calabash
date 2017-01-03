@@ -90,7 +90,7 @@ module Calabash
       # Number of points from the bottom to start a full-screen vertical gesture.
       def gesture_points_from_bottom
         # Dragging from the bottom will lift the transport controls.
-        points_from_bottom = 10
+        points_from_bottom = 20
 
         # Tab bar will intercept touches _and_ its hit box is larger than its
         # visible rect!
