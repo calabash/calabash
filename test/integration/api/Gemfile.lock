@@ -12,12 +12,12 @@ PATH
       json
       luffa
       rubyzip (~> 1.1)
-      run_loop (>= 2.2.2, < 3.0)
+      run_loop (>= 2.2.4, < 3.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.3)
+    CFPropertyList (2.3.4)
     awesome_print (1.7.0)
     builder (3.2.2)
     clipboard (1.1.1)
@@ -36,9 +36,9 @@ GEM
     diff-lcs (1.2.5)
     edn (1.1.1)
     escape (0.0.4)
-    geocoder (1.4.0)
+    geocoder (1.4.1)
     gherkin (4.0.0)
-    httpclient (2.8.2.4)
+    httpclient (2.8.3)
     i18n (0.7.0)
     json (1.8.3)
     luffa (2.0.0)
@@ -63,7 +63,7 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     rubyzip (1.2.0)
-    run_loop (2.2.2)
+    run_loop (2.2.4)
       CFPropertyList (~> 2.2)
       awesome_print (~> 1.2)
       command_runner_ng (>= 0.0.2)
@@ -71,7 +71,7 @@ GEM
       i18n (>= 0.7.0, < 1.0)
       json (~> 1.8)
       thor (>= 0.18.1, < 1.0)
-    thor (0.19.1)
+    thor (0.19.4)
 
 PLATFORMS
   ruby

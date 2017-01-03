@@ -455,11 +455,13 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def pinch_out(query, duration: nil)
+      Query.ensure_valid_query(query)
+
       options = {
           duration: duration || DEFAULT_PAN_OPTIONS[:duration]
       }
 
-      Calabash::Internal.with_current_target {|target| target.pinch(:out, query, options)}
+      Calabash::Internal.with_current_target {|target| target.pinch(:out, Query.new(query), options)}
     end
 
     # Performs a **pinch** inwards inside the first view match by `query`.
@@ -506,11 +508,13 @@ module Calabash
     # @raise [ViewNotFoundError] If the `query` returns no results.
     # @raise [ArgumentError] If `query` is invalid.
     def pinch_in(query, duration: nil)
+      Query.ensure_valid_query(query)
+
       options = {
           duration: duration || DEFAULT_PAN_OPTIONS[:duration]
       }
 
-      Calabash::Internal.with_current_target {|target| target.pinch(:in, query, options)}
+      Calabash::Internal.with_current_target {|target| target.pinch(:in, Query.new(query), options)}
     end
 
     # Performs a **pinch** outwards on the screen.

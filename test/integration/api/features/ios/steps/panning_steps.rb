@@ -1,4 +1,5 @@
 def extract_scroll(query)
+  cal.wait_for_view(query)
   result = cal.query(query, :contentOffset).first
 
   {x: result['X'], y: result['Y']}

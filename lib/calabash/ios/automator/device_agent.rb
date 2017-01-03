@@ -97,37 +97,16 @@ args[0] = #{args[0]}])
         end
 
         # @!visibility private
-        def pinch(in_out, options)
-          dupped_options = options.dup
-
-          if dupped_options[:query].nil?
-            element = element_for_device_screen
-            coordinates = point_from(element, options)
-          else
-            hash = query_for_coordinates(dupped_options)
-            element = hash[:view]
-            coordinates = hash[:coordinates]
-          end
-
-          in_out = in_out.to_s
-          duration = dupped_options[:duration]
-          amount = dupped_options[:amount]
-
-          gesture_options = {
-            :pinch_direction => in_out,
-            :amount => amount,
-            :duration => duration
-          }
-
+        def pinch(options)
           client.perform_coordinate_gesture("pinch",
-                                            coordinates[:x],
-                                            coordinates[:y],
-                                            gesture_options)
-
-          [element]
+                                            options[:coordinates][:x],
+                                            options[:coordinates][:y],
+                                            {
+                                                :pinch_direction => options[:pinch_direction],
+                                                :duration => options[:duration],
+                                                :amount => options[:amount]
+                                            })
         end
-
-        MIN_SECONDS_PR_PIXEL_FOR_PAN = 0.006
 
         # @!visibility private
         def pan(options)

@@ -59,7 +59,7 @@ module Calabash
       # @!visibility private
       # Concrete implementation of pinch_screen
       define_method (:_pinch_screen) do |direction, options={}|
-        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pinch(direction, '*', options)}
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pinch(direction, Calabash::Query.new('*'), options)}
       end
 
       private
