@@ -96,7 +96,7 @@ Calabash::Internal.default_target_state = Calabash::TargetState::DefaultTargetSt
 #
 # @see Calabash::IOS
 #
-# @return [Object] Instance responding to all Calabash iOS methods
+# @return [CalabashIOSMethods] Instance responding to all Calabash iOS methods
 #  in the API.
 def cal_ios
   CalabashIOSMethods.new

@@ -243,7 +243,7 @@ end
 #
 # @see {Calabash}
 #
-# @return [Object] Instance responding to all cross-platform Calabash methods
+# @return [CalabashMethods] Instance responding to all cross-platform Calabash methods
 #  in the API.
 def cal
   CalabashMethods.new

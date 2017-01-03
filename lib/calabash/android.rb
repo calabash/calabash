@@ -126,7 +126,7 @@ Calabash::Internal.default_target_state = Calabash::TargetState::DefaultTargetSt
 #
 # @see Calabash::Android
 #
-# @return [Object] Instance responding to all Calabash Android methods
+# @return [CalabashAndroidMethods] Instance responding to all Calabash Android methods
 #  in the API.
 def cal_android
   CalabashAndroidMethods.new
