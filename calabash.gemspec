@@ -50,7 +50,7 @@ Public License.}
   spec.add_dependency 'geocoder', '>= 1.1.8', '< 2.0'
   spec.add_dependency 'httpclient', '~> 2.6'
   spec.add_dependency 'escape', '>= 0.0.4', '< 1.0'
-  spec.add_dependency 'run_loop', ">= 2.2.2", "< 3.0"
+  spec.add_dependency 'run_loop', ">= 2.2.4", "< 3.0"
   spec.add_dependency 'clipboard'
 
   # These dependencies should match the xamarin-test-cloud dependencies.
