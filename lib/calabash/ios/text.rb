@@ -34,6 +34,8 @@ module Calabash
 
         unless wait_for_view(view)['text'].empty?
           tap(view)
+          wait_for_view("UICalloutBarButton marked:'Select All'")
+          sleep 0.5
           tap("UICalloutBarButton marked:'Select All'")
           sleep 0.5
           tap_keyboard_delete_key
