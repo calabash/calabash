@@ -54,109 +54,6 @@ module Calabash
 
   require 'calabash/page'
 
-  # Instantiate a page object for the current platform.
-  #
-  # @note Your pages **must** be in the scope of either Android or IOS. See the
-  #  examples for details.
-  #
-  # @example
-  #  # android/pages/my_page.rb
-  #  class Android::MyPage < Calabash::Page
-  #    def method
-  #      # [...]
-  #    end
-  #  end
-  #
-  #  # step definition
-  #  Given(/[...]/) do
-  #    # Calabash will determine your platform and pick the Android page.
-  #    page(MyPage).method
-  #  end
-  #
-  # @example
-  #  # This example shows page code sharing across iOS and Android
-  #  # Please see the sample 'shared-page-logic' for details.
-  #  # pages/abstract_login_page.rb
-  #  class AbstractLoginPage < Calabash::Page
-  #    def login(username, password)
-  #     cal.enter_text_in(username_field, username)
-  #     # [...]
-  #    end
-  #
-  #    private
-  #
-  #    def username_field
-  #      abstract_method!
-  #    end
-  #  end
-  #
-  #  # pages/android_login_page.rb
-  #  class Android::LoginPage < SharedLoginPage
-  #    private
-  #
-  #    def username_field
-  #      "* marked:'a_username'"
-  #    end
-  #
-  #    # [...]
-  #  end
-  #
-  #
-  # @see #android?
-  # @see #ios?
-  # @param [Class] page_class The page to instantiate
-  # @return [Calabash::Page] An instance of the page class
-  def page(page_class)
-    if android?
-      platform_module = Object.const_get(:Android)
-    elsif ios?
-      platform_module = Object.const_get(:IOS)
-    else
-      raise 'Cannot detect running platform'
-    end
-
-    unless page_class.is_a?(Class)
-      raise ArgumentError, "Expected a 'Class', got '#{page_class.class}'"
-    end
-
-    page_name = page_class.name
-    full_page_name = "#{platform_module}::#{page_name}"
-
-    if Calabash.is_defined?(full_page_name)
-      page_class = platform_module.const_get(page_name, false)
-
-      if page_class.is_a?(Class)
-        modules = page_class.included_modules.map(&:to_s)
-
-        if modules.include?("Calabash::#{platform_module}")
-          Logger.warn("Page '#{page_class}' includes Calabash::#{platform_module}. It is recommended not to include Calabash.")
-          Logger.warn("Use cal.<method> for cross-platform methods, cal_android.<method> for Android-only and cal_ios.<method> for iOS-only")
-        end
-
-        if modules.include?('Calabash::Android') &&
-            modules.include?('Calabash::IOS')
-          raise "Page '#{page_class}' includes both Calabash::Android and Calabash::IOS"
-        end
-
-        unless page_class.ancestors.include?(Calabash::Page)
-          raise "Page '#{page_class}' is not a Calabash::Page"
-        end
-
-        page = page_class.send(:new, self)
-
-        if page.is_a?(Calabash::Page)
-          page
-        else
-          raise "Page '#{page_class}' is not a Calabash::Page"
-        end
-      else
-        raise "Page '#{page_class}' is not a class"
-      end
-    else
-      raise "No such page defined '#{full_page_name}'"
-    end
-  end
-
   # Is the device under test running Android?
   #
   # @return [Boolean] Returns true if the current target is an Android device
@@ -275,14 +172,6 @@ module Calabash
       Logger.warn 'Embed is not available in this context. Will not embed.'
     end
   end
-end
-
-unless Object.const_defined?(:Android)
-  Object.const_set(:Android, Module.new)
-end
-
-unless Object.const_defined?(:IOS)
-  Object.const_set(:IOS, Module.new)
 end
 
 if Calabash::Environment::DEBUG_CALLED_METHODS

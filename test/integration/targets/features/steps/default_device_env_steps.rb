@@ -72,10 +72,6 @@ Then(/^Calabash does not set a default device-target using the ENV$/) do
       instance_variable_get(:@default_device_state)).to be_a(Calabash::TargetState::DefaultTargetState::State::Unknown)
 end
 
-Then(/^it does not fail$/) do
-
-end
-
 Then(/^it fails stating why the default device target was not set$/) do
   expect(@target).to be_nil
   expect(@error.message).to eq('Could not set the default device-target automatically: Unable to set default device MY-MESSAGE')

@@ -128,3 +128,20 @@ Then(/^the auto generated skeleton runs with the (.*) platform$/) do |os|
     end
   end
 end
+
+And(/^I have added a page$/) do
+  FileUtils.mkdir('features/pages')
+
+  File.open('features/pages/my_page.rb', 'w+') do |file|
+    file.puts("class MyPage < Calabash::Page")
+    file.puts("end")
+  end
+end
+
+When(/^I run Cucumber as dry\-run$/) do
+  spawn_process_expect_exit_code({"BUNDLE_GEMFILE" => nil}, "bundle", "exec", "cucumber", "--dry-run")
+end
+
+Then(/^it does not fail as the skeleton defines a page stub$/) do
+  # We assert that the previous step did not raise an error
+end

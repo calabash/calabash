@@ -14,3 +14,10 @@ Feature: Generating a Cucumber skeleton
       | app        | os        |
       | app.apk    | Android   |
       | app.ipa    | iOS   |
+
+  @cleanup_tmp_dir
+  Scenario: Running dry-run
+    Given I have generated a Cucumber skeleton
+    And I have added a page
+    When I run Cucumber as dry-run
+    Then it does not fail as the skeleton defines a page stub
