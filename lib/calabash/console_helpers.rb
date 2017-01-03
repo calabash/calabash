@@ -8,8 +8,8 @@ module Calabash
     # Reloads all required files that have git changes
     def reload_git_files
       files_to_reload =
-          (`cd ../../../ && git status`.lines.grep(/modified/).map{|l| l.split(" ").last.gsub('../', '')} +
-              `cd ../../../ && git ls-files --others --exclude-standard`.lines).map(&:chomp)
+          (`git status`.lines.grep(/modified/).map{|l| l.split(" ").last.gsub('../', '')} +
+              `git ls-files --others --exclude-standard`.lines).map(&:chomp)
 
       $LOADED_FEATURES.each do |file|
         files_to_reload.each do |reload_name|
