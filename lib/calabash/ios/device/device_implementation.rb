@@ -329,6 +329,9 @@ module Calabash
 
       # @!visibility private
       def _start_app(application, options={})
+        # If the application is already running, then stop the application first
+        stop_app
+
         if application.simulator_bundle?
           start_app_on_simulator(application, options)
 
@@ -605,7 +608,7 @@ module Calabash
       # prepare the environment for simctl actions.
       def run_loop_bridge(run_loop_simulator_device, application)
         run_loop_app = RunLoop::App.new(application.path)
-        RunLoop::CoreSimulator.new(run_loop_simulator_device, run_loop_app)
+        RunLoop::CoreSimulator.new(run_loop_simulator_device, run_loop_app, quit_sim_on_init: false)
       end
 
       # @!visibility private
@@ -701,7 +704,8 @@ module Calabash
                     :app => application.path,
                     :bundle_id => application.identifier,
                     :device_target => run_loop_device.instruments_identifier(RunLoop::SimControl.new.xcode),
-                    :uia_strategy => strategy
+                    :uia_strategy => strategy,
+                    :quit_sim_on_init => false
               }
         @start_options = default_options.merge(options_from_user)
       end
