@@ -36,6 +36,6 @@ $ be guard     # Run unit tests as you develop.
 
 ```
 $ rake integration:page-object-model  # Run POM tests
-$ rake integration:ruby               # Run tests ensuing correct Ruby interfacing
+$ rake integration:ruby               # Run tests ensuring correct Ruby interfacing
 $ rake integration:cli                # Run command line interface tests
 ```
