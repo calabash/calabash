@@ -1,16 +1,21 @@
-# Calabash is a Behavior-driven development (BDD) framework for Android and
-# iOS. It supports both native and hybrid app testing.
+# Calabash is a mobile automation tool used for automatic UI-testing.
+# It supports Android and iOS, both native and hybrid app testing.
 #
 # It is developed and maintained by Xamarin and is released under the Eclipse
 # Public License.
 module Calabash
+  class RequiredBothPlatformsError < LoadError
+  end
+
   require 'calabash/version'
   require 'calabash/environment'
   require 'calabash/logger'
   require 'calabash/color'
   require 'calabash/utility'
+  require 'calabash/retry'
   require 'calabash/application'
   require 'calabash/device'
+  require 'calabash/target'
   require 'calabash/http'
   require 'calabash/server'
   require 'calabash/wait'
@@ -24,9 +29,11 @@ module Calabash
   require 'calabash/query'
   require 'calabash/text'
   require 'calabash/interactions'
+  require 'calabash/web'
   require 'calabash/defaults'
   require 'calabash/legacy'
   require 'calabash/console_helpers'
+  require 'calabash/internal'
 
 
   require 'calabash/patch'
@@ -42,126 +49,25 @@ module Calabash
   include Calabash::Orientation
   include Calabash::Text
   include Calabash::Interactions
+  include Calabash::Web
   extend Calabash::Defaults
 
   require 'calabash/page'
 
-  # Instantiate a page object for the current platform.
-  #
-  # @note Your pages **must** be in the scope of either Android or IOS. See the
-  #  examples for details.
-  #
-  # @example
-  #  # android/pages/my_page.rb
-  #  class Android::MyPage < Calabash::Page
-  #    include Calabash::Android
-  #
-  #    # [...]
-  #  end
-  #
-  #  # step definition
-  #  Given(/[...]/) do
-  #    # Calabash will determine your platform and pick the Android page.
-  #    page(MyPage).method
-  #  end
-  #
-  # @example
-  #  # This example shows page code sharing across iOS and Android
-  #  # Please see the sample 'shared-page-logic' for details.
-  #  # pages/abstract_login_page.rb
-  #  class AbstractLoginPage < Calabash::Page
-  #    def login(username, password)
-  #     enter_text_in(username_field, username)
-  #     # [...]
-  #    end
-  #
-  #    private
-  #
-  #    def username_field
-  #      abstract_method!
-  #    end
-  #  end
-  #
-  #  # pages/android_login_page.rb
-  #  class Android::LoginPage < SharedLoginPage
-  #    include Calabash::Android
-  #
-  #    private
-  #
-  #    def username_field
-  #      "* marked:'a_username'"
-  #    end
-  #
-  #    # [...]
-  #  end
-  #
-  #
-  # @see #android?
-  # @see #ios?
-  # @param [Class] page_class The page to instantiate
-  # @return [Calabash::Page] An instance of the page class
-  def page(page_class)
-    if android?
-      platform_module = Object.const_get(:Android)
-    elsif ios?
-      platform_module = Object.const_get(:IOS)
-    else
-      raise 'Cannot detect running platform'
-    end
-
-    unless page_class.is_a?(Class)
-      raise ArgumentError, "Expected a 'Class', got '#{page_class.class}'"
-    end
-
-    page_name = page_class.name
-    full_page_name = "#{platform_module}::#{page_name}"
-
-    if Calabash.is_defined?(full_page_name)
-      page_class = platform_module.const_get(page_name, false)
-
-      if page_class.is_a?(Class)
-        modules = page_class.included_modules.map(&:to_s)
-
-        unless modules.include?("Calabash::#{platform_module}")
-          raise "Page '#{page_class}' does not include Calabash::#{platform_module}"
-        end
-
-        if modules.include?('Calabash::Android') &&
-            modules.include?('Calabash::IOS')
-          raise "Page '#{page_class}' includes both Calabash::Android and Calabash::IOS"
-        end
-
-        page = page_class.send(:new, self)
-
-        if page.is_a?(Calabash::Page)
-          page
-        else
-          raise "Page '#{page_class}' is not a Calabash::Page"
-        end
-      else
-        raise "Page '#{page_class}' is not a class"
-      end
-    else
-      raise "No such page defined '#{full_page_name}'"
-    end
-  end
-
   # Is the device under test running Android?
   #
-  # @return [Boolean] Returns true if
-  #  {Calabash::Defaults#default_device Calabash.default_device} is an instance
-  #  of {Calabash::Android::Device}.
+  # @return [Boolean] Returns true if the current target is an Android device
   def android?
-    Android.const_defined?(:Device, false) && Device.default.is_a?(Android::Device)
+    Android.const_defined?(:Device, false) &&
+        Calabash::Internal.with_current_target {|target| target.device.is_a?(Android::Device)}
   end
 
   # Is the device under test running iOS?
   #
-  # @return [Boolean] Returns true if
-  #  {Calabash::Defaults#default_device Calabash.default_device} is an instance
-  #  of {Calabash::IOS::Device}.
+  # @return [Boolean] Returns true if the current target is an iOS device
   def ios?
-    IOS.const_defined?(:Device, false) && Device.default.is_a?(IOS::Device)
+    IOS.const_defined?(:Device, false) &&
+        Calabash::Internal.with_current_target {|target| target.device.is_a?(IOS::Device)}
   end
 
   # @!visibility private
@@ -268,14 +174,6 @@ module Calabash
   end
 end
 
-unless Object.const_defined?(:Android)
-  Object.const_set(:Android, Module.new)
-end
-
-unless Object.const_defined?(:IOS)
-  Object.const_set(:IOS, Module.new)
-end
-
 if Calabash::Environment::DEBUG_CALLED_METHODS
   $stdout.puts "#{Calabash::Color.red('Will print every Calabash method called!')}"
   $stdout.puts "#{Calabash::Color.red('Warning: This might slow down your test drastically')}"
@@ -316,4 +214,37 @@ if Calabash::Environment::DEBUG_CALLED_METHODS
   end
 
   set_trace_func(trace_func)
+end
+
+# @!visibility private
+class CalabashMethodsInternal
+  include ::Calabash
+end
+
+# @!visibility private
+class CalabashMethods < BasicObject
+  include ::Calabash
+
+  instance_methods.each do |method_name|
+    define_method(method_name) do |*args, &block|
+      ::CalabashMethodsInternal.new.send(method_name, *args, &block)
+    end
+  end
+end
+
+# Returns a object that exposes all of the public Calabash cross-platform API.
+# This method should *always* be used to access the Calabash API. By default,
+# all methods are executed using the default device and the default
+# application.
+#
+# For OS specific methods use {cal_android} and {cal_ios}
+#
+# All API methods are available with documentation in {Calabash}
+#
+# @see {Calabash}
+#
+# @return [CalabashMethods] Instance responding to all cross-platform Calabash methods
+#  in the API.
+def cal
+  CalabashMethods.new
 end

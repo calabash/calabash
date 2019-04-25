@@ -5,21 +5,99 @@ module Calabash
   # Methods you can use in the Calabash console to help you
   # interact with your app.
   module ConsoleHelpers
+    # Reloads all required files that have git changes
+    def reload_git_files
+      files_to_reload =
+          (`git status`.lines.grep(/modified/).map{|l| l.split(" ").last.gsub('../', '')} +
+              `git ls-files --others --exclude-standard`.lines).map(&:chomp)
+
+      $LOADED_FEATURES.each do |file|
+        files_to_reload.each do |reload_name|
+          if file.end_with?(reload_name)
+            puts "LOADING #{file}"
+            load file
+            break
+          end
+        end
+      end
+
+      true
+    end
+
+    # Outputs all calabash methods
+    def cal_methods
+      c = Class.new(BasicObject) do
+        include Calabash
+      end
+
+      ConsoleHelpers.puts_unbound_methods(c, 'cal.')
+      true
+    end
+
+    # Outputs a calabash method
+    def cal_method(method)
+      c = Class.new(BasicObject) do
+        include Calabash
+      end
+
+      ConsoleHelpers.puts_unbound_method(c, method.to_sym, 'cal.')
+      true
+    end
+
+    # Outputs all calabash iOS methods
+    def cal_ios_methods
+      c = Class.new(BasicObject) do
+        include Calabash::IOSInternal
+      end
+
+      ConsoleHelpers.puts_unbound_methods(c, 'cal_ios.')
+      true
+    end
+
+    # Outputs a calabash Android method
+    def cal_ios_method(method)
+      c = Class.new(BasicObject) do
+        include Calabash::IOSInternal
+      end
+
+      ConsoleHelpers.puts_unbound_method(c, method.to_sym, 'cal_ios.')
+      true
+    end
+
+    # Outputs all calabash Android methods
+    def cal_android_methods
+      c = Class.new(BasicObject) do
+        include Calabash::AndroidInternal
+      end
+
+      ConsoleHelpers.puts_unbound_methods(c, 'cal_android.')
+      true
+    end
+
+    # Outputs a calabash Android method
+    def cal_android_method(method)
+      c = Class.new(BasicObject) do
+        include Calabash::AndroidInternal
+      end
+
+      ConsoleHelpers.puts_unbound_method(c, method.to_sym, 'cal_android.')
+      true
+    end
 
     # Outputs all visible elements as a tree.
     def tree
-      ConsoleHelpers.dump(Device.default.dump)
+      ConsoleHelpers.dump(Calabash::Internal.with_current_target {|target| target.dump})
       true
     end
 
     # List the visible element classes.
     def classes
-      query("*").map{|e| e['class']}.uniq
+      cal.query("*").map{|e| e['class']}.uniq
     end
 
     # List the visible element ids.
     def ids
-      query("*").map{|e| e['id']}.compact
+      cal.query("*").map{|e| e['id']}.compact
     end
 
     # Copy all the commands entered in the current console session into the OS
@@ -92,14 +170,31 @@ module Calabash
     # @!visibility private
     def puts_console_details
       puts ''
-      puts Color.blue('#             =>  Useful Methods  <=              #')
-      puts Color.cyan('>     ids => List all the visible ids.')
-      puts Color.cyan('> classes => List all the visible classes.')
-      puts Color.cyan(">    tree => The app's visible view hierarchy.")
-      puts Color.cyan('>    copy => Copy console commands to the Clipboard.')
-      puts Color.cyan('>   clear => Clear the console.')
-      puts Color.cyan('> verbose => Turn debug logging on.')
-      puts Color.cyan('>   quiet => Turn debug logging off.')
+      puts '#             =>  Useful Console Methods  <=              #'
+      puts Color.cyan('>         ids => List all the visible ids.')
+      puts Color.cyan('>     classes => List all the visible classes.')
+      puts Color.cyan(">        tree => The app's visible view hierarchy.")
+      puts Color.cyan('>        copy => Copy console commands to the Clipboard.')
+      puts Color.cyan('>       clear => Clear the console.')
+      puts Color.cyan('>     verbose => Turn debug logging on.')
+      puts Color.cyan('>       quiet => Turn debug logging off.')
+      puts Color.cyan('> cal_methods => Print all cross-platform Calabash methods.')
+      puts Color.cyan('> cal_method(method) => Print all information about a Calabash method')
+
+      if defined?(Calabash::AndroidInternal)
+        puts ''
+        puts 'Android specific'
+        puts Color.cyan('> cal_android_methods => Print all Android-specific Calabash methods.')
+        puts Color.cyan('> cal_android_method(method) => Print all information about an Android-specific Calabash method.')
+      end
+
+      if defined?(Calabash::IOSInternal)
+        puts ''
+        puts 'iOS specific'
+        puts Color.cyan('> cal_ios_methods => Print all iOS-specific Calabash methods.')
+        puts Color.cyan('> cal_ios_method(method) => Print all information about an ios-specific Calabash method.')
+      end
+
       puts ''
     end
 
@@ -190,6 +285,79 @@ module Calabash
     # @!visibility private
     def self.visible?(data)
       raise AbstractMethodError
+    end
+
+    # @!visibility private
+    def self.puts_unbound_methods(clazz, prefix)
+      (clazz.instance_methods - BasicObject.instance_methods).each do |method_sym|
+        signature,description = method_signature(clazz.instance_method(method_sym))
+
+        puts_method(signature, description, prefix)
+      end
+    end
+
+    # @!visibility private
+    def self.puts_unbound_method(clazz, method, prefix)
+      signature,description = method_signature(clazz.instance_method(method), true)
+
+      puts_method(signature, description, prefix)
+    end
+
+    # @!visibility private
+    def self.puts_method(signature, description, prefix)
+      if signature != nil
+        puts Color.yellow(description)
+        puts Color.blue("#{prefix}#{signature}")
+        puts ''
+      end
+    end
+
+    # @!visibility private
+    def self.method_signature(method, full_description = false)
+      file_name, line = method.source_location
+
+      file = File.open(file_name, 'r')
+
+      description = nil
+      read_next_lines = false
+
+      (line-1).times do
+        line = file.gets.strip
+
+        if line.start_with?('#')
+          if line.length == 1 || line.start_with?("# @")
+            read_next_lines = false
+          end
+
+          if description.nil?
+            description = line[2..-1]
+            read_next_lines = true
+          elsif read_next_lines || full_description
+            description = "#{description}\n#{line[2..-1]}"
+          end
+        else
+          description = nil
+        end
+      end
+
+      signature = file.gets.strip[4..-1]
+
+      method_name = if signature.index('(')
+                      signature[0,signature.index('(')]
+                    else
+                      signature
+                    end
+
+      # Remove alias'ed methods
+      if method_name != method.name.to_s
+        signature = nil
+      end
+
+      if description && description.start_with?("@!visibility private")
+        signature = nil
+      end
+
+      [signature,description]
     end
   end
 end

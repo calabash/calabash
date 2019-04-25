@@ -1,0 +1,5 @@
+# Cucumber does not load env.rb when running a dry-run. As the pages inherit
+# from Calabash::Page we should require calabash stubs, which are empty scopes
+# and classes.
+
+require 'calabash/stubs'

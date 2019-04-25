@@ -61,8 +61,13 @@ describe Calabash::IOS::Device do
       it 'returns the instruments identifier of the simulator' do
         stub_const('Calabash::Environment::DEVICE_IDENTIFIER', 'some identifier')
         sim = RunLoop::Device.new('fake', '8.0', 'some identifier')
-        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return(sim)
-        expect(sim).to receive(:instruments_identifier).and_return 'fake (8.0 Simulator)'
+        sim_control = RunLoop::SimControl.new
+        expect(RunLoop::SimControl).to receive(:new).and_return(sim_control)
+        expect(sim_control).to receive(:xcode).and_return(:xcode)
+
+        expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).with('some identifier').and_return(sim)
+        expect(sim).to receive(:instruments_identifier).with(:xcode).and_return 'fake (8.0 Simulator)'
+
         expect(Calabash::IOS::Device.default_simulator_identifier).to be == 'fake (8.0 Simulator)'
       end
     end
@@ -89,7 +94,7 @@ describe Calabash::IOS::Device do
         p_device = RunLoop::Device.new('fake', '8.0', 'some identifier')
         expect(p_device).to receive(:physical_device?).at_least(:once).and_return(true)
         expect(Calabash::IOS::Device).to receive(:fetch_matching_physical_device).and_return(p_device)
-        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier
+        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier(RunLoop::SimControl.new.xcode)
       end
     end
 
@@ -117,7 +122,7 @@ describe Calabash::IOS::Device do
         p_device = RunLoop::Device.new('fake', '8.0', 'some identifier')
         allow_any_instance_of(RunLoop::Instruments).to receive(:physical_devices).and_return([p_device])
         expect(p_device).to receive(:physical_device?).at_least(:once).and_return(true)
-        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier
+        expect(Calabash::IOS::Device.default_physical_device_identifier).to be == p_device.instruments_identifier(RunLoop::SimControl.new)
       end
     end
   end
@@ -561,17 +566,6 @@ describe Calabash::IOS::Device do
       end
     end
 
-    it '#start_app_with_device_and_options' do
-      options = { :foo => :bar }
-      run_loop = { :pid => 1234, :uia_strategy => :strategy }
-      expect(device).to receive(:merge_start_options!).with(app, run_loop_device, options).and_return options
-      expect(RunLoop).to receive(:run).with(options).and_return run_loop
-
-      expect(device.send(:start_app_with_device_and_options, app, run_loop_device, options)).to be_truthy
-      expect(device.instance_variable_get(:@uia_strategy)).to be == :strategy
-      expect(device.instance_variable_get(:@run_loop)).to be == run_loop
-    end
-
     it '#wait_for_server_to_start' do
       runtime_attrs = {:device => :info}
       expect(device).to receive(:ensure_test_server_ready).and_return true
@@ -620,6 +614,7 @@ describe Calabash::IOS::Device do
       it 'sets the @start_options instance variable' do
         device.instance_variable_set(:@start_options, nil)
         expect(run_loop_device).to receive(:instruments_identifier).and_return 'instruments identifier'
+        expect(app).to receive(:identifier).and_return("test.identifier")
         options = device.send(:merge_start_options!,
                               app,
                               run_loop_device,
@@ -639,6 +634,7 @@ describe Calabash::IOS::Device do
     describe '#clear_app_on_simulator' do
       it 'raises an error if app data cannot be cleared' do
         expect(mock_bridge).to receive(:reset_app_sandbox).and_raise
+        expect(app).to receive(:identifier).and_return("test.identifier")
         expect {
           device.send(:clear_app_data_on_simulator, app, run_loop_device, mock_bridge)
         }.to raise_error RuntimeError
@@ -661,6 +657,9 @@ describe Calabash::IOS::Device do
         end
 
         it 'calls clear_app_on_simulator when the app is installed' do
+          allow_any_instance_of(Calabash::Application).to receive(:ensure_application_path).and_return(true)
+          allow_any_instance_of(Calabash::IOS::Application).to receive(:same_sha1_as?).and_return(true)
+          expect(mock_bridge).to receive(:installed_app_bundle_dir).and_return('path.app')
           expect(app).to receive(:simulator_bundle?).and_return true
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
           expect(device).to receive(:run_loop_bridge).and_return mock_bridge
@@ -670,13 +669,12 @@ describe Calabash::IOS::Device do
           expect(device.send(:clear_app_data, app)).to be_truthy
         end
 
-        it 'does nothing if the app is not installed' do
-          expect(app).to receive(:simulator_bundle?).and_return true
+        it 'fails if the app is not installed' do
           expect(Calabash::IOS::Device).to receive(:fetch_matching_simulator).and_return run_loop_device
           expect(device).to receive(:run_loop_bridge).and_return mock_bridge
           expect(mock_bridge).to receive(:app_is_installed?).and_return false
 
-          expect(device.send(:clear_app_data, app)).to be_truthy
+          expect{device.send(:clear_app_data, app)}.to raise_error
         end
       end
 
@@ -898,60 +896,6 @@ describe Calabash::IOS::Device do
         expect(device).to receive(:default_uia_strategy).and_return(:based_on_device)
 
         expect(device.send(:uia_strategy_from_environment, run_loop_device)).to be == :based_on_device
-      end
-    end
-
-    describe '#attach_to_run_loop' do
-      describe 'passed a uia_strategy' do
-        it ':host' do
-          host_cache = Class.new do
-            def read; {:uia_strategy => :host}; end
-          end.new
-          expect(RunLoop::HostCache).to receive(:default).and_return(host_cache)
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, :host)
-          expect(device.run_loop).to be == {:uia_strategy => :host}
-          expect(device.uia_strategy).to be == :host
-          expect(result).to be_truthy
-        end
-
-        it 'not :host' do
-          expect(device).to receive(:instruments_pid).and_return(1)
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, :not_host)
-          expect(device.run_loop).to be == {:uia_strategy => :not_host, :pid => 1}
-          expect(device.uia_strategy).to be == :not_host
-          expect(result).to be_truthy
-        end
-      end
-
-      describe 'not passed a uia_strategy' do
-        it ':host' do
-          host_cache = Class.new do
-            def read; {:uia_strategy => :host}; end
-          end.new
-          expect(RunLoop::HostCache).to receive(:default).and_return(host_cache)
-          expect(device).to receive(:uia_strategy_from_environment).and_return :host
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, nil)
-          expect(device.run_loop).to be == {:uia_strategy => :host}
-          expect(device.uia_strategy).to be == :host
-          expect(result).to be_truthy
-        end
-
-        it 'not :host' do
-          expect(device).to receive(:instruments_pid).and_return(1)
-          expect(device).to receive(:uia_strategy_from_environment).and_return :not_host
-          expect(device).to receive(:wait_for_server_to_start).and_return true
-
-          result = device.send(:attach_to_run_loop, run_loop_device, nil)
-          expect(device.run_loop).to be == {:uia_strategy => :not_host, :pid => 1}
-          expect(device.uia_strategy).to be == :not_host
-          expect(result).to be_truthy
-        end
       end
     end
   end

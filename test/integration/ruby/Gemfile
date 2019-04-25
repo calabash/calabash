@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+
+gem 'cucumber', '~> 2.0'
+gem 'slowhandcuke', '>= 0.0.3', '< 1.0'
+gem 'rspec', '~> 3.0'
+gem 'calabash', :path => '../../../'
+gem 'pry'
+gem 'pry-nav'

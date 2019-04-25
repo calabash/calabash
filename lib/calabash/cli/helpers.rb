@@ -6,8 +6,7 @@ module Calabash
       # @!visibility private
       HELP = {
           help: 'help',
-          generate: 'generate',
-          run: 'run [application] [cucumber options]',
+          :'generate-cucumber' => 'generate-cucumber',
           console: 'console [application]',
           doctor: 'doctor [setup]',
           version: 'version',
@@ -36,7 +35,7 @@ EOF
         else
           output.write <<EOF
 Usage:
-  calabash [options] #{HELP[key]}
+  #{Calabash::Utility.bundle_exec_prepend}calabash [options] #{HELP[key]}
 EOF
         end
       end
@@ -44,17 +43,13 @@ EOF
       # @!visibility private
       def print_usage(output=STDOUT)
           output.write <<EOF
-  Usage: calabash [options] <command-name> [command specific options]
+  Usage: #{Calabash::Utility.bundle_exec_prepend}calabash [options] <command-name> [command specific options]
   <command-name> can be one of
     #{HELP[:help]} [command]
       print help information.
 
-    #{HELP[:generate]}
+    #{HELP[:'generate-cucumber']}
       generate a Cucumber project folder structure.
-
-    #{HELP[:run]}
-      runs Cucumber in the current folder with the environment needed.
-      the cucumber options will be passed unchanged to cucumber
 
     #{HELP[:console]}
       starts an interactive console to interact with your app via Calabash

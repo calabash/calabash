@@ -4,13 +4,19 @@ module Calabash
   module Text
     # Enter `text` into the currently focused view.
     #
+    # @see Calabash::Text#enter_text_in
+    #
     # @param [String] text The text to type.
     # @raise [RuntimeError] if the text cannot be typed.
     def enter_text(text)
       _enter_text(text.to_s)
     end
 
-    # Enter `text` into `query`.
+    # Enter `text` into the first view matched by `query`.
+    #
+    # @example
+    #  cal.enter_text_in({id: 'edit'}, "Hello World")
+    #
     # @see Calabash::Text#enter_text
     #
     # @param [String] text The text to type.
@@ -21,11 +27,18 @@ module Calabash
     end
 
     # Clears the text of the currently focused view.
+    #
+    # @see Calabash::Text#clear_text_in
+    #
     def clear_text
       _clear_text
     end
 
-    # Clears the text `view`
+    # Clears the text in the first view matched by `query`
+    #
+    # @example
+    #  cal.clear_text_in({id: 'edit'})
+    #
     # @see Calabash::Text#clear_text
     #
     # @param [String, Hash, Calabash::Query] query A query describing the view
@@ -56,10 +69,10 @@ module Calabash
     # See http://developer.android.com/reference/android/view/inputmethod/EditorInfo.html
     #
     # @example
-    #  tap_keyboard_action_key(:search)
-    #  tap_keyboard_action_key(:send)
-    #  tap_keyboard_action_key(:next)
-    #  tap_keyboard_action_key(:previous)
+    #  cal.tap_keyboard_action_key(:search)
+    #  cal.tap_keyboard_action_key(:send)
+    #  cal.tap_keyboard_action_key(:next)
+    #  cal.tap_keyboard_action_key(:previous)
     #
     # Notice that, for Android, Calabash does not ensure that this particular action key is
     # actually available on the current keyboard.
@@ -79,13 +92,13 @@ module Calabash
     # Escapes single quotes in `string`.
     #
     # @example
-    #   escape_single_quotes("Let's get this done.")
+    #   cal.escape_single_quotes("Let's get this done.")
     #   => "Let\\'s get this done."
     #
     # @example
-    #  query("* text:'#{escape_single_quotes("Let's go")}'")
+    #  cal.query("* text:'#{escape_single_quotes("Let's go")}'")
     #  # Equivalent to
-    #  query("* text:'Let\\'s go'")
+    #  cal.query("* text:'Let\\'s go'")
     #
     # @param [String] string The string to escape.
     # @return [String] A string with its single quotes properly escaped.
@@ -109,7 +122,7 @@ module Calabash
     # @param [Number] timeout How long to wait for the keyboard.
     # @raise [Calabash::Wait::TimeoutError] Raises error if no keyboard
     #  appears.
-    def wait_for_keyboard(timeout=nil)
+    def wait_for_keyboard(timeout: nil)
       keyboard_timeout = keyboard_wait_timeout(timeout)
       message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to appear"
       wait_for(message, timeout: keyboard_timeout) do
@@ -124,7 +137,7 @@ module Calabash
     # @param [Number] timeout How log to wait for the keyboard to disappear.
     # @raise [Calabash::Wait::TimeoutError] Raises error if any keyboard is
     #  visible after the `timeout`.
-    def wait_for_no_keyboard(timeout=nil)
+    def wait_for_no_keyboard(timeout: nil)
       keyboard_timeout = keyboard_wait_timeout(timeout)
       message = "Timed out after #{keyboard_timeout} seconds waiting for the keyboard to disappear"
       wait_for(message, timeout: keyboard_timeout) do
@@ -132,33 +145,32 @@ module Calabash
       end
     end
 
-    # @!visibility private
-    def _enter_text(text)
+    define_method(:_enter_text) do |text|
       abstract_method!
     end
 
     # @!visibility private
-    def _enter_text_in(view, text)
+    define_method(:_enter_text_in) do |view, text|
       abstract_method!
     end
 
     # @!visibility private
-    def _clear_text
+    define_method(:_clear_text) do
       abstract_method!
     end
 
     # @!visibility private
-    def _clear_text_in(view)
+    define_method(:_clear_text_in) do |view|
       abstract_method!
     end
 
     # @!visibility private
-    def _tap_keyboard_action_key(action_key)
+    define_method(:_tap_keyboard_action_key) do |action_key|
       abstract_method!
     end
 
     # @!visibility private
-    def _keyboard_visible?
+    define_method(:_keyboard_visible?) do
       abstract_method!
     end
 
@@ -168,7 +180,7 @@ module Calabash
     end
 
     # @!visibility private
-    def keyboard_wait_timeout(timeout)
+    define_method(:keyboard_wait_timeout) do |timeout|
       if timeout.nil?
         Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
       else

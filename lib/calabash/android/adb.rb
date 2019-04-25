@@ -182,34 +182,40 @@ module Calabash
         # exit_code_s =
         # [6] "0\r\n"
 
-        index = result.lines.index {|line| line.start_with?(shell_name)}
+        unless shell_name.empty?
+          index = result.lines.index {|line| line.start_with?(shell_name)}
 
-        if index.nil?
-          raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
-        end
-
-        # Remove the commands
-        out = result.lines[index+1..-1]
-
-        last_line = out.last
-        end_index = nil
-
-        15.times do |i|
-          if last_line[-(END_STRING.length+i-1)..-i] == END_STRING
-            end_index = -i
-            break
+          if index.nil?
+            raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
           end
+
+          # Remove the commands
+          out = result.lines[index+1..-1]
+
+          last_line = out.last
+          end_index = nil
+
+          15.times do |i|
+            if last_line[-(END_STRING.length+i-1)..-i] == END_STRING
+              end_index = -i
+              break
+            end
+          end
+
+          if end_index.nil?
+            raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
+          end
+
+          # Get the result from the command
+          command_result = out[0..-2].join + last_line[0..(end_index - END_STRING.length)]
+
+          # Get the exit code
+          exit_code_s = out[-1][end_index+1..-1]
+        else # Some devices (like Android N) have started just giving us the result without all the spam
+          out = result.lines
+          command_result = out[0..-2].join
+          exit_code_s = out[-1][END_STRING.length..-1]
         end
-
-        if end_index.nil?
-          raise ADBCallError.new("Could not parse output #{ADB.dot_string(result, 100)}", result)
-        end
-
-        # Get the result from the command
-        command_result = out[0..-2].join + last_line[0..(end_index - END_STRING.length)]
-
-        # Get the exit code
-        exit_code_s = out[-1][end_index+1..-1]
 
         unless options[:no_exit_code_check]
           unless exit_code_s.to_i.to_s == exit_code_s.chomp
@@ -270,6 +276,12 @@ module Calabash
           # ]
 
           #result.lines.index {|line| !line.start_with?('echo')}
+
+          # Some devices (like Android N) have started just giving us the results
+          if result.strip == "test"
+            @shell_name = ""
+            return @shell_name
+          end
 
           # "shell@hammerhead:/ $ echo \"foo\"; exit 0\r\r\n"
           shell_name_line = result.lines[-2]

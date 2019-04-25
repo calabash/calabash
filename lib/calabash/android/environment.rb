@@ -1,6 +1,11 @@
 require 'rexml/document'
 require 'timeout'
-require 'luffa'
+
+# We sometimes want to require a Ruby gem without having our IDE auto-complete
+# using it. For example awesome_print adds a ton of methods to 'Object'
+alias :cal_require_without_documentation :require
+cal_require_without_documentation 'luffa'
+
 require 'timeout'
 
 if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
@@ -24,6 +29,14 @@ module Calabash
       #
       # @todo Maybe rename this to CAL_SERVER_URL or CAL_SERVER?
       DEVICE_ENDPOINT = URI.parse((variable('CAL_ENDPOINT') || 'http://127.0.0.1:34777'))
+
+      # A URI that points to the helper server on the device.
+      #
+      # The default value is 'http://localhost:34778'.
+      #
+      # You can control the value of this variable by setting the `CAL_HELPER_ENDPOINT`
+      # variable.
+      DEVICE_HELPER_ENDPOINT = URI.parse((variable('CAL_HELPER_ENDPOINT') || 'http://127.0.0.1:34778'))
 
       private
 

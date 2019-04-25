@@ -8,44 +8,47 @@ module Calabash
     module PhysicalButtons
 
       # @!visibility private
-      def press_button(key)
-        Device.default.perform_action('press_key', key)
+      def press_physical_button(key)
+        Calabash::Internal.with_current_target(required_os: :android) do |target|
+          target.perform_action('press_physical_key', key)
+        end
+
         true
       end
 
       # @!visibility private
-      def press_back_button
-        press_button('KEYCODE_BACK')
+      def press_physical_back_button
+        press_physical_button('KEYCODE_BACK')
       end
 
       # @!visibility private
-      def press_menu_button
-        press_button('KEYCODE_MENU')
+      def press_physical_menu_button
+        press_physical_button('KEYCODE_MENU')
       end
 
       # @!visibility private
-      def press_down_button
-        press_button('KEYCODE_DPAD_DOWN')
+      def press_physical_down_button
+        press_physical_button('KEYCODE_DPAD_DOWN')
       end
 
       # @!visibility private
-      def press_up_button
-        press_button('KEYCODE_DPAD_UP')
+      def press_physical_up_button
+        press_physical_button('KEYCODE_DPAD_UP')
       end
 
       # @!visibility private
-      def press_left_button
-        press_button('KEYCODE_DPAD_LEFT')
+      def press_physical_left_button
+        press_physical_button('KEYCODE_DPAD_LEFT')
       end
 
       # @!visibility private
-      def press_right_button
-        press_button('KEYCODE_DPAD_RIGHT')
+      def press_physical_right_button
+        press_physical_button('KEYCODE_DPAD_RIGHT')
       end
 
       # @!visibility private
-      def press_enter_button
-        press_button('KEYCODE_ENTER')
+      def press_physical_enter_button
+        press_physical_button('KEYCODE_ENTER')
       end
     end
   end

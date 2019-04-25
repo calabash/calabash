@@ -2,7 +2,7 @@ module Calabash
 
   # A public API for waiting for things to happen.
   module Wait
-    # @!visibility private
+    # Default error indicating a timeout
     class TimeoutError < RuntimeError
     end
 
@@ -13,7 +13,7 @@ module Calabash
             timeout: Environment::WAIT_TIMEOUT,
 
             # default message (String or Proc) if timeout occurs
-            message: lambda do |options|
+            timeout_message: lambda do |options|
               "Timed out after waiting for #{options[:timeout]} seconds..."
             end,
 
@@ -21,52 +21,60 @@ module Calabash
             retry_frequency: 0.1,
 
             # default exception type to raise when the timeout is exceeded
-            exception_class: Calabash::Wait::TimeoutError,
-
-            # whether to embed a screenshot on failure
-            screenshot_on_error: true
+            exception_class: Calabash::Wait::TimeoutError
         }
 
     # Returns the default wait options.
+    #
+    # @example
+    #  # Get the current timeout message
+    #  Calabash::Wait.default_options[:timeout_message]
+    #
+    # @example
+    #  Calabash::Wait.default_options[:timeout] = 60
+    #
+    # @see @@default_options
     # @return [Hash] Key/value pairs describing the wait options.
     def self.default_options
       @@default_options
     end
 
-    # Sets the default wait options.
-    # @param [Hash] value The new default wait options.
-    def self.default_options=(value)
-      @@default_options = value
-    end
-
     # Evaluates the block given. If the execution time of the block exceeds
-    # `timeout` it will raise a TimeoutError.
+    # `timeout` it will raise a `exception_class` (default:
+    # {Calabash::Wait.default_options
+    # Calabash::Wait.default_options[:exception_class]}).
     #
     # If you have an explicit or implicit loop in your block, or
     # you want to limit the possible execution time of your block, use
-    # `with_timeout`.
+    # {Calabash::Wait#with_timeout cal.with_timeout}
     #
     # @example
-    #  # If the 'PictureRow' view does not exist, keep scrolling down.
-    #  with_timeout(15, 'Could not find picture row') do
-    #    scroll_down until view_exists?("PictureRow")
+    #  # If the 'PictureRow' view does not exist, keep panning up.
+    #  cal.with_timeout(15, 'Could not find picture row') do
+    #    cal.pan_screen_up until cal.view_exists?("PictureRow")
     #  end
     #
-    #  # Scroll down **at least once** and continue scrolling down until the
+    # @example
+    #  # Pan up **at least once** and continue pan up until the
     #  # 'PictureRow' exists.
-    #  wait_for(15, 'Could not find picture row') do
-    #    scroll_down
-    #    view_exists?("PictureRow")
+    #  cal.wait_for('Could not find picture row') do
+    #    cal.pan_screen_up
+    #    cal.view_exists?("PictureRow")
     #  end
     #
     # @param [Number] timeout The time before failing
     # @param [String, Proc] timeout_message The error message if timed out
-    # @param [Class] exception_class The exception type raised if timed out
-    # @return The returned value of `block`
+    # @param [Class] exception_class
+    #  (default: {Calabash::Wait.default_options
+    #  Calabash::Wait.default_options[:exception_class]}) The exception type
+    #  raised if timed out
+    # @return The returned value of the block given
     # @raise [ArgumentError] If an invalid timeout is given (<= 0)
     # @raise [ArgumentError] If no timeout_message is given
     # @raise [ArgumentError] If no block is given
-    def with_timeout(timeout, timeout_message, exception_class = TimeoutError, &block)
+    def with_timeout(timeout, timeout_message,
+                     exception_class: Wait.default_options[:exception_class],
+                     &block)
       if timeout_message.nil? ||
           (timeout_message.is_a?(String) && timeout_message.empty?)
         raise ArgumentError, 'You must provide a timeout message'
@@ -74,6 +82,10 @@ module Calabash
 
       unless block_given?
         raise ArgumentError, 'You must provide a block'
+      end
+
+      if timeout.nil?
+        raise ArgumentError, 'Timeout cannot be nil'
       end
 
       # Timeout.timeout will never timeout if the given `timeout` is zero.
@@ -103,7 +115,7 @@ module Calabash
       end
 
       if failed
-        fail(exception_class, message)
+        raise exception_class, message
       end
     end
 
@@ -113,31 +125,44 @@ module Calabash
     # If the block does not evaluate to truthy within the given timeout
     # an TimeoutError will be raised.
     #
-    # The default timeout will be `Wait.default_options[:timeout]`.
+    # The default timeout will be {Calabash::Wait.default_options
+    # Wait.default_options[:timeout]}.
+    #
+    # @example
+    #  # Pan up **at least once** and continue pan up until the
+    #  # 'PictureRow' exists.
+    #  cal.wait_for('Could not find picture row') do
+    #    cal.pan_screen_up
+    #    cal.view_exists?("PictureRow")
+    #  end
     #
     # @see Calabash::Wait#with_timeout
-    # @see Calabash::Environment::WAIT_TIMEOUT
-    # @see Calabash::Wait.default_options
     #
     # @param [String, Proc] timeout_message The error message if timed out.
-    # @param [Hash] options Used to control the behavior of the wait.
-    # @option options [Number] :timeout (30) How long to wait before timing out.
-    # @option options [Number] :retry_frequency (0.3) How often to check for
-    #  the condition block to be truthy.
-    # @option options [Boolean] :screenshot_on_error (true) Take a screenshot
-    #  if the block fails to be truthy or an error is raised in the block.
+    # @param [Number] timeout (default: {Calabash::Wait.default_options
+    #  Calabash::Wait.default_options[:timeout]}) The time to wait before
+    #  failing.
+    # @param [Number] retry_frequency (default: {Calabash::Wait.default_options
+    #  Calabash::Wait.default_options[:retry_frequency]}) How often to check
+    #  for the block to be truthy
+    # @param [Class] exception_class
+    #  (default: {Calabash::Wait.default_options
+    #  Calabash::Wait.default_options[:exception_class]}) The exception type
+    #  raised if timed out
     # @return The returned value of `block` if it is truthy
-    def wait_for(timeout_message, options={}, &block)
-      wait_options = Wait.default_options.merge(options)
-      timeout = wait_options[:timeout]
-
-      with_timeout(timeout, timeout_message, wait_options[:exception_class]) do
+    def wait_for(timeout_message,
+                 timeout: Calabash::Wait.default_options[:timeout],
+                 retry_frequency: Calabash::Wait.default_options[:retry_frequency],
+                 exception_class: Calabash::Wait.default_options[:exception_class],
+                 &block)
+      with_timeout(timeout, timeout_message,
+                   exception_class: exception_class) do
         loop do
           value = block.call
 
           return value if value
 
-          sleep(wait_options[:retry_frequency])
+          sleep(retry_frequency)
         end
       end
     end
@@ -145,62 +170,69 @@ module Calabash
     # Waits for `query` to match one or more views.
     #
     # @example
-    #  wait_for_view({marked: 'mark'})
+    #  cal.wait_for_view({marked: 'mark'})
     #
     # @example
-    #  text = wait_for_view("myview")['text']
+    #  cal.wait_for_view({marked: 'login'},
+    #                  timeout_message: "Did not see login button")
+    #
+    # @example
+    #  text = cal.wait_for_view("myview")['text']
+    #
+    # @see Calabash::Wait#wait_for for optional parameters
     #
     # @param [String, Hash, Calabash::Query] query Query to match view
-    # @see Calabash::Wait#with_timeout for options
     # @return [Hash] The first view matching `query`.
-    def wait_for_view(query, options={})
+    # @raise [ViewNotFoundError] If `query` do not match at least one view.
+    def wait_for_view(query,
+                      timeout: Calabash::Wait.default_options[:timeout],
+                      timeout_message: nil,
+                      retry_frequency: Calabash::Wait.default_options[:retry_frequency])
       if query.nil?
         raise ArgumentError, 'Query cannot be nil'
       end
 
-      defaults = Wait.default_options.dup
-
-      defaults[:message] = lambda do |wait_options|
-          "Waited #{wait_options[:timeout]} seconds for #{parse_query_list(query)} to match a view"
+      timeout_message ||= lambda do |wait_options|
+          "Waited #{wait_options[:timeout]} seconds for #{Wait.parse_query_list(query)} to match a view"
       end
 
-      defaults[:exception_class] = ViewNotFoundError
-
-      timeout_options = defaults.merge(options)
-
-      wait_for(timeout_options[:message],
-               {timeout: timeout_options[:timeout],
-                exception_class: timeout_options[:exception_class],
-                retry_frequency: timeout_options[:retry_frequency]}) do
-        view_exists?(query)
+      wait_for(timeout_message,
+               timeout: timeout,
+               retry_frequency: retry_frequency,
+               exception_class: ViewNotFoundError) do
+        result = query(query)
+        !result.empty? && result
       end.first
     end
 
     # Waits for all `queries` to simultaneously match at least one view.
     #
+    # @example
+    #  cal.wait_for_views({id: 'foo'}, {id: 'bar'})
+    #
+    # @see Calabash::Wait#wait_for for optional parameters
+    #
     # @param [String, Hash, Calabash::Query] queries List of queries or a
     #  query.
-    #
-    # @see Calabash::Wait#with_timeout for options
-    # @return [void] The return value for this method is undefined.
-    def wait_for_views(*queries, **options)
+    # @return The returned value is undefined
+    # @raise [ViewNotFoundError] If `queries` do not all match at least one
+    #  view.
+    def wait_for_views(*queries,
+                       timeout: Calabash::Wait.default_options[:timeout],
+                       timeout_message: nil,
+                       retry_frequency: Calabash::Wait.default_options[:retry_frequency])
       if queries.nil? || queries.any?(&:nil?)
         raise ArgumentError, 'Query cannot be nil'
       end
 
-      defaults = Wait.default_options.dup
-      defaults[:message] = lambda do |wait_options|
-          "Waited #{wait_options[:timeout]} seconds for #{parse_query_list(queries)} to each match a view"
+      timeout_message ||= lambda do |wait_options|
+          "Waited #{wait_options[:timeout]} seconds for #{Wait.parse_query_list(queries)} to each match a view"
       end
 
-      defaults[:exception_class] = ViewNotFoundError
-
-      timeout_options = defaults.merge(options)
-
-      wait_for(timeout_options[:message],
-               {timeout: timeout_options[:timeout],
-                exception_class: timeout_options[:exception_class],
-                retry_frequency: timeout_options[:retry_frequency]}) do
+      wait_for(timeout_message,
+               timeout: timeout,
+               retry_frequency: retry_frequency,
+               exception_class: ViewNotFoundError) do
         views_exist?(*queries)
       end
 
@@ -211,54 +243,64 @@ module Calabash
 
     # Waits for `query` not to match any views
     #
+    # @example
+    #  cal.wait_for_no_view({marked: 'mark'})
+    #
+    # @example
+    #  cal.wait_for_no_view({marked: 'login'},
+    #                  timeout_message: "Login button did not disappear")
+    #
+    # @see Calabash::Wait#wait_for for optional parameters
+    #
     # @param [String, Hash, Calabash::Query] query Query to match view
-    # @see Calabash::Wait#with_timeout for options
-    def wait_for_no_view(query, options={})
+    # @raise [ViewFoundError] If `query` do not match at least one view.
+    def wait_for_no_view(query,
+                         timeout: Calabash::Wait.default_options[:timeout],
+                         timeout_message: nil,
+                         retry_frequency: Calabash::Wait.default_options[:retry_frequency])
       if query.nil?
         raise ArgumentError, 'Query cannot be nil'
       end
 
-      defaults = Wait.default_options.dup
-      defaults[:message] = lambda do |wait_options|
-        "Waited #{wait_options[:timeout]} seconds for #{parse_query_list(query)} to not match any view"
+      timeout_message ||= lambda do |wait_options|
+        "Waited #{wait_options[:timeout]} seconds for #{Wait.parse_query_list(query)} to not match any view"
       end
 
-      defaults[:exception_class] = ViewFoundError
-
-      timeout_options = defaults.merge(options)
-
-      wait_for(timeout_options[:message],
-               {timeout: timeout_options[:timeout],
-                exception_class: timeout_options[:exception_class],
-                retry_frequency: timeout_options[:retry_frequency]}) do
+      wait_for(timeout_message,
+               timeout: timeout,
+               retry_frequency: retry_frequency,
+               exception_class: ViewFoundError) do
         !view_exists?(query)
       end
     end
 
     # Waits for all `queries` to simultaneously match no views
     #
+    # @example
+    #  cal.wait_for_no_views({id: 'foo'}, {id: 'bar'})
+    #
+    # @see Calabash::Wait#wait_for for optional parameters
+    #
     # @param [String, Hash, Calabash::Query] queries List of queries or a
     #  query.
-    #
-    # @see Calabash::Wait#with_timeout for options
-    def wait_for_no_views(*queries, **options)
+    # @raise [ViewNotFoundError] If `queries` do not all match at least one
+    #  view.
+    def wait_for_no_views(*queries,
+                          timeout: Calabash::Wait.default_options[:timeout],
+                          timeout_message: nil,
+                          retry_frequency: Calabash::Wait.default_options[:retry_frequency])
       if queries.nil? || queries.any?(&:nil?)
         raise ArgumentError, 'Query cannot be nil'
       end
 
-      defaults = Wait.default_options.dup
-      defaults[:message] = lambda do |wait_options|
-        "Waited #{wait_options[:timeout]} seconds for #{parse_query_list(queries)} to each not match any view"
+      timeout_message ||= lambda do |wait_options|
+        "Waited #{wait_options[:timeout]} seconds for #{Wait.parse_query_list(queries)} to each not match any view"
       end
 
-      defaults[:exception_class] = ViewFoundError
-
-      timeout_options = defaults.merge(options)
-
-      wait_for(timeout_options[:message],
-               {timeout: timeout_options[:timeout],
-                exception_class: timeout_options[:exception_class],
-                retry_frequency: timeout_options[:retry_frequency]}) do
+      wait_for(timeout_message,
+               timeout: timeout,
+               retry_frequency: retry_frequency,
+               exception_class: ViewFoundError) do
         !views_exist?(*queries)
       end
     end
@@ -266,7 +308,7 @@ module Calabash
     # Does the given `query` match at least one view?
     #
     # @param [String, Hash, Calabash::Query] query Query to match view
-    # @return [Object] Returns truthy if the `query` matches at least one view
+    # @return [Boolean] Returns true if the `query` matches at least one view
     # @raise [ArgumentError] If given an invalid `query`
     def view_exists?(query)
       if query.nil?
@@ -275,19 +317,15 @@ module Calabash
 
       result = query(query)
 
-      if result.empty?
-        false
-      else
-        result
-      end
+      !result.empty?
     end
 
     # Does the given `queries` all match at least one view?
     #
     # @param [String, Hash, Calabash::Query] queries List of queries or a
     #  query
-    #
-    # @return Returns truthy if the `queries` all match at least one view
+    # @return [Boolean] Returns true if the `queries` all match at least one
+    #  view
     # @raise [ArgumentError] If given an invalid list of queries
     def views_exist?(*queries)
       if queries.nil? || queries.any?(&:nil?)
@@ -296,11 +334,7 @@ module Calabash
 
       results = queries.map{|query| view_exists?(query)}
 
-      if results.all?
-        results
-      else
-        false
-      end
+      results.all?
     end
 
     # Expect `query` to match at least one view. Raise an exception if it does
@@ -316,7 +350,7 @@ module Calabash
 
       unless view_exists?(query)
         raise ViewNotFoundError,
-              "No view matched #{parse_query_list(query)}"
+              "No view matched #{Wait.parse_query_list(query)}"
       end
 
       true
@@ -339,7 +373,7 @@ module Calabash
 
       unless views_exist?(*queries)
         raise ViewNotFoundError,
-              "Not all queries #{parse_query_list(queries)} matched a view"
+              "Not all queries #{Wait.parse_query_list(queries)} matched a view"
       end
 
       true
@@ -358,7 +392,7 @@ module Calabash
       end
 
       if view_exists?(query)
-        raise ViewFoundError, "A view matched #{parse_query_list(query)}"
+        raise ViewFoundError, "A view matched #{Wait.parse_query_list(query)}"
       end
 
       true
@@ -379,7 +413,7 @@ module Calabash
 
       if queries.map{|query| view_exists?(query)}.any?
         raise ViewFoundError,
-              "Some views matched #{parse_query_list(queries)}"
+              "Some views matched #{Wait.parse_query_list(queries)}"
       end
 
       true
@@ -389,84 +423,52 @@ module Calabash
 
     # Waits for a view containing `text`.
     #
+    # @see Calabash::Wait#wait_for_view
+    #
     # @param text [String] Text to look for
     # @return [Object] The view matched by the text query
-    # @see Calabash::Wait#wait_for_view
-    def wait_for_text(text, options={})
-      wait_for_view("* {text CONTAINS[c] '#{text}'}", options)
+    def wait_for_text(text,
+                      timeout: Calabash::Wait.default_options[:timeout],
+                      timeout_message: nil,
+                      retry_frequency: Calabash::Wait.default_options[:retry_frequency])
+
+      wait_for_view("* {text CONTAINS[c] '#{text}'}",
+                    timeout: timeout,
+                    timeout_message: timeout_message,
+                    retry_frequency: retry_frequency)
     end
 
     # Waits for no views containing `text`.
     #
+    # @see Calabash::Wait#wait_for_view
+    #
     # @param text [String] Text to look for
-    # @see Calabash::Wait#wait_for_no_view
-    def wait_for_text_to_disappear(text, options={})
-      wait_for_no_view("* {text CONTAINS[c] '#{text}'}", options)
+    # @return [Object] The view matched by the text query
+    def wait_for_no_text(text,
+                         timeout: Calabash::Wait.default_options[:timeout],
+                         timeout_message: nil,
+                         retry_frequency: Calabash::Wait.default_options[:retry_frequency])
+
+      wait_for_no_view("* {text CONTAINS[c] '#{text}'}",
+                    timeout: timeout,
+                    timeout_message: timeout_message,
+                    retry_frequency: retry_frequency)
     end
 
-    # Raises an exception. Embeds a screenshot if
-    # Calabash::Wait#default_options[:screenshot_on_error] is true. The fail
-    # method should be used when the test should fail and stop executing. Do
-    # not use fail if you intent on rescuing the error raised without
-    # re-raising.
-    #
-    # @example
-    #  unless view_exists?("* marked:'login'")
-    #    fail('Did not see "login" button')
-    #  end
-    #
-    # @example
-    #  entries = query("ListEntry").length
-    #
-    #  if entries < 5
-    #    fail(MyError, "Should see at least 5 entries, saw #{entries}")
-    #  end
-    #
-    # @raise [RuntimeError, StandardError] By default, raises a RuntimeError with
-    #  `message`.  You can pass in your own Exception class to override the
-    #  the default behavior.
-    def fail(*several_variants)
-      arg0 = several_variants[0]
-      arg1 = several_variants[1]
-
-      if arg1.nil?
-        exception_type = RuntimeError
-        message = arg0
-      else
-        exception_type = arg0
-        message = arg1
-      end
-
-      screenshot_embed if Wait.default_options[:screenshot_on_error]
-
-      raise exception_type, message
+    # Query matched an unexpected set of views
+    class UnexpectedMatchError < RuntimeError
     end
 
-    # Raises an exception and always embeds a screenshot
-    #
-    # @raise [RuntimeError, StandardError] By default, raises a RuntimeError with
-    #  `message`.  You can pass in your own Exception class to override the
-    #  the default behavior.
-    # @see Wait#fail
-    def screenshot_and_raise(*several_variants)
-      arg0 = several_variants[0]
-      arg1 = several_variants[1]
-
-      if arg1.nil?
-        exception_type = RuntimeError
-        message = arg0
-      else
-        exception_type = arg0
-        message = arg1
-      end
-
-      screenshot_embed
-
-      raise exception_type, message
+    # View was found
+    class ViewFoundError < UnexpectedMatchError
     end
 
+    # View was not found
+    class ViewNotFoundError < UnexpectedMatchError
+    end
+    
     # @!visibility private
-    def parse_query_list(queries)
+    def self.parse_query_list(queries)
       unless queries.is_a?(Array)
         queries = [queries]
       end
@@ -482,18 +484,6 @@ module Calabash
       else
         "[#{queries_dup[0, queries_dup.length-1].join(',')}, and #{queries_dup.last}]"
       end
-    end
-
-    # Query matched an unexpected set of views
-    class UnexpectedMatchError < RuntimeError
-    end
-
-    # View was found
-    class ViewFoundError < UnexpectedMatchError
-    end
-
-    # View was not found
-    class ViewNotFoundError < UnexpectedMatchError
     end
 
     # @!visibility private

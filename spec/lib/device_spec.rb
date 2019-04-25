@@ -198,24 +198,6 @@ describe Calabash::Device do
     end
   end
 
-  describe '#default' do
-    after do
-      Calabash::Device.default = nil
-    end
-
-    it 'should be able to set its default device' do
-      Calabash::Device.default = :my_device
-    end
-
-    it 'should be able to get its default device' do
-      device = :my_device
-
-      Calabash::Device.default = device
-
-      expect(Calabash::Device.default).to eq(device)
-    end
-  end
-
   describe '#parse_path_or_app_parameters' do
     it 'raises an error on invalid arguments' do
       expect { device.send(:parse_path_or_app_parameters, :foo) }.to raise_error ArgumentError
@@ -272,7 +254,7 @@ describe Calabash::Device do
 
   describe '#tap' do
     it 'should invoke the implementation method' do
-      query = "my query"
+      query = Calabash::Query.new("my query")
       options = {my: :arg}
 
       expect(device).to receive(:_tap).with(query, hash_including(options))
@@ -280,9 +262,9 @@ describe Calabash::Device do
       device.tap(query, options)
     end
 
-    it 'raises an error if query is not passed' do
+    it 'raises an error if wrong query is passed' do
       expect do
-        device.tap(nil, {option: 'my opt'})
+        device.tap(Object.new, {option: 'my opt'})
       end.to raise_error ArgumentError
 
       expect do
@@ -293,7 +275,7 @@ describe Calabash::Device do
 
   describe '#double_tap' do
     it 'should invoke the implementation method' do
-      query = "my query"
+      query = Calabash::Query.new("my query")
       options = {my: :arg}
 
       expect(device).to receive(:_double_tap).with(query, hash_including(options))
@@ -301,9 +283,9 @@ describe Calabash::Device do
       device.double_tap(query, options)
     end
 
-    it 'raises an error if query is not passed' do
+    it 'raises an error if wrong query is passed' do
       expect do
-        device.double_tap(nil, {option: 'my opt'})
+        device.double_tap(Object.new, {option: 'my opt'})
       end.to raise_error ArgumentError
 
       expect do
@@ -314,7 +296,7 @@ describe Calabash::Device do
 
   describe '#long_press' do
     it 'should invoke the implementation method' do
-      query = "my query"
+      query = Calabash::Query.new("my query")
       options = {my: :arg}
 
       expect(device).to receive(:_long_press).with(query, hash_including(options))
@@ -322,9 +304,9 @@ describe Calabash::Device do
       device.long_press(query, options)
     end
 
-    it 'raises an error if query is not passed' do
+    it 'raises an error if wrong query is passed' do
       expect do
-        device.long_press(nil, {option: 'my opt'})
+        device.long_press(Object.new, {option: 'my opt'})
       end.to raise_error ArgumentError
 
       expect do
@@ -335,7 +317,7 @@ describe Calabash::Device do
 
   describe '#pan' do
     it 'should invoke the implementation method' do
-      query = "my query"
+      query = Calabash::Query.new("my query")
       from = {x: 0, y: 0}
       to = {x: 0, y: 0}
       options = {my: :arg}
@@ -344,60 +326,24 @@ describe Calabash::Device do
 
       device.pan(query, from, to, options)
     end
-
-    it 'raises an error if query is not passed' do
-      from = {x: 0, y: 0}
-      to = {x: 0, y: 0}
-      options = {my: :arg}
-
-      expect do
-        device.pan(nil, from, to, options)
-      end.to raise_error ArgumentError
-
-      expect do
-        device.pan(:not_a_query, from, to, options)
-      end.to raise_error ArgumentError
-    end
   end
 
   describe '#pan_between' do
     it 'should invoke the implementation method' do
-      query_from = "my query"
-      query_to = "my query 2"
+      query_from = Calabash::Query.new("my query")
+      query_to = Calabash::Query.new("my query 2")
       options = {my: :arg}
 
       expect(device).to receive(:_pan_between).with(query_from, query_to, hash_including(options))
 
       device.pan_between(query_from, query_to, options)
     end
-    it 'raises an error if invalid query_from' do
-      query_from = "my query"
-      query_to = "my query 2"
-
-      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(false)
-
-      expect do
-        device.pan_between(query_from, query_to)
-      end.to raise_error ArgumentError
-    end
-
-    it 'raises an error if invalid query_to' do
-      query_from = "my query"
-      query_to = "my query 2"
-
-      allow(Calabash::Query).to receive(:valid_query?).with(query_from).and_return(true)
-      allow(Calabash::Query).to receive(:valid_query?).with(query_to).and_return(false)
-
-      expect do
-        device.pan_between(query_from, query_to)
-      end.to raise_error ArgumentError
-    end
   end
 
 
   describe '#flick' do
     it 'should invoke the implementation method' do
-      query = "my query"
+      query = Calabash::Query.new("my query")
       from = {x: 0, y: 0}
       to = {x: 0, y: 0}
       options = {my: :arg}
@@ -407,13 +353,13 @@ describe Calabash::Device do
       device.flick(query, from, to, options)
     end
 
-    it 'raises an error if query is not passed' do
+    it 'raises an error if wrong query is passed' do
       from = {x: 0, y: 0}
       to = {x: 0, y: 0}
       options = {my: :arg}
 
       expect do
-        device.flick(nil, from, to, options)
+        device.flick(Object.new, from, to, options)
       end.to raise_error ArgumentError
 
       expect do

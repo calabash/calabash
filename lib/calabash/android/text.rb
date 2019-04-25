@@ -6,46 +6,46 @@ module Calabash
       # pressing the back button if the keyboard is showing. If the keyboard is
       # already hidden/dismissed, nothing is done.
       def dismiss_keyboard
-        Device.default.perform_action('hide_soft_keyboard')
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.perform_action('hide_soft_keyboard')}
         sleep 0.5
       end
 
       # @!visibility private
-      def _clear_text
-        Device.default.perform_action('clear_text')
+      define_method(:_clear_text) do
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.perform_action('clear_text')}
       end
 
       # @!visibility private
-      def _clear_text_in(view)
+      define_method(:_clear_text_in) do |view|
         tap(view)
         sleep 0.5
         clear_text
       end
 
       # @!visibility private
-      def _enter_text(text)
-        Device.default.enter_text(text)
+      define_method(:_enter_text) do |text|
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.enter_text(text)}
       end
 
       # @!visibility private
-      def _enter_text_in(view, text)
+      define_method(:_enter_text_in) do |view, text|
         tap(view)
         sleep 0.5
         enter_text(text)
       end
 
       # @!visibility private
-      def _tap_keyboard_action_key(action_key)
+      define_method(:_tap_keyboard_action_key) do |action_key|
         if action_key.nil?
-          Device.default.perform_action('press_user_action_button')
+          Calabash::Internal.with_current_target(required_os: :android) {|target| target.perform_action('press_user_action_button')}
         else
-          Device.default.perform_action('press_user_action_button', action_key.to_s)
+          Calabash::Internal.with_current_target(required_os: :android) {|target| target.perform_action('press_user_action_button', action_key.to_s)}
         end
       end
 
       # @!visibility private
-      def _keyboard_visible?
-        Device.default.keyboard_visible?
+      define_method(:_keyboard_visible?) do
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.keyboard_visible?}
       end
     end
   end

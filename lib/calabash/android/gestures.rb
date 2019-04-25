@@ -314,7 +314,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _pan_screen_up(options={})
+      define_method(:_pan_screen_up) do |options={}|
         from = {x: 50, y: 90}
         to = {x: 50, y: 10}
 
@@ -322,7 +322,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _pan_screen_down(options={})
+      define_method(:_pan_screen_down) do |options={}|
         from = {x: 50, y: 10}
         to = {x: 50, y: 90}
 
@@ -330,7 +330,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _flick_screen_up(options={})
+      define_method(:_flick_screen_up) do |options={}|
         from = {x: 50, y: 90}
         to = {x: 50, y: 10}
 
@@ -338,7 +338,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _flick_screen_down(options={})
+      define_method(:_flick_screen_down) do |options={}|
         from = {x: 50, y: 10}
         to = {x: 50, y: 90}
 
@@ -346,24 +346,10 @@ module Calabash
       end
 
       # @!visibility private
-      def _pinch_screen(direction, options={})
-        Device.default.pinch(direction, "* id:'content'", options)
-      end
-
-      # @!visibility private
-      def _pinch_to_zoom(direction, query, options={})
-        if direction == :out
-          Device.default.pinch(:in, query, options)
-        elsif direction == :in
-          Device.default.pinch(:out, query, options)
-        else
-          raise "Invalid direction '#{direction}'"
+      define_method(:_pinch_screen) do |options={}|
+        Calabash::Internal.with_current_target(required_os: :android) do |target|
+          target.pinch(direction, "* id:'content'", options)
         end
-      end
-
-      # @!visibility private
-      def _pinch_screen_to_zoom(direction, options={})
-        _pinch_to_zoom(direction, "* id:'content'", options)
       end
     end
   end

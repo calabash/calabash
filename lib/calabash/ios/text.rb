@@ -3,21 +3,21 @@ module Calabash
     # Methods for entering text and interacting with iOS keyboards.
     module Text
       # @!visibility private
-      def _enter_text(text)
+      define_method(:_enter_text) do |text|
         wait_for_keyboard
         existing_text = text_from_keyboard_first_responder
         options = { existing_text: existing_text }
-        Device.default.uia_type_string(text, options)
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.enter_text(text, options)}
       end
 
       # @!visibility private
-      def _enter_text_in(view, text)
+      define_method(:_enter_text_in) do |view, text|
         tap(view)
         enter_text(text)
       end
 
       # @!visibility private
-      def _clear_text
+      define_method(:_clear_text) do
         unless view_exists?("* isFirstResponder:1")
           raise 'Cannot clear text. No view has focus'
         end
@@ -26,7 +26,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _clear_text_in(view)
+      define_method(:_clear_text_in) do |view|
         unless keyboard_visible?
           tap(view)
           wait_for_keyboard
@@ -34,7 +34,10 @@ module Calabash
 
         unless wait_for_view(view)['text'].empty?
           tap(view)
+          wait_for_view("UICalloutBarButton marked:'Select All'")
+          sleep 0.5
           tap("UICalloutBarButton marked:'Select All'")
+          sleep 0.5
           tap_keyboard_delete_key
         end
 
@@ -49,7 +52,7 @@ module Calabash
       #
       # @return [Boolean] Returns true if a keyboard is visible and docked.
       def docked_keyboard_visible?
-        Device.default.docked_keyboard_visible?
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.docked_keyboard_visible?}
       end
 
       # Returns true if an undocked keyboard is visible.
@@ -59,7 +62,7 @@ module Calabash
       # @return [Boolean] Returns false if the device is not an iPad; all
       # keyboards on the iPhone and iPod are docked.
       def undocked_keyboard_visible?
-        Device.default.undocked_keyboard_visible?
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.undocked_keyboard_visible?}
       end
 
       # Returns true if a split keyboard is visible.
@@ -70,7 +73,7 @@ module Calabash
       # @return [Boolean] Returns false if the device is not an iPad; all
       # keyboards on the Phone and iPod are docked and not split.
       def split_keyboard_visible?
-        Device.default.split_keyboard_visible?
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.split_keyboard_visible?}
       end
 
       # Touches the keyboard action key.
@@ -90,86 +93,29 @@ module Calabash
       # @todo Refactor uia_route to a public API call
       # @todo Move this documentation to the public method
       # @!visibility private
-      def _tap_keyboard_action_key(action_key)
+      define_method(:_tap_keyboard_action_key) do |action_key|
         unless action_key.nil?
           raise ArgumentError,
                 "An iOS keyboard does not have multiple action keys"
         end
 
-        char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:action]
-        Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
+        wait_for_keyboard
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.tap_keyboard_action_key}
       end
 
       # @!visibility private
-      def _keyboard_visible?
+      define_method(:_keyboard_visible?) do
         docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
       end
 
       # Touches the keyboard delete key.
-      #
-      # The 'delete' key difficult to find and touch because its behavior
-      # changes depending on the iOS version and keyboard type.  Consider the
-      # following:
-      #
-      # On iOS 6, the 'delete' char code is _not_ \b.
-      # On iOS 7: The Delete char code is \b on non-numeric keyboards.
-      #           On numeric keyboards, the delete key is a button on the
-      #           the keyboard.
-      #
-      # By default, Calabash uses a raw UIAutomaton JavaScript call to tap the
-      # element named 'Delete'.  This works well in English localizations for
-      # most keyboards.  If you find that it does not work, use the options
-      # pass either an translation of 'Delete' for your localization or use the
-      # default the escaped keyboard character.
-      #
       # @example
-      #   # Uses UIAutomation to tap the 'Delete' key or button.
-      #   tap_keyboard_delete_key
+      #   cal_ios.tap_keyboard_delete_key
       #
-      #   # Types the \b key.
-      #   tap_keyboard_delete_key({:use_escaped_char => true})
-      #
-      #   # Types the \d key.
-      #   tap_keyboard_delete_key({:use_escaped_char => '\d'})
-      #
-      #   # Uses UIAutomation to tap the 'Slet' key or button.
-      #   tap_keyboard_delete_key({:delete_key_label => 'Slet'})
-      #
-      #   # Don't specify both options!  If :use_escape_sequence is truthy,
-      #   # Calabash will ignore the :delete_key_label and try to use an
-      #   # escaped character sequence.
-      #   tap_keyboard_delete_key({:use_escaped_char => true,
-      #                            :delete_key_label => 'Slet'})
-      #
-      # @param [Hash] options Alternative ways to tap the delete key.
-      # @option options [Boolean, String] :use_escaped_char (false) If true,
-      #  delete by typing the \b character.  If this value is truthy, but not
-      #  'true', they it is expected to be an alternative escaped character.
-      # @option options [String] :delete_key_label ('Delete') An alternative
-      #  localization of 'Delete'.
-      # @todo Need translations of 'Delete' key.
-      def tap_keyboard_delete_key(options = {})
-        default_options =
-            {
-                use_escaped_char: false,
-                delete_key_label: 'Delete'
-            }
-        merged_options = default_options.merge(options)
-
-        use_escape_sequence = merged_options[:use_escaped_char]
-        if use_escape_sequence
-          if use_escape_sequence.to_s == 'true'
-            # Use the default \b
-            char_sequence = ESCAPED_KEYBOARD_CHARACTERS[:delete]
-          else
-            char_sequence = use_escape_sequence
-          end
-          return Device.default.uia_route("uia.keyboard().typeString('#{char_sequence}')")
+      def tap_keyboard_delete_key
+        Calabash::Internal.with_current_target(required_os: :ios) do |target|
+          target.tap_keyboard_delete_key
         end
-
-        delete_key_label = merged_options[:delete_key_label]
-        uia = "uia.keyboard().elements().firstWithName('#{delete_key_label}').tap()"
-        Device.default.uia_route(uia)
       end
 
       # Returns the the text in the first responder.
@@ -183,7 +129,9 @@ module Calabash
       #
       # @raise [RuntimeError] If there is no visible keyboard.
       def text_from_keyboard_first_responder
-        Device.default.text_from_keyboard_first_responder
+        Calabash::Internal.with_current_target(required_os: :ios) do |target|
+          target.text_from_keyboard_first_responder
+        end
       end
 
       private

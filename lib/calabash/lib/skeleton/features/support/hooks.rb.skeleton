@@ -1,0 +1,32 @@
+Before do |scenario|
+  if scenario.respond_to?(:scenario_outline)
+    scenario = scenario.scenario_outline
+  end
+
+  reset_between_scenarios(scenario) do
+    cal.reset_device_changes  # Resets changes Calabash has made to the device
+    cal.ensure_app_installed  # Installs the app unless it is already installed
+    cal.clear_app_data        # Clears the application data
+    cal.start_app             # Starts the application
+  end
+end
+
+After do |scenario|
+  if scenario.failed?
+    cal.screenshot_embed
+  end
+
+  cal.stop_app
+end
+
+def reset_between_scenarios(scenario, &block)
+  block.call
+end
+
+def reset_between_features(scenario, &block)
+  if scenario.feature != @last_feature
+    block.call
+  end
+
+  @last_feature = scenario.feature
+end

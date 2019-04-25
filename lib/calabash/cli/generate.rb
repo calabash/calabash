@@ -17,24 +17,14 @@ module Calabash
           exit 1
         end
 
-        reset_between = :features
-        reset_method = :clear
+        cucumber_config = File.read(file(File.join('config', 'cucumber.yml.skeleton')))
 
-        cucumber_config = File.read(file(File.join('config', 'cucumber.yml')))
+        env = File.read(file(File.join('features', 'support', 'env.rb.skeleton')))
+        dry_run = File.read(file(File.join('features', 'support', 'dry_run.rb.skeleton')))
+        sample_feature = File.read(file(File.join('features', 'sample.feature.skeleton')))
+        calabash_steps = File.read(file(File.join('features', 'step_definitions', 'sample_steps.rb.skeleton')))
 
-        env = File.read(file(File.join('features', 'support', 'env.rb')))
-        dry_run = File.read(file(File.join('features', 'support', 'dry_run.rb')))
-        sample_feature = File.read(file(File.join('features', 'sample.feature')))
-        calabash_steps = File.read(file(File.join('features', 'step_definitions', 'calabash_steps.rb')))
-
-        hooks = File.read(file(File.join('features', 'support', 'hooks.rb')))
-        hooks.sub!("#!DEFAULT_RESET_BETWEEN#!", ":#{reset_between}")
-
-        if reset_method.nil?
-          hooks.sub!("#!DEFAULT_RESET_METHOD#!", 'nil')
-        else
-          hooks.sub!("#!DEFAULT_RESET_METHOD#!", ":#{reset_method}")
-        end
+        hooks = File.read(file(File.join('features', 'support', 'hooks.rb.skeleton')))
 
         FileUtils.mkdir('config')
 
@@ -45,12 +35,12 @@ module Calabash
         FileUtils.mkdir('features/support')
 
         File.open(File.join('features', 'sample.feature'), 'w') {|file| file.write(sample_feature) }
-        File.open(File.join('features', 'step_definitions', 'calabash_steps.rb'), 'w') {|file| file.write(calabash_steps) }
+        File.open(File.join('features', 'step_definitions', 'sample_steps.rb'), 'w') {|file| file.write(calabash_steps) }
         File.open(File.join('features', 'support', 'hooks.rb'), 'w') {|file| file.write(hooks) }
         File.open(File.join('features', 'support', 'env.rb'), 'w') {|file| file.write(env) }
         File.open(File.join('features', 'support', 'dry_run.rb'), 'w') {|file| file.write(dry_run) }
 
-        gemfile = File.readlines(file(File.join('Gemfile')))
+        gemfile = File.readlines(file(File.join('Gemfile.skeleton')))
 
         unless File.exist?('Gemfile')
           File.open('Gemfile', 'w') do |file|

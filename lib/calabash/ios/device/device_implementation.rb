@@ -17,13 +17,11 @@ module Calabash
       include Calabash::IOS::RotationMixin
       include Calabash::IOS::KeyboardMixin
       include Calabash::IOS::UIAKeyboardMixin
-      include Calabash::IOS::TextMixin
       include Calabash::IOS::UIAMixin
       include Calabash::IOS::IPadMixin
       include Calabash::IOS::GesturesMixin
 
       attr_reader :run_loop
-      attr_reader :uia_strategy
       attr_reader :start_options
 
       # Returns the default simulator identifier.  The string that is return
@@ -50,7 +48,7 @@ module Calabash
           if run_loop_device.nil?
             raise "Could not find a simulator with a UDID or name matching '#{identifier}'"
           end
-          run_loop_device.instruments_identifier
+          run_loop_device.instruments_identifier(RunLoop::SimControl.new.xcode)
         end
       end
 
@@ -84,14 +82,14 @@ module Calabash
           elsif connected_devices.count > 1
             raise 'There is more than one physical devices connected.  Use CAL_DEVICE_ID to indicate which you want to connect to.'
           else
-            connected_devices.first.instruments_identifier
+            connected_devices.first.instruments_identifier(RunLoop::SimControl.new.xcode)
           end
         else
           run_loop_device = Device.fetch_matching_physical_device(identifier)
           if run_loop_device.nil?
             raise "Could not find a physical device with a UDID or name matching '#{identifier}'"
           end
-          run_loop_device.instruments_identifier
+          run_loop_device.instruments_identifier(RunLoop::SimControl.new.xcode)
         end
       end
 
@@ -345,8 +343,7 @@ module Calabash
 
         {
            :device => self,
-           :application => application,
-           :uia_strategy => uia_strategy
+           :application => application
         }
       end
 
@@ -394,7 +391,7 @@ module Calabash
       def start_app_with_device_and_options(application, run_loop_device, user_defined_options)
         start_options = merge_start_options!(application, run_loop_device, user_defined_options)
         @run_loop = RunLoop.run(start_options)
-        @uia_strategy = @run_loop[:uia_strategy]
+        @automator = Calabash::IOS::Automator::DeviceAgent.new(@run_loop)
       end
 
       # @!visibility private
@@ -510,11 +507,18 @@ module Calabash
           end
 
           bridge = run_loop_bridge(@run_loop_device, application)
-          if bridge.app_is_installed?
-            clear_app_data_on_simulator(application, @run_loop_device, bridge)
-          else
-            true
+
+          unless bridge.app_is_installed?
+            raise "Cannot clear application data, the application '#{application.identifier}' is not installed"
           end
+
+          installed_app = Calabash::IOS::Application.new(bridge.send(:installed_app_bundle_dir))
+
+          unless installed_app.same_sha1_as?(application)
+            raise "Cannot clear application data, the application '#{application.identifier}' installed is not the same as #{application.path}"
+          end
+
+          clear_app_data_on_simulator(application, @run_loop_device, bridge)
         elsif application.device_binary?
           @run_loop_device ||= Device.fetch_matching_physical_device(identifier)
 
@@ -526,12 +530,6 @@ module Calabash
         else
           raise "Invalid application #{application} for iOS platform."
         end
-      end
-
-      # @!visibility private
-      def enter_text(text)
-        # @todo implement this
-        raise 'ni'
       end
 
       # @!visibility private
@@ -630,9 +628,8 @@ module Calabash
       # @!visibility private
       # Expensive!
       def Device.fetch_matching_simulator(udid_or_name)
-        sim_control = RunLoop::SimControl.new
-        sim_control.simulators.detect do |sim|
-          sim.instruments_identifier == udid_or_name ||
+        RunLoop::SimControl.new.simulators.detect do |sim|
+          sim.instruments_identifier(RunLoop::SimControl.new.xcode) == udid_or_name ||
                 sim.udid == udid_or_name
         end
       end
@@ -662,7 +659,7 @@ module Calabash
             Logger.error('which resolves to a physical device.')
             Logger.error("The server endpoint '#{server.endpoint}' is for an iOS Simulator.")
             Logger.error('Use CAL_ENDPOINT to specify the IP address of your device')
-            Logger.error("Ex. $ CAL_ENDPOINT=http://10.0.1.2:37265 CAL_DEVICE_ID=#{identifier} be calabash ...")
+            Logger.error("Ex. $ CAL_ENDPOINT=http://10.0.1.2:37265 CAL_DEVICE_ID=\"#{identifier}\" #{Calabash::Utility.bundle_exec_prepend}calabash ...")
             raise "Invalid device endpoint '#{server.endpoint}'"
           end
         end
@@ -703,7 +700,7 @@ module Calabash
               {
                     :app => application.path,
                     :bundle_id => application.identifier,
-                    :device_target => run_loop_device.instruments_identifier,
+                    :device_target => run_loop_device.instruments_identifier(RunLoop::SimControl.new.xcode),
                     :uia_strategy => strategy
               }
         @start_options = default_options.merge(options_from_user)
@@ -775,13 +772,11 @@ module Calabash
 
         if strategy == :host
           @run_loop = RunLoop::HostCache.default.read
-          @uia_strategy = :host
         else
           pid = instruments_pid
           @run_loop = {}
           @run_loop[:uia_strategy] = strategy
           @run_loop[:pid] = pid
-          @uia_strategy = strategy
         end
 
         # populate the @runtime_attributes

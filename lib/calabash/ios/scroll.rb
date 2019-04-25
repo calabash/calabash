@@ -71,7 +71,7 @@ module Calabash
           raise RuntimeError, e
         end
 
-        results = Device.default.map_route(query, :scroll, direction)
+        results = Calabash::Internal.with_current_target(required_os: :ios) {|target| target.map_route(query, :scroll, direction)}
 
         if results.first.nil?
           fail("Expected '#{query}' to match a UIScrollView or a subclass")
@@ -153,8 +153,10 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query, :scrollToRow, row.to_i,
-                                          section.to_i, position, animate)
+        results = Calabash::Internal.with_current_target(required_os: :ios) do |target|
+          target.map_route(query, :scrollToRow, row.to_i,
+                           section.to_i, position, animate)
+        end
 
         if results.first.nil?
           message = [
@@ -240,8 +242,10 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query, :scrollToRowWithMark, mark,
-                                          position, animate)
+        results = Calabash::Internal.with_current_target(required_os: :ios) do |target|
+          target.map_route(query, :scrollToRowWithMark, mark,
+                           position, animate)
+        end
 
         if results.first.nil?
           message = [
@@ -334,9 +338,12 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query, :collectionViewScroll,
-                                           item.to_i, section.to_i,
-                                           position, animate)
+        results = Calabash::Internal.with_current_target(required_os: :ios) do |target|
+          target.map_route(query, :collectionViewScroll,
+                           item.to_i, section.to_i,
+                           position, animate)
+        end
+
         if results.first.nil?
           message = [
                 "Could not scroll collection to item '#{item}' and section '#{section}'.",
@@ -427,9 +434,11 @@ module Calabash
         position = merged_options[:scroll_position].to_sym
         animate = merged_options[:animate]
 
-        results = Device.default.map_route(query,
-                                           :collectionViewScrollToItemWithMark,
-                                           mark, position, animate)
+        results = Calabash::Internal.with_current_target(required_os: :ios) do |target|
+          target.map_route(query,
+                           :collectionViewScrollToItemWithMark,
+                           mark, position, animate)
+        end
 
         if results.first.nil?
           message = [
@@ -455,8 +464,7 @@ module Calabash
                                            :left, :center_horizontal, :right]
 
       # @!visibility private
-      def _wait_for_exactly_one_scroll_view(query)
-
+      define_method(:_wait_for_exactly_one_scroll_view) do |query|
         results = []
 
         found_none = "Expected '#{query}' to match exactly one view, but found no matches."
@@ -477,7 +485,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _expect_valid_scroll_positions(valid_positions, position)
+      define_method(:_expect_valid_scroll_positions) do |valid_positions, position|
         unless valid_positions.include?(position.to_sym)
           raise ArgumentError,
                 "Expected '#{position}' to be one of #{valid_positions.join(', ')}"
@@ -485,7 +493,7 @@ module Calabash
       end
 
       # @!visibility private
-      def _expect_valid_scroll_animate(animate)
+      define_method(:_expect_valid_scroll_animate) do |animate|
         unless [true, false].include?(animate)
           raise ArgumentError,
                 "Expected '#{animate}' to be a Boolean true or false"
@@ -493,13 +501,13 @@ module Calabash
       end
 
       # @!visibility private
-      def _expect_valid_scroll_options(valid_positions, options)
+      define_method(:_expect_valid_scroll_options) do |valid_positions, options|
         _expect_valid_scroll_positions(valid_positions, options[:scroll_position])
         _expect_valid_scroll_animate(options[:animate])
       end
 
       # @!visibility private
-      def _expect_valid_scroll_mark(mark)
+      define_method(:_expect_valid_scroll_mark) do |mark|
         if mark.nil? || mark == ''
           raise ArgumentError,
                 if mark.nil?

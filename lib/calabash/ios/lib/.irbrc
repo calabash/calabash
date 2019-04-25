@@ -37,13 +37,18 @@ rescue LoadError => e
 end
 
 begin
-
   require 'calabash/ios'
 
-  extend Calabash::IOS
-  extend Calabash::ConsoleHelpers
+  IRB.conf[:PROMPT][:CALABASH] = {
+    :PROMPT_I => "calabash #{Calabash::VERSION}> ",
+    :PROMPT_S => "%03n> ",
+    :PROMPT_C => "%03n> ",
+    :RETURN => "%s\n"
+  }
 
-  Calabash::IOS.setup_defaults!
+  IRB.conf[:PROMPT_MODE] = :CALABASH
+
+  extend Calabash::ConsoleHelpers
 
   embed_lambda = lambda do |*_|
     Calabash::Logger.info 'Embed is not available in the console.'

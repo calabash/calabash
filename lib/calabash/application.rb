@@ -3,21 +3,11 @@ require 'digest'
 module Calabash
   # A representation of an application that is under test.
   class Application
+    require 'calabash/android/application'
+    require 'calabash/ios/application'
+
     # @!visibility private
     include Calabash::Utility
-
-    # @!visibility private
-    @@default = nil
-
-    # @!visibility private
-    def self.default
-      @@default
-    end
-
-    # @!visibility private
-    def self.default=(value)
-      @@default = value
-    end
 
     attr_reader :path
 

@@ -1,32 +1,7 @@
 module Calabash
-  # Contains the Android implementations of the Calabash APIs.
-  module Android
-    # @!visibility private
-    TEST_SERVER_CODE_PATH = File.join(File.dirname(__FILE__), '..', '..', 'android', 'test-server')
-    # @!visibility private
-    UNSIGNED_TEST_SERVER_APK = File.join(File.dirname(__FILE__), 'android', 'lib', 'TestServer.apk')
-    # @!visibility private
-    ANDROID_MANIFEST_PATH = File.join(File.dirname(__FILE__), 'android', 'lib', 'AndroidManifest.xml')
-    # @!visibility private
-    HELPER_APPLICATION = File.join(File.dirname(__FILE__), 'android', 'lib', 'HelperApplication.apk')
-    # @!visibility private
-    HELPER_APPLICATION_TEST_SERVER = File.join(File.dirname(__FILE__), 'android', 'lib', 'HelperApplicationTestServer.apk')
-
+  # @!visibility private
+  module AndroidInternal
     require 'calabash'
-    include Calabash
-
-    # @!visibility private
-    def self.extended(base)
-      Calabash.send(:extended, base)
-    end
-
-    # @!visibility private
-    def self.included(base)
-      Calabash.send(:included, base)
-    end
-
-    require 'calabash/android/defaults'
-    extend Calabash::Android::Defaults
 
     require 'calabash/android/environment'
     require 'calabash/android/application'
@@ -40,6 +15,7 @@ module Calabash
     require 'calabash/android/orientation'
     require 'calabash/android/physical_buttons'
     require 'calabash/android/text'
+    require 'calabash/android/web'
     require 'calabash/android/console_helpers'
     require 'calabash/android/life_cycle'
     require 'calabash/android/scroll'
@@ -51,6 +27,37 @@ module Calabash
     include Calabash::Android::PhysicalButtons
     include Calabash::Android::Text
     include Calabash::Android::Scroll
+    include Calabash::Android::Web
+  end
+
+  # Contains the Android implementations of the Calabash APIs.
+  module Android
+    # @!visibility private
+    TEST_SERVER_CODE_PATH = File.join(File.dirname(__FILE__), '..', '..', 'android', 'test-server')
+    # @!visibility private
+    UNSIGNED_TEST_SERVER_APK = File.join(File.dirname(__FILE__), 'android', 'lib', 'TestServer.apk')
+    # @!visibility private
+    ANDROID_MANIFEST_PATH = File.join(File.dirname(__FILE__), 'android', 'lib', 'AndroidManifest.xml')
+    # @!visibility private
+    HELPER_APPLICATION = File.join(File.dirname(__FILE__), 'android', 'lib', 'HelperApplication.apk')
+    # @!visibility private
+    HELPER_APPLICATION_TEST_SERVER = File.join(File.dirname(__FILE__), 'android', 'lib', 'HelperApplicationTestServer.apk')
+
+    # @!visibility private
+    def self.extended(base)
+      Calabash.send(:extended, base)
+    end
+
+    # @!visibility private
+    def self.included(base)
+      Calabash.send(:included, base)
+    end
+
+    require 'calabash'
+    # Hide from documentation
+    send(:include, Calabash)
+
+    include ::Calabash::AndroidInternal
 
     # @!visibility private
     def self.binary_location(name, abi, using_pie)
@@ -73,5 +80,69 @@ module Calabash
   end
 end
 
-# Setup environment on load
-Calabash::Android::Environment.setup
+unless Calabash::Environment.variable("CAL_NO_DEPENDENCIES") == "1"
+  # Setup environment on load
+  Calabash::Android::Environment.setup
+end
+
+# @!visibility private
+class CalabashAndroidMethodsInternal
+  include ::Calabash::Android
+end
+
+# @!visibility private
+class CalabashAndroidMethods < BasicObject
+  include ::Calabash::AndroidInternal
+
+  instance_methods.each do |method_name|
+    define_method(method_name) do |*args, &block|
+      ::CalabashAndroidMethodsInternal.new.send(method_name, *args, &block)
+    end
+  end
+end
+
+# Set the default target state to the Android default targets
+Calabash::Internal.default_target_state = Calabash::TargetState::DefaultTargetState.new(
+    device_from_environment: lambda do
+      server = Calabash::Android::Server.default
+      serial = Calabash::Android::Device.default_serial
+
+      Calabash::Android::Device.new(serial, server)
+    end,
+    target_from_environment: lambda do |device|
+      Calabash::Target.new(device, Calabash::Android::Application.default_from_environment)
+    end
+)
+
+# Returns a object that exposes all of the public Calabash Android API.
+# This method should *always* be used to access the Calabash API. By default,
+# all methods are executed using the default device and the default
+# application.
+#
+# For iOS specific methods use {cal_ios}. For cross-platform methods use {cal}.
+#
+# All Android API methods are available with documentation in
+# {Calabash::Android}
+#
+# @see Calabash::Android
+#
+# @return [CalabashAndroidMethods] Instance responding to all Calabash Android methods
+#  in the API.
+def cal_android
+  CalabashAndroidMethods.new
+end
+
+# We also want to patch `cal` to invoke the Android implementations
+class CalabashMethodsInternal
+  include ::Calabash::Android
+
+  instance_methods.each do |method_name|
+    define_method(method_name) do |*args, &block|
+      ::CalabashAndroidMethodsInternal.new.send(method_name, *args, &block)
+    end
+  end
+end
+
+if defined?(::Calabash::IOSInternal)
+  raise Calabash::RequiredBothPlatformsError, "Cannot require both calabash/android and calabash/ios"
+end

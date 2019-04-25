@@ -3,28 +3,28 @@ module Calabash
     # @!visibility private
     module Orientation
       # @!visibility private
-      def _set_orientation_landscape
-        Device.default.perform_action('set_activity_orientation', 'landscape')
+      define_method(:_set_orientation_landscape) do
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.perform_action('set_activity_orientation', 'landscape')}
       end
 
       # @!visibility private
-      def _set_orientation_portrait
-        Device.default.perform_action('set_activity_orientation', 'portrait')
+      define_method(:_set_orientation_portrait) do
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.perform_action('set_activity_orientation', 'portrait')}
       end
 
       # @!visibility private
-      def _portrait?
+      define_method(:_portrait?) do
         _orientation == 'portrait'
       end
 
       # @!visibility private
-      def _landscape?
+      define_method(:_landscape?) do
         _orientation == 'landscape'
       end
 
       # @!visibility private
-      def _orientation
-        Device.default.perform_action('get_activity_orientation')['message']
+      define_method(:_orientation) do
+        Calabash::Internal.with_current_target(required_os: :android) {|target| target.perform_action('get_activity_orientation')['message']}
       end
     end
   end

@@ -5,6 +5,10 @@ module Calabash
     # A representation of a Calabash Android device.
     # @!visibility private
     class Device < ::Calabash::Device
+      require 'calabash/android/device/helper_application'
+
+      include Calabash::Android::Device::HelperApplication
+
       attr_reader :adb
 
       def initialize(identifier, server)
@@ -475,12 +479,16 @@ module Calabash
         if installed_packages.include?(application.test_server.identifier)
           parameters =
               {
-                  packageName: application.test_server.identifier,
-                  className: 'sh.calaba.instrumentationbackend.StatusReporterActivity',
-                  extras:
-                      {
+                  intent: {
+                      flags: 0x10000000,
+                      component: {
+                          packageName: application.test_server.identifier,
+                          className: 'sh.calaba.instrumentationbackend.StatusReporterActivity',
+                      },
+                      extras: {
                           method: 'clear'
                       }
+                  }
               }
 
           ensure_helper_application_started
@@ -568,7 +576,7 @@ module Calabash
         end
 
         begin
-          Retriable.retriable(tries: 30, interval: 1, timeout: 30, on: RetryError) do
+          Calabash::Retry.retry(retries: 30, interval: 1, timeout: 30, on_errors: [RetryError]) do
             unless test_server_responding?
               # Read any message the test-server might have
               if calabash_server_failure_exists?(application)
@@ -587,7 +595,7 @@ module Calabash
         end
 
         begin
-          Retriable.retriable(tries: 10, interval: 1, timeout: 10) do
+          Calabash::Retry.retry(retries: 10, interval: 1, timeout: 10, on_errors: [RetryError]) do
             unless test_server_ready?
               raise RetryError
             end
@@ -620,7 +628,7 @@ module Calabash
 
       # @!visibility private
       def _stop_app
-        Retriable.retriable(tries: 5, interval: 1) do
+        Calabash::Retry.retry(retries: 5, interval: 1) do
           begin
             http_client.post(HTTP::Request.new('kill'), retries: 1, interval: 0)
           rescue HTTP::Error => _
@@ -762,10 +770,34 @@ module Calabash
 
       # @!visibility private
       def ts_clear_app_data(application)
+        unless application.is_a?(Calabash::Android::Application)
+          raise "Cannot clear application data, the application given does not include a test-server"
+        end
+
+        unless installed_packages.include?(application.identifier)
+          raise "Cannot clear application data, the application '#{application.identifier}' is not installed"
+        end
+
+        unless exact_app_installed?(application)
+          raise "Cannot clear application data, the application '#{application.identifier}' installed is not the same as #{application.path}"
+        end
+
+        unless installed_packages.include?(application.test_server.identifier)
+          raise "Cannot clear application data, the test-server '#{application.test_server.identifier}' is not installed"
+        end
+
+        unless exact_app_installed?(application.test_server)
+          raise "Cannot clear application data, the test-server '#{application.test_server.identifier}' installed is not the same as #{application.test_server.path}"
+        end
+
         parameters =
             {
-                className: 'sh.calaba.instrumentationbackend.ClearAppData2',
-                packageName: application.test_server.identifier,
+                intent: {
+                    component: {
+                        className: 'sh.calaba.instrumentationbackend.ClearAppData2',
+                        packageName: application.test_server.identifier
+                    }
+                }
             }
 
         begin
@@ -847,6 +879,15 @@ module Calabash
         true
       end
 
+      def exact_app_installed?(application)
+        unless installed_packages.include?(application.identifier)
+          return false
+        end
+
+        installed_app_md5_checksum = md5_checksum_for_app_package(application.identifier)
+        application.md5_checksum == installed_app_md5_checksum
+      end
+
       # @!visibility private
       def _ensure_app_installed(application)
         @logger.log "Ensuring #{application.path} is installed"
@@ -857,7 +898,7 @@ module Calabash
           installed_app_md5_checksum = md5_checksum_for_app_package(application.identifier)
 
           if application.md5_checksum != installed_app_md5_checksum
-            @logger.log("The md5 checksum has changed (#{application.md5_checksum} != #{installed_app_md5_checksum}).", :info)
+            @logger.log("The md5 checksum has changed for '#{application.identifier}' (#{application.md5_checksum} != #{installed_app_md5_checksum}).", :info)
             _install_app(application)
           end
         else
@@ -1155,62 +1196,6 @@ module Calabash
         end
 
         true
-      end
-
-      def ensure_helper_application_started
-        unless $_calabash_helper_application_started
-          install_helper_application
-          start_helper_application
-          $_calabash_helper_application_started = true
-        end
-      end
-
-      def helper_application
-        Calabash::Android::Application.new(Calabash::Android::HELPER_APPLICATION,
-                                           Calabash::Android::HELPER_APPLICATION_TEST_SERVER)
-      end
-
-      def helper_application_http_client
-        @helper_application_http_client ||= Calabash::HTTP::ForwardingClient.new(http_client, 8451)
-      end
-
-      # @!visibility private
-      def install_helper_application
-        begin
-          @logger.log "Ensuring helper application is installed"
-          ensure_app_installed(helper_application)
-        rescue => e
-          @logger.log("Unable to install helper application!", :error)
-          raise e
-        end
-
-        $_calabash_helper_application_installed = true
-      end
-
-      # @!visibility private
-      def has_installed_helper_application?
-        $_calabash_helper_application_installed
-      end
-
-      # @!visibility private
-      def helper_application_responding?
-        begin
-          helper_application_http_client.post(HTTP::Request.new('ping'), retries: 1).body == 'pong'
-        rescue HTTP::Error => _
-          false
-        end
-      end
-
-      def start_helper_application
-        extras = "-e test_server_port 8451"
-        name = "#{helper_application.test_server.identifier}/sh.calaba.instrumentationbackend.CalabashInstrumentationTestRunner"
-        cmd = "am instrument #{extras} #{name}"
-        Logger.debug("Starting global helper application using #{cmd}")
-        adb.shell(cmd)
-
-        cmd = "am start -e port #{server.test_server_port} -e testServerPort 0 -n #{helper_application.identifier}/.MainActivity"
-        Logger.debug("Starting helper application using #{cmd}")
-        adb.shell(cmd)
       end
 
       # @!visibility private

@@ -46,4 +46,45 @@ describe Calabash::Utility do
       expect(dummy.new.coordinate(a, b)).to eq({x: a, y: b})
     end
   end
+
+  describe '.bundler_prepend' do
+    it 'returns nothing when this process is not run using bundler' do
+      expect(Calabash::Utility).to receive(:used_bundler?).and_return(false)
+
+      expect(Calabash::Utility.bundle_exec_prepend).to eq('')
+    end
+
+    it 'returns bundle exec when this process is run using bundler' do
+      expect(Calabash::Utility).to receive(:used_bundler?).and_return(true)
+
+      expect(Calabash::Utility.bundle_exec_prepend).to eq('bundle exec ')
+    end
+  end
+
+  describe '.default_hash_values' do
+    it 'sets the default values of a hash' do
+      input = {a: 'b'}
+      defaults = {b: 'c', c: 'd'}
+      expected_output = {a: 'b', b: 'c', c: 'd'}
+
+      expect(Calabash::Utility.default_hash_values(input, defaults)).to eq(expected_output)
+    end
+
+     it 'does not overwrite existing values' do
+       input = {a: 'b', b: 'q', c: nil}
+       defaults = {b: 'c', c: 'd'}
+       expected_output = {a: 'b', b: 'q', c: nil}
+
+       expect(Calabash::Utility.default_hash_values(input, defaults)).to eq(expected_output)
+     end
+
+    it 'does not change the input variable' do
+      input = {a: 'b'}
+      defaults = {b: 'c', c: 'd'}
+
+      Calabash::Utility.default_hash_values(input, defaults)
+
+      expect(input).to eq({a: 'b'})
+    end
+  end
 end

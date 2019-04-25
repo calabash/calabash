@@ -9,11 +9,16 @@ rvm:
   - 2.0.0
   - 2.1.2
   - 2.2.1
+  - 2.2.5
 
 script:
   - script/ci/travis/install-gem-ci.rb
   - bundle exec rake unit
   - rake install
+  - rake integration:ruby
+  - rake integration:page-object-model
+  - rake integration:cli
+  - rake integration:targets
 
 notifications:
   email:

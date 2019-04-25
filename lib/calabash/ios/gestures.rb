@@ -3,15 +3,8 @@ module Calabash
 
     # @!visibility private
     module Gestures
-
       # @!visibility private
-      # Concrete implementation of pan_screen_up gesture.
-      def _pan_screen_up(options={})
-
-        gesture_options = options.dup
-        gesture_options[:duration] ||= 0.5
-        gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
-
+      define_method (:_swipe_coordinates_for_screen) do
         points_from_top = gesture_points_from_top
         points_from_bottom = gesture_points_from_bottom
 
@@ -24,108 +17,49 @@ module Calabash
         end_y = points_from_top
         x = width/2.0
 
-        from_offset = coordinate(x, start_y)
-        to_offset = coordinate(x, end_y)
+        {bottom: coordinate(x, start_y), top: coordinate(x, end_y)}
+      end
 
-        Device.default.pan_screen(top_view, from_offset, to_offset, gesture_options)
+      # @!visibility private
+      # Concrete implementation of pan_screen_up gesture.
+      define_method (:_pan_screen_up) do |options={}|
+        swipe = _swipe_coordinates_for_screen
+        gesture_options = options.merge({offset: {from: swipe[:bottom], to: swipe[:top]}})
+
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pan_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
       # Concrete implementation of pan_screen_down gesture.
-      def _pan_screen_down(options={})
+      define_method (:_pan_screen_down) do |options={}|
+        swipe = _swipe_coordinates_for_screen
+        gesture_options = options.merge({offset: {from: swipe[:top], to: swipe[:bottom]}})
 
-        gesture_options = options.dup
-        gesture_options[:duration] ||= 0.5
-        gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
-
-        points_from_top = gesture_points_from_top
-        points_from_bottom = gesture_points_from_bottom
-
-        top_view = query('*').first
-
-        height = top_view['frame']['height'].to_f
-        width = top_view['frame']['width'].to_f
-
-        start_y = points_from_top
-        end_y = height - points_from_bottom
-        x = width/2.0
-
-        from_offset = coordinate(x, start_y)
-        to_offset = coordinate(x, end_y)
-
-        Device.default.pan_screen(top_view, from_offset, to_offset, gesture_options)
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pan_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
       # Concrete implementation of flick_screen_up gesture.
-      def _flick_screen_up(options={})
+      define_method (:_flick_screen_up) do |options={}|
+        swipe = _swipe_coordinates_for_screen
+        gesture_options = options.merge({offset: {from: swipe[:bottom], to: swipe[:top]}})
 
-        gesture_options = options.dup
-        gesture_options[:duration] ||= 0.5
-        gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
-
-        points_from_top = gesture_points_from_top
-        points_from_bottom = gesture_points_from_bottom
-
-        top_view = query('*').first
-
-        height = top_view['frame']['height'].to_f
-        width = top_view['frame']['width'].to_f
-
-        start_y = height - points_from_bottom
-        end_y = points_from_top
-        x = width/2.0
-
-        from_offset = coordinate(x, start_y)
-        to_offset = coordinate(x, end_y)
-
-        Device.default.flick_screen(top_view, from_offset, to_offset, gesture_options)
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.flick_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
       # Concrete implementation of flick_screen_down gesture.
-      def _flick_screen_down(options={})
+      define_method (:_flick_screen_down) do |options={}|
+        swipe = _swipe_coordinates_for_screen
+        gesture_options = options.merge({offset: {from: swipe[:top], to: swipe[:bottom]}})
 
-        gesture_options = options.dup
-        gesture_options[:duration] ||= 0.5
-        gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
-
-        points_from_top = gesture_points_from_top
-        points_from_bottom = gesture_points_from_bottom
-
-        top_view = query('*').first
-
-        height = top_view['frame']['height'].to_f
-        width = top_view['frame']['width'].to_f
-
-        start_y = points_from_top
-        end_y = height - points_from_bottom
-        x = width/2.0
-
-        from_offset = coordinate(x, start_y)
-        to_offset = coordinate(x, end_y)
-
-        Device.default.flick_screen(top_view, from_offset, to_offset, gesture_options)
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.flick_between(nil, nil, gesture_options)}
       end
 
       # @!visibility private
       # Concrete implementation of pinch_screen
-      def _pinch_screen(direction, options={})
-        Device.default.pinch(direction, '*', options)
-      end
-
-      # @!visibility private
-      # Concrete implementation of pinch_to_zoom
-      def _pinch_to_zoom(direction, query, options={})
-        gesture_direction = direction == :in ? :out : :in
-        Device.default.pinch(gesture_direction, query, options)
-      end
-
-      # @!visibility private
-      # Concrete implementation of pinch_screen_to_zoom
-      def _pinch_screen_to_zoom(direction, options={})
-        gesture_direction = direction == :in ? :out : :in
-        Device.default.pinch(gesture_direction, '*', options)
+      define_method (:_pinch_screen) do |direction, options={}|
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.pinch(direction, Calabash::Query.new('*'), options)}
       end
 
       private
@@ -156,7 +90,7 @@ module Calabash
       # Number of points from the bottom to start a full-screen vertical gesture.
       def gesture_points_from_bottom
         # Dragging from the bottom will lift the transport controls.
-        points_from_bottom = 10
+        points_from_bottom = 20
 
         # Tab bar will intercept touches _and_ its hit box is larger than its
         # visible rect!

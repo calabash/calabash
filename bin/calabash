@@ -12,7 +12,6 @@ module Calabash
       include Calabash::CLI::Doctor
       include Calabash::CLI::Generate
       include Calabash::CLI::Resign
-      include Calabash::CLI::Run
       include Calabash::CLI::SetupKeystore
 
       def initialize(arguments)
@@ -72,12 +71,12 @@ module Calabash
               parse_console_arguments!
             when 'doctor'
               parse_doctor_arguments!
-            when 'generate'
+            when 'generate-cucumber'
               parse_generate_arguments!
-            when 'run'
-              parse_run_arguments!
             when 'setup-keystore'
               parse_setup_keystore_arguments!
+            when 'used-bundler' # For testing purposes
+              puts Calabash::Utility.used_bundler?
             when 'help'
               argument = @arguments.shift
 

@@ -41,10 +41,6 @@ Before do |scenario|
   start_app(options)
 end
 
-After('@ensure_ipad_1x') do
-  Calabash::IOS.setup_defaults!
-end
-
 After do
   @uia_strategy = nil
 end

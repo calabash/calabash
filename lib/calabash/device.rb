@@ -4,19 +4,6 @@ module Calabash
   class Device
     include Utility
 
-    # @!visibility private
-    @@default = nil
-
-    # @!visibility private
-    def self.default
-      @@default
-    end
-
-    # @!visibility private
-    def self.default=(value)
-      @@default = value
-    end
-
     attr_reader :identifier
     # @!visibility private
     attr_reader :server, :http_client, :logger
@@ -134,7 +121,7 @@ module Calabash
     # @see Calabash::Gestures#tap
     # @!visibility private
     def tap(query, options={})
-      Query.ensure_valid_query(query)
+      ensure_query_class_or_nil(query)
 
       gesture_options = options.dup
       gesture_options[:at] ||= {}
@@ -149,7 +136,7 @@ module Calabash
     # @see Calabash::Gestures#double_tap
     # @!visibility private
     def double_tap(query, options={})
-      Query.ensure_valid_query(query)
+      ensure_query_class_or_nil(query)
 
       gesture_options = options.dup
       gesture_options[:at] ||= {}
@@ -164,7 +151,7 @@ module Calabash
     # @see Calabash::Gestures#long_press
     # @!visibility private
     def long_press(query, options={})
-      Query.ensure_valid_query(query)
+      ensure_query_class_or_nil(query)
 
       gesture_options = options.dup
       gesture_options[:at] ||= {}
@@ -180,12 +167,10 @@ module Calabash
     # @see Calabash::Gestures#pan
     # @!visibility private
     def pan(query, from, to, options={})
-      Query.ensure_valid_query(query)
-
-      ensure_valid_swipe_params(from, to)
+      ensure_query_class_or_nil(query)
 
       gesture_options = options.dup
-      gesture_options[:duration] ||= 0.5
+
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _pan(query, from, to, gesture_options)
@@ -195,21 +180,34 @@ module Calabash
     # @see Calabash::Gestures#pan_between
     # @!visibility private
     def pan_between(query_from, query_to, options={})
-      Query.ensure_valid_query(query_from)
-      Query.ensure_valid_query(query_to)
+      ensure_query_class_or_nil(query_from)
+      ensure_query_class_or_nil(query_to)
 
       gesture_options = options.dup
-      gesture_options[:duration] ||= 1
+
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _pan_between(query_from, query_to, gesture_options)
+    end
+
+    # Performs a `flick` between two elements.
+    # @!visibility private
+    def flick_between(query_from, query_to, options={})
+      ensure_query_class_or_nil(query_from)
+      ensure_query_class_or_nil(query_to)
+
+      gesture_options = options.dup
+
+      gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
+
+      _flick_between(query_from, query_to, gesture_options)
     end
 
     # Performs a `flick` on the (first) view that matches `query`.
     # @see Calabash::Gestures#flick
     # @!visibility private
     def flick(query, from, to, options={})
-      Query.ensure_valid_query(query)
+      ensure_query_class_or_nil(query)
 
       ensure_valid_swipe_params(from, to)
 
@@ -223,14 +221,14 @@ module Calabash
     # @see Calabash::Gestures#pinch
     # @!visibility private
     def pinch(direction, query, options={})
-      Query.ensure_valid_query(query)
+      ensure_query_class_or_nil(query)
 
       unless direction == :out || direction == :in
         raise ArgumentError, "Invalid direction '#{direction}'"
       end
 
       gesture_options = options.dup
-      gesture_options[:duration] ||= 0.5
+      gesture_options[:duration] ||= 1
       gesture_options[:timeout] ||= Calabash::Gestures::DEFAULT_GESTURE_WAIT_TIMEOUT
 
       _pinch(direction, query, gesture_options)
@@ -239,7 +237,7 @@ module Calabash
     # Enter `text` into the currently focused view.
     # @see Calabash::Text#enter_text
     # @!visibility private
-    def enter_text(text)
+    def enter_text(text, options={})
       abstract_method!
     end
 
@@ -396,6 +394,11 @@ module Calabash
     end
 
     # @!visibility private
+    def _flick_between(query_from, query_to, options={})
+      abstract_method!
+    end
+
+    # @!visibility private
     def _flick(query, from, to, options={})
       abstract_method!
     end
@@ -420,6 +423,12 @@ module Calabash
 
     def world_module
       abstract_method!
+    end
+
+    def ensure_query_class_or_nil(query)
+      unless query.is_a?(Calabash::Query) || query.nil?
+        raise ArgumentError, "Expected query '#{query}' to be a Calabash::Query, was a #{query.class}"
+      end
     end
   end
 end

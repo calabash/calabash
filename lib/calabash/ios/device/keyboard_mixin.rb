@@ -3,6 +3,12 @@ module Calabash
 
     # @!visibility private
     module KeyboardMixin
+      # Enter `text` into the currently focused view.
+      # @see Calabash::Text#enter_text
+      # @!visibility private
+      def enter_text(text, options={})
+        @automator.enter_text_with_keyboard(text, options)
+      end
 
       # Returns true if a docked keyboard is visible.
       #
@@ -59,6 +65,21 @@ module Calabash
       # Returns true if there is a visible keyboard.
       def keyboard_visible?
         docked_keyboard_visible? || undocked_keyboard_visible? || split_keyboard_visible?
+      end
+
+      def tap_keyboard_delete_key(options={})
+        @automator.tap_keyboard_delete_key
+      end
+
+      def tap_keyboard_action_key
+        results = keyboard_waiter.query("* isFirstResponder:1", :returnKeyType)
+
+        if results.empty?
+          RunLoop.log_debug("Cannot find keyboard first responder to ask for its returnKeyType")
+          raise 'Cannot tap_keyboard_action_key. No view has focus'
+        end
+
+        @automator.tap_keyboard_action_key(results.first)
       end
 
       # Returns the the text in the first responder.

@@ -1,82 +1,105 @@
 module Calabash
-
   # A base class for the Page Object Model (POM) or Page Object Pattern.
   #
-  # We recommend the POM for testing cross-platform apps.
+  # We generally recommend structuring the testing project using a page object
+  # model.
   #
-  # We have a great examples of using the POM in the Calabash 2.0 repository.
-  #   * https://github.com/calabash/calabash/tree/develop/samples/wordpress
-  #   * https://github.com/calabash/calabash/tree/develop/samples/shared-page-logic
+  # @example
+  #  # Definition
+  #  class LoginPage < Calabash::Page
+  #    HELP_BUTTON_QUERY = Calabash::Query.new({id: 'help'})
+  #
+  #    def tap_help
+  #      cal.tap(HELP_BUTTON_QUERY)
+  #    end
+  #  end
+  #
+  #  # Usage
+  #  LoginPage.new.tap_help
   class Page
-    # For auto-completion
-    include Calabash
-
     # @!visibility private
     def self.inherited(subclass)
-      # Define the page into global scope
-      full_name = subclass.name
+      # We have been invoked because of our own 'inherited'
+      if subclass.superclass.name == "Calabash::Page"
+        # Add Android and IOS subclasses to our direct subclass
+        @@_inheriting = true
+        subclass.const_set(:Android, Class.new(subclass) do
+        end)
+        subclass.const_set(:IOS, Class.new(subclass) do
+        end)
+        @@_inheriting = false
+      elsif !((subclass.name == "Android" || subclass.name == "IOS") &&
+          subclass.superclass && subclass.superclass.superclass.name == "Calabash::Page") &&
+          !@@_inheriting
 
-      if full_name == 'IOS' || full_name == 'Android'
-        raise "Invalid page name '#{full_name}'"
+        raise TypeError, ["#{subclass} cannot inherit from #{subclass.superclass}.",
+                          " Can only inherit directly from Calabash::Page,",
+                          " or from platform-specific implementations",
+                          " #{subclass}::Android and #{subclass}::IOS"].join("")
+      end
+    end
+
+    def self.new(*args)
+      if name == "Calabash::Page"
+        raise "Cannot instantiate a Calabash::Page, inherit from this class"
       end
 
-      os_scope = full_name.split('::').first
-
-      if os_scope == 'IOS' || os_scope == 'Android'
-        page_name = full_name.split('::', 2).last
-
-        unless Calabash.is_defined?(page_name)
-          scopes = page_name.split('::')
-
-          previous_scope = ''
-
-          scopes[0..-2].each do |scope|
-            old_scope = Calabash.recursive_const_get("Object::#{os_scope}#{previous_scope}")
-            new_scope = Calabash.recursive_const_get("Object#{previous_scope}")
-
-            old_const = old_scope.const_get(scope.to_sym)
-
-            if new_scope.const_defined?(scope.to_sym)
-              new_scope.send(:remove_const, scope.to_sym)
-            end
-
-            new_scope.const_set(scope.to_sym, old_const.class.allocate)
-
-            previous_scope << "::#{scope}"
-          end
-
-          simple_page_name = page_name.split('::').last.to_sym
-          new_scope = Calabash.recursive_const_get("Object#{previous_scope}")
-
-          unless new_scope.const_defined?(simple_page_name, false)
-            clz = Class.new(StubPage)
-            new_scope.const_set(simple_page_name, clz)
-          end
+      # We are the direct subclass of Page, we should instantiate the platform-specific page
+      if superclass.name == "Calabash::Page"
+        if cal.android?
+          return const_get(:Android).new(*args)
+        elsif cal.ios?
+          return const_get(:IOS).new(*args)
+        else
+          raise "Unable to instantiate #{self}, cannot detect the current platform"
         end
       end
-    end
 
-    private_class_method :new
+      instance = allocate
+      # Freeze the instance
+      instance.freeze
+      instance.send(:initialize, *args)
+      instance
+    end
 
     # @!visibility private
-    def initialize(world)
-      @world = world
+    def initialize
     end
 
-    # A query that distinguishes your page.
-    # @return [String, Hash, Calabash::Query] A query.
+    # A query that identifies your page. This method is used by
+    # {Calabash::Page#await await}.
+    #
+    # @example
+    #  class HomePage < Calabash::Page
+    #    def trait
+    #      {id: 'home'}
+    #    end
+    #  end
+    #
+    #  HomePage.new.await # Uses `trait`
+    #
+    # @return [String, Hash, Calabash::Query] A query identifying the page.
     def trait
       raise 'Implement your own trait'
     end
 
-    # Waits for the page trait to appear.
-    def await(options={})
-      wait_for_view(trait, options)
-    end
+    # Waits for the view identified by the page {Calabash::Page#trait trait} to
+    # appear.
+    #
+    # @note If you need a more precise waiting method for a page, then
+    #  just overwrite this method.
+    #
+    # @param [Number] timeout (default: {Calabash::Wait.default_options
+    #  Calabash::Wait.default_options[:timeout]}) The time to continuously
+    #  query before failing.
+    # @raise [Calabash::Wait::UnexpectedMatchError] if no view matching
+    #  {Calabash::Page#trait trait} is found within `timeout`.
+    def await(timeout: Calabash::Wait.default_options[:timeout])
+      timeout_message = lambda do |wait_options|
+        "Timed out waiting for page #{self.class}: Waited #{wait_options[:timeout]} seconds for trait #{trait} to match a view"
+      end
 
-    # @!visibility private
-    class StubPage
-
+      cal.wait_for_view(trait, timeout: timeout, timeout_message: timeout_message)
     end
   end
 end

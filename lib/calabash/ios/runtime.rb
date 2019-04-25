@@ -11,27 +11,27 @@ module Calabash
 
       # Is the device under test a simulator?
       def simulator?
-        Calabash::IOS::Device.default.simulator?
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.simulator?}
       end
 
       # Is the device under test a physical device?
       def physical_device?
-        Calabash::IOS::Device.default.physical_device?
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.physical_device?}
       end
 
       # Is the device under test an iPad?
       def ipad?
-        Calabash::IOS::Device.default.device_family == 'iPad'
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.device_family == 'iPad'}
       end
 
       # Is the device under test an iPhone?
       def iphone?
-        Calabash::IOS::Device.default.device_family == 'iPhone'
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.device_family == 'iPhone'}
       end
 
       # Is the device under test an iPod?
       def ipod?
-        Calabash::IOS::Device.default.device_family == 'iPod'
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.device_family == 'iPod'}
       end
 
       # Is the device under test an iPhone or iPod?
@@ -44,22 +44,22 @@ module Calabash
       # An iPhone only app running on an iPad will be displayed in an emulated
       # mode.  Starting in iOS 7, such apps will always be launched in 2x mode.
       def iphone_app_emulated_on_ipad?
-        Calabash::IOS::Device.default.iphone_app_emulated_on_ipad?
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.iphone_app_emulated_on_ipad?}
       end
 
       # Is the device under test have a 4 inch screen?
       def iphone_4in?
-        Calabash::IOS::Device.default.form_factor == 'iphone 4in'
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.form_factor == 'iphone 4in'}
       end
 
       # Is the device under test an iPhone 6.
       def iphone_6?
-        Calabash::IOS::Device.default.form_factor == 'iphone 6'
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.form_factor == 'iphone 6'}
       end
 
       # Is the device under test an iPhone 6+?
       def iphone_6_plus?
-        Calabash::IOS::Device.default.form_factor == 'iphone 6 +'
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.form_factor == 'iphone 6 +'}
       end
 
       # Is the device under test an iPhone 3.5in?
@@ -72,7 +72,7 @@ module Calabash
       # @see #iphone_app_emulated_on_ipad?
       # @see #ipad?
       def iphone_35in?
-        Calabash::IOS::Device.default.form_factor == 'iphone 3.5in'
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.form_factor == 'iphone 3.5in'}
       end
 
       # The screen dimensions and details about scale and sample rates.
@@ -88,7 +88,7 @@ module Calabash
       #
       # @return [Hash] See the example.
       def app_screen_details
-        Calabash::IOS::Device.default.screen_dimensions
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.screen_dimensions}
       end
 
       # The version of iOS running on the test device.
@@ -100,7 +100,7 @@ module Calabash
       #
       # @return [RunLoop::Version] A version object.
       def ios_version
-        Calabash::IOS::Device.default.ios_version
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.ios_version}
       end
 
       # Is the device under test running iOS 6?
@@ -132,7 +132,7 @@ module Calabash
       #
       # @return [RunLoop::Version] A version object.
       def server_version
-        Calabash::IOS::Device.default.server_version
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.server_version}
       end
 
       # Details about the version of the app under test.
@@ -161,7 +161,7 @@ module Calabash
       #  the methods in the {Calabash::IOS::Runtime} module instead.
       # @return[Hash] Key/value pairs that describe the runtime environment.
       def runtime_details
-        Calabash::IOS::Device.default.runtime_details
+        Calabash::Internal.with_current_target(required_os: :ios) {|target| target.runtime_details}
       end
     end
   end
