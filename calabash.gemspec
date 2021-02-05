@@ -47,15 +47,15 @@ Public License.}
   spec.require_paths = ['lib']
 
   spec.add_dependency 'edn', '>= 1.0.6', '< 2.0'
-  spec.add_dependency 'geocoder', '>= 1.1.8', '< 2.0'
+  spec.add_dependency 'geocoder', '>= 1.6.4', '< 2.0'
   spec.add_dependency 'httpclient', '~> 2.6'
   spec.add_dependency 'escape', '>= 0.0.4', '< 1.0'
   spec.add_dependency 'run_loop', ">= 2.2.4", "< 3.0"
   spec.add_dependency 'clipboard'
 
   # These dependencies should match the xamarin-test-cloud dependencies.
-  spec.add_dependency 'rubyzip', '~> 1.1'
-  spec.add_dependency 'bundler', '>= 1.3.0', '< 2.0'
+  spec.add_dependency 'rubyzip', '~> 2.3.0'
+  spec.add_dependency 'bundler', '~> 2.2.7'
 
   # Run-loop should control the version.
   spec.add_dependency 'awesome_print'
@@ -63,7 +63,7 @@ Public License.}
   spec.add_dependency 'luffa'
 
   # Development dependencies.
-  spec.add_development_dependency 'yard', '~> 0.8'
+  spec.add_development_dependency 'yard', '~> 0.9.26'
   spec.add_development_dependency 'redcarpet', '~> 3.1'
 
   # Run-loop should control the version.
