@@ -356,8 +356,11 @@ module Calabash
       if description && description.start_with?("@!visibility private")
         signature = nil
       end
+    
+      # Close file opened on line 319
+      file.close
 
-      [signature,description]
+      [signature, description]
     end
   end
 end
